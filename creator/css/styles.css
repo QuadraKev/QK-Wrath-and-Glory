@@ -4173,6 +4173,11 @@ textarea {
     z-index: 1000;
 }
 
+/* Hidden on tabs with no sidebar to toggle (References, Settings) */
+.hamburger-btn.hamburger-btn--hidden {
+    display: none;
+}
+
 .hamburger-btn span {
     display: block;
     width: 22px;
@@ -4219,14 +4224,9 @@ textarea {
 
 /* ===== Responsive: Small Tablet / Landscape Phone (<=768px) ===== */
 @media (max-width: 768px) {
-    /* Show hamburger (only on builder tab) */
+    /* Show hamburger (hidden again on no-sidebar tabs via .hamburger-btn--hidden) */
     .hamburger-btn {
         display: flex;
-    }
-
-    body.tab-character-sheet .hamburger-btn,
-    body.tab-glossary .hamburger-btn {
-        display: none;
     }
 
     /* Hide hamburger when sidebar is open */

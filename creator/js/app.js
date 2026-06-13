@@ -80,6 +80,7 @@ const App = {
         // Update initial display
         this.updateXPDisplay();
         this.updateSidebar();
+        this.updateHamburgerVisibility(this.currentTab);
 
         // Handle deep link from URL hash
         this.handleDeepLink();
@@ -227,14 +228,13 @@ const App = {
             content.classList.toggle('active', content.id === `tab-${tabName}`);
         });
 
-        // Update body class for tab-specific CSS (e.g. hiding hamburger)
-        document.body.classList.remove('tab-builder', 'tab-character-sheet', 'tab-glossary', 'tab-references', 'tab-settings');
-        document.body.classList.add(`tab-${tabName}`);
-
         // Close sidebar when switching away from builder
         if (tabName !== 'builder') {
             document.body.classList.remove('sidebar-open');
         }
+
+        // Hide the hamburger on tabs that have no sidebar to toggle
+        this.updateHamburgerVisibility(tabName);
 
         // Trigger tab-specific refresh
         if (tabName === 'character-sheet') {
@@ -248,6 +248,21 @@ const App = {
         } else if (tabName === 'builder') {
             // Refresh the current builder section
             this.refreshCurrentSection();
+        }
+    },
+
+    // Tabs whose content has no sidebar, so the header hamburger is a dead control
+    TABS_WITHOUT_SIDEBAR: ['references', 'settings'],
+
+    // Hide the hamburger on tabs with no sidebar; show it on tabs that have one
+    updateHamburgerVisibility(tabName) {
+        const hamburger = document.getElementById('hamburger-btn');
+        if (!hamburger) return;
+        const hide = this.TABS_WITHOUT_SIDEBAR.includes(tabName);
+        hamburger.classList.toggle('hamburger-btn--hidden', hide);
+        // Nothing to toggle here, so make sure no drawer is left open
+        if (hide) {
+            document.body.classList.remove('sidebar-open');
         }
     },
 

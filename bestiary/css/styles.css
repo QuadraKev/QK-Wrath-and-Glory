@@ -2798,6 +2798,11 @@ body {
     z-index: 1000;
 }
 
+/* Hidden on tabs with no sidebar to toggle (Glossary, References, Settings) */
+.hamburger-btn.hamburger-btn--hidden {
+    display: none;
+}
+
 .hamburger-btn span {
     display: block;
     width: 22px;

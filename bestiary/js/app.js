@@ -121,6 +121,9 @@ const App = {
         // Check for auto-saved state
         this.checkAutoSave();
 
+        // Set initial hamburger visibility for whatever tab is active
+        this.updateHamburgerVisibility(this.currentTab);
+
         // Handle deep link from URL hash
         this.handleDeepLink();
         window.addEventListener('hashchange', () => this.handleDeepLink());
@@ -182,6 +185,9 @@ const App = {
             content.classList.toggle('active', content.id === `tab-${tabName}`);
         });
 
+        // Hide the hamburger on tabs that have no sidebar to toggle
+        this.updateHamburgerVisibility(tabName);
+
         // Trigger tab-specific refresh
         if (tabName === 'glossary') {
             GlossaryTab.refresh();
@@ -195,6 +201,21 @@ const App = {
             ReferencesTab.refresh();
         } else if (tabName === 'settings') {
             SettingsTab.refresh();
+        }
+    },
+
+    // Tabs whose content has no sidebar, so the header hamburger is a dead control
+    TABS_WITHOUT_SIDEBAR: ['glossary', 'references', 'settings'],
+
+    // Hide the hamburger on tabs with no sidebar; show it on tabs that have one
+    updateHamburgerVisibility(tabName) {
+        const hamburger = document.getElementById('hamburger-btn');
+        if (!hamburger) return;
+        const hide = this.TABS_WITHOUT_SIDEBAR.includes(tabName);
+        hamburger.classList.toggle('hamburger-btn--hidden', hide);
+        // Nothing to toggle here, so make sure no drawer is left open
+        if (hide) {
+            document.body.classList.remove('sidebar-open');
         }
     },
 

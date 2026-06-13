@@ -136,10 +136,26 @@ const XPCalculator = {
             if ((character.freePowers || []).includes(powerId)) continue;
             const power = DataLoader.getPsychicPower(powerId);
             if (power) {
-                xp += power.cost || 0;
+                xp += this.getEffectivePowerCost(power, character);
             }
         }
         return xp;
+    },
+
+    // The psychic discipline discounted by the Tormented Manifestation talent (or null)
+    getDiscountedDiscipline(character) {
+        const entry = (character.talents || []).find(t => typeof t === 'object' && t.id === 'tormented_manifestation_aoa');
+        return entry?.choice || null;
+    },
+
+    // A single power's effective cost, applying Tormented Manifestation's half-cost (rounded up)
+    getEffectivePowerCost(power, character) {
+        const base = power?.cost || 0;
+        const discounted = this.getDiscountedDiscipline(character);
+        if (discounted && power?.discipline === discounted) {
+            return Math.ceil(base / 2);
+        }
+        return base;
     },
 
     // Calculate XP spent on languages (1 XP each beyond free Low Gothic and free languages)

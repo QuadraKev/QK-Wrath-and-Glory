@@ -635,7 +635,7 @@ const ReferencesTab = {
 
     renderPsychicPowerBody(entry) {
         let html = '<div class="ref-stats">';
-        html += `<div class="ref-stat"><span class="ref-label">Discipline:</span> ${entry.discipline}</div>`;
+        html += `<div class="ref-stat"><span class="ref-label">Discipline:</span> ${entry.discipline}${entry.multiTarget ? ' <span class="multi-target-badge">Multi-Target</span>' : ''}</div>`;
         html += `<div class="ref-stat"><span class="ref-label">DN:</span> ${entry.dn} &nbsp; <span class="ref-label">Activation:</span> ${entry.activation}</div>`;
         html += `<div class="ref-stat"><span class="ref-label">Duration:</span> ${entry.duration} &nbsp; <span class="ref-label">Range:</span> ${entry.range}</div>`;
         html += `<div class="ref-stat"><span class="ref-label">Cost:</span> ${entry.cost} XP</div>`;

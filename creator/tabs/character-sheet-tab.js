@@ -1226,10 +1226,10 @@ const CharacterSheetTab = {
             if (!power) return '';
             return `
                 <tr>
-                    <td class="sheet-power-name">${power.name}<div class="source-ref">${DataLoader.formatSourcePage(power)}</div></td>
+                    <td class="sheet-power-name">${power.name}${power.multiTarget ? ' <span class="multi-target-badge">Multi-Target</span>' : ''}<div class="source-ref">${DataLoader.formatSourcePage(power)}</div></td>
                     <td class="sheet-power-dn">${power.dn || '-'}</td>
                     <td class="sheet-power-range">${power.range || '-'}</td>
-                    <td class="sheet-power-desc">${power.effect || '-'}</td>
+                    <td class="sheet-power-desc">${power.effect || '-'}${power.potency ? `<div class="sheet-power-potency"><span class="sheet-power-potency-label">Potency:</span> ${power.potency}</div>` : ''}</td>
                 </tr>
             `;
         }).join('');
@@ -1241,10 +1241,10 @@ const CharacterSheetTab = {
 
             return `
                 <tr>
-                    <td class="sheet-power-name">${power.name}<div class="source-ref">${DataLoader.formatSourcePage(power)}</div></td>
+                    <td class="sheet-power-name">${power.name}${power.multiTarget ? ' <span class="multi-target-badge">Multi-Target</span>' : ''}<div class="source-ref">${DataLoader.formatSourcePage(power)}</div></td>
                     <td class="sheet-power-dn">${power.dn || '-'}</td>
                     <td class="sheet-power-range">${power.range || '-'}</td>
-                    <td class="sheet-power-desc">${power.effect || '-'}</td>
+                    <td class="sheet-power-desc">${power.effect || '-'}${power.potency ? `<div class="sheet-power-potency"><span class="sheet-power-potency-label">Potency:</span> ${power.potency}</div>` : ''}</td>
                 </tr>
             `;
         }).join('');

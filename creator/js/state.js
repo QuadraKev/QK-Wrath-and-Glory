@@ -671,7 +671,7 @@ const State = {
     addPower(powerId) {
         if (!this.character.psychicPowers.includes(powerId)) {
             const power = DataLoader.getPsychicPower(powerId);
-            if (power && XPCalculator.canAfford(this.character, power.cost || 0)) {
+            if (power && XPCalculator.canAfford(this.character, XPCalculator.getEffectivePowerCost(power, this.character))) {
                 this.character.psychicPowers.push(powerId);
                 this.notifyListeners('power', powerId);
                 return true;
@@ -1428,9 +1428,10 @@ const State = {
                 }
             }
         }
-        // Include disciplines unlocked by Warped Mind talent
+        // Include disciplines unlocked by talents (Warped Mind, Tormented Manifestation)
+        const DISCIPLINE_UNLOCK_TALENTS = ['warped_mind', 'tormented_manifestation_aoa'];
         for (const talentEntry of this.character.talents || []) {
-            if (typeof talentEntry === 'object' && talentEntry.id === 'warped_mind' && talentEntry.choice) {
+            if (typeof talentEntry === 'object' && DISCIPLINE_UNLOCK_TALENTS.includes(talentEntry.id) && talentEntry.choice) {
                 if (!base.includes(talentEntry.choice)) {
                     base.push(talentEntry.choice);
                 }

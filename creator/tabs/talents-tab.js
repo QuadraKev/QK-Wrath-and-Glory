@@ -437,6 +437,10 @@ const TalentsTab = {
                 <div class="talent-desc-effect">${talent.effect || 'No description available.'}</div>
                 ${flavorHtml}
                 <div class="source-ref">${DataLoader.formatSourcePage(talent)}</div>
+                <div class="talent-desc-actions">
+                    <span class="talent-prereq ${prereqCheck.met ? '' : 'unmet'}">${PrerequisiteChecker.formatPrerequisites(talent)}</span>
+                    <button class="btn-add" data-id="${talent.id}" ${!canAdd ? 'disabled' : ''}>ADD</button>
+                </div>
             `;
 
             // Add click handler for expand/collapse
@@ -456,16 +460,22 @@ const TalentsTab = {
                 }
             });
 
-            row.querySelector('.btn-add').addEventListener('click', (e) => {
-                e.stopPropagation();
-                // Check if talent requires a choice
-                if (talent.requiresChoice) {
-                    this.showChoiceModal(talent);
-                } else {
-                    if (State.addTalent(talent.id)) {
-                        this.render();
+            // Bind the ADD button in both the row (desktop) and the expanded
+            // detail row (mobile, where the row's prereq/ADD columns are hidden).
+            [row, descRow].forEach(el => {
+                const addBtn = el.querySelector('.btn-add');
+                if (!addBtn) return;
+                addBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    // Check if talent requires a choice
+                    if (talent.requiresChoice) {
+                        this.showChoiceModal(talent);
+                    } else {
+                        if (State.addTalent(talent.id)) {
+                            this.render();
+                        }
                     }
-                }
+                });
             });
 
             // Enhance effect text with glossary terms (not flavor text)

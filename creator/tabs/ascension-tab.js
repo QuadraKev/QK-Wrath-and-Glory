@@ -122,14 +122,19 @@ const AscensionTab = {
             const prereqResult = this.checkPackagePrereqs(pkg, character);
             const prereqClass = prereqResult.met ? '' : ' ascension-prereq-unmet';
 
+            // Check affordability (a currently-selected package can always be toggled off)
+            const canAfford = isSelected || XPCalculator.canAfford(character, xpCost);
+            const affordClass = canAfford ? '' : ' ascension-unaffordable';
+
             const card = `
-                <div class="card ascension-card${isSelected ? ' selected' : ''}${prereqClass}" data-type="package" data-id="${pkg.id}" data-target-tier="${slot.targetTier}" data-prereqs-met="${prereqResult.met}">
+                <div class="card ascension-card${isSelected ? ' selected' : ''}${prereqClass}${affordClass}" data-type="package" data-id="${pkg.id}" data-target-tier="${slot.targetTier}" data-prereqs-met="${prereqResult.met}" data-can-afford="${canAfford}">
                     <div class="card-header">
                         <span class="card-title">${pkg.name}</span>
                         <span class="card-xp">${xpCost} XP</span>
                     </div>
                     ${pkg.influenceModifier ? `<div class="ascension-influence">Influence: ${pkg.influenceModifier > 0 ? '+' : ''}${pkg.influenceModifier}</div>` : ''}
                     ${prereqResult.text ? `<div class="ascension-prereqs${prereqResult.met ? '' : ' unmet'}">${prereqResult.text}</div>` : ''}
+                    ${!canAfford ? `<div class="ascension-unaffordable-note">Not enough XP (${xpCost} XP)</div>` : ''}
                     <div class="card-description">${pkg.description || ''}</div>
                     ${pkg.benefits && pkg.benefits.length > 0 ? `
                         <div class="ascension-benefits">
@@ -513,6 +518,8 @@ const AscensionTab = {
                     } else {
                         // Block selection if prerequisites aren't met
                         if (card.dataset.prereqsMet === 'false') return;
+                        // Block selection if the character can't afford it
+                        if (card.dataset.canAfford === 'false') return;
                         State.setAscension(targetTier, { type: 'package', packageId: id, archetypeId: null });
                     }
                 } else if (type === 'archetype') {

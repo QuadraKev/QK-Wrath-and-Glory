@@ -654,7 +654,8 @@ const EncounterTab = {
     selectItem(id, type) {
         this.selectedId = id;
         this.selectionType = type;
-        this.clearMultiSelection();
+        // Do NOT clear multi-selection here: focusing a unit to view its detail
+        // must not wipe an in-progress mob selection (the checkbox set).
         this.renderEncounterList();
 
         if (window.innerWidth <= 768) {

@@ -348,7 +348,9 @@ const PowersTab = {
 
         for (const power of powers) {
             const prereqCheck = PrerequisiteChecker.checkPowerPrerequisites(power, character);
-            const canAfford = XPCalculator.canAfford(character, power.cost || 0);
+            const baseCost = power.cost || 0;
+            const effCost = XPCalculator.getEffectivePowerCost(power, character);
+            const canAfford = XPCalculator.canAfford(character, effCost);
             const canAdd = prereqCheck.met && canAfford;
 
             const card = document.createElement('div');
@@ -363,9 +365,10 @@ const PowersTab = {
                     <div>
                         <span class="power-card-name">${power.name}</span>
                         <span class="power-card-discipline">${power.discipline}</span>
+                        ${power.multiTarget ? '<span class="multi-target-badge">Multi-Target</span>' : ''}
                     </div>
                     <div class="power-card-actions">
-                        <span class="power-card-cost">${power.cost || 0} XP</span>
+                        <span class="power-card-cost">${effCost < baseCost ? `<span class="power-cost-original">${baseCost}</span> ` : ''}${effCost} XP</span>
                         <button class="btn-add" data-id="${power.id}" ${!canAdd ? 'disabled' : ''}>ADD</button>
                     </div>
                 </div>

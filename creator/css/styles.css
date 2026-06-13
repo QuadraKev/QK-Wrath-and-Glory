@@ -1001,6 +1001,11 @@ textarea {
     display: none;
 }
 
+/* Prereqs + ADD are surfaced inside the expanded detail only on phones (see <=480px) */
+.talent-desc-actions {
+    display: none;
+}
+
 .talent-desc-effect {
     font-size: 13px;
     color: var(--text-secondary);
@@ -1787,6 +1792,28 @@ textarea {
     margin-left: 8px;
 }
 
+.multi-target-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--accent-gold);
+    border: 1px solid var(--accent-gold);
+    border-radius: var(--radius-sm);
+    padding: 1px 6px;
+    margin-left: 6px;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.power-cost-original {
+    text-decoration: line-through;
+    opacity: 0.55;
+    margin-right: 2px;
+    font-size: 0.9em;
+}
+
 .power-card-actions {
     display: flex;
     align-items: center;
@@ -2515,6 +2542,17 @@ textarea {
 .ascension-card.ascension-prereq-unmet {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+.ascension-card.ascension-unaffordable {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.ascension-unaffordable-note {
+    font-size: 0.85em;
+    color: var(--accent-red);
+    margin-bottom: 4px;
 }
 
 .ascension-influence {
@@ -3678,6 +3716,17 @@ textarea {
     color: var(--text-secondary);
 }
 
+.sheet-power-potency {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.sheet-power-potency-label {
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
 /* Equipment List */
 .sheet-equipment-list {
     display: flex;
@@ -4293,13 +4342,31 @@ textarea {
         gap: 4px;
     }
 
-    /* Hide prereq and action columns on very small screens */
+    /* Hide prereq and action columns on very small screens (collapsed rows)... */
     .talents-table-header > span:nth-child(4),
     .talents-table-header > span:nth-child(5),
     .talent-row > span:nth-child(4),
     .talent-row > span:nth-child(5),
     .talent-row > button:last-child {
         display: none;
+    }
+
+    /* ...but surface prerequisites + ADD inside the expanded detail row instead */
+    .talent-desc-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 4px;
+    }
+
+    .talent-desc-actions .talent-prereq {
+        flex: 1 1 auto;
+    }
+
+    .talent-desc-actions .btn-add {
+        flex: 0 0 auto;
     }
 
     /* Power cards: stack stats on phone */

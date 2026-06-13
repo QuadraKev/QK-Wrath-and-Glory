@@ -82,6 +82,16 @@ const PrerequisiteChecker = {
             reasons.push(`Tier ${prereqs.tier}+`);
         }
 
+        // Check forbidden keywords (exclusionary prerequisites, e.g. "may not be a PSYKER")
+        if (prereqs.forbiddenKeywords && prereqs.forbiddenKeywords.length > 0) {
+            const charKeywords = this.getCharacterKeywords(character);
+            for (const keyword of prereqs.forbiddenKeywords) {
+                if (charKeywords.includes(keyword)) {
+                    reasons.push(`Not ${keyword}`);
+                }
+            }
+        }
+
         // Check other requirements (free text)
         if (prereqs.other) {
             // These are displayed but not automatically validated
@@ -282,6 +292,10 @@ const PrerequisiteChecker = {
                 return s?.name || id;
             });
             parts.push(names.join('/'));
+        }
+
+        if (prereqs.forbiddenKeywords) {
+            prereqs.forbiddenKeywords.forEach(k => parts.push(`not ${k}`));
         }
 
         if (prereqs.other) {

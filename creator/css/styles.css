@@ -2567,6 +2567,10 @@ textarea {
     margin-bottom: 4px;
 }
 
+.ascension-prereqs.unmet {
+    color: var(--accent-red);
+}
+
 .ascension-benefits {
     font-size: 0.85em;
     color: var(--text-secondary);
@@ -3725,6 +3729,56 @@ textarea {
 .sheet-power-potency-label {
     color: var(--accent-gold);
     font-weight: 600;
+}
+
+/* Psychic powers: 2-row layout on phones (name/DN/range on row 1, full-width description on row 2) */
+@media (max-width: 480px) {
+    .sheet-powers-table,
+    .sheet-powers-table tbody {
+        display: block;
+        width: 100%;
+    }
+
+    .sheet-powers-table thead {
+        display: none;
+    }
+
+    .sheet-powers-table tr {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        column-gap: 12px;
+        align-items: baseline;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .sheet-powers-table td {
+        padding: 0;
+        border-bottom: none;
+    }
+
+    .sheet-powers-table .sheet-power-dn,
+    .sheet-powers-table .sheet-power-range {
+        width: auto;
+        text-align: right;
+        white-space: nowrap;
+        color: var(--text-secondary);
+    }
+
+    .sheet-powers-table .sheet-power-dn::before {
+        content: "DN ";
+        color: var(--text-muted);
+    }
+
+    .sheet-powers-table .sheet-power-range::before {
+        content: "Range ";
+        color: var(--text-muted);
+    }
+
+    .sheet-powers-table .sheet-power-desc {
+        grid-column: 1 / -1;
+        margin-top: 6px;
+    }
 }
 
 /* Equipment List */

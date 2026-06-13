@@ -1,0 +1,167 @@
+/* Shared feedback modal styles. Uses each app's theme vars with safe fallbacks
+   so it renders correctly in both the creator and bestiary apps. */
+
+.fb-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.fb-overlay.hidden {
+    display: none;
+}
+
+.fb-modal {
+    width: 100%;
+    max-width: 460px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: var(--bg-card, #1f2937);
+    border: 1px solid var(--border-color, #374151);
+    border-radius: var(--radius-md, 10px);
+    color: var(--text-primary, #e5e7eb);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.fb-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border-color, #374151);
+}
+
+.fb-header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--accent-gold, #d4af37);
+}
+
+.fb-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary, #cbd5e1);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+}
+
+.fb-close:hover {
+    color: var(--accent-gold, #d4af37);
+}
+
+.fb-body {
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.fb-types {
+    display: flex;
+    gap: 16px;
+    font-size: 0.9rem;
+}
+
+.fb-types label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.fb-label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.85rem;
+    color: var(--text-secondary, #cbd5e1);
+}
+
+.fb-input {
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--bg-primary, #1a1a2e);
+    color: var(--text-primary, #e5e7eb);
+    border: 1px solid var(--border-color, #374151);
+    border-radius: var(--radius-sm, 6px);
+    padding: 8px 10px;
+    font: inherit;
+    font-size: 0.9rem;
+}
+
+.fb-input:focus {
+    outline: none;
+    border-color: var(--accent-gold, #d4af37);
+}
+
+textarea.fb-input {
+    resize: vertical;
+}
+
+.fb-turnstile {
+    min-height: 65px;
+}
+
+.fb-msg {
+    font-size: 0.85rem;
+    min-height: 1.2em;
+}
+
+.fb-msg.fb-error {
+    color: var(--accent-red, #dc2626);
+}
+
+.fb-msg.fb-success {
+    color: #4ade80;
+}
+
+.fb-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 14px 18px;
+    border-top: 1px solid var(--border-color, #374151);
+}
+
+.fb-btn {
+    padding: 8px 16px;
+    border-radius: var(--radius-sm, 6px);
+    border: 1px solid var(--border-color, #374151);
+    background: transparent;
+    color: var(--text-primary, #e5e7eb);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.9rem;
+}
+
+.fb-btn:hover {
+    border-color: var(--accent-gold, #d4af37);
+}
+
+.fb-submit {
+    background: var(--accent-gold, #d4af37);
+    color: #1a1a2e;
+    border-color: var(--accent-gold, #d4af37);
+    font-weight: 600;
+}
+
+.fb-submit:hover {
+    opacity: 0.9;
+}
+
+.fb-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* The Home button is an <a> styled like a header button — drop the link underline. */
+a.header-btn {
+    text-decoration: none;
+}

@@ -9,7 +9,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=82">
+    <link rel="stylesheet" href="css/styles.css?v=83">
+    <link rel="stylesheet" href="../shared/feedback.css?v=83">
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
 <body>
     <div id="app">
@@ -19,6 +21,7 @@
                 <button class="hamburger-btn" id="hamburger-btn" aria-label="Toggle menu">
                     <span></span><span></span><span></span>
                 </button>
+                <a href="../" class="header-btn" id="btn-home" title="Home" aria-label="Home"><span class="btn-icon">&#127968;</span></a>
                 <h1 class="app-title">Wrath & Glory</h1>
                 <span class="app-subtitle">Character Creator</span>
             </div>
@@ -31,6 +34,9 @@
                 </button>
                 <button id="btn-save" class="header-btn" title="Save Character">
                     <span class="btn-icon">&#128190;</span> Save
+                </button>
+                <button id="btn-feedback" class="header-btn" title="Report Feedback">
+                    <span class="btn-icon">&#128172;</span> Feedback
                 </button>
             </div>
         </header>
@@ -483,28 +489,29 @@
     </script>
 
     <!-- Scripts -->
-    <script src="js/web-api.js?v=82"></script>
-    <script src="js/data-loader.js?v=82"></script>
-    <script src="js/xp-calculator.js?v=82"></script>
-    <script src="js/derived-stats.js?v=82"></script>
-    <script src="js/prerequisite.js?v=82"></script>
-    <script src="js/state.js?v=82"></script>
-    <script src="js/character-io.js?v=82"></script>
-    <script src="js/glossary.js?v=82"></script>
-    <script src="tabs/setting-tab.js?v=82"></script>
-    <script src="tabs/species-tab.js?v=82"></script>
-    <script src="tabs/archetype-tab.js?v=82"></script>
-    <script src="tabs/ascension-tab.js?v=82"></script>
-    <script src="tabs/stats-tab.js?v=82"></script>
-    <script src="tabs/talents-tab.js?v=82"></script>
-    <script src="tabs/wargear-tab.js?v=82"></script>
-    <script src="tabs/powers-tab.js?v=82"></script>
-    <script src="tabs/background-tab.js?v=82"></script>
-    <script src="tabs/injuries-tab.js?v=82"></script>
-    <script src="tabs/character-sheet-tab.js?v=82"></script>
-    <script src="tabs/glossary-tab.js?v=82"></script>
-    <script src="tabs/references-tab.js?v=82"></script>
-    <script src="tabs/settings-tab.js?v=82"></script>
-    <script src="js/app.js?v=82"></script>
+    <script src="js/web-api.js?v=83"></script>
+    <script src="js/data-loader.js?v=83"></script>
+    <script src="js/xp-calculator.js?v=83"></script>
+    <script src="js/derived-stats.js?v=83"></script>
+    <script src="js/prerequisite.js?v=83"></script>
+    <script src="js/state.js?v=83"></script>
+    <script src="js/character-io.js?v=83"></script>
+    <script src="js/glossary.js?v=83"></script>
+    <script src="tabs/setting-tab.js?v=83"></script>
+    <script src="tabs/species-tab.js?v=83"></script>
+    <script src="tabs/archetype-tab.js?v=83"></script>
+    <script src="tabs/ascension-tab.js?v=83"></script>
+    <script src="tabs/stats-tab.js?v=83"></script>
+    <script src="tabs/talents-tab.js?v=83"></script>
+    <script src="tabs/wargear-tab.js?v=83"></script>
+    <script src="tabs/powers-tab.js?v=83"></script>
+    <script src="tabs/background-tab.js?v=83"></script>
+    <script src="tabs/injuries-tab.js?v=83"></script>
+    <script src="tabs/character-sheet-tab.js?v=83"></script>
+    <script src="tabs/glossary-tab.js?v=83"></script>
+    <script src="tabs/references-tab.js?v=83"></script>
+    <script src="tabs/settings-tab.js?v=83"></script>
+    <script src="js/app.js?v=83"></script>
+    <script src="../shared/feedback.js?v=83"></script>
 </body>
 </html>

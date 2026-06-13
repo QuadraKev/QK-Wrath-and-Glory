@@ -9,7 +9,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=75">
+    <link rel="stylesheet" href="css/styles.css?v=76">
+    <link rel="stylesheet" href="../shared/feedback.css?v=76">
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
 <body>
     <div id="app">
@@ -19,11 +21,15 @@
                 <button class="hamburger-btn" id="hamburger-btn" aria-label="Toggle menu">
                     <span></span><span></span><span></span>
                 </button>
+                <a href="../" class="header-btn" id="btn-home" title="Home" aria-label="Home"><span class="btn-icon">&#127968;</span></a>
                 <h1 class="app-title">Wrath & Glory</h1>
                 <span class="app-subtitle">Bestiary</span>
             </div>
             <div class="header-right">
                 <span class="threat-count" id="threat-count">0 Threats</span>
+                <button id="btn-feedback" class="header-btn" title="Report Feedback">
+                    <span class="btn-icon">&#128172;</span> Feedback
+                </button>
             </div>
         </header>
 
@@ -342,17 +348,18 @@
     </script>
 
     <!-- Scripts -->
-    <script src="js/web-api.js?v=75"></script>
-    <script src="js/data-loader.js?v=75"></script>
-    <script src="js/glossary.js?v=75"></script>
-    <script src="js/encounter-state.js?v=75"></script>
-    <script src="js/threat-builder-state.js?v=75"></script>
-    <script src="tabs/settings-tab.js?v=75"></script>
-    <script src="tabs/threats-tab.js?v=75"></script>
-    <script src="tabs/glossary-tab.js?v=75"></script>
-    <script src="tabs/references-tab.js?v=75"></script>
-    <script src="tabs/encounter-tab.js?v=75"></script>
-    <script src="tabs/threat-builder-tab.js?v=75"></script>
-    <script src="js/app.js?v=75"></script>
+    <script src="js/web-api.js?v=76"></script>
+    <script src="js/data-loader.js?v=76"></script>
+    <script src="js/glossary.js?v=76"></script>
+    <script src="js/encounter-state.js?v=76"></script>
+    <script src="js/threat-builder-state.js?v=76"></script>
+    <script src="tabs/settings-tab.js?v=76"></script>
+    <script src="tabs/threats-tab.js?v=76"></script>
+    <script src="tabs/glossary-tab.js?v=76"></script>
+    <script src="tabs/references-tab.js?v=76"></script>
+    <script src="tabs/encounter-tab.js?v=76"></script>
+    <script src="tabs/threat-builder-tab.js?v=76"></script>
+    <script src="js/app.js?v=76"></script>
+    <script src="../shared/feedback.js?v=76"></script>
 </body>
 </html>

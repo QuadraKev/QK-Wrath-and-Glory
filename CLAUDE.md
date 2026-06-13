@@ -53,10 +53,12 @@ GitHub Actions (`.github/workflows/deploy.yml`) deploys the whole repo to Pages 
   `Authorization` header.
 - GitHub Issues: don't close until the user confirms; comment a summary after.
 
-## Books (PDF, local reference only — not in this repo)
+## Books (PDF, local reference only — NEVER in this repo)
 
-Sourcebook PDFs live under the dev working area (`/root/projects/wrath-and-glory/books/`),
-NOT in this repo. Read PDFs visually (render via `pdftoppm`); never `pdftotext` for content.
+Sourcebook PDFs live OUTSIDE the repo at `../.QK-Wrath-and-Glory-reference/books/` (a sibling
+of this repo; the leading dot marks it as a non-project folder). They are COPYRIGHTED — the
+license covers using the text in the apps, NOT redistributing the PDFs, so they must never be
+committed or deployed. Read PDFs visually (render via `pdftoppm`); never `pdftotext` for content.
 
 ## Related (not in this repo)
 

@@ -7,6 +7,8 @@ single dataset and deployed as two sites from one GitHub Pages repo.
 - `bestiary/` — threat/NPC reference + encounter builder (`/QK-Wrath-and-Glory/bestiary/`)
 - `index.html` — landing page linking to both
 - `data/` — THE single source of game data, shared by both apps
+- `shared/` — front-end widgets used by both apps (the Report Feedback modal)
+- `feedback-worker/` — Cloudflare Worker source + setup for in-app feedback → GitHub Issues
 - `STYLE_GUIDE.md` — shared conventions (naming, CSS vars, JS patterns)
 
 ## Architecture
@@ -27,7 +29,8 @@ apps with no sync step. Files:
 - Creator-only: backgrounds, keyword-categories.
 - Bestiary-only: threats, threat-weapons.
 
-Data conventions: IDs snake_case (Apocrypha uses `_aaa` suffix); traits/keywords are arrays
+Data conventions: IDs snake_case (Apocrypha IDs use `_aaa` for threats, `_aoa` for talents);
+traits/keywords are arrays
 of UPPERCASE strings; missing display values use `"-"`; `source`/`page` fields for citations
 (no inline page refs in prose); `[AI-Generated]` prefixes ONLY on fields with no source-book
 text. Data text should be verbatim sourcebook text where the book has it.
@@ -42,6 +45,13 @@ together. After a data edit, bump creator's data `?v=` so clients refetch.
 
 GitHub Actions (`.github/workflows/deploy.yml`) deploys the whole repo to Pages on push to
 `main`. URLs: `quadrakev.github.io/QK-Wrath-and-Glory/{,creator/,bestiary/}`.
+
+## Feedback widget (Cloudflare Worker)
+
+In-app "Report Feedback" (`shared/feedback.js`, button in each header) POSTs to a Cloudflare
+Worker (`feedback-worker/`) that verifies Cloudflare Turnstile, then opens a GitHub Issue here.
+The GitHub token + Turnstile secret live ONLY as Cloudflare Worker secrets — never in the repo.
+Setup / rotation: `feedback-worker/README.md`.
 
 ## Commits / auth
 

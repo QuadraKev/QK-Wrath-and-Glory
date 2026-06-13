@@ -109,6 +109,40 @@ body {
     color: var(--text-secondary);
 }
 
+.header-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.header-btn:hover {
+    background: var(--bg-hover);
+    border-color: var(--accent-gold);
+}
+
+.btn-icon {
+    font-size: 14px;
+}
+
+@media (max-width: 480px) {
+    .header-btn {
+        padding: 6px 8px;
+        font-size: 0;
+    }
+
+    .header-btn .btn-icon {
+        font-size: 16px;
+    }
+}
+
 /* ===== Tab Navigation ===== */
 .tab-nav {
     display: flex;

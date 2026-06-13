@@ -1,0 +1,118 @@
+[
+  {
+    "id": "unarmed",
+    "name": "Unarmed",
+    "type": "melee",
+    "damage": 2,
+    "ed": 1,
+    "ap": 0,
+    "range": "1",
+    "traits": []
+  },
+  {
+    "id": "lasgun_threat",
+    "name": "Lasgun",
+    "type": "ranged",
+    "damage": 7,
+    "ed": 1,
+    "ap": 0,
+    "range": "48m",
+    "salvo": "2",
+    "traits": ["Rapid Fire (1)"]
+  },
+  {
+    "id": "laspistol_threat",
+    "name": "Laspistol",
+    "type": "ranged",
+    "damage": 7,
+    "ed": 1,
+    "ap": 0,
+    "range": "24m",
+    "salvo": "1",
+    "traits": ["Pistol"]
+  },
+  {
+    "id": "autogun_threat",
+    "name": "Autogun",
+    "type": "ranged",
+    "damage": 7,
+    "ed": 1,
+    "ap": 0,
+    "range": "36m",
+    "salvo": "2",
+    "traits": []
+  },
+  {
+    "id": "autopistol_threat",
+    "name": "Autopistol",
+    "type": "ranged",
+    "damage": 7,
+    "ed": 1,
+    "ap": 0,
+    "range": "18m",
+    "salvo": "1",
+    "traits": ["Pistol"]
+  },
+  {
+    "id": "knife_threat",
+    "name": "Knife",
+    "type": "melee",
+    "damage": 3,
+    "ed": 1,
+    "ap": 0,
+    "range": "1",
+    "traits": []
+  },
+  {
+    "id": "club_threat",
+    "name": "Club",
+    "type": "melee",
+    "damage": 4,
+    "ed": 1,
+    "ap": 0,
+    "range": "1",
+    "traits": []
+  },
+  {
+    "id": "sword_threat",
+    "name": "Sword",
+    "type": "melee",
+    "damage": 4,
+    "ed": 1,
+    "ap": 0,
+    "range": "1",
+    "traits": ["Parry"]
+  },
+  {
+    "id": "axe_threat",
+    "name": "Axe",
+    "type": "melee",
+    "damage": 5,
+    "ed": 1,
+    "ap": 0,
+    "range": "1",
+    "traits": ["Rending (1)"]
+  },
+  {
+    "id": "shotgun_threat",
+    "name": "Shotgun",
+    "type": "ranged",
+    "damage": 8,
+    "ed": 1,
+    "ap": 0,
+    "range": "12m",
+    "salvo": "-",
+    "traits": ["Spread"]
+  },
+  {
+    "id": "stub_revolver_threat",
+    "name": "Stub Revolver",
+    "type": "ranged",
+    "damage": 7,
+    "ed": 1,
+    "ap": 0,
+    "range": "18m",
+    "salvo": "-",
+    "traits": ["Pistol", "Reliable"]
+  }
+]

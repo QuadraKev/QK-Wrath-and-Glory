@@ -1,0 +1,125 @@
+{
+  "ordo": {
+    "label": "Ordo",
+    "options": [
+      { "value": "ORDO HERETICUS", "label": "Ordo Hereticus", "bonus": "+2 bonus dice to resist psychic powers, OR +2 bonus dice to Corruption Tests" },
+      { "value": "ORDO XENOS", "label": "Ordo Xenos", "bonus": "Fluent in one alien language; +2 bonus dice on Scholar/Investigation Tests related to xenos" },
+      { "value": "ORDO MALLEUS", "label": "Ordo Malleus", "bonus": "+3 Corruption and +1 Conviction, OR +2 bonus dice on Scholar/Investigation Tests related to daemons and the Warp" }
+    ],
+    "allowCustom": true,
+    "customLabel": "Other Ordo",
+    "customBonus": "+Rank bonus dice to Tests with one chosen Skill"
+  },
+  "regiment": {
+    "label": "Regiment",
+    "options": [
+      { "value": "ARMAGEDDON STEEL LEGION", "label": "Armageddon Steel Legion", "bonus": "+Rank bonus dice to repair vehicle/weapon Tests" },
+      { "value": "CADIAN SHOCK TROOPERS", "label": "Cadian Shock Troopers", "bonus": "+Rank bonus dice to Resolve Tests" },
+      { "value": "CATACHAN JUNGLE FIGHTERS", "label": "Catachan Jungle Fighters", "bonus": "+Rank bonus dice to Survival (Wil) Tests" },
+      { "value": "DEATH KORPS OF KRIEG", "label": "Death Korps of Krieg", "bonus": "+Rank bonus dice to Intimidation (Wil) Tests" },
+      { "value": "GILEAD GRAVEDIGGERS", "label": "Gilead Gravediggers", "bonus": "+Rank bonus to Defence when in Cover" },
+      { "value": "TALLARN DESERT RAIDERS", "label": "Tallarn Desert Raiders", "bonus": "+Rank bonus dice to Pilot (A) Tests" },
+      { "value": "VALHALLAN ICE WARRIORS", "label": "Valhallan Ice Warriors", "bonus": "+Rank bonus to Determination Tests" },
+      { "value": "VOSTROYAN FIRSTBORN", "label": "Vostroyan Firstborn", "bonus": "+Rank bonus to Leadership (Wil) Tests" }
+    ],
+    "allowCustom": true,
+    "customLabel": "Other Regiment"
+  },
+  "chapter": {
+    "label": "Chapter",
+    "options": [
+      { "value": "BLOOD ANGELS", "label": "Blood Angels", "bonus": "Savage Echoes + The Red Thirst" },
+      { "value": "DARK ANGELS", "label": "Dark Angels", "bonus": "Grim Resolve + The Unforgiven" },
+      { "value": "IMPERIAL FISTS", "label": "Imperial Fists", "bonus": "Siege Masters + gene-seed flaw" },
+      { "value": "IRON HANDS", "label": "Iron Hands", "bonus": "The Flesh Is Weak + Ruthless Logic" },
+      { "value": "RAVEN GUARD", "label": "Raven Guard", "bonus": "Master Of Shadows + Dark Heritage" },
+      { "value": "SALAMANDERS", "label": "Salamanders", "bonus": "Promethean Cult + Infernal Inheritance" },
+      { "value": "SPACE WOLVES", "label": "Space Wolves", "bonus": "Hunters Unleashed + Savage Within" },
+      { "value": "ULTRAMARINES", "label": "Ultramarines", "bonus": "Tactical Versatility + Pride of Ultramar" },
+      { "value": "WHITE SCARS", "label": "White Scars", "bonus": "Lightning Assault + Ritual Scarring" }
+    ],
+    "allowCustom": true,
+    "customLabel": "Other Chapter"
+  },
+  "clan": {
+    "label": "Clan",
+    "options": [
+      { "value": "BAD MOONS", "label": "Bad Moons", "bonus": "+1 Wealth at end of every session" },
+      { "value": "BLOOD AXES", "label": "Blood Axes", "bonus": "+Rank bonus dice to Leadership (Wil) and Stealth (A) Tests" },
+      { "value": "DEATHSKULLS", "label": "Deathskulls", "bonus": "+Rank bonus dice to Tech (Int) and Influence Tests" },
+      { "value": "EVIL SUNZ", "label": "Evil Sunz", "bonus": "+1 Speed; +Rank bonus dice in vehicles at top speed" },
+      { "value": "GOFFS", "label": "Goffs", "bonus": "+Rank bonus dice to melee attack Tests when you Charge" },
+      { "value": "SNAKEBITES", "label": "Snakebites", "bonus": "+Double Rank bonus dice to Survival (Wil) Tests" }
+    ],
+    "allowCustom": true,
+    "customLabel": "Other Clan"
+  },
+  "mark_of_chaos": {
+    "label": "Mark of Chaos",
+    "options": [
+      { "value": "KHORNE", "label": "Khorne" },
+      { "value": "NURGLE", "label": "Nurgle" },
+      { "value": "TZEENTCH", "label": "Tzeentch" },
+      { "value": "SLAANESH", "label": "Slaanesh" }
+    ],
+    "allowCustom": false
+  },
+  "order": {
+    "label": "Order",
+    "options": [
+      { "value": "ORDER OF OUR MARTYRED LADY", "label": "Order of Our Martyred Lady" },
+      { "value": "ORDER OF THE SANCTIFIED SHIELD", "label": "Order of the Sanctified Shield" }
+    ],
+    "allowCustom": true,
+    "customLabel": "Other Order"
+  },
+  "craftworld": {
+    "label": "Craftworld",
+    "options": [
+      { "value": "ALAITOC", "label": "Alaitoc" },
+      { "value": "BIEL-TAN", "label": "Biel-Tan" },
+      { "value": "IYANDEN", "label": "Iyanden" },
+      { "value": "UL-KHARI", "label": "Ul-Khari" },
+      { "value": "ULTHWE", "label": "Ulthwe" }
+    ],
+    "allowCustom": true,
+    "customLabel": "Other Craftworld"
+  },
+  "dynasty": {
+    "label": "Dynasty",
+    "options": [
+      { "value": "VARONIUS", "label": "Varonius" },
+      { "value": "KAHLIXIAN", "label": "Kahlixian" },
+      { "value": "ARMENGARDE", "label": "Armengarde" }
+    ],
+    "allowCustom": true,
+    "customLabel": "Other Dynasty"
+  },
+  "forge_world": {
+    "label": "Forge World",
+    "options": [
+      { "value": "AVACHRUS", "label": "Avachrus" },
+      { "value": "MARS", "label": "Mars" },
+      { "value": "RYZA", "label": "Ryza" },
+      { "value": "METALICA", "label": "Metalica" }
+    ],
+    "allowCustom": true,
+    "customLabel": "Other Forge World"
+  },
+  "legion": {
+    "label": "Legion",
+    "options": [
+      { "value": "BLACK LEGION", "label": "Black Legion" },
+      { "value": "DEATH GUARD", "label": "Death Guard" },
+      { "value": "WORD BEARERS", "label": "Word Bearers" }
+    ],
+    "allowCustom": true,
+    "customLabel": "Other Legion"
+  },
+  "any": {
+    "label": "Faction Keyword",
+    "options": [],
+    "allowCustom": true,
+    "customLabel": "Enter a faction keyword"
+  }
+}

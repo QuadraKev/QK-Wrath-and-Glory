@@ -1,0 +1,1046 @@
+[
+  {
+    "id": "back_from_the_brink",
+    "name": "Back From The Brink",
+    "description": "You are dead. Or that's what everyone thinks — whatever horrible fate befell you didn't quite end your life, and any limbs you may have lost have been replaced by augmetics.",
+    "cost": "10 x new Tier",
+    "costMultiplier": 10,
+    "prerequisites": {
+      "story": "Must have near-death experience"
+    },
+    "benefits": [
+      "After a horrific encounter, you were somehow reconstructed by the marvels of holy (or unholy) technology.",
+      "Roll on the Memorable Injury table twice.",
+      "Roll on the Traumatic Injury table twice.",
+      "Replace any lost body parts with the appropriate augmetics; you may choose an option of any Rarity the GM deems appropriate.",
+      "Only the people who saved you and were responsible for your reconstitution know that you are alive. But news of your death may already have spread, and your new allies may want some form of recompense for saving your life."
+    ],
+    "keywordsGained": [
+      "[ANY] (the Faction of those who saved you)"
+    ],
+    "keywordChoices": [
+      {
+        "placeholder": "[ANY]",
+        "category": "any",
+        "label": "Faction of those who saved you"
+      }
+    ],
+    "influenceModifier": 0,
+    "source": "core",
+    "page": 150
+  },
+  {
+    "id": "demanding_patron",
+    "name": "Demanding Patron",
+    "description": "Your exploits have caught the attention of someone powerful. They will sponsor your future deeds, though they have demands in return.",
+    "cost": "10 x new Tier",
+    "costMultiplier": 10,
+    "prerequisites": {
+      "skills": {
+        "persuasion": 3
+      }
+    },
+    "benefits": [
+      "You now report to a demanding patron between every adventure.",
+      "When you take this Ascension Package, choose to gain one of the following:",
+      "Immediately gain 1 item of Rare Wargear with a value of 3 + new Tier",
+      "Immediately gain 2 Wealth",
+      "Immediately gain +2 Influence per Tier Ascended"
+    ],
+    "keywordsGained": [
+      "[ANY] (the Faction of your new patron)"
+    ],
+    "keywordChoices": [
+      {
+        "placeholder": "[ANY]",
+        "category": "any",
+        "label": "Faction of your new patron"
+      }
+    ],
+    "influenceModifier": 2,
+    "requiresChoice": true,
+    "choiceType": "patronBenefit",
+    "choiceOptions": [
+      {
+        "value": "wargear",
+        "label": "Rare Wargear (value 3 + new Tier)"
+      },
+      {
+        "value": "wealth",
+        "label": "2 Wealth"
+      },
+      {
+        "value": "influence",
+        "label": "+2 Influence per Tier Ascended"
+      }
+    ],
+    "source": "core",
+    "page": 151
+  },
+  {
+    "id": "dauntless_reputation",
+    "name": "Dauntless Reputation",
+    "description": "With a single glorious act of extraordinary merit you gained tremendous reputation. Word of your exploits has spread, and you have gained both notoriety and disciples devoted to your cause.",
+    "cost": "30 x new Tier",
+    "costMultiplier": 30,
+    "prerequisites": {},
+    "benefits": [
+      "The Devotees Talent. You do not need to meet the Leadership (Wil) Skill prerequisite.",
+      "A tremendous reputation with a Faction.",
+      "A nemesis."
+    ],
+    "keywordsGained": [
+      "[ANY]"
+    ],
+    "keywordChoices": [
+      {
+        "placeholder": "[ANY]",
+        "category": "any",
+        "label": "Faction keyword"
+      }
+    ],
+    "influenceModifier": 2,
+    "talentsGranted": [
+      "devotees"
+    ],
+    "source": "core",
+    "page": 151
+  },
+  {
+    "id": "perfidious_wretch",
+    "name": "Perfidious Wretch",
+    "description": "You betrayed your allies to gain favour with another Faction. You may have been seduced by promises of power or material wealth — all too common in the grim darkness of the 41st Millennium. Or you may have developed a radical mindset that no longer aligns with your Faction and better suits another.",
+    "cost": "5 x new Tier",
+    "costMultiplier": 5,
+    "prerequisites": {
+      "skills": {
+        "cunning": 3
+      }
+    },
+    "benefits": [
+      "Your new allies gift you the following:",
+      "3 Wealth.",
+      "1 item of Wargear with a value of 3 + new Tier and a Rarity of Rare or lower.",
+      "Your disloyalty has earned you the enmity of the Faction you betrayed, and curried the favour of another."
+    ],
+    "keywordsGained": [
+      "Gain [ANY], remove the Keyword you betrayed"
+    ],
+    "keywordChoices": [
+      {
+        "placeholder": "[ANY]",
+        "category": "any",
+        "label": "New faction keyword"
+      }
+    ],
+    "influenceModifier": -2,
+    "source": "core",
+    "page": 152
+  },
+  {
+    "id": "psychic_revelations",
+    "name": "Psychic Revelations",
+    "description": "You are now a Psyker. Whether a spontaneous manifestation, the development of latent abilities, or through unbidden exposure to abnormalities of the Warp, you can now channel the occult power of the Immaterium.",
+    "cost": "10 x new Tier",
+    "costMultiplier": 10,
+    "prerequisites": {},
+    "benefits": [
+      "The Smite psychic power and the Universal Psychic Powers.",
+      "One Minor Psychic Power of your choice per Tier Ascended.",
+      "You may purchase psychic powers from one Discipline of your choice."
+    ],
+    "keywordsGained": [
+      "PSYKER"
+    ],
+    "influenceModifier": 1,
+    "keywordsGranted": [
+      "PSYKER"
+    ],
+    "psykerConfig": {
+      "grantedPowers": [
+        "smite"
+      ],
+      "freePowerChoices": [
+        {
+          "disciplines": [
+            "Minor"
+          ],
+          "count": 1
+        }
+      ],
+      "unlockedDisciplines": [],
+      "disciplineChoices": 1
+    },
+    "source": "core",
+    "page": 152
+  },
+  {
+    "id": "stay_the_course",
+    "name": "Stay The Course",
+    "description": "You are a veteran of your position, excelling far above your peers. Though not promoted, you have been recognised and rewarded.",
+    "cost": "10 x new Tier",
+    "costMultiplier": 10,
+    "prerequisites": {},
+    "benefits": [
+      "If you do not have a Memorable Injury, roll on the Memorable Injury table and decide with your GM how you received the Memorable Injury. You may choose to gain 3 Corruption points instead of, or in addition to, a Memorable Injury.",
+      "Choose one of the following wargear options (these choices may include augmetics):",
+      "Gain 2 items of Rare Wargear with a value of 3 + new Tier",
+      "Gain 1 item of Very Rare Wargear with a value of 3 + new Tier"
+    ],
+    "keywordsGained": [],
+    "influenceModifier": 1,
+    "source": "core",
+    "page": 154
+  },
+  {
+    "id": "test_of_faith_aoa",
+    "name": "A Test of Faith (Abundance of Apocrypha)",
+    "description": "Your faith has always been strong, but seldom has it been tested so strenuously. You encountered some threat, danger, or catastrophe so great that your devotion to the Emperor was put into question… but when you emerged, your piety was rewarded. Strengthened by the challenge, your faith draws other faithful to you; drawn by the fire in your eyes and the conviction in your voice, and the need to have their own doubts expunged.",
+    "cost": "10 x new Tier",
+    "costMultiplier": 10,
+    "prerequisites": {
+      "attributes": {
+        "willpower": 3
+      },
+      "skills": {
+        "persuasion": 2
+      },
+      "keywords": [
+        "IMPERIUM",
+        "ADEPTUS MINISTORUM"
+      ]
+    },
+    "benefits": [
+      "Your faith is strengthened, granting you +1 Faith point. Further, your Conviction and Resolve are both increased by +1.",
+      "Select one weapon you possess. That weapon gains the Blessed (1) trait."
+    ],
+    "keywordsGained": [],
+    "influenceModifier": 1,
+    "source": "apocrypha",
+    "page": 210
+  },
+  {
+    "id": "agent_of_inquisition_aoa",
+    "name": "Agent of the Inquisition (Abundance of Apocrypha)",
+    "description": "You have been recruited by an Inquisitor to continue the ongoing fight against the Enemies of the Imperium. You're not merely an informant or minion bearing the Inquisition's mark, but a trusted associate and confidante of an Inquisitor, with valued skills, experience, and insights, and the ability to wield some measure of their authority.",
+    "cost": "10 x new Tier",
+    "costMultiplier": 10,
+    "prerequisites": {
+      "attributes": {
+        "willpower": 3
+      },
+      "skills": {
+        "insight": 2,
+        "awareness": 2
+      },
+      "skillRequirement": "Insight 2+ or Awareness 2+"
+    },
+    "benefits": [
+      "You may invoke the name of your Inquisitor to gain +Rank to an Influence or social Skill test involving a character with the IMPERIUM keyword, once per scene.",
+      "You gain 3 Corruption points and a Memorable Injury.",
+      "Inquisitorial Rosette (symbol of authority), plus up to two items of Rare Wargear, or one item of Very Rare Wargear, with a Value up to 3 + the new Tier."
+    ],
+    "keywordsGained": [
+      "INQUISITION",
+      "[ORDO]"
+    ],
+    "keywordsGranted": [
+      "INQUISITION"
+    ],
+    "keywordChoices": [
+      {
+        "placeholder": "[ORDO]",
+        "category": "ordo",
+        "label": "Choose your Ordo"
+      }
+    ],
+    "influenceModifier": 1,
+    "source": "apocrypha",
+    "page": 210
+  },
+  {
+    "id": "apocryphon_oath_aoa",
+    "name": "Apocryphon Oath (Abundance of Apocrypha)",
+    "description": "The Deathwatch Space Marines serve the Ordo Xenos of the Imperial Inquisition as its Chamber Militant, the warriors of last resort when the Inquisition needs access to firepower greater than the Astra Militarum or a team of its own Acolytes or even Throne Agents can provide. Across the galaxy there are innumerable hostile alien civilisations that threaten Mankind, from the green-skinned Orks, to the monstrous Tyranids, sadistic Drukhari, spectral C'tan, and undying Necrons. It is the sacred task of the Deathwatch to stand sentry against all these terrible xenos races. They are ready to act when such ancient evils rise to threaten Mankind once more. The Space Marines of the Deathwatch form the first, and often only, line of defence against these inhuman horrors.",
+    "cost": "10 x new Tier",
+    "costMultiplier": 10,
+    "prerequisites": {
+      "attributes": {
+        "willpower": 4
+      },
+      "skills": {
+        "ballistic_skill": 5,
+        "weapon_skill": 5,
+        "scholar": 2
+      },
+      "skillRequirement": "Ballistic Skill 5 or Weapon Skill 5, Scholar 2",
+      "species": [
+        "Adeptus Astartes",
+        "Primaris Astartes"
+      ]
+    },
+    "benefits": [
+      "You join the ranks of the Deathwatch, and you are initiated into secrets that allow you to hunt Xenos more effectively. You receive the normal benefit for having the ORDO XENOS keyword and have access to special Deathwatch arsenals containing rare and specialised equipment.",
+      "Due to your specialised training, at each Regroup, you may select a single keyword which relates to a Xenos faction. You add +Rank ED to all attacks against enemies with that keyword.",
+      "One reload each of Dragonfire, Hellfire, Kraken, and Vengeance bolt rounds, and one Weapon Upgrade with a value of up to 7 (Very Rare)."
+    ],
+    "keywordsGained": [
+      "DEATHWATCH",
+      "INQUISITION",
+      "ORDO XENOS"
+    ],
+    "keywordsGranted": [
+      "DEATHWATCH",
+      "INQUISITION",
+      "ORDO XENOS"
+    ],
+    "influenceModifier": 1,
+    "source": "apocrypha",
+    "page": 211
+  },
+  {
+    "id": "blessed_by_emperor_aoa",
+    "name": "Blessed by the Emperor (Abundance of Apocrypha)",
+    "description": "Your faith in the God-Emperor is absolute and of a magnitude far greater than even the most devout of your sisters. Some have even whispered that you have the potential to become a Saint, one of the greatest heroes of your faith and your Order. You are merely a vessel for the glory of the Master of Mankind, and you will serve Him as He wills. What that entails, and what trials you will face, remain to be seen.",
+    "cost": "15 x new Tier",
+    "costMultiplier": 15,
+    "prerequisites": {
+      "attributes": {
+        "willpower": 4
+      },
+      "keywords": [
+        "ADEPTA SORORITAS"
+      ],
+      "other": "Must have at least one Faith talent"
+    },
+    "benefits": [
+      "You are faced with trials of faith. Each Trial requires that certain deeds be performed, but each will provide a reward once those deeds have been completed. When you select this Ascension Package, select a single one of the Trials below. When you have completed that Trial, and received the listed reward, you may select another Trial to replace it. If you manage to complete all four Trials, you may gain Sainthood.",
+      "Trial of Faith — Boundless Faith: You may shift an Exalted Icon to regain 1 Faith.",
+      "Trial of Purity — Blazing Soulfire: You may spend 2 Faith points to unleash a burst of pure Soulfire as a Simple Action. Roll 3d6 for each enemy within 6m: each enemy suffers a Mortal Wound for each Icon rolled. PSYKERS and CHAOS enemies re-roll any dice which result in a failure.",
+      "Trial of Righteousness — Righteous Wrath: You may spend 2 Faith points at the end of one of your turns. If you do so, you may take a second turn later in that round.",
+      "Trial of Suffering — Miraculous Recovery: Your Traumatic Injuries are immediately healed, and new Traumatic Injuries heal immediately upon taking a Respite. Further, you may spend 2 Faith points as a simple action to immediately heal Wounds equal to the game's Tier.",
+      "Sainthood: When you die, roll a number of d6 equal to the maximum number of Faith Points you possess. If the number of Icons rolled equals or exceeds two plus the number of times you've died, you are miraculously restored to life. If you are not restored to life, then you die permanently. However, your martyrdom means any other ADEPTA SORORITAS characters in the scene gain 1 Faith Point for each Trial you have completed."
+    ],
+    "keywordsGained": [],
+    "influenceModifier": 1,
+    "source": "apocrypha",
+    "page": 212
+  },
+  {
+    "id": "crux_terminatus_aoa",
+    "name": "Crux Terminatus (Abundance of Apocrypha)",
+    "description": "The Crux Terminatus is a stone medallion awarded to highly skilled and experienced Space Marine Veterans. All members of a Chapter trained in the use of Terminator Armour will have been first awarded the Crux Terminatus. These badges, set into the left shoulder plate of Terminator armour, are highly distinctive and usually fashioned from stone. In Codex Chapters, members of the Chapter's veteran First Company are the exclusive users of Terminator armour.",
+    "cost": "30",
+    "costMultiplier": 0,
+    "prerequisites": {
+      "skills": {
+        "ballistic_skill": 5,
+        "weapon_skill": 5
+      },
+      "skillRequirement": "Ballistic Skill 5+ or Weapon Skill 5+",
+      "species": [
+        "Adeptus Astartes",
+        "Primaris Astartes"
+      ]
+    },
+    "benefits": [
+      "You are an honoured veteran amongst the Adeptus Astartes, and even when not wearing Terminator Armour, you are amongst the mightiest and most dedicated warriors in the Imperium.",
+      "Your Resolve is increased by +2, and whenever you succeed at a Weapon Skill, Ballistic Skill, or Leadership test, you may shift a single exalted icon to allow yourself and all allies with the ADEPTUS ASTARTES keyword within 15m to recover 1+Rank Shock.",
+      "You gain a suit of Terminator Armour, and one of the following weapon selections: Storm Bolter and Power Sword, Storm Bolter and Power Fist, Thunder Hammer and Storm Shield, or Paired Lightning Claws.",
+      "If you choose not to deploy in your Terminator armour, or are unable to use it, you begin the mission with +1 Wrath instead."
+    ],
+    "keywordsGained": [],
+    "influenceModifier": 2,
+    "source": "apocrypha",
+    "page": 214
+  },
+  {
+    "id": "divine_revelation_aoa",
+    "name": "Divine Revelation (Abundance of Apocrypha)",
+    "description": "Whether you believed or not in the God-Emperor previously, you have experienced something which has given you absolute certainty. With this newfound faith, you have gained something of a congregation of your own, a following drawn to your newfound prophetic status.",
+    "cost": "10 x new Tier",
+    "costMultiplier": 10,
+    "prerequisites": {
+      "keywords": [
+        "IMPERIUM",
+        "SCUM"
+      ],
+      "keywordRequirement": "IMPERIUM or SCUM"
+    },
+    "benefits": [
+      "Your newfound faith is powerful, even unshakeable, and while you may not be a true priest, your zeal is a match for any of them. You gain 1 Faith point, and you may select Faith talents as if you possessed the ADEPTUS MINISTORUM keyword.",
+      "You gain a single trinket, randomly determined from the tables in the core rulebook or created with your GM. This item is linked in some way to your divine revelation."
+    ],
+    "keywordsGained": [],
+    "influenceModifier": 1,
+    "source": "apocrypha",
+    "page": 214
+  },
+  {
+    "id": "glimpse_from_beyond_aoa",
+    "name": "Glimpse from Beyond (Abundance of Apocrypha)",
+    "description": "To see beyond the fragile veil of sanity and purity, to catch even the merest glimpse of things that defy all imagination, is to suffer great trauma. Those who survive are seldom the same, both less than they were, and something more. Some endure with their minds clear, possessed of a strength and focus that is often startling to those who knew the witness, yet beneath this apparent strength and vigour is a soul blasted and scarred, tainted by exposure to one of the nightmares of the cosmos. Others suffer wretched maladies of the mind, no longer certain of the shape or substance of reality or fully in control of themselves, yet pure of spirit despite all they have witnessed. Others still see their sanity fracture and their purity wither in the presence of such horror. Yet amidst it all comes an insight, an understanding of the unholy that few possess. With the loss of mind or purity comes an instinct that defies reason, to understand things which should not be known. The warped conclusions of these witnesses are often invaluable to those who must brave the terrible perils that lurk in the darkness between the stars.",
+    "cost": "10 x new Tier",
+    "costMultiplier": 10,
+    "prerequisites": {},
+    "benefits": [
+      "Your mind has been touched by something vast and damning. Whether through soul-scarring clarity or the vile artifice of an insane mind, you hold secrets that no soul should ever possess.",
+      "Whenever you attempt an Awareness (Int), Insight (Fel), Investigation (Int), or Scholar (Int) test that relates to the Warp, Chaos, psychic phenomena, or some other forbidden and profane matter, you may choose to add +Rank additional Wrath dice on that test. Each Wrath Critical you roll means the GM must give you a relevant piece of information that you couldn't possibly know by any normal means. Each Wrath Complication means you gain 1 Corruption Point.",
+      "You gain a single trinket, randomly determined from the tables in the core rulebook or created with your GM. This item is linked in some way to your experiences seeing beyond reality, and it emanates faint echoes of that event."
+    ],
+    "keywordsGained": [],
+    "influenceModifier": 1,
+    "source": "apocrypha",
+    "page": 215
+  },
+  {
+    "id": "illuminated_aoa",
+    "name": "Illuminated (Abundance of Apocrypha)",
+    "description": "There are those within the Imperium who believe that the Emperor alone is not enough to hold back the onslaught of Chaos. They have foreseen the terrors that await the moment when humanity is most vulnerable. They call themselves Illuminati, and they are bound by a single common experience: they have been possessed by Daemons, and through sheer will they have cast the daemon out. Through this harrowing experience, the Illuminati know the truth of Chaos, and they have become all too aware of the terrible nature of the broken universe they inhabit. The Illuminati know of the Fall of the Aeldari and seek to prevent the same happening to Mankind. They know that if Chaos were to triumph during humanity's development into a psychic species, the universe will end. The Fall of the Aeldari fractured reality and sent shockwaves through Materium and Immaterium both as Slaanesh was born. The fall of Humanity could shatter reality entirely.",
+    "cost": "10 x new Tier",
+    "costMultiplier": 10,
+    "prerequisites": {
+      "attributes": {
+        "willpower": 4
+      },
+      "species": [
+        "Human"
+      ]
+    },
+    "benefits": [
+      "Your mind and soul are hardened against the powers of Chaos. Your Conviction score is increased by an amount equal to the game's Tier, and you can never gain Corruption Points.",
+      "Whenever you make a test or opposed test against a CHAOS enemy, power, or effect, you gain +Double Rank bonus dice."
+    ],
+    "keywordsGained": [
+      "ILLUMINATI"
+    ],
+    "keywordsGranted": [
+      "ILLUMINATI"
+    ],
+    "influenceModifier": 1,
+    "source": "apocrypha",
+    "page": 215
+  },
+  {
+    "id": "lost_seer_path_aoa",
+    "name": "Lost Upon The Seer Path (Abundance of Apocrypha)",
+    "description": "A Farseer is the most potent and respected form of Eldar psyker or Seer. A Farseer has become lost upon the Path of the Seer forever in the same way as the Exarchs are wed eternally to the Path of the Warrior. A council of the most powerful Farseers governs a Craftworld. Farseers possess a wide diversity of psychic specialities with divination being the most common skill. They are most often known for using their vast psychic powers to see the possibilities of the future so that they can manipulate events to better ensure the survival of the Eldar species in the wake of the Fall.",
+    "cost": "15 x new Tier",
+    "costMultiplier": 15,
+    "prerequisites": {
+      "attributes": {
+        "willpower": 6
+      },
+      "skills": {
+        "insight": 6,
+        "psychic_mastery": 6
+      },
+      "keywords": [
+        "ASURYANI",
+        "PSYKER"
+      ],
+      "species": [
+        "Aeldari"
+      ]
+    },
+    "benefits": [
+      "You gain the Prescience and Scrier's Gaze psychic powers, if you did not already possess them (if you already possess them, you gain additional XP equal to their costs to spend on other powers). In addition, you may now purchase psychic powers from the Runes of Fate discipline.",
+      "You may use your Willpower instead of your Fellowship to determine your Influence.",
+      "You gain a Ghosthelm, Runes of Witnessing, and Runes of Warding."
+    ],
+    "keywordsGained": [
+      "FARSEER"
+    ],
+    "keywordsGranted": [
+      "FARSEER"
+    ],
+    "influenceModifier": 3,
+    "powersGranted": [
+      "prescience",
+      "scriers_gaze"
+    ],
+    "disciplinesUnlocked": [
+      "Runes of Fate"
+    ],
+    "source": "apocrypha",
+    "page": 216
+  },
+  {
+    "id": "lost_warrior_path_aoa",
+    "name": "Lost Upon The Warrior Path (Abundance of Apocrypha)",
+    "description": "An Exarch is a former Eldar Aspect Warrior who has lost himself upon the Eldar Path of the Warrior and is unable to ever leave it again. At this point he is considered to have abandoned the Eldar Paths with their promise of new experiences and development of new skills in favour of a constant life of bloodshed. The Eldar becomes the elite warrior called an Exarch; simultaneously, an Exarch is a priest of Kaela Mensha Khaine, the Eldar God of War as well as a caretaker of the individual warrior shrine, and trainer, teacher, and instructor for other Aspect Warriors. The sacrifice of an Eldar Exarch can summon an Avatar of Kaela Mensha Khaine. He is equipped with ancient and powerful Eldar weaponry and armour. Each Eldar Warrior Aspect has its own kind of Exarch. On the battlefield, an Exarch commands an individual squad of Eldar Aspect Warriors.",
+    "cost": "15 x new Tier",
+    "costMultiplier": 15,
+    "prerequisites": {
+      "keywords": [
+        "ASPECT WARRIOR"
+      ],
+      "species": [
+        "Aeldari"
+      ]
+    },
+    "benefits": [
+      "You take up the armour, identity, and Aspect Shrine of an Exarch of your Aspect.",
+      "LOST TO WAR: You increase the DN of all Interaction tests against non-warriors by +2, and they suffer the same penalty in return.",
+      "STUDENTS OF WAR: You gain followers as per the Devotees talent, without needing to meet the Leadership requirement. These followers are Aspect Warriors from your shrine.",
+      "MASTER OF WAR: You may purchase Exarch powers. You may purchase one power if you are Tier 4, or two if you are Tier 5 or higher.",
+      "You replace your Aspect Armour with Exarch Armour, which provides the same functions but has an Armour Rating of 6 and loses the Bulky (X) or Cumbersome traits (if it had them). All your weapons gain the Master-Crafted upgrade, and you may replace one of your weapons with a weapon of any rarity and a Value of up to 5 + the new Tier."
+    ],
+    "keywordsGained": [
+      "EXARCH"
+    ],
+    "keywordsGranted": [
+      "EXARCH"
+    ],
+    "influenceModifier": 1,
+    "source": "apocrypha",
+    "page": 216
+  },
+  {
+    "id": "reborn_ynnari_aoa",
+    "name": "Reborn (Abundance of Apocrypha)",
+    "description": "The Ynnari are the members of a newly formed eponymous Eldar group that worship the God Ynnead and believe their race can be saved from the depredation of Slaanesh by helping to bring about the birth of the slumbering god of the dead. Under the leadership of the prophet Yvraine, the \"Daughter of Shades,\" the Ynnari seek to fully awaken the Aeldari god of the dead Ynnead, who they believe can defeat Slaanesh and restore the Aeldari species' unity and its lost glory. A great many Aeldari, hailing from every sub-faction and allegiance save the most conservative and entrenched, have joined their cause. No abstract philosophy is this, for the effects of their new deity can be seen manifesting around them -- the Reborn can draw upon the souls within the Spirit Stones they wear to bolster their own abilities, can siphon the power of those slain nearby to invigorate their attacks, and turn their foes to ashes with the strange weapons and psychic powers they wield.",
+    "cost": "5 x new Tier",
+    "costMultiplier": 5,
+    "prerequisites": {
+      "species": [
+        "Aeldari",
+        "Drukhari"
+      ],
+      "other": "May not have HAEMACOLYTE keyword"
+    },
+    "benefits": [
+      "You have been reborn as one of the Ynnari, and you now have a powerful connection to the spirits of the dead. You may attempt a Psychic Mastery test (even if untrained) to communicate with the spirits of Aeldari dead (contained within spirit stones, infinity circuits, Exodite world-spirits, and similar).",
+      "STRENGTH FROM DEATH: Once per round, when a player character, or an Adversary or Elite, or three Troops, dies within 15m of you, you immediately gain +1 Soul token. You may carry a number of Soul tokens up to your Willpower, and unused Soul tokens are lost when you Regroup or take a Respite. Soul tokens may be used as if they were Glory points, but only by you or allied YNNARI characters within 10m.",
+      "Spirit Stone: When carried by an YNNARI character, a Spirit Stone may be used to generate 1d3+1 Soul tokens as a Simple Action. This takes time to recover and cannot be done again until after the next Respite."
+    ],
+    "keywordsGained": [
+      "YNNARI"
+    ],
+    "keywordsGranted": [
+      "YNNARI"
+    ],
+    "influenceModifier": 0,
+    "source": "apocrypha",
+    "page": 217
+  },
+  {
+    "id": "rite_duplessence_aoa",
+    "name": "Rite of Duplessence (Abundance of Apocrypha)",
+    "description": "The Adeptus Mechanicus are willing to go to almost any lengths to further their understanding of the arcane sciences they study. In the most extreme cases, some of the oldest Arch-Magi have long since become little more than artificially-sustained brains linked to vast meme-vaults and data-crypts, driven insane by possessing far more knowledge than any human mind can truly comprehend and willingly locked within a steel prison of their own design for centuries. For people such as these, the pursuit of knowledge is something worth paying any price for, and such a disembodied existence, basking in the purity of absolute and incalculable knowledge unfettered by the weaknesses of the flesh, is something that more than a few Tech-Priests aspire to. To discard all but the brain in the pursuit of knowledge is not as uncommon as it might seem. In many cases, two Tech-Priests working upon the same project have been known to enter into the deepest of collaborations, a process known as the Rite of Duplessence. This procedure requires that one of the two Tech-Priests shed his flesh and most of his implants to become a disembodied brain, which is then implanted into the body of the other Tech-Priest, their brains linked together so that they can work together more closely.",
+    "cost": "10 x new Tier",
+    "costMultiplier": 10,
+    "prerequisites": {
+      "attributes": {
+        "intellect": 5
+      },
+      "skills": {
+        "scholar": 4,
+        "tech": 5
+      },
+      "keywords": [
+        "ADEPTUS MECHANICUS",
+        "CULT MECHANICUS"
+      ]
+    },
+    "benefits": [
+      "You gain a Binary Cortex, the mind of a second Tech-Priest implanted into your body to allow you to collaborate more closely with them. This second mind is considered to have an Intellect of 5, and this can be increased by spending XP separately from your own attributes.",
+      "The Binary Cortex can Help on any Intellect-based skill Test you attempt, using their own Intellect. However, whenever they do so, you replace one additional die in your dice pool with a Wrath die. You suffer a Complication if either Wrath die rolls a 1, but you only score a Wrath Critical if both Wrath dice roll 6s."
+    ],
+    "keywordsGained": [],
+    "influenceModifier": 1,
+    "source": "apocrypha",
+    "page": 217
+  },
+  {
+    "id": "sanctioned_xenos_aoa",
+    "name": "Sanctioned Xenos (Abundance of Apocrypha)",
+    "description": "In the broadest of terms, no human may interact with a xenos creature in any way except violently—such creatures are inherently blasphemous against the God-Emperor and must be eliminated on sight without exception. From a young age, citizens of the Imperium are taught to fear and hate the xenos, and innumerable legions of Imperial Guardsmen are taught of the superiority of Man over all inhuman things as they are drilled in the use of lasgun and bayonet. The number of xenos who have set foot upon human worlds peacefully and survived is small indeed. But this is not always the case. Though the Imperium was founded upon a creed of intolerance towards non-humans, peaceful contact with a variety of xenos species actually happens frequently. In most instances, these are short-term alliances or matters of temporary mutual convenience. Rogue Traders, Inquisitors, and a few other individuals, have the power to do more, and do so legitimately. These men and women, freed from the normal strictures and feudal requirements of the Imperium, have the influence and authority to make peaceful contact with xenos species for trade, temporary alliance or even to hire them as mercenaries.",
+    "cost": "5 x new Tier",
+    "costMultiplier": 5,
+    "prerequisites": {
+      "species": [
+        "Aeldari",
+        "Drukhari",
+        "Kin",
+        "Kroot",
+        "Ork",
+        "T'au"
+      ]
+    },
+    "benefits": [
+      "You have been vouched for and deemed sufficiently valuable to the works and cause of the Imperium that you may live within Imperial space for as long as you remain in the service of your patron and the Imperium of Man.",
+      "You are permitted to set foot upon Imperial worlds, so long as your mark is clearly shown and your patron can be contacted to vouch for your Sanctioning.",
+      "You do not suffer the normal species interaction penalties."
+    ],
+    "keywordsGained": [
+      "IMPERIUM"
+    ],
+    "keywordsGranted": [
+      "IMPERIUM"
+    ],
+    "influenceModifier": 1,
+    "source": "apocrypha",
+    "page": 218
+  },
+  {
+    "id": "rubicon_primaris_aoa",
+    "name": "The Rubicon Primaris (Abundance of Apocrypha)",
+    "description": "The induction of the Primaris Marines into the Adeptus Astartes was not an easy process by any means. The Chapters of the Space Marines are arch traditionalists, and some are conservative in the extreme, having upheld the same warrior traditions for thousands of Terran years. Of course, the express command of Roboute Guilliman as the Lord Commander of the Imperium eased the transition into the new era. For the Ultramarines and most of their Successor Chapters, the word of their risen Primarch was good enough, and many Chapters welcomed the Primaris Battle-Brothers gladly. But there were those especially secretive or wilful Chapters who saw the incorporation of the Primaris Marines into their ranks as a dilution of their gene-stock and a betrayal of their long-held culture. Some amongst the Adeptus Astartes suspected that the Primaris Marines, being stronger, more durable and closer in blood to the Primarchs themselves, represented the obsolescence of the traditional Astartes. The dilemma proved divisive. There were those who claimed that this was the ultimate destiny of all Adeptus Astartes, while from other quarters came whispers of rejection, even mutiny, at the prospect. You have chosen to follow this example, and survived the process, emerging anew with greater strength and vitality.",
+    "cost": "38",
+    "costMultiplier": 0,
+    "prerequisites": {
+      "attributes": {
+        "strength": 5,
+        "toughness": 5
+      },
+      "skills": {
+        "ballistic_skill": 4,
+        "weapon_skill": 4
+      },
+      "species": [
+        "Adeptus Astartes"
+      ],
+      "other": "May not have PRIMARIS keyword"
+    },
+    "benefits": [
+      "You become a Primaris Marine. Increase your Strength and Toughness by +1 each, and +3 Wounds.",
+      "You no longer suffer impurities in your Chapter Gene-Seed, and you benefit from the Primaris implants alongside your original Space Marine Implants.",
+      "You may replace your weapons with the nearest equivalents which have the PRIMARIS keyword, and you replace your Power Armour with a suit of Mark X Power Armour (your choice of Tacticus, Phobos, or Gravis). At the GM's discretion, unique wargear may be altered or upgraded to fit your enhanced form."
+    ],
+    "keywordsGained": [
+      "PRIMARIS"
+    ],
+    "keywordsGranted": [
+      "PRIMARIS"
+    ],
+    "influenceModifier": 1,
+    "source": "apocrypha",
+    "page": 219
+  },
+  {
+    "id": "willing_possession_aoa",
+    "name": "Willing Possession (Abundance of Apocrypha)",
+    "description": "Daemonic Possession is the act of the essence of a Daemon possessing and controlling the body of another being. As Daemons can only exist in the Materium for a limited period before being forced back into the Warp, Daemonic Possession is one of the most common methods for Daemons to enter the material realm. Daemonic Possession can occur involuntarily to those of psychic potential, but the host sometimes willingly gives themselves over to Daemonic Possession, as is the case with Possessed Chaos Space Marines and certain Cultists. Possessed individuals can often be used as gateways to the Warp, allowing Daemons to spill into the Materium. A character selecting this Ascension Package has invited a daemon into their flesh, granting them tremendous power, at the cost of subjecting their body, mind, and soul to the ravening touch of the Warp. Few who become possessed can endure it for long, often finding their bodies degenerating into spawndom or becoming purely a vessel for the daemon's will, but some can find a degree of symbiosis with the daemon they are host to, becoming a singular mighty entity.",
+    "cost": "10 x new Tier",
+    "costMultiplier": 10,
+    "prerequisites": {
+      "attributes": {
+        "willpower": 4
+      },
+      "keywords": [
+        "CHAOS"
+      ]
+    },
+    "benefits": [
+      "You are now possessed by a daemon of Chaos. You immediately gain 1d3 Corruption per Tier ascended.",
+      "DAEMONIC: You may roll Determination against Mortal Wounds, and you do not suffer Shock when you roll Determination.",
+      "ACCURSED VIGOUR: Select three attributes when you take this Ascension Package; as a Free Action on your turn, you may gain a number of bonus dice to those attributes equal to the campaign's Tier. You may sustain this for as many rounds as you wish (or minutes, if outside of combat), but when you stop using this ability, you must pass a Corruption Test with a DN equal to the number of rounds (or minutes) you used this ability. If your Corruption Level reaches 5 while possessed, the Daemon consumes your soul and you cease to exist.",
+      "MUTATED FORM: While using the daemon's power, you gain the Horns, Spines, Fangs, or Claws minor mutation, and a single severe mutation, determined when the character first became possessed."
+    ],
+    "keywordsGained": [
+      "DAEMON"
+    ],
+    "keywordsGranted": [
+      "DAEMON"
+    ],
+    "influenceModifier": 3,
+    "source": "apocrypha",
+    "page": 221
+  },
+  {
+    "id": "pivotal_role",
+    "name": "A Pivotal Role",
+    "description": "Most characters portrayed in a Harlequin saedath can be played and then set aside at the end of a performance, but some masks are imbued with such psychic and mythological significance that, after being worn only once, they forever leave a mark on the wearer's soul. These are often specific aspects of general archetypes, characters that play significant roles in particular stories. For example, a Death Jester might not merely assume the part of Death, but instead portray the insatiable Harvester of Torment, the majestic Lord of Crystal Bones, or the inescapable Rift Ghoul.",
+    "cost": "5 x new Tier",
+    "costMultiplier": 5,
+    "prerequisites": {
+      "keywords": [
+        "HARLEQUIN"
+      ],
+      "skills": {
+        "deceive": 3
+      },
+      "skillRequirement": "Deceive Rating 3+"
+    },
+    "benefits": [
+      "Choose two of your Skills with different Ratings. Swap the Ratings you have in each of those Skills.",
+      "Whichever of the two chosen Skills is now highest becomes your Agent's Signature Skill (replacing any Signature Skills you already had). Whenever you roll a Wrath Critical on Tests of that Skill, you count as rolling an additional Exalted Icon, which can be Shifted on successful Tests as normal. This stacks with any other effects of the Wrath Critical, such as a Critical Hit or gaining 1 Glory.",
+      "As part of this Ascension Package, you may also undergo Archetype Ascension, so long as you meet the usual prerequisites. You cannot choose this option as part of Creation Ascension."
+    ],
+    "keywordsGained": [],
+    "influenceModifier": 1,
+    "source": "aeldari",
+    "page": 57
+  },
+  {
+    "id": "change_of_kinship",
+    "name": "Change of Kinship",
+    "description": "It is uncommon, but not unheard of, for Aeldari to leave their homes, be forced into exile, or be captured and raised by another Aeldari culture. This is most common for those already on the frontiers of their respective societies: rebels and outcasts with questions their kin cannot answer. The Ynnari exist only by welcoming Aeldari of all kinds.",
+    "cost": "5 x new Tier",
+    "costMultiplier": 5,
+    "prerequisites": {
+      "keywords": [
+        "AELDARI"
+      ],
+      "other": "Cannot be chosen as Creation Ascension"
+    },
+    "benefits": [
+      "You have abandoned your Aeldari sub-culture and found refuge with another. Choose one of the sub-factions below as your new kindred. The exact effects of this Ascension Package vary depending on which sub-faction you are leaving and which you are joining.",
+      "Leaving Asuryani: Lose the ASURYANI and [CRAFTWORLD] Keywords, and can no longer purchase Asuryani Paths. Joining Asuryani: Gain the ASURYANI and [CRAFTWORLD] Keywords, and may now purchase Asuryani Paths — the first costs 10 XP, and all subsequent Paths cost 20 XP each.",
+      "Leaving Anhrathe: Lose the ANHRATHE and [COTERIE] Keywords. Joining Anhrathe: Gain the ANHRATHE and [COTERIE] Keywords.",
+      "Leaving Drukhari: Lose the DRUKHARI, [KABAL], [WYCH CULT], [COVEN] and BLADES FOR HIRE Keywords. Joining Drukhari: Gain the DRUKHARI and BLADES FOR HIRE Keywords.",
+      "Leaving Harlequins: Lose the HARLEQUIN and [MASQUE] Keywords. Joining Harlequins: Gain the HARLEQUIN and [MASQUE] Keywords.",
+      "Leaving Ynnari: Lose the YNNARI Keyword. Joining Ynnari: Gain the YNNARI Keyword.",
+      "Whichever sub-faction you join or leave, you retain the benefits of any Talents, Archetype Abilities, Asuryani Paths, or psychic powers you had already obtained. As part of this Ascension Package, you may also undergo Archetype Ascension, so long as you meet the usual prerequisites."
+    ],
+    "keywordsGained": [],
+    "influenceModifier": -1,
+    "source": "aeldari",
+    "page": 58
+  },
+  {
+    "id": "dark_intrigue",
+    "name": "Dark Intrigue",
+    "description": "The current time of turmoil in the Gilead System is but a minor distraction from the dark spectacles seen in Commorragh. Between realspace raids, Drukhari may return to show off their plunder, conspire with their peers, and shore up their territory in the Dark City. When this scheming goes well, the rewards are plentiful — but everything claimed in Commorragh is at someone else's expense, and the vendettas of slighted rivals can be deadly.",
+    "cost": "5 x new Tier",
+    "costMultiplier": 5,
+    "prerequisites": {
+      "keywords": [
+        "DRUKHARI"
+      ],
+      "skills": {
+        "leadership": 3
+      },
+      "skillRequirement": "Leadership Rating 3+"
+    },
+    "benefits": [
+      "You have woe, power, turf, status, or influence in the Dark City, and to the victor go the spoils. Gain 2 Wealth per Tier Ascended.",
+      "You may use this opportunity to spend any Wealth you have on sinister rituals that reduce your debt to She Who Thirsts. Lose 1 Corruption Point per point of Wealth spent.",
+      "Optionally, you may also choose to gain an additional +1 Influence per Tier Ascended (+2 per Tier Ascended in total), but if you do so you earn the bitter enmity of another Kabal, Wych Cult, or Haemonculus Coven, who will seek to sabotage your operations in the future."
+    ],
+    "keywordsGained": [],
+    "influenceModifier": 1,
+    "source": "aeldari",
+    "page": 58
+  },
+  {
+    "id": "lost_on_warrior_path",
+    "name": "Lost on the Warrior Path",
+    "description": "When an Asuryani becomes so obsessed with an Asuryani Path that they cannot veer from it, they are said to be 'lost on the Path'. Aspect Warriors who suffer this fate become Exarchs, and are outfitted with ceremonial armour in the Aspect Shrines they now tend as high priests. This armour's spirit stones contain the souls of all previous Exarchs who wore it, transforming the wearer from an individual into the collective consciousness of several legendary warriors. The wearer's personal identity is forfeit, their name replaced with a ceremonial title that honours an aspect of Khaine.",
+    "cost": "5 x new Tier",
+    "costMultiplier": 5,
+    "prerequisites": {
+      "keywords": [
+        "ASPECT WARRIOR"
+      ],
+      "skills": {
+        "weapon_skill": 4,
+        "ballistic_skill": 4
+      },
+      "skillRequirement": "Weapon Skill 4+ or Ballistic Skill 4+"
+    },
+    "benefits": [
+      "You have forever pledged yourself to the Warrior Path and become anointed an Exarch of Khaine. Choose an ASPECT WARRIOR Archetype you already have the Archetype Ability for and apply the following ongoing benefits.",
+      "Whilst using the Archetype Ability of the chosen Archetype, you may substitute your Rank with your Tier.",
+      "Whilst wearing the armour provided by your chosen Archetype's Wargear, you may roll Determination against attacks that deal Mortal Wounds.",
+      "Gain a new weapon with the ASPECT WARRIOR Keyword. If you choose a weapon already provided by your chosen Archetype's Wargear, it gains the Mastercrafted Upgrade (Wrath & Glory, page 228).",
+      "As part of this Ascension Package, you may also undergo Archetype Ascension, so long as you meet the usual prerequisites. You gain a new Rank with your Tier when doing so."
+    ],
+    "keywordsGained": [
+      "EXARCH"
+    ],
+    "keywordsGranted": [
+      "EXARCH"
+    ],
+    "influenceModifier": 1,
+    "source": "aeldari",
+    "page": 59
+  },
+  {
+    "id": "wanderings_in_webway",
+    "name": "Wanderings in the Webway",
+    "description": "Though the Webway is among the swiftest means of traversing the galaxy, it can deliver a traveller to many perilous worlds. Adventurous Aeldari who wander its winding cross-dimensional corridors might find relative peace amongst the Exodite colonies, recover artefacts from lost worlds, or perhaps even lay their hands on knowledge and lore from the depths of the Black Library.",
+    "cost": "5 x new Tier",
+    "costMultiplier": 5,
+    "prerequisites": {
+      "keywords": [
+        "AELDARI"
+      ],
+      "skills": {
+        "pilot": 3,
+        "survival": 3
+      },
+      "skillRequirement": "Pilot 3+ or Survival Rating 3+"
+    },
+    "benefits": [
+      "Your journey through the Webway's safer paths earned you a reward before it returned you to where you started. Choose one of the options below:",
+      "You find serenity. Lose 2 Corruption per Tier Ascended.",
+      "You find treasures thought lost to your people. Gain 1 Wealth per Tier Ascended, and an item of Wargear with a Value of 2 + new Tier (or lower).",
+      "You find answers to your questions. In addition to narrative effects agreed with your GM, you start each future session with an extra Wrath Point per Tier Ascended."
+    ],
+    "keywordsGained": [],
+    "influenceModifier": 1,
+    "source": "aeldari",
+    "page": 59
+  },
+  {
+    "id": "cadre_questor",
+    "name": "Cadre Questor",
+    "description": "Your reverent acts have not gone unnoticed, and consequently your superiors have assigned you a sacred task: take initiates under your wing, and lead them on a righteous quest in the name of your creed. Conversely, this task may have been foisted upon you as a sacred service or penance for some spiritual slight, leading novitates into the light to correct the errors of your ways. Whatever the cause, you now have a holy mission, and the eyes of your superiors are upon you — as well as the ever-burning gaze of the Emperor, or the manifold augmented eyes of the Omnissiah.",
+    "cost": "30 x new Tier",
+    "costMultiplier": 30,
+    "prerequisites": {
+      "other": "ANY; the Keyword of the Faction that gave you the quest and cadre"
+    },
+    "benefits": [
+      "Discuss the particulars with your GM: who gave you this cadre, for what purpose, and what are the following Devotees focused on achieving.",
+      "The Devotees Talent (Wrath & Glory Rulebook, page 132). You do not need to meet the Leadership (Wil) Skill prerequisite. When your Devotees die, you get +1 Influence.",
+      "A holy quest to perform. If you complete the quest, you gain +1 Influence.",
+      "+Rank bonus dice on any Persuasion (Fel) Test targeting individuals with the awarded Keyword that know of your quest.",
+      "Note: If this quest is a punishment, the Influence Bonus is –1 instead of +1."
+    ],
+    "keywordsGained": [],
+    "influenceModifier": 1,
+    "source": "redacted2",
+    "page": 73
+  },
+  {
+    "id": "ceremonial_advancement",
+    "name": "Ceremonial Advancement",
+    "description": "Your exemplary service is to be rewarded and lauded with a ceremony of significance. This may be a long, ritualistic sermon in which the Ecclesiarchy summon a minute portion of the Emperor's infinite beneficence to imbue you with a microcosm of His all-powerful will, or a lengthy operation to install the immortal wonders of the Omnissiah in your fragile mortal form.",
+    "cost": "30 x new Tier",
+    "costMultiplier": 30,
+    "prerequisites": {
+      "keywords": [
+        "ADEPTUS MECHANICUS",
+        "ADEPTUS MINISTORUM"
+      ],
+      "other": "ADEPTUS MECHANICUS or ADEPTUS MINISTORUM; plus the Keyword of the Faction holding the ceremony. If you already have the relevant Keyword, you gain an additional +1 Influence.",
+      "keywordRequirement": "ADEPTUS MECHANICUS or ADEPTUS MINISTORUM"
+    },
+    "benefits": [
+      "Work with your Gamemaster and your group to determine what exactly earned you such a reward and the details of the ceremony.",
+      "ADEPTUS MINISTORUM: You may take any Faith Talent that requires the ADEPTUS MINISTORUM Keyword. You have access to the Hepthelian Foresight and Julyanna's Banishment Rituals (Redacted Records II, pages 9 and 10).",
+      "ADEPTUS MECHANICUS: You can gain any Imperial augmetic, undergoing an augmentation ritual. You have access to the Avachrus Arch-Assemblage Ritual (Redacted Records II, page 11)."
+    ],
+    "keywordsGained": [],
+    "influenceModifier": 1,
+    "source": "redacted2",
+    "page": 73
+  },
+  {
+    "id": "foundational_faith",
+    "name": "Foundational Faith",
+    "description": "You have proven your faith, and now must build a foundation to spread it to others. Your particular creed has recognised your dedication, and has tasked you with physically manifesting your pious devotion in the world by building a shrine, temple, or other holy site.",
+    "cost": "20 x new Tier",
+    "costMultiplier": 20,
+    "prerequisites": {
+      "other": "ANY; the Keyword of the Faction you built the holy site for. If you already have the relevant Keyword, you gain an additional +1 Influence."
+    },
+    "benefits": [
+      "The holy site that you build. You can use this location as a base of operations and a place to rest. It may also provide other bonuses such as Rituals or wargear (particularly Ammo for weapons) connected to the Faction of the church at the Gamemaster's discretion. The holy site is also attended by some lowly functionaries of the appropriate Faction that may be able to aid you.",
+      "The Touched By Fate Talent (Wrath & Glory Rulebook, page 140)."
+    ],
+    "keywordsGained": [],
+    "influenceModifier": 1,
+    "source": "redacted2",
+    "page": 74
+  },
+  {
+    "id": "holy_avenger",
+    "name": "Holy Avenger",
+    "description": "Faith is a duty, and to prove your piety you have been called upon to slay an enemy of your creed. You are named a holy avenger by your superiors, sent to destroy a traitor or a particularly odious foe of your creed. Your reputation for righteousness and reliability has earned you what is essentially an obligation to seek and destroy a particularly heinous foe with the maximum of ruthless brutality, and by fulfilling this task you will be known both for your faith and your ability to pursue your beliefs with violence.",
+    "cost": "20 x new Tier",
+    "costMultiplier": 20,
+    "prerequisites": {
+      "other": "ANY; the Keyword of the Faction that named you their holy avenger. If you already have the relevant Keyword, you gain an additional +1 Influence."
+    },
+    "benefits": [
+      "Work with your Gamemaster to determine the target of your holy vengeance. This mission, including the training beforehand and the fallout afterwards, may be the subject of an entire adventure. Perhaps these foes are located in the battlezones on pages 38 and 56 of Redacted Records II.",
+      "Either the Deadshot or Eliminator Talent (Wrath & Glory Rulebook, pages 131 & 133).",
+      "+1 Wealth, and +1 Wealth when the assassination is confirmed."
+    ],
+    "keywordsGained": [],
+    "influenceModifier": 2,
+    "source": "redacted2",
+    "page": 74
+  },
+  {
+    "id": "righteous_reclamation",
+    "name": "Righteous Reclamation",
+    "description": "Your purposefully pious deeds have been noticed by the powerful, particularly by people attempting to retrieve or purify a holy relic of dire significance. They have tasked you with retrieving or sanctifying a particular relic in the name of the Emperor or the Omnissiah, and safeguarding its immense power. You will become synonymous with this artefact, and tales of your glory will be inextricably linked to its history as you bring light to the darkness of the 41st Millennium.",
+    "cost": "20 x new Tier",
+    "costMultiplier": 20,
+    "prerequisites": {
+      "other": "ANY; the Keyword of the Faction that made the relic-based mission. If you already have the relevant Keyword, you gain an additional +1 Influence."
+    },
+    "benefits": [
+      "Work with your Gamemaster to determine which Faction you will be serving, and the relic they want you to secure, sanctify, or safeguard. This Ascension Package is designed to work with the rules in Chapter 1, either the premade Relics of Renown (page 20), Malign Artefacts (page 26), or a relic of your own creation (Creating Holy Relics, page 12).",
+      "Knowledge of the location of a relic, as well as the permission to officially protect said relic.",
+      "The Tenacious Talent (Wrath & Glory Rulebook, page 140).",
+      "Influence Bonus drops by 3 (to –3 total) if the relic is ever lost, destroyed, or falls into the hands of the enemy."
+    ],
+    "keywordsGained": [],
+    "influenceModifier": 1,
+    "source": "redacted2",
+    "page": 75
+  },
+  {
+    "id": "battle_company_doctrine",
+    "name": "Battle Company Doctrine",
+    "description": "You have battled across countless worlds and faced all manner of heretics and xenos threats. You have mastered numerous weapons and and your skills and conviction has earned you a place amongst a Battle Company of the Chapter.",
+    "cost": "60",
+    "costMultiplier": 0,
+    "prerequisites": {
+      "keywords": [
+        "ADEPTUS ASTARTES"
+      ],
+      "tier": 3
+    },
+    "benefits": [
+      "You gain the Bolter Discipline, and either the Built Tough or Chainsaw Warrior talent. You also gain a further instance of the Hatred talent (against a different enemy if you already possess this talent).",
+      "You gain +2 Influence, and 1 item of Uncommon Wargear."
+    ],
+    "keywordsGained": [],
+    "influenceModifier": 2,
+    "source": "voa",
+    "page": 43
+  },
+  {
+    "id": "crux_terminatus",
+    "name": "Crux Terminatus",
+    "description": "A 1st Company Veteran, Librarian, or Chaplain may begin with Terminator armour. Terminator armour comes with the following weapon combinations:\nStorm Bolter and Power Fist or Chainfist as standard.\nThe Storm Boler may be exchanged for a Heavy Flamer or Assault Cannon.\nAlternatively, the Powerfist/Chainfist may be exchanged for a Power Sword or Storm Shield.\nThe Storm Bolter and Powerfist/Chainfist can both be exchanged for a pair of Lightning Claws.\nIf worn by a Chaplain, the Powerfist/Chainfist is replaced with a Crozius Arcanum.\nIf worn by a Librarian, the Powerfist/Chainfist is replaced with a Force Weapon.",
+    "cost": "60",
+    "costMultiplier": 0,
+    "prerequisites": {
+      "keywords": [
+        "ADEPTUS ASTARTES"
+      ],
+      "other": "Must be a 1st Company Veteran, Chaplain, or Librarian"
+    },
+    "benefits": [
+      "You may begin with Terminator Armour. Terminator armour comes with Storm Bolter and Power Fist or Chainfist as standard.",
+      "The Storm Bolter may be exchanged for a Heavy Flamer or Assault Cannon.",
+      "Alternatively, the Power Fist/Chainfist may be exchanged for a Power Sword or Storm Shield.",
+      "The Storm Bolter and Power Fist/Chainfist can both be exchanged for a pair of Lightning Claws.",
+      "If worn by a Chaplain, the Power Fist/Chainfist is replaced with a Crozius Arcanum.",
+      "If worn by a Librarian, the Power Fist/Chainfist is replaced with a Force Weapon."
+    ],
+    "keywordsGained": [],
+    "influenceModifier": 0,
+    "source": "voa",
+    "page": 43
+  },
+  {
+    "id": "rubicon_primaris",
+    "name": "Rubicon Primaris",
+    "description": "Few Space Marines could refuse the prospect of being remade, stronger and faster, more capable of waging war against the enemies of the Imperium. You have undergone the extensive and agonising operation required to be implanted with the three additional organs needed to join your Primaris brethren and now count yourself among those who have crossed the Rubicon Primaris.",
+    "cost": "80",
+    "costMultiplier": 0,
+    "prerequisites": {
+      "species": [
+        "Adeptus Astartes"
+      ],
+      "tier": 3
+    },
+    "benefits": [
+      "You gain the Bolter Discipline and the Built Tough talents. You gain the PRIMARIS keyword. In future, you may choose from the Primaris Advancement Packages (Vow of Absolution, page 35).",
+      "You gain +2 Influence, and 1 item of Uncommon Wargear. Unless using Terminator Armour, you replace your current Power Armour with Mk X Tacticus Armour — or other variants as discussed with your GM."
+    ],
+    "keywordsGained": [
+      "PRIMARIS"
+    ],
+    "keywordsGranted": [
+      "PRIMARIS"
+    ],
+    "influenceModifier": 2,
+    "source": "voa",
+    "page": 43
+  },
+  {
+    "id": "hellblaster_doctrine",
+    "name": "Hellblaster Doctrine",
+    "description": "Primaris Astartes may specialise in particular forms of warfare and death-dealing. Hellblasters focus upon the use of heavy weaponry, like their Devastator kin. However, thanks to the innovations and arcane technologies of Archmagos Dominus Belisarius Cawl, Hellblasters wield variants of Plasma Incinerators.",
+    "cost": "60",
+    "costMultiplier": 0,
+    "prerequisites": {
+      "keywords": [
+        "PRIMARIS"
+      ],
+      "other": "Must have the Primaris Intercessor archetype"
+    },
+    "benefits": [
+      "If you don't already have one, you receive one of the following weapons: Plasma Incinerator, Assault Plasma Incinerator, or Plasma Pistol.",
+      "You gain an additional +Rank AP when using this weapon. Furthermore, during an adventure, you may ignore the first instance of damage inflicted due to a Complication when firing a Plasma weapon using the Supercharge option.",
+      "Your skilled use of Plasma weapons allows you to adjust the power cycling of the weapon. When fired using the Supercharged options, you may trade the bonus Extra Damage for the Spread trait (you are still at risk of damage from a Complication as normal)."
+    ],
+    "keywordsGained": [],
+    "influenceModifier": 0,
+    "source": "voa",
+    "page": 35
+  },
+  {
+    "id": "eradicator_doctrine",
+    "name": "Eradicator Doctrine",
+    "description": "Similar to their Hellblaster brothers, Eradicators offer fire support to battleline units. Rather than volleys of plasma, Eradicators stride forward in thick Gravis plate, employing the advance melta weaponry of Belisarius Cawl to sunder armour and fortifications alike.",
+    "cost": "60",
+    "costMultiplier": 0,
+    "prerequisites": {
+      "keywords": [
+        "PRIMARIS"
+      ],
+      "other": "Must have the Primaris Intercessor archetype"
+    },
+    "benefits": [
+      "You receive Mk X Gravis armour if you don't already have it, and one of the following weapons: Melta Rifle or Heavy Melta Rifle.",
+      "You gain an additional +Rank AP when using this weapon. Furthermore, when rolling the Extra Damage dice for an attack made with a melta weapon, you may spend one Glory, up to your Rank Bonus, to add an Extra Damage die per point of Glory spent to the damage dealt."
+    ],
+    "keywordsGained": [],
+    "influenceModifier": 0,
+    "source": "voa",
+    "page": 35
+  },
+  {
+    "id": "heavy_intercessor_doctrine",
+    "name": "Heavy Intercessor Doctrine",
+    "description": "While Eradicators and Hellblasters are deployed to tackle heavily armoured troops and vehicles with their searing energy weapons, Heavy Intercessors lay down a withering storm of bolter rounds to tear through troops.",
+    "cost": "60",
+    "costMultiplier": 0,
+    "prerequisites": {
+      "keywords": [
+        "PRIMARIS"
+      ],
+      "other": "Must have the Primaris Intercessor archetype"
+    },
+    "benefits": [
+      "You receive Mk X Gravis armour if you don't already have it, and one of the following weapons: Heavy Bolt Rifle, Executor Bolt Rifle, or Hellstorm Bolt Rifle.",
+      "You gain an additional +Rank AP when using this weapon. Furthermore, you gain the Bolter Discipline Talent (Vow of Absolution, page 45)."
+    ],
+    "keywordsGained": [],
+    "influenceModifier": 0,
+    "source": "voa",
+    "page": 35
+  },
+  {
+    "id": "assault_intercessor_doctrine",
+    "name": "Assault Intercessor Doctrine",
+    "description": "With Eradicators, Hellblasters, and Heavy Intercessors shredding the enemy with a hail of gunfire, Assault Intercessors specialise in vicious close combat. These Primaris Intercessors leap from drop pods and Impulsors into the heaving throng of the enemy and tear them asunder with whirring chainswords and staccato bolt rounds from their pistols.",
+    "cost": "60",
+    "costMultiplier": 0,
+    "prerequisites": {
+      "keywords": [
+        "PRIMARIS"
+      ],
+      "other": "Must have the Primaris Intercessor archetype"
+    },
+    "benefits": [
+      "You receive a Heavy Bolt Pistol and Astartes Chainsword if you don't already have them.",
+      "You gain an additional +Rank AP when using these weapons. Furthermore, you gain the Chainsaw Warrior Talent (Vow of Absolution, page 46)."
+    ],
+    "keywordsGained": [],
+    "influenceModifier": 0,
+    "source": "voa",
+    "page": 35
+  }
+]

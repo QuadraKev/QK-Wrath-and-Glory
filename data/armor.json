@@ -1,0 +1,2338 @@
+[
+  {
+    "id": "primitive_armour",
+    "name": "Primitive Armour",
+    "type": "heavy",
+    "description": "Rarely capable of withstanding the horrors of the 41st Millennium, this can encompass anything from thick beast pelts to scaly xenos leathers to full suits of roughly hammered metal plates.",
+    "ar": 2,
+    "traits": [
+      "Bulk (2)"
+    ],
+    "value": 2,
+    "rarity": "Common",
+    "keywords": [
+      "PRIMITIVE"
+    ],
+    "source": "core",
+    "page": 232
+  },
+  {
+    "id": "bodyglove",
+    "name": "Bodyglove",
+    "type": "light",
+    "description": "Woven from impact-resistant micro fibres, bodygloves offer discreet protection and can be concealed under clothing or layered under heavier armour.",
+    "ar": 2,
+    "traits": [],
+    "value": 3,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM"
+    ],
+    "source": "core",
+    "page": 231
+  },
+  {
+    "id": "mesh_armour",
+    "name": "Mesh Armour",
+    "type": "light",
+    "description": "Made from microscopic thermoplas scales, Mesh Armour is as flexible as cloth under normal circumstances, but reacts instantly to impact and heat, rigidifying and distributing the incoming force across its surface.",
+    "ar": 3,
+    "traits": [],
+    "value": 3,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM"
+    ],
+    "source": "core",
+    "page": 233
+  },
+  {
+    "id": "flak_armour",
+    "name": "Flak Armour",
+    "type": "medium",
+    "description": "Fabricated from layers of impact-absorbent materials, the ablative surface of Flak Armour is particularly resilient to shrapnel and blast damage.",
+    "ar": 3,
+    "traits": [],
+    "value": 4,
+    "rarity": "Common",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM"
+    ],
+    "source": "core",
+    "page": 234
+  },
+  {
+    "id": "flak_coat",
+    "name": "Flak Coat",
+    "type": "medium",
+    "description": "Commissars and other ranking officers of the Imperial Guard favour these lightweight alternatives to standard Flak Armour.",
+    "ar": 3,
+    "traits": [],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM"
+    ],
+    "source": "core",
+    "page": 234
+  },
+  {
+    "id": "carapace_armour",
+    "name": "Carapace Armour",
+    "type": "heavy",
+    "description": "Made from layered plates of rigid armaplas, Carapace Armour offers excellent protection from direct impacts at the cost of mobility and flexibility.",
+    "ar": 4,
+    "traits": [
+      "Bulk (1)"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM"
+    ],
+    "source": "core",
+    "page": 234
+  },
+  {
+    "id": "tempestus_carapace",
+    "name": "Tempestus Carapace",
+    "type": "heavy",
+    "description": "Favoured by the elite soldiers of the Militarum Tempestus, the hulking silhouette of Tempestus Carapace is both physically imposing and highly resistant to incoming damage.",
+    "ar": 4,
+    "traits": [],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "MILITARUM TEMPESTUS"
+    ],
+    "source": "core",
+    "page": 233
+  },
+  {
+    "id": "light_power_armour",
+    "name": "Light Power Armour",
+    "type": "medium",
+    "description": "By reducing the bulk of the ceramite plating, Light Power Armour offers the benefits of servo-boosted strength and a shell of durable ceramite, without sacrificing mobility or nimbleness.",
+    "ar": 4,
+    "traits": [
+      "Powered (1)"
+    ],
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM"
+    ],
+    "source": "core",
+    "page": 234
+  },
+  {
+    "id": "sororitas_power_armour",
+    "name": "Sororitas Power Armour",
+    "type": "heavy",
+    "description": "Manufactured for the exclusive use of the Sisters of Battle, Sororitas Power Armour is blessed and purified with religious fervour to protect its wearer from the heretic and daemon alike.",
+    "ar": 5,
+    "traits": [
+      "Powered (2)"
+    ],
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTA SORORITAS"
+    ],
+    "source": "core",
+    "page": 233
+  },
+  {
+    "id": "ignatus_power_armour",
+    "name": "Ignatus Power Armour",
+    "type": "heavy",
+    "description": "Prized by safety conscious Inquisitors, this highly-prized masterwork armour is effective at turning aside countless blows that would endanger the life of the high-ranking individual encased in its engraved and emblazoned shell.",
+    "ar": 5,
+    "traits": [
+      "Powered (2)"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "INQUISITION"
+    ],
+    "source": "core",
+    "page": 234
+  },
+  {
+    "id": "heavy_power_armour",
+    "name": "Heavy Power Armour",
+    "type": "heavy",
+    "description": "Sacrificing mobility for thicker plating and industrial grade actuators, Heavy Power Armour turns its wearer into a walking tank, capable of striding through a storm of small arms fire without so much as flinching.",
+    "ar": 6,
+    "traits": [
+      "Bulk (1)",
+      "Cumbersome",
+      "Powered (3)"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM"
+    ],
+    "source": "core",
+    "page": 233
+  },
+  {
+    "id": "scout_armour",
+    "name": "Scout Armour",
+    "type": "medium",
+    "description": "Thick ceramite plates combine with exceptionally tough carbon-weave fatigues to provide unparalleled protection on the battlefield without sacrificing mobility.",
+    "ar": 4,
+    "traits": [],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "core",
+    "page": 233
+  },
+  {
+    "id": "aquila_power_armour",
+    "name": "Aquila Power Armour (Mk VII)",
+    "type": "heavy",
+    "description": "Perfectly fitted to its wearer, Aquila Armour is one of the longest serving patterns of Astartes armour in circulation, having proven its worth time and again in a galaxy eternally at war.",
+    "ar": 5,
+    "traits": [
+      "Powered (3)"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "core",
+    "page": 235
+  },
+  {
+    "id": "mark_x_tacticus_armour",
+    "name": "Mark X Tacticus Armour",
+    "type": "heavy",
+    "description": "The staggering proportions of the Primaris Astartes demand their own pattern of Power Armour. The Tacticus Mark X takes inspiration from ancient armour while utilising 41st Millennium advancements in ballistic deflection to forge a suit that represents the pinnacle of Astartes glory.",
+    "ar": 5,
+    "traits": [
+      "Powered (4)"
+    ],
+    "value": 9,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS"
+    ],
+    "source": "core",
+    "page": 235
+  },
+  {
+    "id": "terminator_armour",
+    "name": "Terminator Armour",
+    "type": "heavy",
+    "description": "Tactical Dreadnought Armour was originally designed for void ship boarding actions. These relics from the early centuries of the Imperium boast incredibly thick armour plates and oversized actuators that raise the already massive Space Marines to giant-like stature. Whilst wearing this armour you are considered Large.",
+    "ar": 7,
+    "traits": [
+      "Cumbersome",
+      "Powered (4)"
+    ],
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "core",
+    "page": 233
+  },
+  {
+    "id": "corsair_armour",
+    "name": "Corsair Armour",
+    "type": "light",
+    "description": "A combination of shimmering mesh and polished wraithbone plate, the cut of this armour is as varied, intimidating, and regal as the corsairs who wear it.",
+    "ar": 3,
+    "traits": [],
+    "value": 4,
+    "rarity": "Rare",
+    "keywords": [
+      "AELDARI",
+      "ANHRATHE"
+    ],
+    "source": "core",
+    "page": 233
+  },
+  {
+    "id": "aeldari_mesh_armour",
+    "name": "Aeldari Mesh Armour",
+    "type": "light",
+    "description": "Woven from microscopic wraithbone scales, this armour is similar in function but superior in action to the crude imitation that is Human-made mesh.",
+    "ar": 3,
+    "traits": [],
+    "value": 4,
+    "rarity": "Very Rare",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI"
+    ],
+    "source": "core",
+    "page": 233
+  },
+  {
+    "id": "rune_armour",
+    "name": "Rune Armour",
+    "type": "medium",
+    "description": "This breastplate of specially crafted wraithbone psychically moulds itself to its wearer. Drawing upon the etheric vibrations of the psychically attuned Aeldari, this armour turns away blows before they connect.",
+    "ar": 4,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 6,
+    "rarity": "Unique",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "PSYKER"
+    ],
+    "invulnerable": true,
+    "source": "core",
+    "page": 233
+  },
+  {
+    "id": "heavy_mesh_armour",
+    "name": "Heavy Mesh Armour",
+    "type": "heavy",
+    "description": "Based on standard Aeldari armour, this suit adds stiffened psycho-active plates to vulnerable areas. The resulting armour provides increased protection while only minimally limiting the wearer's agility.",
+    "ar": 4,
+    "traits": [],
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "AELDARI",
+      "ANHRATHE"
+    ],
+    "source": "core",
+    "page": 233
+  },
+  {
+    "id": "ork_flak",
+    "name": "Ork Flak",
+    "type": "light",
+    "description": "Though a crude imitation of Imperial flak, Ork armour makes up for its primitive design with thick slabs of ablative material and heavy leather padding.",
+    "ar": 2,
+    "traits": [],
+    "value": 2,
+    "rarity": "Uncommon",
+    "keywords": [
+      "ORK"
+    ],
+    "source": "core",
+    "page": 233
+  },
+  {
+    "id": "eavy_armour",
+    "name": "'Eavy Armour",
+    "type": "heavy",
+    "description": "This armour may consist of heavy plates of scrap plasteel bolted together, or even simply screwed into an Ork's tough flesh. Named for its weight, the thickness of this armour makes it more durable, with a bulk that reassures its wearer and barely impinges on their combat ability.",
+    "ar": 4,
+    "traits": [
+      "Bulk (1)",
+      "'Ere We Go"
+    ],
+    "value": 3,
+    "rarity": "Uncommon",
+    "keywords": [
+      "ORK"
+    ],
+    "source": "core",
+    "page": 233
+  },
+  {
+    "id": "mega_armour",
+    "name": "Mega Armour",
+    "type": "heavy",
+    "description": "Worn by Meganobz, Mekz, and Warbosses, Mega Armour is about as sophisticated as Ork armour gets. Consisting of heavy metal plates powered by hissing salvaged hydraulics systems, Mega Armour is almost as loud and fearsome as those who wear it. Whilst wearing this armour you are considered Large.",
+    "ar": 7,
+    "traits": [
+      "Cumbersome",
+      "Powered (4)",
+      "'Ere We Go"
+    ],
+    "value": 9,
+    "rarity": "Very Rare",
+    "keywords": [
+      "ORK"
+    ],
+    "source": "core",
+    "page": 233
+  },
+  {
+    "id": "storm_shield",
+    "name": "Storm Shield",
+    "type": "shield",
+    "description": "A Storm Shield is a heavy, slab-like shield of reinforced ceramite and armaplas, augmented by an integrated field projector that wreaths it in crackling force. They are most often wielded by designated bodyguards of high priority individuals, or Astartes close combat specialists of renown.",
+    "ar": 2,
+    "traits": [
+      "Bulk (1)",
+      "Power Field",
+      "Shield"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "POWER FIELD"
+    ],
+    "invulnerable": true,
+    "source": "core",
+    "page": 231
+  },
+  {
+    "id": "refractor_field",
+    "name": "Refractor Field",
+    "type": "field",
+    "description": "Often concealed in ornate jewellery, these small field emitters remain dormant until activated, whereupon they erect a short range protective field around an individual. The Refractor Field dissipates incoming attacks with telltale dazzling bursts of multispectral light.",
+    "ar": 3,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "POWER FIELD"
+    ],
+    "invulnerable": true,
+    "source": "core",
+    "page": 231
+  },
+  {
+    "id": "rosarius",
+    "name": "Rosarius",
+    "type": "field",
+    "description": "A symbol of office for the Adeptus Ministorum and Chaplains of the Space Marines, the Rosarius takes the form of an Imperial Aquila or a gothic cross with a jewel or skull emblazoned at its centre. The Rosarius houses a powerful conversion field emitter, protecting the wearer from attack by converting all incoming energy into sparkling flashes of light.",
+    "ar": 4,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "ADEPTUS MINISTORUM",
+      "POWER FIELD"
+    ],
+    "invulnerable": true,
+    "source": "core",
+    "page": 233
+  },
+  {
+    "id": "aspect_armour",
+    "name": "Aspect Armour",
+    "type": "light",
+    "description": "This armour is particularly light, ensuring the wearer is not hampered in any action, while still offering respectable protection from damage.",
+    "ar": 4,
+    "traits": [
+      "Invulnerable"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "AELDARI",
+      "ASPECT WARRIOR",
+      "ASURYANI"
+    ],
+    "invulnerable": true,
+    "source": "aeldari",
+    "page": 92
+  },
+  {
+    "id": "heavy_aspect_armour",
+    "name": "Heavy Aspect Armour",
+    "type": "medium",
+    "description": "Some Warrior Paths are more dangerous than others. These warriors are provided stronger armour bearing additional plating. When a blow cannot be avoided, it must be endured.",
+    "ar": 5,
+    "traits": [
+      "Invulnerable"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "AELDARI",
+      "ASPECT WARRIOR",
+      "ASURYANI"
+    ],
+    "invulnerable": true,
+    "source": "aeldari",
+    "page": 92
+  },
+  {
+    "id": "ghostplate_armour",
+    "name": "Ghostplate Armour",
+    "type": "medium",
+    "description": "Favoured by Archons, these supple armour plates formed around pockets of lighter-than-air gas and incorporating a force shield, providing substantial protection while allowing impressive mobility.",
+    "ar": 3,
+    "traits": [
+      "Invulnerable"
+    ],
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "AELDARI",
+      "DRUKHARI"
+    ],
+    "invulnerable": true,
+    "source": "aeldari",
+    "page": 92
+  },
+  {
+    "id": "holo_suit",
+    "name": "Holo-Suit",
+    "type": "light",
+    "description": "Holo-projectors distort the wearer's outline into a fractal kaleidoscope as they move, making them almost impossible to target. The faster the Harlequin moves, the stronger the effect. Holo-suits don't have DR; rather, they raise the wearer's Defence and Stealth by 2.",
+    "ar": 0,
+    "traits": [
+      "+2 Defence",
+      "+2 Stealth"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "AELDARI",
+      "HARLEQUIN"
+    ],
+    "source": "aeldari",
+    "page": 92
+  },
+  {
+    "id": "incubus_warsuit",
+    "name": "Incubus Warsuit",
+    "type": "medium",
+    "description": "Like a dark reflection of Asuryani Aspect Warriors, Incubi employ expertly crafted warsuits fitted with extremely resilient protection. Although Aspect Armour is slightly more resistant, few Incubi are concerned; no armour is proof against the correct killing strike.",
+    "ar": 4,
+    "traits": [],
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "AELDARI",
+      "DRUKHARI",
+      "INCUBUS"
+    ],
+    "source": "aeldari",
+    "page": 92
+  },
+  {
+    "id": "kabalite_armour",
+    "name": "Kabalite Armour",
+    "type": "light",
+    "description": "Commorrite Kabals employ extremely well-crafted armour reinforced with lightweight plates of advanced materials to allow maximum mobility.",
+    "ar": 3,
+    "traits": [],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "AELDARI",
+      "DRUKHARI"
+    ],
+    "source": "aeldari",
+    "page": 92
+  },
+  {
+    "id": "mesh_implants",
+    "name": "Mesh Implants",
+    "type": "light",
+    "description": "Haemonculi often outfit themselves or their minions with subcutaneous armour implants. Such augmentations are always hideously obvious. The recipient usually appreciates the fear their enhanced form evokes in others.",
+    "ar": 3,
+    "traits": [
+      "Fear (2)"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "AELDARI",
+      "DRUKHARI",
+      "HAEMONCULUS"
+    ],
+    "source": "aeldari",
+    "page": 92
+  },
+  {
+    "id": "reaper_armour",
+    "name": "Reaper Armour",
+    "type": "heavy",
+    "description": "The Dark Reapers' armour is bulky, partly to stabilise their weapons, and partly because their astonishing firepower makes them a priority target. An Aeldari wearing Reaper Armour always counts as Braced when firing weapons with the Heavy Trait.",
+    "ar": 5,
+    "traits": [
+      "Cumbersome",
+      "Invulnerable",
+      "Always counts as Braced"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "AELDARI",
+      "ASPECT WARRIOR",
+      "ASURYANI"
+    ],
+    "invulnerable": true,
+    "source": "aeldari",
+    "page": 92
+  },
+  {
+    "id": "wych_suit",
+    "name": "Wych Suit",
+    "type": "light",
+    "description": "Wych Cults teach that the best way to avoid being wounded is to simply not be where the enemy strikes. Their armour is minimal, leaving large areas of skin exposed as if to taunt their opponent. Wyches prefer to rely on impeccable skill, speed, and combat drugs.",
+    "ar": 1,
+    "traits": [],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "AELDARI",
+      "DRUKHARI",
+      "WYCH CULT"
+    ],
+    "source": "aeldari",
+    "page": 92
+  },
+  {
+    "id": "force_shield_aeldari",
+    "name": "Force Shield",
+    "type": "field",
+    "description": "This miniature shield projector is similar to the Imperium's Rosarius but with superior damage resistance.",
+    "ar": 3,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 7,
+    "rarity": "Unique",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "POWER FIELD"
+    ],
+    "invulnerable": true,
+    "source": "aeldari",
+    "page": 92
+  },
+  {
+    "id": "gloom_field",
+    "name": "Gloom Field",
+    "type": "field",
+    "description": "When there is no cover to hide in, a Gloom Field simply creates it. Rangers within 10m of a Gloom Field always count as being in partial Cover (+1 Defence, stacks with Cameleoline Cloak bonuses).",
+    "ar": 0,
+    "traits": [
+      "Creates partial cover within 10m"
+    ],
+    "value": 9,
+    "rarity": "Very Rare",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "RANGER"
+    ],
+    "source": "aeldari",
+    "page": 92
+  },
+  {
+    "id": "mistshield",
+    "name": "Mistshield",
+    "type": "field",
+    "description": "A slightly less powerful version of the Forceshield, the Mistshield is commonly used by Aeldari Corsairs.",
+    "ar": 2,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "AELDARI",
+      "ANHRATHE",
+      "POWER FIELD"
+    ],
+    "invulnerable": true,
+    "source": "aeldari",
+    "page": 92
+  },
+  {
+    "id": "serpent_shield_platform",
+    "name": "Serpent Shield Platform",
+    "type": "field",
+    "description": "A shield emitter on a mobile anti-grav platform, protecting the operator and allies within 10m. It can also be overloaded to create a blast of energy: once per encounter, all enemies within 10m of the platform must make a DN 5 Agility Test. Success causes them to become Staggered, while failure knocks them Prone.",
+    "ar": 1,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "POWER FIELD"
+    ],
+    "invulnerable": true,
+    "source": "aeldari",
+    "page": 92
+  },
+  {
+    "id": "shadowfield",
+    "name": "Shadowfield",
+    "type": "field",
+    "description": "These Drukhari shields are beyond the ken of most mortals. Shadow Fields create a shadowy distortion around the wearer, providing considerable protection, but it collapses entirely once penetrated. The first time an attack penetrates a Shadow Field and causes at least 1 Wound, the Shadow Field breaks and requires a successful DN 4 Tech-use (Int) Test to repair before it will work again.",
+    "ar": 4,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 14,
+    "rarity": "Unique",
+    "keywords": [
+      "AELDARI",
+      "DRUKHARI",
+      "POWER FIELD"
+    ],
+    "invulnerable": true,
+    "source": "aeldari",
+    "page": 92
+  },
+  {
+    "id": "shimmershield",
+    "name": "Shimmershield",
+    "type": "field",
+    "description": "Primarily used by the Dire Avengers, Shining Spears, and Asuryani or Anhrathe leaders, a Shimmershield protects against incoming fire and melee attacks, the dissipating force causing the characteristic 'shimmer' effect.",
+    "ar": 2,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 7,
+    "rarity": "Unique",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "POWER FIELD"
+    ],
+    "invulnerable": true,
+    "source": "aeldari",
+    "page": 92
+  },
+  {
+    "id": "sicarian_battle_armour",
+    "name": "Sicarian Battle Armour",
+    "type": "medium",
+    "description": "Installed onto the heavily augmented bodies of Sicarians, this thin, flexible armour perfectly protects the few biological parts of a killcade without limiting their crucial mobility.",
+    "ar": 4,
+    "traits": [
+      "Powered (2)"
+    ],
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS MECHANICUS",
+      "SKITARII"
+    ],
+    "source": "fspg",
+    "page": 124
+  },
+  {
+    "id": "bullgryn_plate",
+    "name": "Bullgryn Plate",
+    "type": "heavy",
+    "description": "The Departmento Munitorum discovered long ago that Ogryns were strong enough to wear recycled vehicle armour, and have since used any surplus to outfit Bullgryns in what is known as Bullgryn Plate.",
+    "ar": 5,
+    "traits": [
+      "Cumbersome"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "MILITARUM AUXILLA"
+    ],
+    "source": "fspg",
+    "page": 116
+  },
+  {
+    "id": "kroot_armour",
+    "name": "Kroot Armour",
+    "type": "light",
+    "description": "Little more than scraps of metal strung together to protect the few vulnerable parts of Kroot biology, this armour is cobbled together with care to ensure it does not inhibit movement.",
+    "ar": 2,
+    "traits": [],
+    "value": 3,
+    "rarity": "Uncommon",
+    "keywords": [
+      "KROOT",
+      "T'AU"
+    ],
+    "source": "fspg",
+    "page": 124
+  },
+  {
+    "id": "mark_x_phobos_armour",
+    "name": "Mark X Phobos Armour",
+    "type": "heavy",
+    "description": "This variant of the Mk X armour is designed for mobility and stealth, and is commonly employed by Reiver and Infiltrator Squads. It doesn't offer quite the same level of protection as the standard Tacticus suit, as much of the ceramite plating has been removed, but it is built to operate near-silently. Witnessing a gigantic Primaris Marine moving noiselessly into position for the perfect kill is quite a remarkable sight in itself. Phobos, meaning “Fear”, is an appropriate name for this armour as it is often deployed with a skull-shaped helmet to inspire terror in the Emperor's foes. Reiver Squads in particular learn to use this armour to maximum effect, appearing suddenly to sow death and panic before melting away to strike again later.",
+    "ar": 5,
+    "traits": [
+      "Powered (3)"
+    ],
+    "value": 9,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS"
+    ],
+    "source": "voa",
+    "page": 72
+  },
+  {
+    "id": "artificer_power_armour",
+    "name": "Artificer Power Armour",
+    "type": "heavy",
+    "description": "[AI-Generated] Custom-crafted by master artificers, each suit of Artificer Armour is a unique masterwork. Worn by Captains and other heroes, this armour offers superior protection to standard patterns.",
+    "ar": 6,
+    "traits": [
+      "Powered (4)"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "voa",
+    "page": 39
+  },
+  {
+    "id": "tactical_dreadnought_armour",
+    "name": "Tactical Dreadnought Armour (Terminator)",
+    "type": "heavy",
+    "description": "[AI-Generated] The mighty Terminator armour represents the pinnacle of personal protection for Space Marines. Originally designed for space hulk boarding actions, it can withstand tremendous punishment.",
+    "ar": 7,
+    "traits": [
+      "Cumbersome",
+      "Powered (4)"
+    ],
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "voa",
+    "page": 38
+  },
+  {
+    "id": "wychsuit",
+    "name": "Wychsuit",
+    "type": "light",
+    "description": "The revealing bodysuit of Drukhari Wyches, designed for maximum agility in the gladiatorial arenas. The suit provides minimal protection, as Wyches rely on speed to survive.",
+    "ar": 1,
+    "traits": [],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "AELDARI",
+      "DRUKHARI",
+      "WYCH CULT"
+    ],
+    "source": "aeldari",
+    "page": 92
+  },
+  {
+    "id": "cloak_of_skin",
+    "name": "Cloak of Skin",
+    "type": "light",
+    "description": "Worn by Mandrakes, this grotesque cloak is woven from the flayed flesh of victims. Its appearance inspires horror in those who witness it, while providing supernatural protection.",
+    "ar": 2,
+    "traits": [
+      "Fear (2)"
+    ],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "AELDARI",
+      "DRUKHARI",
+      "MANDRAKE"
+    ],
+    "source": "aeldari",
+    "page": 41
+  },
+  {
+    "id": "war_mask",
+    "name": "War Mask",
+    "type": "accessory",
+    "description": "Aspect Warriors use war masks to help focus their aggression and enter their war personae. The mask serves as a psychological barrier between the peaceful Aeldari and the killer within.",
+    "ar": 0,
+    "traits": [],
+    "value": 4,
+    "rarity": "Rare",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "ASPECT WARRIOR"
+    ],
+    "source": "aeldari",
+    "page": 93
+  },
+  {
+    "id": "forceshield",
+    "name": "Forceshield",
+    "type": "shield",
+    "description": "An Aeldari shield that projects a barrier of pure psychic energy. The Forceshield can deflect both physical and warp-based attacks through the will of its bearer.",
+    "ar": 2,
+    "traits": [
+      "Power Field",
+      "Shield"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "POWER FIELD"
+    ],
+    "invulnerable": true,
+    "source": "aeldari",
+    "page": 92
+  },
+  {
+    "id": "mist_shield",
+    "name": "Mist Shield",
+    "type": "shield",
+    "description": "Used by Corsair warriors, the Mist Shield projects a swirling barrier of distortion that makes incoming attacks difficult to aim. The shield flickers with ethereal light.",
+    "ar": 2,
+    "traits": [
+      "Power Field",
+      "Shield"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "AELDARI",
+      "ANHRATHE",
+      "POWER FIELD"
+    ],
+    "invulnerable": true,
+    "source": "aeldari",
+    "page": 92
+  },
+  {
+    "id": "aeronautica_flight_suit_aoa",
+    "name": "Aeronautica Flight Suit (Abundance of Apocrypha)",
+    "type": "light",
+    "description": "These pressurised flight suits are lightly reinforced to limit punctures from shrapnel and similar combat hazards. They're the standard issue garb of the pilots of the Aeronautica Imperialis and can function as voidsuits for a limited duration when flying between orbiting carriers and a planetary atmosphere.",
+    "ar": 1,
+    "traits": [
+      "Void"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "AERONAUTICA IMPERIALIS"
+    ],
+    "source": "apocrypha",
+    "page": 398
+  },
+  {
+    "id": "arbites_carapace_aoa",
+    "name": "Arbites Carapace (Abundance of Apocrypha)",
+    "type": "heavy",
+    "description": "The appearance of the Adeptus Arbites strikes fear into the hearts of criminals and the lawless. Their armour is constructed from dense plasteel plates overlaying a synthetic polyplastic fibre weave produced by the Adeptus Mechanicus using methods they do not disclose to outsiders. The carapace armour is designed to be clipped together and worn over a light, breathable bodyglove, the armour carefully constructed and tailor-made to the proportions of the Arbitrator concerned. Given that the armour must be worn for hours at a time, often during periods of extreme physical exertion, it must be comfortable, and it succeeds surprisingly well on these fronts.",
+    "ar": 4,
+    "traits": [],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "source": "apocrypha",
+    "page": 398
+  },
+  {
+    "id": "assassinorum_bodyglove_aoa",
+    "name": "Assassinorum Bodyglove (Abundance of Apocrypha)",
+    "type": "light",
+    "description": "The Officio Assassinorum make extensive use of synskin bodygloves. Once sprayed onto the body, synskin forms a black outer skin which protects the wearer from the environment and augments the wearer's metabolism. It is bio-reactive and moulds itself to the wearer's form. It is also non-reflective and reduces the wearer's infrared profile, facilitating infiltration.",
+    "ar": 2,
+    "traits": [
+      "Agile"
+    ],
+    "value": 9,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "OFFICIO ASSASSINORUM"
+    ],
+    "source": "apocrypha",
+    "page": 398
+  },
+  {
+    "id": "auramite_custodian_power_armour_aoa",
+    "name": "Auramite Custodian Power Armour (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "Custodian Armour is an advanced form of highly sophisticated, Artificer-wrought Power Armour utilised exclusively by the Adeptus Custodes, the elite guardians of the Emperor of Mankind. Finely wrought, Custodian Armour is customised exactly to task, and was produced without any regard to the consumption of resources or rarity of components or lore required; to arm and outfit the Custodians to the optimum, nothing was spared.",
+    "ar": 6,
+    "traits": [
+      "Powered (4)"
+    ],
+    "value": 11,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS CUSTODES"
+    ],
+    "source": "apocrypha",
+    "page": 398
+  },
+  {
+    "id": "endurant_shield_aoa",
+    "name": "Endurant Shield (Abundance of Apocrypha)",
+    "type": "shield",
+    "description": "These heavy boarding shields are carried by the largest, strongest Navy Armsmen, used to provide cover for their team while advancing through narrow passageways. The shield has a special mount for a shotgun or heavy shotgun, allowing the user to lay down suppressing fire as they advance.",
+    "ar": 2,
+    "traits": [
+      "Cumbersome",
+      "Shield"
+    ],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "NAVIS IMPERIALIS"
+    ],
+    "source": "apocrypha",
+    "page": 399
+  },
+  {
+    "id": "navis_armoured_voidsuit_aoa",
+    "name": "Navis Armoured Voidsuit (Abundance of Apocrypha)",
+    "type": "heavy",
+    "description": "These bulky voidsuits contain multiple puncture-resistant layers and heavy armour plates that protect the wearer both from hazards and incoming fire. They're worn by Imperial Navy boarding parties and breacher teams.",
+    "ar": 4,
+    "traits": [
+      "Void"
+    ],
+    "value": 6,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "NAVIS IMPERIALIS"
+    ],
+    "source": "apocrypha",
+    "page": 399
+  },
+  {
+    "id": "paragon_warsuit_aoa",
+    "name": "Paragon Warsuit (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "These armoured suits straddle the line between armour and vehicle, encasing an armoured Sister of Battle in an additional shell which mimics her motions in battle. Only the most skilled and trusted Celestians are entrusted with these suits, for their machine spirits are not easily tamed, but they can weather the heaviest firepower and do battle with the most fearsome of enemies.",
+    "ar": 7,
+    "traits": [
+      "Powered (6)"
+    ],
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTA SORORITAS"
+    ],
+    "source": "apocrypha",
+    "page": 399
+  },
+  {
+    "id": "riot_shield_aoa",
+    "name": "Riot Shield (Abundance of Apocrypha)",
+    "type": "shield",
+    "description": "These lightweight shields are favoured by planetary law enforcement during riot suppression and similar conflict. Normally a simple piece of tempered armourplas fitted with a handle or wristlock, these shields are found in a variety of forms across the Imperium.",
+    "ar": 1,
+    "traits": [
+      "Shield"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM"
+    ],
+    "source": "apocrypha",
+    "page": 399
+  },
+  {
+    "id": "sicarian_battle_armour_aoa",
+    "name": "Sicarian Battle Armour (Abundance of Apocrypha)",
+    "type": "heavy",
+    "description": "Given to advanced Skitarii such as Sicarian Ruststalkers and Sicarian Infiltrators, this multi-layered alloy provides admirable protection despite being thin and flexible. This alloy is informally known as aegium and acts as a capacitor that harnesses the energy of incoming attacks and disperses it across the wearer's frame.",
+    "ar": 4,
+    "traits": [],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS MECHANICUS",
+      "SKITARII"
+    ],
+    "source": "apocrypha",
+    "page": 396
+  },
+  {
+    "id": "suppression_shield_aoa",
+    "name": "Suppression Shield (Abundance of Apocrypha)",
+    "type": "shield",
+    "description": "The suppression shield is a type of shock weapon. It is like a storm shield but replaces the power field generator with an electro-shock unit. It acts as both a weapon and protection. Its electricity is discharged into the first unfortunate individual the shield contacts squarely. It is used along with the shock maul by Adeptus Arbites shock troops for crowd and riot control.",
+    "ar": 2,
+    "traits": [
+      "Bulk (1)",
+      "Shield"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "source": "apocrypha",
+    "page": 400
+  },
+  {
+    "id": "vindicare_stealth_suit_aoa",
+    "name": "Vindicare Stealth Suit (Abundance of Apocrypha)",
+    "type": "light",
+    "description": "The Stealth Suit worn by Vindicare assassins combines cameleoline layers with the normal synskin bodyglove worn by other Imperial Assassins. Combined with their training, these suits mean that a Vindicare is almost impossible to detect.",
+    "ar": 2,
+    "traits": [
+      "Agile"
+    ],
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "OFFICIO ASSASSINORUM",
+      "TEMPLUM VINDICARE"
+    ],
+    "source": "apocrypha",
+    "page": 400
+  },
+  {
+    "id": "vratine_armour_aoa",
+    "name": "Vratine Armour (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "When a Sister-aspirant takes her final oaths of duty and says the last words she will ever utter aloud in her lifetime, she is given the Vratine armour, the armour of the oath. It is a pattern of advanced battle gear which shares design elements with both the power armour of the Space Marines and the silicate-mesh of Selenite void-mail, though it is not fully environmentally sealed.",
+    "ar": 5,
+    "traits": [
+      "Agile",
+      "Powered (2)"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ANATHEMA PSYKANA"
+    ],
+    "source": "apocrypha",
+    "page": 400
+  },
+  {
+    "id": "thunder_mark_i_aoa",
+    "name": "Thunder Mark I (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "Thunder armour was first worn by the Emperor's Thunder Warriors during the reunification wars on Terra. Neither fully enclosed nor airtight, it cannot be considered true power armour, but paved the way for future designs. It featured a powered and heavily armoured torso that gave the wearer immense upper-body strength for grappling and subduing their foes.",
+    "ar": 5,
+    "traits": [
+      "Bulky (1)",
+      "Powered (4)"
+    ],
+    "value": 12,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 401
+  },
+  {
+    "id": "crusade_mark_ii_aoa",
+    "name": "Crusade Mark II (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "Following the conquest of the Sol System, the Emperor re-equipped his Space Marine Legions with Crusade armour, the first iteration of true power armour. Environmentally sealed, it could protect the wearer from the very worst battlefield conditions, even in the depths of space.",
+    "ar": 5,
+    "traits": [
+      "Powered (4)"
+    ],
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 401
+  },
+  {
+    "id": "iron_mark_iii_aoa",
+    "name": "Iron Mark III (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "Iron armour was developed during the Great Crusade, not to replace Crusade armour, but to be used alongside it in close quarters boarding actions and tunnel fighting. A suit of modified Crusade armour, it featured additional armour panels on the greaves, forearms, thighs, chest and groin, plus larger shoulder pads and a more angular helm to deflect bullets away from the face.",
+    "ar": 6,
+    "traits": [
+      "Bulky (1)",
+      "Powered (4)",
+      "Void"
+    ],
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 402
+  },
+  {
+    "id": "maximus_mark_iv_aoa",
+    "name": "Maximus Mark IV (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "As the Great Crusade expanded across the galaxy, and the size of the Imperium reached what was to be its zenith, a new variant of armour was produced by the Mechanicus of Mars. The main development of the \"Maximus\" suit was to abandon the use of abutting plates in favour of larger, inflexible armoured casings. These were easier to produce and maintain, with only a slight reduction in mobility, and thanks to technology uncovered as the Crusade progressed, were lighter as well as being more efficient protection.",
+    "ar": 5,
+    "traits": [
+      "Powered (3)"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 402
+  },
+  {
+    "id": "heresy_mark_v_aoa",
+    "name": "Heresy Mark V (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "With the outbreak of rebellion, supply lines fell into turmoil and it became difficult to repair and maintain the advanced Mk4 suits. Mk5 was created as a stopgap, a style with the flexibility to use new or old materials depending on availability. In many cases older, heavy power cabling was used, which created a weak point on the chest. The armour was reinforced with an extra skin plate fitted over the top using molecular bonding studs, thus giving \"Heresy Armour\" its distinctive appearance.",
+    "ar": 5,
+    "traits": [
+      "Powered (3)"
+    ],
+    "value": 9,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 402
+  },
+  {
+    "id": "corvus_mark_vi_aoa",
+    "name": "Corvus Mark VI (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "The Mk6 \"Corvus Suit\" also saw much action during the Horus Heresy. It featured dual technology circuits that allowed the replacement of rare or sophisticated parts with common or basic alternatives. It also included fail-safes such as duplicate power cabling. The left shoulder pad, which always took the brunt of enemy fire, retained the studded Mk5 construction to be easily replaced.",
+    "ar": 5,
+    "traits": [
+      "Powered (3)"
+    ],
+    "value": 9,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 396
+  },
+  {
+    "id": "errant_mark_viii_aoa",
+    "name": "Errant Mark VIII (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "In the millennia between the Horus Heresy and the Indomitus Crusade, only one new mark of armour was developed, a clear demonstration of how much progress and innovation have stagnated. \"Errant\" armour is a development on the Mk7 design, addressing some of the flaws and weak points of that type. It adds extra plating on the torso to further protect the energy cabling, and a high gorget, or collar, covering the weak point at the neck join (the only drawback is that older helmets are not easily compatible).",
+    "ar": 6,
+    "traits": [
+      "Powered (3)"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 403
+  },
+  {
+    "id": "gravis_mark_x_aoa",
+    "name": "Gravis Mark X (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "Mark X power armour comes in a number of varieties, as the underlying armour system is designed to be modular and customisable according to battlefield role. The heavier variant is known as Gravis armour, which incorporates additional cowling, and ablative armour layers to increase the wearer's durability in battle, at the cost of reduced mobility.",
+    "ar": 5,
+    "traits": [
+      "Bulk (1)",
+      "Powered (4)",
+      "Void"
+    ],
+    "value": 9,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS"
+    ],
+    "source": "apocrypha",
+    "page": 396
+  },
+  {
+    "id": "phobos_mark_x_aoa",
+    "name": "Phobos Mark X (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "Phobos armour is a lightweight variant of Mark X power armour, with lighter plating and tuned servos that operate silently and virtually no loss of protection, though the reduced bulk of the armour does mean it provides less of a boost to the wearer's strength. It's favoured by Reivers and other Vanguard Primaris, who operate deep behind enemy lines and rely on stealth and evasion to wage war.",
+    "ar": 5,
+    "traits": [
+      "Powered (3)"
+    ],
+    "value": 9,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS"
+    ],
+    "source": "apocrypha",
+    "page": 396
+  },
+  {
+    "id": "adamantine_mantle_aoa",
+    "name": "Adamantine Mantle (Abundance of Apocrypha)",
+    "type": "other",
+    "description": "An Adamantine Mantle is a cloak worn by Space Marines. They are cloaks made from threads of Adamantine, a tough and resistant material that can provide excellent protection for its wearer. The cloak supplements the protection of the wearer's armour, allowing the wearer to survive very heavy firepower which would normally fell any other warrior.",
+    "ar": 1,
+    "traits": [
+      "Power Field",
+      "Shield"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 403
+  },
+  {
+    "id": "aegis_armour_aoa",
+    "name": "Aegis Armour (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "Aegis Armour is a specialized form of Astartes Power Armour worn by members of the Grey Knights chapter. Worked into their Armour, each Aegis Suit contains a lattice of psycho-conductive filaments and protective amulets, layered hexagrammic wards, and is inscribed with anti-daemonic prayers. Aegis Armour allows Grey Knights to better combat Warp Entities and Rogue Psykers by protecting them from psychic attack.",
+    "ar": 5,
+    "traits": [
+      "Powered (3)"
+    ],
+    "value": 9,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "GREY KNIGHTS"
+    ],
+    "source": "apocrypha",
+    "page": 396
+  },
+  {
+    "id": "artificer_armour_aoa",
+    "name": "Artificer Armour (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "Artificer armour is not a pattern of armour, but a catch-all term for individually crafted or carefully modified suits of power armour, often worn by the chapter's heroes. The oldest of these suits were created for the Primarchs themselves, and many legendary Chapter Masters and Captains of the Adeptus Astartes wear artificer armour custom-engineered for them, with ornate representations of personal or Chapter heraldry and construction that is as much artwork as functional protection.",
+    "ar": 6,
+    "traits": [
+      "Powered (4)"
+    ],
+    "value": 11,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 404
+  },
+  {
+    "id": "cataphractii_terminator_armour_aoa",
+    "name": "Cataphractii Terminator Armour (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "An ancient and revered form of Tactical Dreadnought Armour, Cataphractii armour was the first form to be issued to Astartes Terminator squads, this armour is nigh-indestructible due to heavy adamantium plating and high-powered force field generators, but this came at the expense of mobility.",
+    "ar": 8,
+    "traits": [
+      "Bulk (2)",
+      "Cumbersome",
+      "Powered (5)"
+    ],
+    "value": 11,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 396
+  },
+  {
+    "id": "tartaros_terminator_armour_aoa",
+    "name": "Tartaros Terminator Armour (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "Developed during the Great Crusade alongside Mark IV Power Armour, Tartaros-pattern Tactical Dreadnought Armour trades some of the resilience of Cataphractii-pattern armour for greater mobility. Providing comparable protection to the more common Indomitus-pattern armour, Tartaros is easier to move in. However, the technical and resource requirements to make each suit were prohibitive, and they were never produced in large numbers.",
+    "ar": 7,
+    "traits": [
+      "Bulk (1)",
+      "Powered (5)"
+    ],
+    "value": 11,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 396
+  },
+  {
+    "id": "aegis_terminator_armour_aoa",
+    "name": "Aegis Terminator Armour (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "Crafted exclusively by the Artisans of the Forge World of Deimos for the Grey Knights, these customised suits of Terminator Armour contain similar psychic protections as Aegis-pattern Power Armour. Grey Knights frequently take to battle in Terminator armour, as they require the protection when facing the mightiest and deadliest of daemonic foes.",
+    "ar": 7,
+    "traits": [
+      "Cumbersome",
+      "Powered (5)"
+    ],
+    "value": 11,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "GREY KNIGHTS"
+    ],
+    "source": "apocrypha",
+    "page": 396
+  },
+  {
+    "id": "centurion_warsuit_aoa",
+    "name": "Centurion Warsuit (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "A Centurion Warsuit allows a Space Marine to stride into battle with the firepower of a battle tank and the protection of thick ablative plates of ceramite, making him immune to all but the most powerful of weapons. Named for the Space Marine leaders of old, the Centurion STC design was unearthed in the aftermath of the Age of Apostasy and after sanction by the Adeptus Mechanicus, they found their way into the armouries of most Space Marine Chapters.",
+    "ar": 7,
+    "traits": [
+      "Bulk (2)",
+      "Cumbersome",
+      "Powered (6)"
+    ],
+    "value": 10,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 405
+  },
+  {
+    "id": "boarding_shield_aoa",
+    "name": "Boarding Shield (Abundance of Apocrypha)",
+    "type": "shield",
+    "description": "Used extensively during the brutal tunnel fighting and boarding actions of the Great Crusade, boarding shields fell out of use after Storm Shields were developed to fight in those same conditions. Massive bulky shields fitted with a power field generator, these shields were designed to be used in close quarters firefights as much as in melee, with most designs having a cut-out where a bolter or other weapon can be placed without exposing the wielder.",
+    "ar": 2,
+    "traits": [
+      "Cumbersome",
+      "Power Field",
+      "Shield"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 406
+  },
+  {
+    "id": "combat_shield_aoa",
+    "name": "Combat Shield (Abundance of Apocrypha)",
+    "type": "shield",
+    "description": "A smaller, more mobile form of shield, Astartes combat shields were another precursor to the Storm Shield, albeit one that still sees use. Their smaller design allows them to be mag-locked to the wielder's vambrace while leaving their hand free to use equipment or another weapon—many warriors favour a pistol in their shield hand—and they do not significantly hinder the wielder's movement.",
+    "ar": 1,
+    "traits": [
+      "Power Field",
+      "Shield"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 406
+  },
+  {
+    "id": "displacer_field_aoa",
+    "name": "Displacer Field (Abundance of Apocrypha)",
+    "type": "field",
+    "description": "A Displacer Field is a teleportation device used as a form of personal defence by important Imperial agents such as Inquisitors and their chosen Acolytes. Unlike other forms of personal protection, a Displacer Field emitter is something of an unreliable technology since it relies on the manipulation of the Warp for its function. When an individual wearing a Displacer Field emitter is struck by a blow from a melee weapon or fire from a ranged weapon that carries sufficient force, the Displacer Field will activate and teleport the user through the Warp to another position in the local realspace that is out of harm's way.",
+    "ar": 0,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 397
+  },
+  {
+    "id": "hexagrammic_wards_aoa",
+    "name": "Hexagrammic Wards (Abundance of Apocrypha)",
+    "type": "field",
+    "description": "Protective glyphs and sigils inscribed upon amulets and other charms and inlaid with blessed substances can be used to protect against the attacks of psykers. They are extensively used by Ordo Hereticus Inquisitors and the League of Blackships to contain witches and sorcerers.",
+    "ar": 3,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "INQUISITION",
+      "ADEPTUS ASTRA TELEPATHICA"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 407
+  },
+  {
+    "id": "iron_halo_aoa",
+    "name": "Iron Halo (Abundance of Apocrypha)",
+    "type": "field",
+    "description": "Normally mounted within a metal ring mounted on the wearer's backpack, appearing like the halo it is named for, the Iron Halo is a forcefield generator commonly issued to Astartes officers, typically those of Captain (or equivalent) rank or higher. The field is quite potent, as it can draw directly from the power supply of the wearer's armour.",
+    "ar": 4,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 397
+  },
+  {
+    "id": "pentagrammic_wards_aoa",
+    "name": "Pentagrammic Wards (Abundance of Apocrypha)",
+    "type": "field",
+    "description": "Sometimes known as a shield of faith, a Pentagrammic Ward is a collection of psychoreactive symbols and patterns, inlaid and inscribed using sacred materials, which repels daemons. The Inquisition regards knowledge of Pentagrammic Wards as extremely sensitive, as heretics can use the same techniques to capture and bind daemons.",
+    "ar": 5,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "INQUISITION",
+      "ORDO MALLEUS"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 397
+  },
+  {
+    "id": "voidsheen_cloak_aoa",
+    "name": "Voidsheen Cloak (Abundance of Apocrypha)",
+    "type": "field",
+    "description": "The voidsheen cloaks worn by the Oblivion Knights are made from micro-vitrious mesh designed to diffract and absorb energy. These cloaks are especially effective at shielding the wielder from blasts.",
+    "ar": 1,
+    "traits": [
+      "Power Field",
+      "Shield"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ANATHEMA PSYKANA"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 408
+  },
+  {
+    "id": "voltagheist_field_generator_aoa",
+    "name": "Voltagheist Field Generator (Abundance of Apocrypha)",
+    "type": "field",
+    "description": "Connected into the implants and electoos of an Electro-Priest, these generators tune the voltaic Motive Force to generate a pulsing, crackling field of electromagnetic power that repels physical projectiles and energy alike. This energy is not purely defensive, as arcs of bioelectricity can leap away to strike any who stray too near.",
+    "ar": 3,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS MECHANICUS",
+      "CULT MECHANICUS"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 408
+  },
+  {
+    "id": "daemonic_rune_aoa",
+    "name": "Daemonic Rune (Abundance of Apocrypha)",
+    "type": "field",
+    "description": "The Chaos Champion has been gifted with a Daemonic Rune, a mighty symbol of the power of the Dark Gods. Their power flows through the rune demonstrating the favour conferred on the Champion. Such an individual has been marked for greatness and cannot easily be killed.",
+    "ar": 1,
+    "traits": [
+      "Power Field",
+      "Shield"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "CHAOS"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 409
+  },
+  {
+    "id": "fleshmetal_aoa",
+    "name": "Fleshmetal (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "A warp-spawned fusion of muscle and powered steel, Fleshmetal forms a hideous exoskeleton to those followers of Chaos whose armour has long since fused with their body. In most cases, Fleshmetal was once power armour, but it has grown and mutated to the point where there is no clear distinction between the wearer's flesh and the armour plate they once wore.",
+    "ar": 6,
+    "traits": [
+      "Powered (4)"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "CHAOS",
+      "HERETIC ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 409
+  },
+  {
+    "id": "sigil_of_corruption_aoa",
+    "name": "Sigil of Corruption (Abundance of Apocrypha)",
+    "type": "field",
+    "description": "A blasphemous icon or talisman, defiled with profane rites and horrific sacrifices, and then worn as an amulet or worked into flesh or armour, can be a potent source of protection for the servants of Chaos, turning attacks away as reality recoils from the champion's presence.",
+    "ar": 4,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "CHAOS"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 409
+  },
+  {
+    "id": "aura_of_dark_glory_aoa",
+    "name": "Aura of Dark Glory (Abundance of Apocrypha)",
+    "type": "field",
+    "description": "The mightiest servants of the Dark Gods are often wreathed in an aura of abhorrent power, their corruption obvious in its foul majesty. With this aura, the blades and shots of the champion's foes are resisted by a shimmering nimbus of warp energy.",
+    "ar": 3,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "CHAOS"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 409
+  },
+  {
+    "id": "aspect_armour_aoa",
+    "name": "Aspect Armour (Abundance of Apocrypha)",
+    "type": "light",
+    "description": "Aspect Armour is manufactured by the Eldar for use by their specialist Aspect Warriors. They use psychic engineering to construct a psycho-sensitive material which reacts instantly to movement by the wearer and moulds and reshapes itself to provide a tight fit, making it ideal for combat. It stiffens on impact much like Mesh Armour although it also includes further rigid plating, and force field generators to reinforce it further.",
+    "ar": 4,
+    "traits": [
+      "Agile",
+      "Power Field"
+    ],
+    "value": 5,
+    "rarity": "Very Rare",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "ASPECT WARRIOR"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 410
+  },
+  {
+    "id": "heavy_aspect_armour_aoa",
+    "name": "Heavy Aspect Armour (Abundance of Apocrypha)",
+    "type": "heavy",
+    "description": "Several Aspect Shrines use a heavier version of Aspect Armour, but even this is lightweight and flexible compared to similar armour worn by other species. Aspect Armour contains technology equivalent to a vox-bead and a rebreather.",
+    "ar": 5,
+    "traits": [
+      "Agile",
+      "Bulk (1)",
+      "Power Field"
+    ],
+    "value": 5,
+    "rarity": "Very Rare",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "ASPECT WARRIOR"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 410
+  },
+  {
+    "id": "force_shield_aeldari_aoa",
+    "name": "Force Shield (Abundance of Apocrypha)",
+    "type": "field",
+    "description": "Worn by Asuryani Autarchs and other Eldar of importance—at least, the ones who don't have another form of protection—these tiny energy field generators are normally mounted on the vambrace of armour, where the field they project can be directed and positioned to deflect incoming attacks.",
+    "ar": 3,
+    "traits": [
+      "Power Field",
+      "Shield"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "AELDARI"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 410
+  },
+  {
+    "id": "holo_suit_aoa",
+    "name": "Holo-Suit (Abundance of Apocrypha)",
+    "type": "light",
+    "description": "Holo-suits (dathedi in Eldar, translated as 'between colours') are used by the Harlequins. Each contains a programmable holo-field which breaks up the outline of the wearer as they move. When the wearer of a holosuit moves, their form appears to shatter into a storm of light and colour, coalescing again when the wearer stops. When the wearer remains still for a few moments, the holosuit instead makes the wearer blend in with their surroundings.",
+    "ar": 1,
+    "traits": [
+      "Agile",
+      "Power Field"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "AELDARI",
+      "HARLEQUIN"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 410
+  },
+  {
+    "id": "clone_field_aoa",
+    "name": "Clone Field (Abundance of Apocrypha)",
+    "type": "field",
+    "description": "A form of defensive field used by powerful Dark Eldar, Clone Fields provide no physical protection, but deceive enemies by generating realistic holographic simulacra of the wearer which deceive attackers. Until the moment a shot or blade makes contact, it is impossible to know if an attack is at the intended target or merely a duplicate.",
+    "ar": 0,
+    "traits": [],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "AELDARI",
+      "DRUKHARI"
+    ],
+    "source": "apocrypha",
+    "page": 411
+  },
+  {
+    "id": "ghostplate_aoa",
+    "name": "Ghostplate (Abundance of Apocrypha)",
+    "type": "light",
+    "description": "Ghostplate Armour is worn elite Dark Eldar who can afford the price to combine substantial protection with great mobility. The armour itself is fashioned from hardened resins containing pockets of lighter-than-air gas. It also incorporates mini-forcefield projectors for additional protection.",
+    "ar": 4,
+    "traits": [
+      "Agile",
+      "Power Field"
+    ],
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "AELDARI",
+      "DRUKHARI"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 411
+  },
+  {
+    "id": "incubus_warsuit_aoa",
+    "name": "Incubus Warsuit (Abundance of Apocrypha)",
+    "type": "heavy",
+    "description": "All Incubi are equipped with an extremely resilient suit of armor, called an Incubus Warsuit. The Incubi jealously keep the procedures to manufacture and repair such armour to themselves. The helmet of the suit incorporates the signature Tormentor weapon of the Incubi, which sends out pulses of agony and dread to debilitate foes before battle is joined.",
+    "ar": 5,
+    "traits": [],
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "AELDARI",
+      "DRUKHARI"
+    ],
+    "source": "apocrypha",
+    "page": 411
+  },
+  {
+    "id": "kabalite_armour_aoa",
+    "name": "Kabalite Armour (Abundance of Apocrypha)",
+    "type": "light",
+    "description": "When going to war, each Warrior girds himself with a sophisticated bodysuit of segmented armour. These suits are donned during lengthy and unnecessarily painful pre-battle rituals, the better to ensure the wearer's psyche is honed to a single point of murderous intent. Much of the bodysuit is held in place with long metal barbs and hooks that penetrate deep into the wearer's nerve bundles, sharpening his senses with the constant sting of pain.",
+    "ar": 4,
+    "traits": [],
+    "value": 4,
+    "rarity": "Rare",
+    "keywords": [
+      "AELDARI",
+      "DRUKHARI"
+    ],
+    "source": "apocrypha",
+    "page": 411
+  },
+  {
+    "id": "shadowfield_aoa",
+    "name": "Shadowfield (Abundance of Apocrypha)",
+    "type": "field",
+    "description": "The most powerful Dark Eldar often wreath themselves in a miasma of protective gloom. This is not merely a form of concealment, however: advanced force field generation is intermingled with the deceptive darkness. Few attacks can effectively strike the wearer of a Shadowfield, and those few that do seldom strike True. However, they are not infallible, and once they have failed, they leave their wearer defenceless.",
+    "ar": 8,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "AELDARI",
+      "DRUKHARI"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 411
+  },
+  {
+    "id": "wychsuit_aoa",
+    "name": "Wychsuit (Abundance of Apocrypha)",
+    "type": "light",
+    "description": "Wyches wear a flexible bodyglove known as a Wychsuit. The suit has been designed with sections cut away, baring naked flesh to draw the enemy in. Wyches are disdainful of the use of armour and prefer to rely on their skill and agility to defend themselves.",
+    "ar": 1,
+    "traits": [
+      "Agile"
+    ],
+    "value": 3,
+    "rarity": "Common",
+    "keywords": [
+      "AELDARI",
+      "DRUKHARI"
+    ],
+    "source": "apocrypha",
+    "page": 411
+  },
+  {
+    "id": "kustom_force_field_projekta_aoa",
+    "name": "Kustom Force Field Projekta (Abundance of Apocrypha)",
+    "type": "field",
+    "description": "Big Meks often build and customise powerful force field projectors they use to protect themselves as well as their Boyz and vehicles in the vicinity. It will absorb enemy fire, crackling with energy and protecting everything under its bubble. These devices are carried on a Big Mek's back or are sometimes attached to Mekboy Junkas, walkers—from Killa Kans to Stompas—or even buildings.",
+    "ar": 0,
+    "traits": [],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "ORK"
+    ],
+    "source": "apocrypha",
+    "page": 412
+  },
+  {
+    "id": "sparky_wotzitz_aoa",
+    "name": "Sparky Wotzitz (Abundance of Apocrypha)",
+    "type": "field",
+    "description": "Some ingenious Meks—normally on orders from a Warboss—figure out how to create personal force field generators. These field generators are unpredictable and prone to failure, but when functioning properly they can withstand tremendous assaults.",
+    "ar": 3,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "ORK"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 412
+  },
+  {
+    "id": "ancestral_ward_crest_aoa",
+    "name": "Ancestral Ward Crest (Abundance of Apocrypha)",
+    "type": "field",
+    "description": "Weavefield protectors employ interwoven layers of protective energy fields, similar to the refractor and conversion fields used by the Imperium, along with magnetic repulsion fields and a wide spectrum of other barriers. The Leagues of Votann employ this technology in a variety of ways, but in battle, they are often mounted into decorative armoured crests worn on combat armour, projecting shimmering amber barriers that can intercept a variety of incoming attacks.",
+    "ar": 0,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "LEAGUES OF VOTANN"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 412
+  },
+  {
+    "id": "bastium_void_armour_aoa",
+    "name": "Bastium Void Armour (Abundance of Apocrypha)",
+    "type": "heavy",
+    "description": "Some advanced technology produced by the Brôkhyr incorporates Bastium, a superdense alloy of great durability. Some rare models of void armour incorporate layers of Bastium to reinforce it against damage and increase the wearer's durability.",
+    "ar": 5,
+    "traits": [
+      "Power Field",
+      "Void"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "LEAGUES OF VOTANN"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 412
+  },
+  {
+    "id": "exo_armour_aoa",
+    "name": "Exo-Armour (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "Exo-Armour is a suit of massive, servo-assisted powered heavy infantry armour, commonly worn by the elite Einhyr troops of the Leagues of Votann. Its inch-thick armour plate, wrought from exotic alloys only found in the galactic core, provides protection rivalled only by the Tactical Dreadnought Armour of the Adeptus Astartes.",
+    "ar": 7,
+    "traits": [
+      "Cumbersome",
+      "Powered (5)",
+      "Void"
+    ],
+    "value": 9,
+    "rarity": "Very Rare",
+    "keywords": [
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 412
+  },
+  {
+    "id": "exo_frame_aoa",
+    "name": "Exo-Frame (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "Adapted from void-rigs used to maintain Kin spacecraft, these armoured exoskeletons exchange repair tools for massive heavy weapons. While not quite as protective as Exo-Armour, the wearers can weather considerable fire, while allowing them to bear some of the heaviest infantry-portable weapons available.",
+    "ar": 5,
+    "traits": [
+      "Bulk (1)",
+      "Cumbersome",
+      "Powered (6)",
+      "Void"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "LEAGUES OF VOTANN",
+      "BRÔKHYR"
+    ],
+    "source": "apocrypha",
+    "page": 412
+  },
+  {
+    "id": "ram_shield_aoa",
+    "name": "RAM Shield (Abundance of Apocrypha)",
+    "type": "shield",
+    "description": "These bulky protective devices are mounted over one of the gauntlets of a suit of Exo-Armour and used to provide additional defence in close quarters combat, or as a ram when charging into enemy formations. Each RAM Shield includes an Autoch-pattern Combi-Bolter.",
+    "ar": 2,
+    "traits": [
+      "Shield"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 397
+  },
+  {
+    "id": "rampart_crest_aoa",
+    "name": "Rampart Crest (Abundance of Apocrypha)",
+    "type": "field",
+    "description": "These force field generators are commonly mounted into decorative crests worn on personal armour or mounted onto war engines. They function in much the same way as Weavefield projectors, but can be overcharged for short periods, projecting a wider field that protects nearby allies as well. They're commonly worn by league Kâhls, as a symbol of their status and responsibility.",
+    "ar": 3,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "LEAGUES OF VOTANN"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 412
+  },
+  {
+    "id": "weavefield_crest_aoa",
+    "name": "Weavefield Crest (Abundance of Apocrypha)",
+    "type": "field",
+    "description": "Weavefield protectors employ interwoven layers of protective energy fields, similar to the refractor and conversion fields used by the Imperium, along with magnetic repulsion fields and a wide spectrum of other barriers. The Leagues of Votann employ this technology in a variety of ways, but in battle, they are often mounted into decorative armoured crests worn on combat armour, projecting shimmering amber barriers that can intercept a variety of incoming attacks.",
+    "ar": 4,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "LEAGUES OF VOTANN"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 397
+  },
+  {
+    "id": "void_armour_lov_aoa",
+    "name": "Void Armour (Abundance of Apocrypha)",
+    "type": "heavy",
+    "description": "Void armour is the standard-issue personal protection provided by the Leagues of Votann to its soldiers of the line. Void armour provides substantial personal protection to its wearer, a multilayer defence against atmospheric hazards and a full suite of built-in scanning and communications equipment.",
+    "ar": 4,
+    "traits": [
+      "Void"
+    ],
+    "value": 5,
+    "rarity": "Common",
+    "keywords": [
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 413
+  },
+  {
+    "id": "void_suit_lov_aoa",
+    "name": "Void Suit (Abundance of Apocrypha)",
+    "type": "light",
+    "description": "The most commonplace article of clothing worn by the Kin throughout the Leagues of Votann is the void suit, a Kin spacesuit, and it is an excellent example of the Kin's no-nonsense approach to technology. Threaded with Bastium alloy reinforcement and fitted with a thermoregulatory, radiation-hardened underlayer, the void suit doubles as both rugged utility wear and -- when combined with a helmet -- a fully functional spacesuit.",
+    "ar": 2,
+    "traits": [
+      "Void"
+    ],
+    "value": 4,
+    "rarity": "Common",
+    "keywords": [
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 413
+  },
+  {
+    "id": "field_relay_amplifier_aoa",
+    "name": "Field Relay Amplifier (Abundance of Apocrypha)",
+    "type": "field",
+    "description": "Taking the form of a lightweight backpack unit, these relays pick up protective force fields from Guardian Drones, spreading it in an energized umbrella over its bearer and beaming the signal to other relays within range.",
+    "ar": 0,
+    "traits": [],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "T'AU EMPIRE",
+      "FIRE CASTE"
+    ],
+    "source": "apocrypha",
+    "page": 398
+  },
+  {
+    "id": "shield_generator_tau_aoa",
+    "name": "Shield Generator (Abundance of Apocrypha)",
+    "type": "field",
+    "description": "A Shield Generator is a Tau battlesuit support system used to generate a small forcefield which is useful for defending against attacks that would normally bypass normal armour and affect the wearer directly. The field generated encompasses the user completely. These shields are strong enough to absorb a small number of lascannon shots.",
+    "ar": 4,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "T'AU EMPIRE"
+    ],
+    "invulnerable": true,
+    "source": "apocrypha",
+    "page": 398
+  },
+  {
+    "id": "tau_combat_armour_aoa",
+    "name": "T'au Combat Armour (Abundance of Apocrypha)",
+    "type": "light",
+    "description": "Combat Armour is the standard armour worn by Tau Fire Warriors on the battlefield. Constructed in two layers, the outer face is hard and ultra-dense nano-crystalline metal veneer bounded to an inner layer of high-performance, thermo-set, molecular polythene. The distinctive domed T'au helmet of a Combat Armour set includes many systems, ranging from communication equipment, night vision sensors, targeting and ranger-finder information, visual relay systems, and access to the main command network.",
+    "ar": 4,
+    "traits": [],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "T'AU EMPIRE",
+      "FIRE CASTE"
+    ],
+    "source": "apocrypha",
+    "page": 398
+  },
+  {
+    "id": "tau_flight_suit_aoa",
+    "name": "T'au Flight Suit (Abundance of Apocrypha)",
+    "type": "light",
+    "description": "These advanced void suits are designed to provide comfort and protection to Air Caste pilots and voidship crew while they carry out their duties.",
+    "ar": 2,
+    "traits": [
+      "Void"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "T'AU EMPIRE",
+      "AIR CASTE"
+    ],
+    "source": "apocrypha",
+    "page": 398
+  },
+  {
+    "id": "tau_recon_armour_aoa",
+    "name": "T'au Recon Armour (Abundance of Apocrypha)",
+    "type": "light",
+    "description": "Recon Armour is a variant of the Combat Armour worn by Fire Warriors in battle. Recon Armour lacks several of the reinforced layers and armoured plates of Combat Armour, trading a degree of protection for greater freedom of movement. Recon Armour is most utilised by T'au Pathfinders as it is more suited to their role as forward scouts.",
+    "ar": 3,
+    "traits": [],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "T'AU EMPIRE",
+      "PATHFINDER"
+    ],
+    "source": "apocrypha",
+    "page": 398
+  },
+  {
+    "id": "xv15_stealth_battlesuit_aoa",
+    "name": "XV15 Stealth Battlesuit (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "The XV15 Stealthsuit is the smallest of all the various Tau Battlesuit variants and is designed for use in operations requiring a high degree of stealth. Fire Warriors serving in a Stealth Team specialise in covert operations such as infiltration, sabotage, reconnaissance, and ambush. Stealth Teams are the Fire Caste's special operations units.",
+    "ar": 5,
+    "traits": [
+      "Powered (2)"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "T'AU EMPIRE",
+      "FIRE CASTE"
+    ],
+    "source": "apocrypha",
+    "page": 398
+  },
+  {
+    "id": "xv25_stealth_battlesuit_aoa",
+    "name": "XV25 Stealth Battlesuit (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "Larger, more durable, and more versatile than their predecessors, the XV25 Stealth Battlesuit is a superior piece of equipment. The larger frame can support additional systems and the use of fusion guns alongside the typical burst cannons of a Stealth Battlesuit, without sacrificing mobility or compromising the stealth of the unit.",
+    "ar": 5,
+    "traits": [
+      "Powered (3)"
+    ],
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "T'AU EMPIRE",
+      "FIRE CASTE"
+    ],
+    "source": "apocrypha",
+    "page": 398
+  },
+  {
+    "id": "xv8_crisis_battlesuit_aoa",
+    "name": "XV8 Crisis Battlesuit (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "The XV8 Crisis Battlesuit is the mainstay general combat T'au Battlesuit utilised by the warriors of the Fire Caste of the T'au Empire. It mounts a vast array of fearsome ranged weaponry as well as a complement of technologically advanced support systems on a comparatively small and agile frame that offers the T'au pilot within exceptional protection.",
+    "ar": 5,
+    "traits": [
+      "Powered (4)"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "T'AU EMPIRE",
+      "FIRE CASTE"
+    ],
+    "source": "apocrypha",
+    "page": 416
+  },
+  {
+    "id": "xv85_enforcer_battlesuit_aoa",
+    "name": "XV85 Enforcer Battlesuit (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "The XV85 Enforcer Battlesuit is an advanced T'au battlesuit variant, offering improved protection and power systems compared to the standard XV8 Crisis Battlesuit.",
+    "ar": 6,
+    "traits": [
+      "Powered (5)"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "T'AU EMPIRE",
+      "FIRE CASTE"
+    ],
+    "source": "apocrypha",
+    "page": 398
+  },
+  {
+    "id": "xv86_coldstar_battlesuit_aoa",
+    "name": "XV86 Coldstar Battlesuit (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "The XV86 Coldstar Battlesuit is a lighter, more mobile variant of the XV8 Crisis Battlesuit, designed for high-speed combat operations.",
+    "ar": 5,
+    "traits": [
+      "Powered (4)"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "T'AU EMPIRE",
+      "FIRE CASTE"
+    ],
+    "source": "apocrypha",
+    "page": 398
+  },
+  {
+    "id": "xv88_broadside_battlesuit_aoa",
+    "name": "XV88 Broadside Battlesuit (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "The XV88 Broadside Battlesuit is a heavy fire support variant of the T'au battlesuit family, designed to mount the heaviest weapons available to T'au infantry forces.",
+    "ar": 7,
+    "traits": [
+      "Bulk (1)",
+      "Powered (6)"
+    ],
+    "value": 9,
+    "rarity": "Very Rare",
+    "keywords": [
+      "T'AU EMPIRE",
+      "FIRE CASTE"
+    ],
+    "source": "apocrypha",
+    "page": 398
+  },
+  {
+    "id": "mk_x_phobos_power_armour",
+    "name": "Mk X Phobos Power Armour",
+    "type": "heavy",
+    "description": "A variant of Mark 10 Tacticus Power Armour optimised for stealth and mobility, Phobos Armour features reengineered servo-motors to ensure silent movement. Through use of smaller ceramite plates, Phobos Armour maximises the wearer's mobility but sacrifices a small amount of protection.",
+    "ar": 4,
+    "traits": [
+      "Powered (3)"
+    ],
+    "value": 9,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS"
+    ],
+    "source": "fspg",
+    "page": 125
+  },
+  {
+    "id": "brute_shield",
+    "name": "Brute Shield",
+    "type": "shield",
+    "description": "Bullgryns most suited to close combat are equipped with Brute Shields, thick slabs of plasteel incorporating a refractor field to ensure they reach the frontlines even under heavy artillery fire.",
+    "ar": 3,
+    "traits": [
+      "Shield"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "MILITARUM AUXILLA"
+    ],
+    "invulnerable": true,
+    "source": "fspg",
+    "page": 116
+  },
+  {
+    "id": "slabshield",
+    "name": "Slabshield",
+    "type": "shield",
+    "description": "These thick slabs of reinforced plasteel require the strength of an Ogryn to lift, and are used by Bullgryns to form impassible shield walls. The bottom is spiked to be planted in the ground, and the sides are notched so that they can slot together. The viewport at the front is a design necessity, as most Ogryns lack the coordination required to walk forward whilst blocking their own vision.",
+    "ar": 4,
+    "traits": [
+      "Cumbersome",
+      "Shield"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "MILITARUM AUXILLA"
+    ],
+    "source": "fspg",
+    "page": 116
+  },
+  {
+    "id": "voidplate_harness",
+    "name": "Voidplate Harness",
+    "type": "medium",
+    "description": "This enhanced suit of mesh features reinforced plating across vulnerable areas, a system of energy fields to screen against harmful radiation and extreme temperatures, and a gravity distortion matrix allowing the wearer to operate efficiently in zero gravity environments. It is most often employed in Corsair boarding actions, but rarely distributed widely due to the complexity of its maintenance.",
+    "ar": 5,
+    "traits": [
+      "Bulk (1)"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "AELDARI",
+      "ANHRATHE"
+    ],
+    "source": "core",
+    "page": 233
+  }
+]

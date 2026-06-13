@@ -1,0 +1,1198 @@
+{
+  "origins": [
+    {
+      "id": "holy_inspiration",
+      "name": "Holy Inspiration",
+      "description": "You followed in the footsteps of an Imperial Saint on a pilgrimage, an interstellar voyage, or a military campaign. Your idol inspired your faith to new heights.",
+      "bonus": "+1 Resolve",
+      "bonusType": "resolve",
+      "factions": [
+        "adepta_sororitas"
+      ]
+    },
+    {
+      "id": "heresy_begets_retribution",
+      "name": "Heresy Begets Retribution",
+      "description": "You survived a brutal heretical assault. At great sacrifice you emerged triumphant through your zeal. Their attacks only made your faith in Him stronger.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "adepta_sororitas"
+      ]
+    },
+    {
+      "id": "blessed_tomes",
+      "name": "Blessed Tomes",
+      "description": "The words of the faithful guided you since you first beheld them. You quote from these texts often, though not always in the way that the original writer intended!",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "adepta_sororitas"
+      ]
+    },
+    {
+      "id": "shipbound_sickness",
+      "name": "Shipbound Sickness",
+      "description": "Tithed to a Black Ship at a very early age, you are still marked by the torturous time you spent on the voyage to your tutelage.",
+      "bonus": "+1 Max Wounds",
+      "bonusType": "maxWounds",
+      "factions": [
+        "adeptus_astra_telepathica"
+      ]
+    },
+    {
+      "id": "betrayed",
+      "name": "Betrayed",
+      "description": "You attempted to ignore, suppress, or hide your psychic awakening, but were betrayed by those closest to you and surrendered to the Black Ships.",
+      "bonus": "+1 Resolve",
+      "bonusType": "resolve",
+      "factions": [
+        "adeptus_astra_telepathica"
+      ]
+    },
+    {
+      "id": "oracular_visions",
+      "name": "Oracular Visions",
+      "description": "Your powers first manifested as twisted visions of potential fates. You hoped the Scholastia Psykana could cure you, but they have not entirely faded.",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "adeptus_astra_telepathica"
+      ]
+    },
+    {
+      "id": "forge_born",
+      "name": "Forge Born",
+      "description": "You were born in the Cult Mechanicus, raised by steel and choir. The rhythms of the forge, the manufactorum, and the data-loom beat in your heart, whether natural or artificial.",
+      "bonus": "+1 Resolve",
+      "bonusType": "resolve",
+      "factions": [
+        "adeptus_mechanicus"
+      ]
+    },
+    {
+      "id": "void_born",
+      "name": "Void Born",
+      "description": "You spent your early life aboard an orbital station, built either for defence or industry. You were unaware planets existed until adolescence.",
+      "bonus": "+1 Max Wounds",
+      "bonusType": "maxWounds",
+      "factions": [
+        "adeptus_mechanicus"
+      ]
+    },
+    {
+      "id": "promethean_proselytism",
+      "name": "Promethean Proselytism",
+      "description": "You converted to the Cult Mechanicus, leaving your former life behind after a holy vision, revelatory moment, or some other change of heart.",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "adeptus_mechanicus"
+      ]
+    },
+    {
+      "id": "tithed",
+      "name": "Tithed",
+      "description": "As a child you were given unto the Ecclesiarchy's charge as part of a family tradition. You have spent your cloistered life in devout study of the Imperial Cult.",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "adeptus_ministorum"
+      ]
+    },
+    {
+      "id": "penitent",
+      "name": "Penitent",
+      "description": "Confession and prayer are not enough; you believe you sinned, and this stains your very soul. You seek penance with your every act — but for what sin?",
+      "bonus": "+1 Resolve",
+      "bonusType": "resolve",
+      "factions": [
+        "adeptus_ministorum"
+      ]
+    },
+    {
+      "id": "guided_by_visions",
+      "name": "Guided by Visions",
+      "description": "You are guided by waking dreams of glorious figures of the Creed: preachers, Saints, and the God-Emperor Himself. You rely on these questionably accurate visions.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "adeptus_ministorum"
+      ]
+    },
+    {
+      "id": "recent_recruit",
+      "name": "Recent Recruit",
+      "description": "You're still getting used to the Astra Militarum; until recently, your life was very different. You're surrounded by strangers and unused to the horrors of war.",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "astra_militarum"
+      ]
+    },
+    {
+      "id": "regiment_born",
+      "name": "Regiment Born",
+      "description": "Your parents were lifelong Astra Militarum. The regimental beliefs and traditions are in your very bones, and the other troopers in your squad are like family.",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "astra_militarum"
+      ]
+    },
+    {
+      "id": "no_choice",
+      "name": "No Choice",
+      "description": "Whether you were tithed without consent, press ganged, or signed up to escape a criminal past, you're in the Astra Militarum now. Time to make the best of it!",
+      "bonus": "+1 Resolve",
+      "bonusType": "resolve",
+      "factions": [
+        "astra_militarum"
+      ]
+    },
+    {
+      "id": "downtrodden",
+      "name": "Downtrodden",
+      "description": "Every memory you have is painful; for you, life in the Imperium means violence, toxic conditions, and slavery. You've developed strong willpower to combat this.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "scum"
+      ]
+    },
+    {
+      "id": "born_scummy",
+      "name": "Born Scummy",
+      "description": "You've got a natural knack for the dangerous life of Scum, barely affected by its daily trials. That, or you just love life off the Imperial grid.",
+      "bonus": "+1 Max Shock",
+      "bonusType": "maxShock",
+      "factions": [
+        "scum"
+      ]
+    },
+    {
+      "id": "fallen",
+      "name": "Fallen",
+      "description": "Once a member of an Adepta, or even a noble house, you have fallen from grace through tragedy, betrayal, or some disgraceful failing.",
+      "bonus": "+1 Resolve",
+      "bonusType": "resolve",
+      "factions": [
+        "scum"
+      ]
+    },
+    {
+      "id": "squig_brain_transfer",
+      "name": "Squig Brain Transfer",
+      "description": "Your earliest memory is awakening from surgery, covered in scars, and the Mad Dok telling you you're ready to fight again. Who were you before? Does it matter?",
+      "bonus": "+1 Max Shock",
+      "bonusType": "maxShock",
+      "factions": [
+        "ork"
+      ]
+    },
+    {
+      "id": "endless_waaagh",
+      "name": "Endless WAAAGH!",
+      "description": "The best time of your life — so far — was on the frontlines of a WAAAGH! You kept fighting until there was no one left… including your allies.",
+      "bonus": "+1 Resolve",
+      "bonusType": "resolve",
+      "factions": [
+        "ork"
+      ]
+    },
+    {
+      "id": "time_to_fight",
+      "name": "Time To Fight",
+      "description": "After travelling through the Warp, you somehow ended up back in time. You feel an indescribable urge to find and fight your past self.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "ork"
+      ]
+    },
+    {
+      "id": "lost_boy",
+      "name": "Lost Boy",
+      "description": "Every Boy you know was defeated in a futile charge against daemonic forces, but you survived.",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "ork"
+      ]
+    },
+    {
+      "id": "rok_or_hulk",
+      "name": "Rok or Hulk",
+      "description": "Fighting in low-grav situations amongst Genestealers, Aeldari, and whatever else got on your transport, your life was exciting and simple — until you fell out or crashed, and you landed wherever you are now.",
+      "bonus": "+1 Resolve",
+      "bonusType": "resolve",
+      "factions": [
+        "ork"
+      ]
+    },
+    {
+      "id": "lonely_spawn",
+      "name": "Lonely Spawn",
+      "description": "You knew something was wrong from your first cognisant thought — you were alone. Your drive to search for other Boyz has fuelled your brash spirit.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "ork"
+      ]
+    },
+    {
+      "id": "inq_chosen",
+      "name": "Chosen",
+      "description": "You were hand-picked to join the Inquisition; an Inquisitor saw your potential or specific skill set and induted you to the Inquisition, or employed you for your contacts or resources.",
+      "bonus": "+1 Wealth",
+      "bonusType": "wealth",
+      "factions": [
+        "inquisition"
+      ]
+    },
+    {
+      "id": "inq_fickle_fortune",
+      "name": "Fickle Fortune",
+      "description": "Caught in horrors hidden from the populace, you were forced to join the Inquisition. Your life was redacted from Administratum records, now a half-forgotten shadow.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "inquisition"
+      ]
+    },
+    {
+      "id": "inq_schola_progenia",
+      "name": "Schola Progenia",
+      "description": "An Imperial orphan raised to be the greatest servant of the Emperor possible, you excelled through a gruelling upbringing to enter the ranks of the Holy Ordos.",
+      "bonus": "+1 Max Wounds",
+      "bonusType": "maxWounds",
+      "factions": [
+        "inquisition"
+      ]
+    },
+    {
+      "id": "rt_dynastic_scion",
+      "name": "Dynastic Scion",
+      "description": "You were born into a Rogue Trader dynasty, heir to the family's prestigious Warrant of Trade. Your lineage may be renowned, or darkly infamous.",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "rogue_trader"
+      ]
+    },
+    {
+      "id": "rt_merchant_prince",
+      "name": "Merchant Prince",
+      "description": "You bargained your wealth — legitimate or ill-gotten — into the acquisition of a far more thrilling and adventurous Warrant of Trade.",
+      "bonus": "+1 Wealth",
+      "bonusType": "wealth",
+      "factions": [
+        "rogue_trader"
+      ]
+    },
+    {
+      "id": "rt_exile",
+      "name": "Exile",
+      "description": "You were given the choice to either take a Warrant of Trade and leave the Imperium or suffer the wrath of your rivals. Will you claim revenge, or fame?",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "rogue_trader"
+      ]
+    },
+    {
+      "id": "astartes_killer_instinct",
+      "name": "Killer Instinct",
+      "description": "Aggression and fury fuelled your Aspirant trials. You overcame every challenger with bloody-minded savagery, impressing your betters.",
+      "bonus": "+1 Max Wounds",
+      "bonusType": "maxWounds",
+      "factions": [
+        "adeptus_astartes"
+      ]
+    },
+    {
+      "id": "astartes_courage",
+      "name": "Courage",
+      "description": "You faced every Aspirant trial with grit and determination, pushing through exhaustion, fear, and uncertainty with conviction and bravery.",
+      "bonus": "+1 Resolve",
+      "bonusType": "resolve",
+      "factions": [
+        "adeptus_astartes"
+      ]
+    },
+    {
+      "id": "astartes_cunning",
+      "name": "Cunning",
+      "description": "You made your way through the Aspirant trials by using your experience with the underhanded, relying on wit over brawn.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "adeptus_astartes"
+      ]
+    },
+    {
+      "id": "chaos_born_evil",
+      "name": "Born Evil",
+      "description": "For as long as you remember you have served the Chaos Gods; somehow, your very soul was created tainted.",
+      "bonus": "+1 Corruption",
+      "bonusType": "corruption",
+      "factions": [
+        "chaos"
+      ]
+    },
+    {
+      "id": "chaos_converted",
+      "name": "Converted",
+      "description": "An agent of the Chaos Gods seduced or coerced you with heresy, luring you to an immoral descent. Are they still an ally? Or a mortal enemy?",
+      "bonus": "+1 Resolve",
+      "bonusType": "resolve",
+      "factions": [
+        "chaos"
+      ]
+    },
+    {
+      "id": "chaos_contaminated",
+      "name": "Contaminated",
+      "description": "Whilst on an operation, an artefact, individual, or environment befouled by the Ruinous Powers polluted your soul.",
+      "bonus": "+1 Max Shock",
+      "bonusType": "maxShock",
+      "factions": [
+        "chaos"
+      ]
+    }
+  ],
+  "accomplishments": [
+    {
+      "id": "defended_enoch",
+      "name": "Defended Enoch",
+      "description": "One of Enoch's many prized holy sites came under assault, and you were there to drive off the attackers. Pilgrims on the shrine world owe you their lives.",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "adepta_sororitas"
+      ]
+    },
+    {
+      "id": "purge_unclean",
+      "name": "Purge the Unclean",
+      "description": "You led a kill-team to wipe out a nest of Corruption. Victory came at a cost.",
+      "bonus": "+1 Max Wounds",
+      "bonusType": "maxWounds",
+      "factions": [
+        "adepta_sororitas"
+      ]
+    },
+    {
+      "id": "saving_souls",
+      "name": "Saving Souls",
+      "description": "The strongest waver in the face of nightmarish terror in the Gilead. You banished the doubts and fears of those who struggled on the path of the Imperial Creed.",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "adepta_sororitas"
+      ]
+    },
+    {
+      "id": "warp_hound",
+      "name": "Warp Hound",
+      "description": "Your abilities proved instrumental in an operation to collect and capture other Psykers.",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "adeptus_astra_telepathica"
+      ]
+    },
+    {
+      "id": "proven_practical",
+      "name": "Proven Practical",
+      "description": "A mighty foe fell to your psychic powers, convincing your allies of your usefulness and frightening potential.",
+      "bonus": "+1 Resolve",
+      "bonusType": "resolve",
+      "factions": [
+        "adeptus_astra_telepathica"
+      ]
+    },
+    {
+      "id": "stalwart",
+      "name": "Stalwart",
+      "description": "You resisted the call of Chaos at a crucial moment when others could not and emerged unscathed from a brush with the Ruinous Powers.",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "adeptus_astra_telepathica"
+      ]
+    },
+    {
+      "id": "quest_knowledge",
+      "name": "Quest for Knowledge",
+      "description": "You accompanied a Rogue Trader or an Explorator mission to search for forgotten technology. The journey was rife with danger, but you prevailed, earning scars and wisdom.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "adeptus_mechanicus"
+      ]
+    },
+    {
+      "id": "forbidden_tech",
+      "name": "Forbidden Tech",
+      "description": "You encountered technology considered anathema. Xenos machines, heretical experimentation, or something stranger — did you destroy the abhorrent machine, or take a risk?",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "adeptus_mechanicus"
+      ]
+    },
+    {
+      "id": "necron_assault",
+      "name": "Necron Assault",
+      "description": "You survived a clash with the nightmarish Necrons; many allies fell to their bizarre weapons, but you managed to escape or prevail, haunted by visions of death-masked mechanical horrors.",
+      "bonus": "+1 Max Shock",
+      "bonusType": "maxShock",
+      "factions": [
+        "adeptus_mechanicus"
+      ]
+    },
+    {
+      "id": "breaker_heretics",
+      "name": "Breaker of Heretics",
+      "description": "You personally destroyed a heretical movement. The sight of such blasphemy was enough to twist your stomach, but your righteous anger served you well.",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "adeptus_ministorum"
+      ]
+    },
+    {
+      "id": "trust_no_one",
+      "name": "Trust No One",
+      "description": "Ambition and greed permeate even the zealous clerics of the Creed. You have suffered first-hand at this corruption, and now you judge the faith of others.",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "adeptus_ministorum"
+      ]
+    },
+    {
+      "id": "crisis_faith",
+      "name": "Crisis of Faith",
+      "description": "After your community faced doubt you rekindled the light of fervour, overcoming a profoundly dark and lonesome trial.",
+      "bonus": "+1 Resolve",
+      "bonusType": "resolve",
+      "factions": [
+        "adeptus_ministorum"
+      ]
+    },
+    {
+      "id": "fifteen_hours",
+      "name": "15+ Hours",
+      "description": "You've exceeded the usual life expectancy of a frontline trooper, despite the horrors of war. You're practically a veteran.",
+      "bonus": "+1 Max Shock",
+      "bonusType": "maxShock",
+      "factions": [
+        "astra_militarum"
+      ]
+    },
+    {
+      "id": "last_one_standing",
+      "name": "Last One Standing",
+      "description": "Your squad was destroyed in a heroic last stand; as the only survivor you held a crucial position. Do you feel guilty or believe the Emperor has plans for you?",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "astra_militarum"
+      ]
+    },
+    {
+      "id": "gang_wrangler",
+      "name": "Gang Wrangler",
+      "description": "You united squabbling gangs to fight for a common cause. You've probably made quite a few friends in the underground, and maybe a few enemies too.",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "scum"
+      ]
+    },
+    {
+      "id": "pit_champion",
+      "name": "Pit Champion",
+      "description": "Through wit or brawn, you proved yourself the most proficient fighter in an underground fighting ring, with the scars to prove it.",
+      "bonus": "+1 Max Wounds",
+      "bonusType": "maxWounds",
+      "factions": [
+        "scum"
+      ]
+    },
+    {
+      "id": "the_big_one",
+      "name": "The Big One",
+      "description": "You were instrumental in the biggest score anyone from your home has made. Hopefully you won't run into anyone that can place you at the crime scene.",
+      "bonus": "+1 Wealth",
+      "bonusType": "wealth",
+      "factions": [
+        "scum"
+      ]
+    },
+    {
+      "id": "denied_destiny",
+      "name": "Denied Destiny",
+      "description": "Where the Farseers foresaw death, you prevailed, defeating an incredible foe or accomplishing an impossible task.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "aeldari"
+      ]
+    },
+    {
+      "id": "communed_with_infinity",
+      "name": "Communed with Infinity",
+      "description": "You have devoted considerable time to meditation with the spirits of the departed; they have taught you much of life and death.",
+      "bonus": "+1 Resolve",
+      "bonusType": "resolve",
+      "factions": [
+        "aeldari"
+      ]
+    },
+    {
+      "id": "mon_keigh_animosity",
+      "name": "Mon-Keigh Animosity",
+      "description": "The depraved stupidity of Humanity has endangered your life on more than one occasion. You have survived battles alongside and against them.",
+      "bonus": "+1 Max Shock",
+      "bonusType": "maxShock",
+      "factions": [
+        "aeldari"
+      ]
+    },
+    {
+      "id": "webway_explorer",
+      "name": "Webway Explorer",
+      "description": "Traversing many Webway paths you have uncovered the hidden and forgotten, recovering valuable artefacts and even more crucial routes.",
+      "bonus": "+1 Wealth",
+      "bonusType": "wealth",
+      "factions": [
+        "aeldari"
+      ]
+    },
+    {
+      "id": "unusual_ally",
+      "name": "Unusual Ally",
+      "description": "Your actions saved the life of someone beyond your Faction; a Drukhari, a Harlequin, maybe even an Imperial.",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "aeldari"
+      ]
+    },
+    {
+      "id": "black_library_scholar",
+      "name": "Black Library Scholar",
+      "description": "You have studied the ancient arcane writings of the cryptic Black Library; obscure knowledge of the profane is your constant companion.",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "aeldari"
+      ]
+    },
+    {
+      "id": "marafon",
+      "name": "Marafon",
+      "description": "Your Warboss told you to go somewhere to deliver a message or retrieve some Wargear. An impossible mission, but your colossal self-belief saw you through.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "ork"
+      ]
+    },
+    {
+      "id": "made_it_flashy",
+      "name": "Made it Flashy",
+      "description": "You fixed up a piece of gear for your Warboss, adding spikey bits and more dakka! You were handsomely rewarded.",
+      "bonus": "+1 Wealth",
+      "bonusType": "wealth",
+      "factions": [
+        "ork"
+      ]
+    },
+    {
+      "id": "proppa_fast",
+      "name": "Proppa Fast!",
+      "description": "You achieved incredible speed and performed death-defying stunts that the Boyz will talk about for years. You wrecked your vehicle, but it was still impressive.",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "ork"
+      ]
+    },
+    {
+      "id": "surgical_success",
+      "name": "Surgical Success",
+      "description": "You recovered from grievous injuries after a brave engagement. The brush with death has only made you more eager for a fight.",
+      "bonus": "+1 Max Shock",
+      "bonusType": "maxShock",
+      "factions": [
+        "ork"
+      ]
+    },
+    {
+      "id": "kroosader",
+      "name": "Kroosader",
+      "description": "On your Warboss' behest, you've travelled the galaxy spreading violence and mayhem. You've come far and have forgotten the purpose of the Kroosade.",
+      "bonus": "+1 Max Wounds",
+      "bonusType": "maxWounds",
+      "factions": [
+        "ork"
+      ]
+    },
+    {
+      "id": "blessed_by_gork",
+      "name": "Blessed by Gork (or Mork)",
+      "description": "You yelled an impromptu speech amidst a battle against impossible odds; the fight somehow swung in your favour, a blessing from the Gods themselves.",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "ork"
+      ]
+    },
+    {
+      "id": "inq_scheme_revealed",
+      "name": "The Scheme Revealed",
+      "description": "You were instrumental in uncovering and foiling a plot against the Imperium. The Emperor's enemies are often sly and sinister, but unable to deceive you.",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "inquisition"
+      ]
+    },
+    {
+      "id": "inq_the_unseen",
+      "name": "The Unseen",
+      "description": "You accomplished a crucial mission without alerting the public pleasing your superiors by succeeding covertly. Your cunning saved many lives.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "inquisition"
+      ]
+    },
+    {
+      "id": "inq_exterminatus",
+      "name": "Exterminatus",
+      "description": "You watched a world die. You stood on the bridge of a voidship, looking down as the terrible mechanism of Exterminatus destroyed a planet, killing billions.",
+      "bonus": "+1 Max Shock",
+      "bonusType": "maxShock",
+      "factions": [
+        "inquisition"
+      ]
+    },
+    {
+      "id": "rt_dabbled_proscribed",
+      "name": "Dabbled in the Proscribed",
+      "description": "You believe that rules were meant to be broken. You do not shrink from dealing with xenos species, nor do you fear travelling into forbidden stars. You see something that most Imperials consider blasphemous and think 'that would look good in my trophy room!'",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "rogue_trader"
+      ]
+    },
+    {
+      "id": "rt_dark_frontier",
+      "name": "Dark Frontier",
+      "description": "You have travelled far from Imperial worlds, exploring the fringes of the galaxy. You've found worlds, xenos, and sights that few have ever dreamed of.",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "rogue_trader"
+      ]
+    },
+    {
+      "id": "rt_strange_alliance",
+      "name": "Strange Alliance",
+      "description": "You have made deals with an unusual, unique, or otherwise iconoclastic group or individual, giving you prestige (or infamy) beyond many of your contemporaries.",
+      "bonus": "+1 Any Keyword",
+      "bonusType": "keyword",
+      "factions": [
+        "rogue_trader"
+      ]
+    },
+    {
+      "id": "astartes_crusader",
+      "name": "Crusader",
+      "description": "You zealously shouldered a personal responsibility to destroy a particular foe; your chapter has given you leave to continue your grim work.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "adeptus_astartes"
+      ]
+    },
+    {
+      "id": "astartes_badge_of_honour",
+      "name": "Badge of Honour",
+      "description": "You risked your immortal life to rescue mortals in peril, and have been justly recognised for your unasked for selflessness.",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "adeptus_astartes"
+      ]
+    },
+    {
+      "id": "astartes_cleanse_purge",
+      "name": "Cleanse and Purge",
+      "description": "You fought enemy forces in their blasphemous lair. Some of your battle-brothers died in the conflict, but you ensured the mission was a success.",
+      "bonus": "+1 Max Shock",
+      "bonusType": "maxShock",
+      "factions": [
+        "adeptus_astartes"
+      ]
+    },
+    {
+      "id": "chaos_revolting",
+      "name": "Revolting",
+      "description": "You led an insurrection, overthrowing the Imperium's influence in a location.",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "chaos"
+      ]
+    },
+    {
+      "id": "chaos_reclaimer",
+      "name": "Reclaimer",
+      "description": "An artefact suffused with Warp energies called out to you from the void; you found it after a dark pilgrimage.",
+      "bonus": "+1 Wealth",
+      "bonusType": "wealth",
+      "factions": [
+        "chaos"
+      ]
+    },
+    {
+      "id": "chaos_vanquisher",
+      "name": "Vanquisher",
+      "description": "You almost died in a battle against an enemy of Chaos, but managed to defeat them with Warp-fuelled resilience.",
+      "bonus": "+1 Max Wounds",
+      "bonusType": "maxWounds",
+      "factions": [
+        "chaos"
+      ]
+    }
+  ],
+  "goals": [
+    {
+      "id": "reclaim_relic",
+      "name": "Reclaim a Relic",
+      "description": "Long ago, an important Ministorum relic went missing. You would do anything to recover this relic and restore it to the Ecclesiarchy.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "adepta_sororitas"
+      ]
+    },
+    {
+      "id": "shine_light",
+      "name": "Shine the Light",
+      "description": "The dark closes in; you intend to push it back. Build a monastery and recruit holy warriors to your righteous cause.",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "adepta_sororitas"
+      ]
+    },
+    {
+      "id": "martyrdom",
+      "name": "Martyrdom",
+      "description": "Your prayers have guided you to an inescapable truth: you must become a martyr. You search for a worthy cause to die for in the Emperor's name.",
+      "bonus": "+1 Max Shock",
+      "bonusType": "maxShock",
+      "factions": [
+        "adepta_sororitas"
+      ]
+    },
+    {
+      "id": "pacifier",
+      "name": "Pacifier",
+      "description": "Word must be spread that not all Psykers are witches or sorcerers — you aim to reverse the tragic effects of centuries of propaganda.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "adeptus_astra_telepathica"
+      ]
+    },
+    {
+      "id": "arcane_lore",
+      "name": "Arcane Lore",
+      "description": "The Warp has revealed a scant few of its mysteries to you. Now you crave a fuller understanding, seeking knowledge few can grasp.",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "adeptus_astra_telepathica"
+      ]
+    },
+    {
+      "id": "vengeance_psyker",
+      "name": "Vengeance",
+      "description": "Through fickle fate you can manipulate a daemonic force, but this was not your desire. You will revenge yourself on the Warp by slaying its manifestations.",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "adeptus_astra_telepathica"
+      ]
+    },
+    {
+      "id": "mechanical_missionary",
+      "name": "Mechanical Missionary",
+      "description": "The truth of the Omnissiah must be spread. By converting individuals and raising holy temples or forges, you serve the expansion of the Cult Mechanicus.",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "adeptus_mechanicus"
+      ]
+    },
+    {
+      "id": "acquire_archeotech",
+      "name": "Acquire Archeotech",
+      "description": "The acquisition of technology is a core tenet of your faith. You zealously pursue the possibility of recovering lost Dark Age technology, or even a fabled STC.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "adeptus_mechanicus"
+      ]
+    },
+    {
+      "id": "ascend_to_iron",
+      "name": "Ascend to Iron",
+      "description": "The flesh is weak. You are driven to replace biological matter with augmetics.",
+      "bonus": "+1 Wealth",
+      "bonusType": "wealth",
+      "factions": [
+        "adeptus_mechanicus"
+      ]
+    },
+    {
+      "id": "avenge_lost",
+      "name": "Avenge the Lost",
+      "description": "Part of your church turned traitor, committing grievous sins and slaying your allies. Find the renegades, judge their crimes, and carry out your grim sentence.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "adeptus_ministorum"
+      ]
+    },
+    {
+      "id": "aspiration",
+      "name": "Aspiration",
+      "description": "The lofty spire of Ecclesiarchy advancement is yours to climb; honour and influence are your desire, through whatever means necessary.",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "adeptus_ministorum"
+      ]
+    },
+    {
+      "id": "pilgrimage",
+      "name": "Pilgrimage",
+      "description": "You feel driven to undertake a pilgrimage, one that will surely test your faith to become one of the blessed.",
+      "bonus": "+1 Max Shock",
+      "bonusType": "maxShock",
+      "factions": [
+        "adeptus_ministorum"
+      ]
+    },
+    {
+      "id": "advancement",
+      "name": "Advancement",
+      "description": "You've set your sights on promotion; bearing the regimental banner or perhaps becoming an officer leading a platoon. Where will your ambition lead?",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "astra_militarum"
+      ]
+    },
+    {
+      "id": "best_of_the_best",
+      "name": "Best of the Best",
+      "description": "Holding the line is not enough — you want to excel at dealing death. Hone your skills to a lethal edge and become an elite warrior of the Astra Militarum.",
+      "bonus": "+1 Max Wounds",
+      "bonusType": "maxWounds",
+      "factions": [
+        "astra_militarum"
+      ]
+    },
+    {
+      "id": "overwhelming_firepower",
+      "name": "Overwhelming Firepower",
+      "description": "You like guns — the bigger the better. Through position, funds, or foul play, you intend to be the most well-armed member of the Astra Militarum that ever lived.",
+      "bonus": "+1 Wealth",
+      "bonusType": "wealth",
+      "factions": [
+        "astra_militarum"
+      ]
+    },
+    {
+      "id": "hive_topper",
+      "name": "Hive Topper",
+      "description": "You started at the bottom, and you'll make it to the top. Whatever it takes, you're going to find the good life — and maybe even be a hero while you're at it.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "scum"
+      ]
+    },
+    {
+      "id": "rescuer",
+      "name": "Rescuer",
+      "description": "You left someone close to you behind when you left the sump or the underhive. One day, you'll return and show them the sunlight.",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "scum"
+      ]
+    },
+    {
+      "id": "fortunate_and_forgotten",
+      "name": "Fortunate and Forgotten",
+      "description": "You're sick of this city, this planet, even your own name — by amassing riches you plan to abandon your life and everyone you know in search of something better.",
+      "bonus": "+1 Max Shock",
+      "bonusType": "maxShock",
+      "factions": [
+        "scum"
+      ]
+    },
+    {
+      "id": "fatalist",
+      "name": "Fatalist",
+      "description": "After a series of unfortunate battles, you have accepted your Species is doomed. You seek only protection; a defensible refuge for you and your allies.",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "aeldari"
+      ]
+    },
+    {
+      "id": "renewal",
+      "name": "Renewal",
+      "description": "Your long life was fraught with the tragic milieu of your Species. You seek new experiences and perspectives to lift your burdens and wash away your sorrows.",
+      "bonus": "+1 Max Shock",
+      "bonusType": "maxShock",
+      "factions": [
+        "aeldari"
+      ]
+    },
+    {
+      "id": "serenity",
+      "name": "Serenity",
+      "description": "Like many of your Species, your emotions are overwhelming to the point of self-destruction. Seek serenity to protect your soul from Slaanesh.",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "aeldari"
+      ]
+    },
+    {
+      "id": "path_mastery",
+      "name": "Path Mastery",
+      "description": "You see nothing beyond your current Path and have thrown yourself into it utterly. Whatever your present discipline is, you will be an exemplar and pioneer.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "aeldari"
+      ]
+    },
+    {
+      "id": "recovery",
+      "name": "Recovery",
+      "description": "You will restore the lost majesty of your Species, finding artefacts and lost knowledge; are you seeking something specific?",
+      "bonus": "+1 Resolve",
+      "bonusType": "resolve",
+      "factions": [
+        "aeldari"
+      ]
+    },
+    {
+      "id": "unity",
+      "name": "Unity",
+      "description": "The arch-foe cannot be defeated by the dwindling forces of your Species — at least, not fractured as they are. You will forge great allegiances and bring unity.",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "aeldari"
+      ]
+    },
+    {
+      "id": "ardest",
+      "name": "'Ardest",
+      "description": "You're going to be the toughest Ork in the galaxy, gathering Boyz behind you and raising a mighty WAAAGH!",
+      "bonus": "+1 Max Wounds",
+      "bonusType": "maxWounds",
+      "factions": [
+        "ork"
+      ]
+    },
+    {
+      "id": "biggest_choppa",
+      "name": "Biggest Choppa",
+      "description": "You will wield the biggest, sharpest, heaviest Choppa anyone has ever known. You might have to win a few fights and grow to raise such an ideal weapon.",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "ork"
+      ]
+    },
+    {
+      "id": "red_wunz_go_fasta",
+      "name": "Red Wunz Go Fasta",
+      "description": "You will pilot the loudest, fastest, most dangerous vehicle ever known. Sure, a few bits might get blown off and the red paint scratched, but it will be worth it.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "ork"
+      ]
+    },
+    {
+      "id": "flashy_est",
+      "name": "Flashy-est",
+      "description": "You hoard Teef, and intend to be the richest Ork that ever lived. Of course, you still need to spend them on stuff to show off how flashy you are!",
+      "bonus": "+1 Wealth",
+      "bonusType": "wealth",
+      "factions": [
+        "ork"
+      ]
+    },
+    {
+      "id": "most_dakka",
+      "name": "Most Dakka",
+      "description": "Enough is never enough — you must have the loudest, shiniest, biggest shoota, with more spikey bitz than anyone else's. You dream of the carnage it will cause.",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "ork"
+      ]
+    },
+    {
+      "id": "proppa_fight",
+      "name": "Proppa Fight",
+      "description": "You're going to win the biggest, best fight ever. You never stop searching for the best of ultraviolence, and embrace the idea you might have to start it.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "ork"
+      ]
+    },
+    {
+      "id": "inq_for_the_ordo",
+      "name": "For the Ordo",
+      "description": "You work to advance the cause of your particular philosophy or Ordo in the Inquisition, ever looking for opportunities to forward the work of your fellows.",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "inquisition"
+      ]
+    },
+    {
+      "id": "inq_find_the_truth",
+      "name": "Find the Truth",
+      "description": "You are consumed by the search for answers. There is one particular mystery that haunts your dreams, and you will not rest until you have undone the conundrum.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "inquisition"
+      ]
+    },
+    {
+      "id": "inq_the_hunt",
+      "name": "The Hunt",
+      "description": "A particular heretic, alien, or being of Chaos has done you grievous harm. You yearn to confront this enemy and bring their plans crashing down around them.",
+      "bonus": "+1 Resolve",
+      "bonusType": "resolve",
+      "factions": [
+        "inquisition"
+      ]
+    },
+    {
+      "id": "rt_boundless_ambition",
+      "name": "Boundless Ambition",
+      "description": "Enough is never enough. You want to be a legend, not just an interesting story. You pursue an epic destiny, and damn any who stand in your way.",
+      "bonus": "+1 Resolve",
+      "bonusType": "resolve",
+      "factions": [
+        "rogue_trader"
+      ]
+    },
+    {
+      "id": "rt_beyond_the_map",
+      "name": "Beyond the Map",
+      "description": "You dream of going further then others have dared. Your destination may be nigh-legendary, well-hidden, or simply considered impossible.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "rogue_trader"
+      ]
+    },
+    {
+      "id": "rt_fortune_and_glory",
+      "name": "Fortune and Glory",
+      "description": "The lure of the unknown calls. You want to boldly venture into regions better left alone, gifting your name to your discoveries and making a massive profit.",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "rogue_trader"
+      ]
+    },
+    {
+      "id": "astartes_advancement",
+      "name": "Advancement",
+      "description": "You desire the honour of a special role in your chapter. You look for opportunities to show your worth to your battle-brothers.",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "adeptus_astartes"
+      ]
+    },
+    {
+      "id": "astartes_vengeance",
+      "name": "Vengeance",
+      "description": "Many of your battle-brothers were slain by a particular foe; you burn to avenge this stain on your honour.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "adeptus_astartes"
+      ]
+    },
+    {
+      "id": "astartes_honour_the_chapter",
+      "name": "Honour the Chapter",
+      "description": "You uphold the Chapter's valour, quick to extoll its virtues, never allowing a slight against your battle-brothers to go unanswered.",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "adeptus_astartes"
+      ]
+    },
+    {
+      "id": "chaos_champion",
+      "name": "Champion",
+      "description": "You crave the attention of the Ruinous Powers, slaying in their name until you become their recognised champion.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "chaos"
+      ]
+    },
+    {
+      "id": "chaos_conquer",
+      "name": "Conquer",
+      "description": "There is a civilisation, a city, or a planet you are destined to destroy.",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "chaos"
+      ]
+    },
+    {
+      "id": "chaos_ascension",
+      "name": "Ascension",
+      "description": "Power is not enough; you lust to become a daemon, your every mutation bringing you closer to your apotheosis.",
+      "bonus": "+1 Corruption",
+      "bonusType": "corruption",
+      "factions": [
+        "chaos"
+      ]
+    }
+  ]
+}

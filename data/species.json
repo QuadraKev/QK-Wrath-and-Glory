@@ -1,0 +1,2839 @@
+[
+  {
+    "id": "human",
+    "name": "Human",
+    "description": "The uncounted trillions of Humans are the most numerous and widespread Species in the galaxy. Their fathomless multitudes are spread across a million worlds with endless variety in mind and body.",
+    "cost": 0,
+    "speed": 6,
+    "size": "Average",
+    "baseAttributes": {},
+    "baseSkills": {},
+    "attributeMaximums": {
+      "strength": 8,
+      "toughness": 8,
+      "agility": 8,
+      "initiative": 8,
+      "willpower": 8,
+      "intellect": 8,
+      "fellowship": 8
+    },
+    "woundBonus": 0,
+    "abilities": [],
+    "keywords": [
+      "IMPERIUM"
+    ],
+    "source": "core",
+    "page": 30,
+    "subOptions": {
+      "type": "homeworld",
+      "label": "Homeworld (Abundance of Apocrypha)",
+      "required": false,
+      "addKeyword": true,
+      "options": [
+        {
+          "id": "death_world_aoa",
+          "name": "Death World (Abundance of Apocrypha)",
+          "keyword": "DEATH WORLD",
+          "abilities": [
+            {
+              "name": "Bitter Survivor",
+              "effect": "The character clings onto life and is well-versed in eluding death's grasp. The character adds +1 to Determination."
+            },
+            {
+              "name": "Not One of Us",
+              "effect": "Deathworlders don't easily trust those who haven't endured the same kind of hostile environments. They suffer +1DN to all Interaction tests with those who aren't Deathworlders."
+            }
+          ]
+        },
+        {
+          "id": "hive_world_aoa",
+          "name": "Hive World (Abundance of Apocrypha)",
+          "keyword": "HIVE WORLD",
+          "abilities": [
+            {
+              "name": "Caves of Steel",
+              "effect": "The character has been surrounded by technology, some of which may be centuries or millennia old, for their entire lives. The character gains +1d to Tech tests."
+            },
+            {
+              "name": "Hivebound",
+              "effect": "Hivers are unaccustomed to the ways of wild, untamed places. Even the wilderness of underhive levels and abandoned habs is still built around artificial structures. Hiveworlders suffer +1DN on all Survival tests made when not in an urban or manufactured environment."
+            }
+          ]
+        },
+        {
+          "id": "voidborn_aoa",
+          "name": "Voidborn (Abundance of Apocrypha)",
+          "keyword": "VOIDBORN",
+          "abilities": [
+            {
+              "name": "Voidwise",
+              "effect": "The character is accustomed to the vagaries of life aboard ship or station and is well-versed in protective rites and emergency doctrines. The character gains +1d on all tests to resist radiation and ignores all penalties to action caused by low- or zero-gravity environments."
+            },
+            {
+              "name": "Ill-Omened",
+              "effect": "Voidborn are considered strange and inauspicious by others, who look for even the slightest sign of ill-fortune. When attempting an interaction test with a non-Voidborn, two dice are replaced by Wrath dice, rather than one, and the character is unable to score criticals on these tests."
+            }
+          ]
+        },
+        {
+          "id": "forge_world_aoa",
+          "name": "Forge World (Abundance of Apocrypha)",
+          "keyword": "FORGE WORLD",
+          "abilities": [
+            {
+              "name": "Ave Omnissiah",
+              "effect": "The character has memorised countless operation litanies and maintenance hymnals, giving them an innate familiarity with machines and the Cult Mechanicus. They receive +1d on all Tech tests and Scholar tests relating to the Adeptus Mechanicus."
+            },
+            {
+              "name": "Stranger to the Church",
+              "effect": "Forgeworlders are unfamiliar with the ways of the Ministorum and the Imperial Creed and suffer +2DN on all Scholar tests relating to the Imperial Creed. The character may not take any archetypes with the ADEPTUS MINISTORUM keyword."
+            }
+          ]
+        },
+        {
+          "id": "schola_progenium_aoa",
+          "name": "Schola Progenium (Abundance of Apocrypha)",
+          "keyword": "SCHOLA PROGENIUM",
+          "abilities": [
+            {
+              "name": "Schola Education",
+              "effect": "The character was groomed from a young age to be an example to others. You gain +1d on any two of the following skills, chosen during character creation: Insight, Intimidation, Leadership, Scholar."
+            },
+            {
+              "name": "Cloistered Upbringing",
+              "effect": "Progena have little patience for, or understanding of, the dregs of society. The character suffers +2DN on all non-hostile Interaction tests made when dealing with characters who have the SCUM keyword."
+            }
+          ]
+        },
+        {
+          "id": "shrine_world_aoa",
+          "name": "Shrine World (Abundance of Apocrypha)",
+          "keyword": "SHRINE WORLD",
+          "abilities": [
+            {
+              "name": "The Scorn of the Devout",
+              "effect": "The character is filled with holy hatred and fury. They receive +1 to Resolve and Conviction, and +1d on all Weapon Skill tests made to attack enemies with the HERETIC keyword."
+            },
+            {
+              "name": "Abhor the Unhallowed",
+              "effect": "The character is filled with an instinctive revulsion for the unholy or unclean. They suffer +1DN on all Scholar or Tech tests relating to items or characters with the HERETIC or CHAOS keywords, or with any keyword belonging to a Xenos species."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "astartes",
+    "name": "Adeptus Astartes",
+    "description": "The Emperor's Angels of Death were all once mortal men. All have undergone incredible trials and Gene-Seed implantation to become something more: transhuman demigods created for war who know no fear.",
+    "cost": 160,
+    "speed": 7,
+    "size": "Average",
+    "baseAttributes": {
+      "strength": 4,
+      "toughness": 4,
+      "agility": 4,
+      "initiative": 4,
+      "willpower": 3,
+      "intellect": 3
+    },
+    "baseSkills": {
+      "athletics": 3,
+      "awareness": 3,
+      "ballisticSkill": 3,
+      "stealth": 3,
+      "weaponSkill": 3
+    },
+    "attributeMaximums": {
+      "strength": 10,
+      "toughness": 10,
+      "agility": 9,
+      "initiative": 9,
+      "willpower": 10,
+      "intellect": 10,
+      "fellowship": 8
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "Defender of Humanity",
+        "effect": "Add +Rank Icons to any successful attack against a Mob."
+      },
+      {
+        "name": "Honour the Chapter",
+        "effect": "You are subject to the orders of your chapter master, and must honour the beliefs and traditions of your chapter. Your Resolve increases by +1."
+      },
+      {
+        "name": "Space Marine Implants",
+        "effect": "You are immune to the Bleeding Condition. You gain +1 bonus dice to any test related to one of the 19 implants if the GM agrees it is appropriate."
+      }
+    ],
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "core",
+    "page": 30,
+    "subOptions": {
+      "type": "chapter",
+      "label": "Chapter",
+      "required": true,
+      "addKeyword": true,
+      "options": [
+        {
+          "id": "blood_angels",
+          "name": "Blood Angels",
+          "keyword": "BLOOD ANGELS",
+          "abilities": [
+            {
+              "name": "Savage Echoes",
+              "flavor": "Masters of assault combat, Blood Angels are driven by a furious desire to avenge their fallen Primarch.",
+              "effect": "You may reroll Double Rank dice once per melee attack Test."
+            },
+            {
+              "name": "The Red Thirst",
+              "flavor": "The dark flaw of the Chapter is a secret well kept — they harbour a destructive yearning, a battle fury, and an almost insatiable blood-hunger.",
+              "effect": "Whenever you are in melee combat and see blood, you must make a DN 3 Willpower Test. If you fail, you are Frenzied."
+            }
+          ]
+        },
+        {
+          "id": "dark_angels",
+          "name": "Dark Angels",
+          "keyword": "DARK ANGELS",
+          "abilities": [
+            {
+              "name": "Grim Resolve",
+              "flavor": "The Dark Angels do not flinch; all are trained to form impassable firing lines.",
+              "effect": "You may reroll Double Rank dice once per ranged attack Test when you Aim."
+            },
+            {
+              "name": "The Unforgiven",
+              "flavor": "The secret that plagues this taciturn Chapter plagues their every social interaction.",
+              "effect": "You suffer a +2 DN penalty to any social Tests made against anyone outside of your Chapter."
+            }
+          ]
+        },
+        {
+          "id": "imperial_fists",
+          "name": "Imperial Fists",
+          "keyword": "IMPERIAL FISTS",
+          "abilities": [
+            {
+              "name": "Siege Masters",
+              "flavor": "Inheriting their Primarch Rogal Dorn's patient determination, every Imperial Fist is an expert in siegecraft, defensive warfare, and strategies to counter fortified foes.",
+              "effect": "You may reroll Double Rank dice once per attack against a building, fortification, or enemy in cover. You may also add +Rank bonus dice whenever you make a Test related to architectural engineering."
+            },
+            {
+              "name": "Gene-seed Flaw",
+              "flavor": "Though proven resistant to mutation and deviance, the Imperial Fists gene-seed inhibits two of the Space Marine implants.",
+              "effect": "You are missing implant 12: Sus-an Membrane, and implant 17: Betcher's Gland."
+            }
+          ]
+        },
+        {
+          "id": "iron_hands",
+          "name": "Iron Hands",
+          "keyword": "IRON HANDS",
+          "abilities": [
+            {
+              "name": "The Flesh Is Weak",
+              "flavor": "Iron Hands draw strength and surety by purging weakness from their forms.",
+              "effect": "Choose one Augmetic Enhancement. You do not suffer the penalties of being Wounded. You gain +1 bonus die to Willpower Tests for every augmetic you have."
+            },
+            {
+              "name": "Ruthless Logic",
+              "flavor": "Suppressing all emotion and developing an unfeeling logic, their meticulous and apathetic nature make them cold allies to all but the Adeptus Mechanicus.",
+              "effect": "You suffer a +2 DN penalty to Fellowship-based Tests made against a target that does not have the IRON HANDS or ADEPTUS MECHANICUS Keywords."
+            }
+          ]
+        },
+        {
+          "id": "raven_guard",
+          "name": "Raven Guard",
+          "keyword": "RAVEN GUARD",
+          "abilities": [
+            {
+              "name": "Master of Shadows",
+              "flavor": "The Raven Guard are practiced in silent, unseen strikes regardless of conditions or equipment.",
+              "effect": "You may reroll Rank dice once per Stealth (A) Test. Running, using a Jump Pack, or similar circumstances do not affect your Stealth (A) Tests."
+            },
+            {
+              "name": "Dark Heritage",
+              "flavor": "Ghostly pale with dark, haunting eyes, the Raven Guard gene-seed has slight deficiencies that make them unnerving to behold with dwindling numbers.",
+              "effect": "You are missing implant 16: Mucranoid, and implant 17: Betcher's Gland. You suffer a +1 DN penalty to any Fellowship-based Test made against any target that could be frightened of your appearance."
+            }
+          ]
+        },
+        {
+          "id": "salamanders",
+          "name": "Salamanders",
+          "keyword": "SALAMANDERS",
+          "abilities": [
+            {
+              "name": "Promethean Cult",
+              "flavor": "Forged in fire, Salamanders are masters of purging flame and blazing weapons.",
+              "effect": "You may reroll Rank dice once per attack Test made using a weapon with the FIRE or MELTA Keywords. You may reroll Double Rank dice once each time you roll Determination against damage from a source with the FIRE or MELTA Keyword."
+            },
+            {
+              "name": "Infernal Inheritance",
+              "flavor": "A Salamander's eyes glow like red-hot forges and their skin is stained coal black. Their Chapter instills a deep altruism in every Astartes, each keenly feeling the pain of every fallen ally.",
+              "effect": "Whenever an ally within 30 metres of you is killed, the GM gains +1 Ruin. You suffer a +2 DN penalty to any Fellowship-based Test made against any target that could be frightened of your appearance."
+            }
+          ]
+        },
+        {
+          "id": "space_wolves",
+          "name": "Space Wolves",
+          "keyword": "SPACE WOLVES",
+          "abilities": [
+            {
+              "name": "Hunters Unleashed",
+              "flavor": "The Chapter's kinship with wolves extends to enhanced senses and an almost feral fighting style replete with savage grace.",
+              "effect": "You have the Acute Sense Talent and the Dual Wield Talent."
+            },
+            {
+              "name": "Savage Within",
+              "flavor": "Headstrong in their pursuit of valour, Space Wolves do not back down from death in glorious melee combat.",
+              "effect": "You cannot Fall Back."
+            }
+          ]
+        },
+        {
+          "id": "ultramarines",
+          "name": "Ultramarines",
+          "keyword": "ULTRAMARINES",
+          "abilities": [
+            {
+              "name": "Tactical Versatility",
+              "flavor": "Exemplars of the Codex Astartes, the Ultramarines wage war with the utmost flexibility, able to turn any situation to their advantage.",
+              "effect": "You may Shift for Glory twice as part of a Test."
+            },
+            {
+              "name": "Pride of Ultramar",
+              "flavor": "The Imperium looks to the Ultramarines as paragons of the virtues of Astartes, and each strives to excel that reputation; strong in body, but restrained in mind, a tactical and clear-headed protector of Humanity.",
+              "effect": "You start each session with 1 Wrath Point instead of 2."
+            }
+          ]
+        },
+        {
+          "id": "white_scars",
+          "name": "White Scars",
+          "keyword": "WHITE SCARS",
+          "abilities": [
+            {
+              "name": "Lightning Assault",
+              "flavor": "Favouring fast-attack bikes to achieve their famed agile strikes, White Scars are proficient at attacking at speeds that would be otherwise unwieldy.",
+              "effect": "You may reroll Double Rank dice once each time you make a Pilot (A) Test. You triple your Speed when you Charge."
+            },
+            {
+              "name": "Ritual Scarring",
+              "flavor": "Inductees to the chapter mark the flesh of their faces deeply with their blades.",
+              "effect": "You suffer a +1 DN penalty to any Fellowship-based Test made against any target that could be frightened of your appearance."
+            }
+          ]
+        },
+        {
+          "id": "black_templars_aoa",
+          "name": "Black Templars (Abundance of Apocrypha)",
+          "keyword": "BLACK TEMPLARS",
+          "abilities": [
+            {
+              "name": "Righteous Zeal",
+              "flavor": "Your hatred permits you to show no mercy, nor does it permit you to yield while the enemy draws breath.",
+              "effect": "When you charge, you may re-roll up to Rank dice on your Weapon Skill test. In addition, you may re-roll Rank dice when you roll Determination."
+            },
+            {
+              "name": "Gene-Seed Flaw",
+              "flavor": "Though proven resistant to mutation and deviance, Rogal Dorn's gene-seed inhibits two of the Space Marine implants.",
+              "effect": "You are missing implant 12: Sus-an Membrane, and implant 17: Betcher's Gland. You may not, under any circumstances, take the PSYKER keyword."
+            }
+          ]
+        },
+        {
+          "id": "crimson_fists_aoa",
+          "name": "Crimson Fists (Abundance of Apocrypha)",
+          "keyword": "CRIMSON FISTS",
+          "abilities": [
+            {
+              "name": "No Matter the Odds",
+              "flavor": "You will not yield in the face of overwhelming odds.",
+              "effect": "When making an attack while you and your allies are outnumbered at least two-to-one, you may add Rank dice to your Ballistic Skill or Weapon Skill test."
+            },
+            {
+              "name": "Gene-Seed Flaw",
+              "flavor": "Though proven resistant to mutation and deviance, Rogal Dorn's gene-seed inhibits two of the Space Marine implants.",
+              "effect": "You are missing implant 12: Sus-an Membrane, and implant 17: Betcher's Gland."
+            }
+          ]
+        },
+        {
+          "id": "flesh_tearers_aoa",
+          "name": "Flesh Tearers (Abundance of Apocrypha)",
+          "keyword": "FLESH TEARERS",
+          "abilities": [
+            {
+              "name": "Fury Within",
+              "flavor": "You are possessed of a bloodthirsty recklessness. When properly directed, this murderous ferocity makes you unstoppable.",
+              "effect": "You may re-roll Double Rank dice once per melee attack Test. In addition, if you shift one or more Icons on a melee attack, improve the AP of your attack by 1 (i.e., from -1 to -2)."
+            },
+            {
+              "name": "The Red Thirst",
+              "flavor": "Your fury comes from a deep destructive impulse within your body and soul, an insatiable bloodlust that resists all attempts to deny it.",
+              "effect": "Whenever you are in melee combat and see blood, you must make a DN 4 Willpower Test. If you fail, you are Frenzied."
+            }
+          ]
+        },
+        {
+          "id": "grey_knights_aoa",
+          "name": "Grey Knights (Abundance of Apocrypha)",
+          "keyword": "GREY KNIGHTS",
+          "abilities": [
+            {
+              "name": "Daemonbane",
+              "flavor": "You have been taught the secrets of daemon-kind to best understand how to end them.",
+              "effect": "When attacking a creature with the DAEMON keyword in melee combat, you add +Rank ED to the attack's damage. You also add +Rank to your Conviction."
+            },
+            {
+              "name": "Secretive",
+              "flavor": "Grey Knights do not trust outsiders, and their nature cannot be permitted to be known to any outside the chapter.",
+              "effect": "You suffer a +2DN penalty for Interaction tests involving anyone who lacks the GREY KNIGHTS or INQUISITION keywords. Primaris Astartes characters cannot select this Chapter."
+            }
+          ]
+        },
+        {
+          "id": "emperors_children_aoa",
+          "name": "Emperor's Children [Legion] (Abundance of Apocrypha)",
+          "keyword": "EMPEROR'S CHILDREN",
+          "abilities": [
+            {
+              "name": "In Pursuit of Perfection",
+              "flavor": "Each Emperor's Children Space Marine seeks to perfect a single aspect of the arts of warfare.",
+              "effect": "Select one of the following skills: Awareness, Ballistic Skill, Leadership, Pilot, Weapon Skill. You gain +Rank dice as a bonus to all uses of that skill. You must take SLAANESH as your [MARK OF CHAOS] keyword."
+            },
+            {
+              "name": "Fear of Imperfection",
+              "flavor": "The Emperor's Children cannot abide the imperfect and fear the notion that a flaw may mean perfection is unattainable.",
+              "effect": "Whenever you suffer a complication on the skill chosen for Pursuit of Perfection, above, the GM gains 1 Ruin, in addition to any other results."
+            }
+          ]
+        },
+        {
+          "id": "iron_warriors_aoa",
+          "name": "Iron Warriors [Legion] (Abundance of Apocrypha)",
+          "keyword": "IRON WARRIORS",
+          "abilities": [
+            {
+              "name": "Siege Masters",
+              "flavor": "Iron Warriors know fortifications.",
+              "effect": "You may reroll Double Rank dice whenever you attack a building, fortification, or an enemy in cover. You may also add +Rank dice whenever you make a test related to architectural engineering."
+            },
+            {
+              "name": "Scorn for the Weak",
+              "flavor": "Iron Warriors despise weakness in their comrades.",
+              "effect": "If one of your allies fails a Resolve test, you must pass a Willpower test (DN 3). On a failure, you feel a strong urge to punish that ally. If the failure involves a complication, the urge becomes a compulsion."
+            }
+          ]
+        },
+        {
+          "id": "night_lords_aoa",
+          "name": "Night Lords [Legion] (Abundance of Apocrypha)",
+          "keyword": "NIGHT LORDS",
+          "abilities": [
+            {
+              "name": "Ave Dominus Nox",
+              "flavor": "Night Lords revel in the fear of others and are swift to spread it.",
+              "effect": "While under cover of darkness, you may add +Rank to your Defence and Speed. As a free action at the start of combat, you may spend one Glory to cause Fear for the duration of the fight; enemies who see you must pass a Fear test (DN 2 + Double Rank)."
+            },
+            {
+              "name": "Blood of Nostramo",
+              "flavor": "Night Lords often recruit from amongst the criminal element and have little love for a fair fight.",
+              "effect": "If you see an ally fail a Resolve or Fear test, you must attempt a Resolve test (DN 3) or become pinned."
+            }
+          ]
+        },
+        {
+          "id": "world_eaters_aoa",
+          "name": "World Eaters [Legion] (Abundance of Apocrypha)",
+          "keyword": "WORLD EATERS",
+          "abilities": [
+            {
+              "name": "Incarnate Violence",
+              "flavor": "You are driven to spill blood and rend flesh, and nothing will stop you.",
+              "effect": "You may reroll Double Rank dice on any melee attack test. You must take KHORNE as your [MARK OF CHAOS] keyword."
+            },
+            {
+              "name": "Butcher's Nails",
+              "flavor": "The implants buried in your skull drive you into fits of berserk rage in battle.",
+              "effect": "Upon engaging in melee combat, you become Frenzied for the rest of the battle. The Willpower test to restrain your frenzy increases by +1 for every enemy you have killed during the battle."
+            }
+          ]
+        },
+        {
+          "id": "death_guard_aoa",
+          "name": "Death Guard [Legion] (Abundance of Apocrypha)",
+          "keyword": "DEATH GUARD",
+          "abilities": [
+            {
+              "name": "Inexorable Advance",
+              "flavor": "Death Guard march slowly, relentlessly, through the thickest enemy fire.",
+              "effect": "You ignore the effects of being Hindered on your movement. You may reroll Double Rank dice on Resolve tests. You must take NURGLE as your [MARK OF CHAOS] keyword."
+            },
+            {
+              "name": "Intractable",
+              "flavor": "The Death Guard are stubborn to the point of self-destruction, refusing to retreat under any circumstances.",
+              "effect": "You cannot willingly retreat or flee from combat unless you pass a DN 4 Willpower test. If an ally attempts to persuade you to retreat, increase the DN by 1."
+            }
+          ]
+        },
+        {
+          "id": "thousand_sons_aoa",
+          "name": "Thousand Sons [Legion] (Abundance of Apocrypha)",
+          "keyword": "THOUSAND SONS",
+          "abilities": [
+            {
+              "name": "The Rubric",
+              "flavor": "The Thousand Sons are deeply steeped in sorcery, their Legion transformed by the Rubric of Ahriman.",
+              "effect": "You gain +Rank bonus dice to all Psychic Mastery tests. You must take TZEENTCH as your [MARK OF CHAOS] keyword."
+            },
+            {
+              "name": "Gift of Mutation",
+              "flavor": "Tzeentch's gifts are never straightforward, and the flesh of the Thousand Sons is prone to unpredictable change.",
+              "effect": "Whenever you roll a Complication on a Psychic Mastery test, you must roll on the Perils of the Warp table, even if you did not roll a 1 on any Wrath die."
+            }
+          ]
+        },
+        {
+          "id": "black_legion_aoa",
+          "name": "Black Legion [Legion] (Abundance of Apocrypha)",
+          "keyword": "BLACK LEGION",
+          "abilities": [
+            {
+              "name": "The Tip of the Spear",
+              "flavor": "The Black Legion stands at the forefront of the Long War, united in their hatred of the False Emperor.",
+              "effect": "You gain +Rank bonus dice when making an attack against a target with the IMPERIUM keyword."
+            },
+            {
+              "name": "Bitter Pride",
+              "flavor": "The Black Legion holds themselves above all other Chaos warbands, and cooperating with others is a grudging necessity.",
+              "effect": "You suffer +1DN on all Fellowship-based tests when dealing with other Chaos-aligned characters who do not have the BLACK LEGION keyword."
+            }
+          ]
+        },
+        {
+          "id": "word_bearers_aoa",
+          "name": "Word Bearers [Legion] (Abundance of Apocrypha)",
+          "keyword": "WORD BEARERS",
+          "abilities": [
+            {
+              "name": "Profane Zeal",
+              "flavor": "The Word Bearers are the most devout followers of the Chaos Gods, spreading their dark worship across the galaxy.",
+              "effect": "You gain +Rank bonus dice on all Leadership and Persuasion tests when interacting with characters who have the CHAOS keyword. You may re-roll Rank dice on Corruption tests."
+            },
+            {
+              "name": "The Will of the Gods",
+              "flavor": "The Word Bearers see the hand of the Dark Gods in all things, and are compelled to act on perceived divine mandates.",
+              "effect": "Whenever the GM spends Ruin, you must pass a DN 3 Willpower test or become compelled to take an action the GM deems appropriate to the will of the Dark Gods."
+            }
+          ]
+        },
+        {
+          "id": "alpha_legion_aoa",
+          "name": "Alpha Legion [Legion] (Abundance of Apocrypha)",
+          "keyword": "ALPHA LEGION",
+          "abilities": [
+            {
+              "name": "Mutable Tactics",
+              "flavor": "The Alpha Legion are masters of deception and misdirection, adapting their tactics to any situation.",
+              "effect": "At the start of each combat, choose one: +Rank bonus dice to all Stealth tests, +Rank bonus dice to all Ballistic Skill tests, or +Rank bonus dice to all Weapon Skill tests, for the duration of that combat."
+            },
+            {
+              "name": "I Am Alpharius",
+              "flavor": "Alpha Legion operatives are trained to be interchangeable, making it impossible for enemies to identify or target their leadership.",
+              "effect": "You gain +Double Rank bonus dice on Deception tests. However, you suffer +1DN on all Leadership tests, as your comrades never truly know who they are following."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "primaris",
+    "name": "Primaris Astartes",
+    "description": "[AI-Generated] The Primaris Space Marines represent the next step in the evolution of the Emperor's Angels of Death. Created using new gene-seed technology, they are taller, stronger, and more resilient than their firstborn brothers.",
+    "cost": 198,
+    "speed": 7,
+    "size": "Average",
+    "baseAttributes": {
+      "strength": 5,
+      "toughness": 5,
+      "agility": 4,
+      "initiative": 4,
+      "willpower": 3,
+      "intellect": 3
+    },
+    "baseSkills": {
+      "athletics": 3,
+      "awareness": 3,
+      "ballisticSkill": 4,
+      "stealth": 3,
+      "weaponSkill": 3
+    },
+    "attributeMaximums": {
+      "strength": 12,
+      "toughness": 12,
+      "agility": 9,
+      "initiative": 9,
+      "willpower": 10,
+      "intellect": 10,
+      "fellowship": 8
+    },
+    "woundBonus": 3,
+    "abilities": [
+      {
+        "name": "Defender of Humanity",
+        "effect": "Add +Rank Icons to any successful attack against a Mob."
+      },
+      {
+        "name": "Honour the Chapter (Primaris)",
+        "effect": "You are subject to the orders of your chapter master, and must honour the beliefs and traditions of your chapter. Your Resolve increases by +1. As a Primaris, you ignore any impurities in your Chapter Gene-Seed, and also gain +3 Wounds."
+      },
+      {
+        "name": "Space Marine Implants",
+        "effect": "You are immune to the Bleeding Condition. You gain +1 bonus dice to any test related to one of the 22 implants if the GM agrees it is appropriate."
+      }
+    ],
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS"
+    ],
+    "source": "core",
+    "page": 30,
+    "subOptions": {
+      "type": "chapter",
+      "label": "Chapter",
+      "required": true,
+      "addKeyword": true,
+      "options": [
+        {
+          "id": "blood_angels",
+          "name": "Blood Angels",
+          "keyword": "BLOOD ANGELS",
+          "abilities": [
+            {
+              "name": "Savage Echoes",
+              "flavor": "Masters of assault combat, Blood Angels are driven by a furious desire to avenge their fallen Primarch.",
+              "effect": "You may reroll Double Rank dice once per melee attack Test."
+            },
+            {
+              "name": "The Red Thirst",
+              "flavor": "The dark flaw of the Chapter is a secret well kept — they harbour a destructive yearning, a battle fury, and an almost insatiable blood-hunger.",
+              "effect": "Whenever you are in melee combat and see blood, you must make a DN 3 Willpower Test. If you fail, you are Frenzied."
+            }
+          ]
+        },
+        {
+          "id": "dark_angels",
+          "name": "Dark Angels",
+          "keyword": "DARK ANGELS",
+          "abilities": [
+            {
+              "name": "Grim Resolve",
+              "flavor": "The Dark Angels do not flinch; all are trained to form impassable firing lines.",
+              "effect": "You may reroll Double Rank dice once per ranged attack Test when you Aim."
+            },
+            {
+              "name": "The Unforgiven",
+              "flavor": "The secret that plagues this taciturn Chapter plagues their every social interaction.",
+              "effect": "You suffer a +2 DN penalty to any social Tests made against anyone outside of your Chapter."
+            }
+          ]
+        },
+        {
+          "id": "imperial_fists",
+          "name": "Imperial Fists",
+          "keyword": "IMPERIAL FISTS",
+          "abilities": [
+            {
+              "name": "Siege Masters",
+              "flavor": "Inheriting their Primarch Rogal Dorn's patient determination, every Imperial Fist is an expert in siegecraft, defensive warfare, and strategies to counter fortified foes.",
+              "effect": "You may reroll Double Rank dice once per attack against a building, fortification, or enemy in cover. You may also add +Rank bonus dice whenever you make a Test related to architectural engineering."
+            },
+            {
+              "name": "Gene-seed Flaw",
+              "flavor": "Though proven resistant to mutation and deviance, the Imperial Fists gene-seed inhibits two of the Space Marine implants.",
+              "effect": "You are missing implant 12: Sus-an Membrane, and implant 17: Betcher's Gland."
+            }
+          ]
+        },
+        {
+          "id": "iron_hands",
+          "name": "Iron Hands",
+          "keyword": "IRON HANDS",
+          "abilities": [
+            {
+              "name": "The Flesh Is Weak",
+              "flavor": "Iron Hands draw strength and surety by purging weakness from their forms.",
+              "effect": "Choose one Augmetic Enhancement. You do not suffer the penalties of being Wounded. You gain +1 bonus die to Willpower Tests for every augmetic you have."
+            },
+            {
+              "name": "Ruthless Logic",
+              "flavor": "Suppressing all emotion and developing an unfeeling logic, their meticulous and apathetic nature make them cold allies to all but the Adeptus Mechanicus.",
+              "effect": "You suffer a +2 DN penalty to Fellowship-based Tests made against a target that does not have the IRON HANDS or ADEPTUS MECHANICUS Keywords."
+            }
+          ]
+        },
+        {
+          "id": "raven_guard",
+          "name": "Raven Guard",
+          "keyword": "RAVEN GUARD",
+          "abilities": [
+            {
+              "name": "Master of Shadows",
+              "flavor": "The Raven Guard are practiced in silent, unseen strikes regardless of conditions or equipment.",
+              "effect": "You may reroll Rank dice once per Stealth (A) Test. Running, using a Jump Pack, or similar circumstances do not affect your Stealth (A) Tests."
+            },
+            {
+              "name": "Dark Heritage",
+              "flavor": "Ghostly pale with dark, haunting eyes, the Raven Guard gene-seed has slight deficiencies that make them unnerving to behold with dwindling numbers.",
+              "effect": "You are missing implant 16: Mucranoid, and implant 17: Betcher's Gland. You suffer a +1 DN penalty to any Fellowship-based Test made against any target that could be frightened of your appearance."
+            }
+          ]
+        },
+        {
+          "id": "salamanders",
+          "name": "Salamanders",
+          "keyword": "SALAMANDERS",
+          "abilities": [
+            {
+              "name": "Promethean Cult",
+              "flavor": "Forged in fire, Salamanders are masters of purging flame and blazing weapons.",
+              "effect": "You may reroll Rank dice once per attack Test made using a weapon with the FIRE or MELTA Keywords. You may reroll Double Rank dice once each time you roll Determination against damage from a source with the FIRE or MELTA Keyword."
+            },
+            {
+              "name": "Infernal Inheritance",
+              "flavor": "A Salamander's eyes glow like red-hot forges and their skin is stained coal black. Their Chapter instills a deep altruism in every Astartes, each keenly feeling the pain of every fallen ally.",
+              "effect": "Whenever an ally within 30 metres of you is killed, the GM gains +1 Ruin. You suffer a +2 DN penalty to any Fellowship-based Test made against any target that could be frightened of your appearance."
+            }
+          ]
+        },
+        {
+          "id": "space_wolves",
+          "name": "Space Wolves",
+          "keyword": "SPACE WOLVES",
+          "abilities": [
+            {
+              "name": "Hunters Unleashed",
+              "flavor": "The Chapter's kinship with wolves extends to enhanced senses and an almost feral fighting style replete with savage grace.",
+              "effect": "You have the Acute Sense Talent and the Dual Wield Talent."
+            },
+            {
+              "name": "Savage Within",
+              "flavor": "Headstrong in their pursuit of valour, Space Wolves do not back down from death in glorious melee combat.",
+              "effect": "You cannot Fall Back."
+            }
+          ]
+        },
+        {
+          "id": "ultramarines",
+          "name": "Ultramarines",
+          "keyword": "ULTRAMARINES",
+          "abilities": [
+            {
+              "name": "Tactical Versatility",
+              "flavor": "Exemplars of the Codex Astartes, the Ultramarines wage war with the utmost flexibility, able to turn any situation to their advantage.",
+              "effect": "You may Shift for Glory twice as part of a Test."
+            },
+            {
+              "name": "Pride of Ultramar",
+              "flavor": "The Imperium looks to the Ultramarines as paragons of the virtues of Astartes, and each strives to excel that reputation; strong in body, but restrained in mind, a tactical and clear-headed protector of Humanity.",
+              "effect": "You start each session with 1 Wrath Point instead of 2."
+            }
+          ]
+        },
+        {
+          "id": "white_scars",
+          "name": "White Scars",
+          "keyword": "WHITE SCARS",
+          "abilities": [
+            {
+              "name": "Lightning Assault",
+              "flavor": "Favouring fast-attack bikes to achieve their famed agile strikes, White Scars are proficient at attacking at speeds that would be otherwise unwieldy.",
+              "effect": "You may reroll Double Rank dice once each time you make a Pilot (A) Test. You triple your Speed when you Charge."
+            },
+            {
+              "name": "Ritual Scarring",
+              "flavor": "Inductees to the chapter mark the flesh of their faces deeply with their blades.",
+              "effect": "You suffer a +1 DN penalty to any Fellowship-based Test made against any target that could be frightened of your appearance."
+            }
+          ]
+        },
+        {
+          "id": "black_templars_aoa",
+          "name": "Black Templars (Abundance of Apocrypha)",
+          "keyword": "BLACK TEMPLARS",
+          "abilities": [
+            {
+              "name": "Righteous Zeal",
+              "flavor": "Your hatred permits you to show no mercy, nor does it permit you to yield while the enemy draws breath.",
+              "effect": "When you charge, you may re-roll up to Rank dice on your Weapon Skill test. In addition, you may re-roll Rank dice when you roll Determination."
+            },
+            {
+              "name": "Gene-Seed Flaw",
+              "flavor": "Though proven resistant to mutation and deviance, Rogal Dorn's gene-seed inhibits two of the Space Marine implants.",
+              "effect": "You are missing implant 12: Sus-an Membrane, and implant 17: Betcher's Gland. You may not, under any circumstances, take the PSYKER keyword."
+            }
+          ]
+        },
+        {
+          "id": "crimson_fists_aoa",
+          "name": "Crimson Fists (Abundance of Apocrypha)",
+          "keyword": "CRIMSON FISTS",
+          "abilities": [
+            {
+              "name": "No Matter the Odds",
+              "flavor": "You will not yield in the face of overwhelming odds.",
+              "effect": "When making an attack while you and your allies are outnumbered at least two-to-one, you may add Rank dice to your Ballistic Skill or Weapon Skill test."
+            },
+            {
+              "name": "Gene-Seed Flaw",
+              "flavor": "Though proven resistant to mutation and deviance, Rogal Dorn's gene-seed inhibits two of the Space Marine implants.",
+              "effect": "You are missing implant 12: Sus-an Membrane, and implant 17: Betcher's Gland."
+            }
+          ]
+        },
+        {
+          "id": "flesh_tearers_aoa",
+          "name": "Flesh Tearers (Abundance of Apocrypha)",
+          "keyword": "FLESH TEARERS",
+          "abilities": [
+            {
+              "name": "Fury Within",
+              "flavor": "You are possessed of a bloodthirsty recklessness. When properly directed, this murderous ferocity makes you unstoppable.",
+              "effect": "You may re-roll Double Rank dice once per melee attack Test. In addition, if you shift one or more Icons on a melee attack, improve the AP of your attack by 1 (i.e., from -1 to -2)."
+            },
+            {
+              "name": "The Red Thirst",
+              "flavor": "Your fury comes from a deep destructive impulse within your body and soul, an insatiable bloodlust that resists all attempts to deny it.",
+              "effect": "Whenever you are in melee combat and see blood, you must make a DN 4 Willpower Test. If you fail, you are Frenzied."
+            }
+          ]
+        },
+        {
+          "id": "emperors_children_aoa",
+          "name": "Emperor's Children [Legion] (Abundance of Apocrypha)",
+          "keyword": "EMPEROR'S CHILDREN",
+          "abilities": [
+            {
+              "name": "In Pursuit of Perfection",
+              "flavor": "Each Emperor's Children Space Marine seeks to perfect a single aspect of the arts of warfare.",
+              "effect": "Select one of the following skills: Awareness, Ballistic Skill, Leadership, Pilot, Weapon Skill. You gain +Rank dice as a bonus to all uses of that skill. You must take SLAANESH as your [MARK OF CHAOS] keyword."
+            },
+            {
+              "name": "Fear of Imperfection",
+              "flavor": "The Emperor's Children cannot abide the imperfect and fear the notion that a flaw may mean perfection is unattainable.",
+              "effect": "Whenever you suffer a complication on the skill chosen for Pursuit of Perfection, above, the GM gains 1 Ruin, in addition to any other results."
+            }
+          ]
+        },
+        {
+          "id": "iron_warriors_aoa",
+          "name": "Iron Warriors [Legion] (Abundance of Apocrypha)",
+          "keyword": "IRON WARRIORS",
+          "abilities": [
+            {
+              "name": "Siege Masters",
+              "flavor": "Iron Warriors know fortifications.",
+              "effect": "You may reroll Double Rank dice whenever you attack a building, fortification, or an enemy in cover. You may also add +Rank dice whenever you make a test related to architectural engineering."
+            },
+            {
+              "name": "Scorn for the Weak",
+              "flavor": "Iron Warriors despise weakness in their comrades.",
+              "effect": "If one of your allies fails a Resolve test, you must pass a Willpower test (DN 3). On a failure, you feel a strong urge to punish that ally. If the failure involves a complication, the urge becomes a compulsion."
+            }
+          ]
+        },
+        {
+          "id": "night_lords_aoa",
+          "name": "Night Lords [Legion] (Abundance of Apocrypha)",
+          "keyword": "NIGHT LORDS",
+          "abilities": [
+            {
+              "name": "Ave Dominus Nox",
+              "flavor": "Night Lords revel in the fear of others and are swift to spread it.",
+              "effect": "While under cover of darkness, you may add +Rank to your Defence and Speed. As a free action at the start of combat, you may spend one Glory to cause Fear for the duration of the fight; enemies who see you must pass a Fear test (DN 2 + Double Rank)."
+            },
+            {
+              "name": "Blood of Nostramo",
+              "flavor": "Night Lords often recruit from amongst the criminal element and have little love for a fair fight.",
+              "effect": "If you see an ally fail a Resolve or Fear test, you must attempt a Resolve test (DN 3) or become pinned."
+            }
+          ]
+        },
+        {
+          "id": "world_eaters_aoa",
+          "name": "World Eaters [Legion] (Abundance of Apocrypha)",
+          "keyword": "WORLD EATERS",
+          "abilities": [
+            {
+              "name": "Incarnate Violence",
+              "flavor": "You are driven to spill blood and rend flesh, and nothing will stop you.",
+              "effect": "You may reroll Double Rank dice on any melee attack test. You must take KHORNE as your [MARK OF CHAOS] keyword."
+            },
+            {
+              "name": "Butcher's Nails",
+              "flavor": "The implants buried in your skull drive you into fits of berserk rage in battle.",
+              "effect": "Upon engaging in melee combat, you become Frenzied for the rest of the battle. The Willpower test to restrain your frenzy increases by +1 for every enemy you have killed during the battle."
+            }
+          ]
+        },
+        {
+          "id": "death_guard_aoa",
+          "name": "Death Guard [Legion] (Abundance of Apocrypha)",
+          "keyword": "DEATH GUARD",
+          "abilities": [
+            {
+              "name": "Inexorable Advance",
+              "flavor": "Death Guard march slowly, relentlessly, through the thickest enemy fire.",
+              "effect": "You ignore the effects of being Hindered on your movement. You may reroll Double Rank dice on Resolve tests. You must take NURGLE as your [MARK OF CHAOS] keyword."
+            },
+            {
+              "name": "Intractable",
+              "flavor": "The Death Guard are stubborn to the point of self-destruction, refusing to retreat under any circumstances.",
+              "effect": "You cannot willingly retreat or flee from combat unless you pass a DN 4 Willpower test. If an ally attempts to persuade you to retreat, increase the DN by 1."
+            }
+          ]
+        },
+        {
+          "id": "thousand_sons_aoa",
+          "name": "Thousand Sons [Legion] (Abundance of Apocrypha)",
+          "keyword": "THOUSAND SONS",
+          "abilities": [
+            {
+              "name": "The Rubric",
+              "flavor": "The Thousand Sons are deeply steeped in sorcery, their Legion transformed by the Rubric of Ahriman.",
+              "effect": "You gain +Rank bonus dice to all Psychic Mastery tests. You must take TZEENTCH as your [MARK OF CHAOS] keyword."
+            },
+            {
+              "name": "Gift of Mutation",
+              "flavor": "Tzeentch's gifts are never straightforward, and the flesh of the Thousand Sons is prone to unpredictable change.",
+              "effect": "Whenever you roll a Complication on a Psychic Mastery test, you must roll on the Perils of the Warp table, even if you did not roll a 1 on any Wrath die."
+            }
+          ]
+        },
+        {
+          "id": "black_legion_aoa",
+          "name": "Black Legion [Legion] (Abundance of Apocrypha)",
+          "keyword": "BLACK LEGION",
+          "abilities": [
+            {
+              "name": "The Tip of the Spear",
+              "flavor": "The Black Legion stands at the forefront of the Long War, united in their hatred of the False Emperor.",
+              "effect": "You gain +Rank bonus dice when making an attack against a target with the IMPERIUM keyword."
+            },
+            {
+              "name": "Bitter Pride",
+              "flavor": "The Black Legion holds themselves above all other Chaos warbands, and cooperating with others is a grudging necessity.",
+              "effect": "You suffer +1DN on all Fellowship-based tests when dealing with other Chaos-aligned characters who do not have the BLACK LEGION keyword."
+            }
+          ]
+        },
+        {
+          "id": "word_bearers_aoa",
+          "name": "Word Bearers [Legion] (Abundance of Apocrypha)",
+          "keyword": "WORD BEARERS",
+          "abilities": [
+            {
+              "name": "Profane Zeal",
+              "flavor": "The Word Bearers are the most devout followers of the Chaos Gods, spreading their dark worship across the galaxy.",
+              "effect": "You gain +Rank bonus dice on all Leadership and Persuasion tests when interacting with characters who have the CHAOS keyword. You may re-roll Rank dice on Corruption tests."
+            },
+            {
+              "name": "The Will of the Gods",
+              "flavor": "The Word Bearers see the hand of the Dark Gods in all things, and are compelled to act on perceived divine mandates.",
+              "effect": "Whenever the GM spends Ruin, you must pass a DN 3 Willpower test or become compelled to take an action the GM deems appropriate to the will of the Dark Gods."
+            }
+          ]
+        },
+        {
+          "id": "alpha_legion_aoa",
+          "name": "Alpha Legion [Legion] (Abundance of Apocrypha)",
+          "keyword": "ALPHA LEGION",
+          "abilities": [
+            {
+              "name": "Mutable Tactics",
+              "flavor": "The Alpha Legion are masters of deception and misdirection, adapting their tactics to any situation.",
+              "effect": "At the start of each combat, choose one: +Rank bonus dice to all Stealth tests, +Rank bonus dice to all Ballistic Skill tests, or +Rank bonus dice to all Weapon Skill tests, for the duration of that combat."
+            },
+            {
+              "name": "I Am Alpharius",
+              "flavor": "Alpha Legion operatives are trained to be interchangeable, making it impossible for enemies to identify or target their leadership.",
+              "effect": "You gain +Double Rank bonus dice on Deception tests. However, you suffer +1DN on all Leadership tests, as your comrades never truly know who they are following."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "aeldari",
+    "name": "Aeldari",
+    "description": "Ancient and inscrutable, the Aeldari are an innately psychic Species whose technologically-advanced empire once spanned the stars. Taller and slighter than Humans, their undeniably alien appearance is compounded by their eerily elegant movements. Though they have life spans millennia longer than Humans, their Species is dying and close to extinction, a pain they feel acutely with their unnaturally deep emotions.",
+    "cost": 10,
+    "speed": 8,
+    "size": "Average",
+    "baseAttributes": {
+      "agility": 3
+    },
+    "baseSkills": {},
+    "attributeMaximums": {
+      "strength": 8,
+      "toughness": 7,
+      "agility": 12,
+      "initiative": 12,
+      "willpower": 12,
+      "intellect": 10,
+      "fellowship": 6
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "Intense Emotion",
+        "effect": "+1 DN to all Resolve Tests. If you fail a Willpower-based Test in a scene involving emotion, the GM gains +1 Ruin."
+      },
+      {
+        "name": "Psychosensitive",
+        "effect": "You may choose to take the PSYKER Keyword."
+      }
+    ],
+    "keywords": [
+      "AELDARI"
+    ],
+    "source": "core",
+    "page": 30,
+    "subOptions": [
+      {
+        "type": "psychosensitive",
+        "label": "Psychosensitive",
+        "required": false,
+        "description": "You may choose to take the PSYKER Keyword.",
+        "addKeyword": true,
+        "options": [
+          {
+            "id": "psyker",
+            "name": "Take PSYKER Keyword",
+            "keyword": "PSYKER"
+          }
+        ]
+      },
+      {
+        "type": "path",
+        "label": "Asuryani Path",
+        "required": true,
+        "addKeyword": false,
+        "options": [
+          {
+            "id": "path_of_awakening",
+            "name": "Path of Awakening",
+            "effect": "+Rank bonus dice to Awareness Tests.",
+            "bonuses": {
+              "skills": {
+                "awareness": "rank"
+              }
+            }
+          },
+          {
+            "id": "path_of_the_artisan",
+            "name": "Path of the Artisan",
+            "effect": "+Double Rank to AELDARI Scholar Tests.",
+            "bonuses": {
+              "conditionalSkills": {
+                "scholar": {
+                  "condition": "AELDARI",
+                  "bonus": "doubleRank"
+                }
+              }
+            }
+          },
+          {
+            "id": "path_of_the_bonesinger",
+            "name": "Path of the Bonesinger",
+            "effect": "+Double Rank to AELDARI Tech Tests.",
+            "bonuses": {
+              "conditionalSkills": {
+                "tech": {
+                  "condition": "AELDARI",
+                  "bonus": "doubleRank"
+                }
+              }
+            }
+          },
+          {
+            "id": "path_of_the_dreamer",
+            "name": "Path of the Dreamer",
+            "effect": "+Rank bonus dice to Corruption Tests."
+          },
+          {
+            "id": "path_of_the_healer",
+            "name": "Path of the Healer",
+            "effect": "+Double Rank to AELDARI Medicae Tests.",
+            "bonuses": {
+              "conditionalSkills": {
+                "medicae": {
+                  "condition": "AELDARI",
+                  "bonus": "doubleRank"
+                }
+              }
+            }
+          },
+          {
+            "id": "path_of_the_mariner",
+            "name": "Path of the Mariner",
+            "effect": "+Double Rank to AELDARI Pilot Tests.",
+            "bonuses": {
+              "conditionalSkills": {
+                "pilot": {
+                  "condition": "AELDARI",
+                  "bonus": "doubleRank"
+                }
+              }
+            }
+          },
+          {
+            "id": "path_of_the_mourner",
+            "name": "Path of the Mourner",
+            "effect": "+Rank Maximum Shock.",
+            "bonuses": {
+              "maxShock": "rank"
+            }
+          },
+          {
+            "id": "path_of_service",
+            "name": "Path of Service",
+            "effect": "+Double Rank to AELDARI Insight Tests.",
+            "bonuses": {
+              "conditionalSkills": {
+                "insight": {
+                  "condition": "AELDARI",
+                  "bonus": "doubleRank"
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ork",
+    "name": "Ork",
+    "description": "The green-skinned scourge of the galaxy, Orks are brutal but cunning beasts that live to wage war; all else is secondary to their battlelust. Taller, wider, and far more muscular than any natural Human, Orks are incredibly tough, and will continue to charge into combat undeterred after losing limbs. The only strategies and tactics they employ against the Imperium are frontline assaults, using any means available to create carnage as quickly as they can.",
+    "cost": 20,
+    "speed": 6,
+    "size": "Average",
+    "baseAttributes": {
+      "strength": 3,
+      "toughness": 3
+    },
+    "baseSkills": {},
+    "attributeMaximums": {
+      "strength": 10,
+      "toughness": 10,
+      "agility": 7,
+      "initiative": 7,
+      "willpower": 8,
+      "intellect": 7,
+      "fellowship": 7
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "Orky",
+        "effect": "+1 bonus dice to Intimidation Tests."
+      },
+      {
+        "name": "Bigger is Better",
+        "effect": "You calculate Influence using Strength instead of Fellowship."
+      }
+    ],
+    "keywords": [
+      "ORK"
+    ],
+    "source": "core",
+    "page": 30,
+    "subOptions": {
+      "type": "clan",
+      "label": "Clan",
+      "required": true,
+      "addKeyword": true,
+      "options": [
+        {
+          "id": "bad_moons",
+          "name": "Bad Moons",
+          "keyword": "BAD MOONS",
+          "effect": "Growing the Teef that are Orkish currency faster than any other Clan, the Bad Moons are the wealthiest, and thus have the best food and flashiest weaponry — traits they are incredibly proud of. Gain +1 Wealth at the end of every session."
+        },
+        {
+          "id": "blood_axes",
+          "name": "Blood Axes",
+          "keyword": "BLOOD AXES",
+          "effect": "Considered 'un-Orky' by other Clans, the Blood Axes use unorthodox 'taktiks' like planning, strategy, and even trading with the Imperium to get better Wargear. +Rank bonus dice to Leadership (Wil) and Stealth (A) Tests."
+        },
+        {
+          "id": "deathskulls",
+          "name": "Deathskulls",
+          "keyword": "DEATHSKULLS",
+          "effect": "Scheming scavengers, the Deathskulls steal, loot, or scrounge whatever they can. Known to hoard, they 'trade' and customise gear more frequently than other Clans. +Rank bonus dice to Tech (Int) and Influence Tests."
+        },
+        {
+          "id": "evil_sunz",
+          "name": "Evil Sunz",
+          "keyword": "EVIL SUNZ",
+          "effect": "Obsessed with speed, Evil Sunz revel in the roar of engines, the smell of burning promethium, and the feeling of going as fast as possible. You gain +1 Speed, and +Rank bonus dice to all Tests whenever you are in a vehicle moving at top speed."
+        },
+        {
+          "id": "goffs",
+          "name": "Goffs",
+          "keyword": "GOFFS",
+          "effect": "Massive and multitudinous, Goffs example typical Ork warfare; all tough, large, loutish brutes looking for any excuse to charge headlong into battle in as big a mob as possible. +Rank bonus dice to melee attack Tests when you Charge."
+        },
+        {
+          "id": "snakebites",
+          "name": "Snakebites",
+          "keyword": "SNAKEBITES",
+          "effect": "Deliberately primitive, the tribal Snakebites prefer their thick skin to crafted armour, proud of their ability to live off the land. +Double Rank bonus dice to Survival (Wil) Tests."
+        }
+      ]
+    }
+  },
+  {
+    "id": "ogryn",
+    "name": "Ogryn",
+    "description": "Standing larger even than the Adeptus Astartes with gargantuan, overly-muscled frames, Ogryns are a mutant subspecies of Humanity. Thought to be a result of adaptation to harsh, high-gravity worlds, Ogryns are incredibly strong, highly resilient, and instinctively violent.",
+    "cost": 76,
+    "speed": 6,
+    "size": "Large",
+    "baseAttributes": {
+      "strength": 5,
+      "toughness": 5
+    },
+    "baseSkills": {
+      "survival": 2
+    },
+    "attributeMaximums": {
+      "strength": 12,
+      "toughness": 12,
+      "agility": 7,
+      "initiative": 4,
+      "willpower": 8,
+      "intellect": 1,
+      "fellowship": 4
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "Avalanche of Muscle",
+        "effect": "When you Charge you gain an additional +Rank Bonus Dice to your melee attack Test."
+      },
+      {
+        "name": "Claustrophobic",
+        "effect": "Whenever you enter an enclosed area you must make a Fear Test (default DN 2). Additionally, whenever you roll a Complication in an enclosed space, the GM can spend 1 Ruin to force you to repeat this Fear Test."
+      },
+      {
+        "name": "Simple Loyalty",
+        "effect": "Whenever an ally with the IMPERIUM Keyword makes a Leadership Test targeting an Ogryn they gain Bonus Dice equal to the Ogryn's Rank."
+      }
+    ],
+    "keywords": [
+      "IMPERIUM",
+      "ABHUMAN"
+    ],
+    "source": "fspg",
+    "page": 91
+  },
+  {
+    "id": "ratling",
+    "name": "Ratling",
+    "description": "Diminutive, dextrous, and duplicitous, Ratlings are a mutant subspecies of Humanity. They have well established places in Imperial society as sharpshooters and skilled stealth experts.",
+    "cost": 30,
+    "speed": 5,
+    "size": "Small",
+    "baseAttributes": {
+      "agility": 2,
+      "fellowship": 2
+    },
+    "baseSkills": {
+      "awareness": 2,
+      "ballisticSkill": 1,
+      "cunning": 1,
+      "deception": 2,
+      "stealth": 2
+    },
+    "attributeMaximums": {
+      "strength": 6,
+      "toughness": 6,
+      "agility": 10,
+      "initiative": 10,
+      "willpower": 8,
+      "intellect": 8,
+      "fellowship": 10
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "Gourmand",
+        "effect": "+Double Rank Bonus Dice to any Test made to prepare food. Prepared food can be used during a Regroup to recover +Rank Shock."
+      }
+    ],
+    "keywords": [
+      "IMPERIUM",
+      "ABHUMAN"
+    ],
+    "source": "fspg",
+    "page": 91
+  },
+  {
+    "id": "kroot",
+    "name": "Kroot",
+    "description": "Strange and savage xenos hailing from the fringes of the galaxy, the inscrutable Kroot are known for serving many Species as mercenaries. Their primitive warrior culture is intertwined with a unique quirk of their biology — the Kroot devour the corpses of their defeated foes and absorb their genetic traits, evolving through consumption.",
+    "cost": 22,
+    "speed": 7,
+    "size": "Average",
+    "baseAttributes": {},
+    "baseSkills": {
+      "athletics": 1,
+      "awareness": 1,
+      "stealth": 2,
+      "survival": 2,
+      "weaponSkill": 2
+    },
+    "attributeMaximums": {
+      "strength": 12,
+      "toughness": 12,
+      "agility": 12,
+      "initiative": 12,
+      "willpower": 10,
+      "intellect": 6,
+      "fellowship": 6
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "Kroot Mutations",
+        "effect": "You have a number of Kroot Mutations equal to your Tier, and may gain additional Kroot Mutations as part of Ascension."
+      },
+      {
+        "name": "Kroot Language",
+        "effect": "Whenever a Kroot makes a Test to understand a spoken language, they gain +Rank Bonus Dice."
+      }
+    ],
+    "keywords": [
+      "KROOT"
+    ],
+    "source": "fspg",
+    "page": 91,
+    "subOptions": {
+      "type": "mutation",
+      "label": "Kroot Mutation",
+      "required": true,
+      "countByTier": true,
+      "addKeyword": false,
+      "options": [
+        {
+          "id": "maneater",
+          "name": "Maneater",
+          "effect": "+1 to your lowest Attribute (choose if tied)."
+        },
+        {
+          "id": "astartes_eater",
+          "name": "Astartes Eater",
+          "effect": "+2 to any Attribute.",
+          "restricted": true
+        },
+        {
+          "id": "aeldari_eater",
+          "name": "Aeldari Eater",
+          "effect": "+1 to Agility or Willpower."
+        },
+        {
+          "id": "ork_eater",
+          "name": "Ork Eater",
+          "effect": "+1 to Strength or Toughness."
+        },
+        {
+          "id": "armoured_hide",
+          "name": "Armoured Hide",
+          "effect": "+Rank to Base Resilience.",
+          "bonuses": {
+            "resilience": "rank"
+          }
+        },
+        {
+          "id": "bioluminescence",
+          "name": "Bioluminescence",
+          "effect": "You can glow at will, providing illumination in a 5m radius."
+        },
+        {
+          "id": "camouflage",
+          "name": "Camouflage",
+          "effect": "You gain +2 bonus dice to Stealth Tests.",
+          "bonuses": {
+            "skills": {
+              "stealth": 2
+            }
+          }
+        },
+        {
+          "id": "facultative_bipedalism",
+          "name": "Facultative Bipedalism",
+          "effect": "Sprint at 2x normal Speed. +Double Rank to Athletics Tests for jumping or climbing."
+        },
+        {
+          "id": "hypersensitive_quills",
+          "name": "Hypersensitive Quills",
+          "effect": "You gain the Auspex ability to detect hidden creatures and objects within 30m."
+        },
+        {
+          "id": "wings",
+          "name": "Wings",
+          "effect": "You can Fly at Speed 7."
+        },
+        {
+          "id": "weaponised_biology",
+          "name": "Weaponised Biology",
+          "effect": "Your unarmed strikes gain +1 ED and the Rending (1) trait."
+        }
+      ]
+    }
+  },
+  {
+    "id": "drukhari",
+    "name": "Drukhari",
+    "description": "The Drukhari refused to turn from the sinister obsessions and sadistic practices that destroyed the Aeldari empire, and now launch brutal raids for captives whose suffering replenishes their own withering souls.",
+    "cost": 10,
+    "speed": 8,
+    "size": "Average",
+    "baseAttributes": {
+      "agility": 3
+    },
+    "baseSkills": {},
+    "attributeMaximums": {
+      "strength": 8,
+      "toughness": 8,
+      "agility": 12,
+      "initiative": 12,
+      "willpower": 10,
+      "intellect": 10,
+      "fellowship": 6
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "Intense Emotion",
+        "effect": "+1 DN to all Resolve Tests. If you fail a Willpower-based Test in a scene involving emotion, the GM gains +1 Ruin."
+      },
+      {
+        "name": "Night Vision",
+        "effect": "You do not suffer vision penalties for low-light or darkness."
+      },
+      {
+        "name": "Soul Debt",
+        "effect": "Make a DN Tier+1 Corruption Test at the end of any session in which you did not inflict Wounds on an unwilling creature. You never make Corruption Tests for inflicting pain. Drukhari with the ASURYANI, HARLEQUIN, or YNNARI Keyword lose this ability."
+      }
+    ],
+    "keywords": [
+      "AELDARI",
+      "DRUKHARI"
+    ],
+    "source": "aeldari",
+    "page": 10
+  },
+  {
+    "id": "wraith_construct",
+    "name": "Wraith Construct",
+    "description": "In death, the souls of fallen Aeldari are held in spirit stones. Some are chosen in time of need to live once more as mighty Wraith Constructs, animating towering wraithbone bodies to wage war from beyond the grave.",
+    "cost": 90,
+    "speed": 5,
+    "size": "Large",
+    "baseAttributes": {
+      "strength": 5,
+      "toughness": 6
+    },
+    "baseSkills": {},
+    "attributeMaximums": {
+      "strength": 12,
+      "toughness": 12,
+      "agility": 8,
+      "initiative": 8,
+      "willpower": 12,
+      "intellect": 10,
+      "fellowship": 4
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "Wraithbone Form",
+        "effect": "Wraith Constructs are immune to the Blinded, Bleeding, and Poisoned Conditions, and cannot Suffocate. They cannot wear armour, but always count as having an Armour Rating (AR) of 5."
+      }
+    ],
+    "keywords": [
+      "AELDARI",
+      "WRAITH CONSTRUCT"
+    ],
+    "source": "aeldari",
+    "page": 10
+  },
+  {
+    "id": "ghost_warrior_aoa",
+    "name": "Asuryani Ghost Warrior (Abundance of Apocrypha)",
+    "description": "A Ghost Warrior is a wraithbone robotic construct utilised exclusively by the Craftworld Aeldari in times of urgent need. With the guidance of a Spiritseer, an Asuryani spirit can separate itself from the Infinity Circuit and flow into a Spirit Stone placed within the robotic body of a wraith-construct.",
+    "cost": 228,
+    "speed": 5,
+    "size": "Large",
+    "baseAttributes": {
+      "strength": 7,
+      "toughness": 6,
+      "agility": 4,
+      "initiative": 4,
+      "willpower": 5
+    },
+    "baseSkills": {
+      "psychicMastery": 2,
+      "scholar": 3
+    },
+    "attributeMaximums": {
+      "strength": 16,
+      "toughness": 16,
+      "agility": 8,
+      "initiative": 8,
+      "willpower": 8,
+      "intellect": 8,
+      "fellowship": 6
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "Aeldari",
+        "effect": "You may select talents which have a prerequisite of Aeldari species."
+      },
+      {
+        "name": "Undead",
+        "effect": "You are immune to effects which would stun or knock out other foes. You can never suffer Shock damage. However, you are distant and disconnected from mortal existence, and thus can never generate Glory."
+      },
+      {
+        "name": "Wraithbone Form",
+        "effect": "Your robotic body is extremely resistant to harm. Your body naturally has an Armour Rating of 5. In addition, your Determination increases by +3d, and you are immune to the Bleeding, Exhausted, and Poisoned conditions, and cannot suffocate. You are healed using the Tech skill instead of Medicae."
+      },
+      {
+        "name": "Wraithsight",
+        "effect": "A Ghost Warrior is a PSYKER, but may not purchase any psychic powers, not even Smite. Further, you are immune to any penalties or hindrances to vision from any source other than the Warp. However, whenever you roll a Complication on any Test, you become Blinded as the Warp clouds your vision. This can only be removed by a DN 8 Willpower test as a Combat Action, or by an ASURYANI PSYKER within 10m succeeding on a DN 4 Leadership (Wil) Test."
+      }
+    ],
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "[CRAFTWORLD]",
+      "SPIRIT"
+    ],
+    "source": "apocrypha",
+    "page": 6
+  },
+  {
+    "id": "custodian_aoa",
+    "name": "Custodian (Abundance of Apocrypha)",
+    "description": "The Adeptus Custodes are the personal bodyguards of the Emperor of Mankind, created using the Emperor's own gene-craft. Each Custodian is an individual work of art, unique and irreplaceable, the product of genetic alchemy more refined than even that which creates Space Marines.",
+    "cost": 350,
+    "speed": 9,
+    "size": "Average",
+    "baseAttributes": {
+      "strength": 5,
+      "toughness": 5,
+      "agility": 5,
+      "initiative": 5,
+      "willpower": 5,
+      "intellect": 5,
+      "fellowship": 3
+    },
+    "baseSkills": {
+      "athletics": 3,
+      "awareness": 3,
+      "ballisticSkill": 3,
+      "insight": 2,
+      "scholar": 3,
+      "stealth": 3,
+      "weaponSkill": 4
+    },
+    "attributeMaximums": {
+      "strength": 14,
+      "toughness": 14,
+      "agility": 11,
+      "initiative": 11,
+      "willpower": 12,
+      "intellect": 12,
+      "fellowship": 10
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "Aegis of the Emperor",
+        "effect": "A Custodian may roll Determination against Mortal Wounds."
+      },
+      {
+        "name": "Indomitable, Incorruptible",
+        "effect": "You add +2 to your Resolve, and you automatically succeed on all Corruption Tests. Your Maximum Wounds are increased by +4."
+      },
+      {
+        "name": "Solitary",
+        "effect": "A Custodian maintains a unique pool of Glory. They may save up to 3 points of Glory, and they cannot save points into the group pool, nor can they spend Glory generated by anyone else."
+      }
+    ],
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS CUSTODES"
+    ],
+    "source": "apocrypha",
+    "page": 7,
+    "subOptions": {
+      "type": "shield_host",
+      "label": "Shield Host",
+      "required": false,
+      "addKeyword": true,
+      "options": [
+        {
+          "id": "emperors_chosen",
+          "name": "Emperor's Chosen",
+          "keyword": "EMPEROR'S CHOSEN",
+          "abilities": [
+            {
+              "name": "Exemplar",
+              "flavor": "Not every Custodian belongs to a shield host, for such organisations are a temporary formation of shield companies gathered for a particular purpose though some have existed for ten thousand years without having been disbanded.",
+              "effect": "You increase your Influence, Resolve, and Conviction each by +1."
+            }
+          ]
+        },
+        {
+          "id": "shadowkeepers",
+          "name": "Shadowkeepers",
+          "keyword": "SHADOWKEEPERS",
+          "abilities": [
+            {
+              "name": "Warden",
+              "flavor": "The Shadowkeepers watch over the Dark Cells beneath the Imperial Palace and keep trammelled the dread entities and technologies sealed within. Should such potent and terrible manifestations appear abroad in the Imperium, it falls to the Shadowkeepers to capture and imprison them.",
+              "effect": "When an enemy engaged with you attempts to Fall Back, roll a number of d6 equal to Double Rank. For each Icon rolled, the enemy's Speed is reduced by 1."
+            }
+          ]
+        },
+        {
+          "id": "dread_host",
+          "name": "Dread Host",
+          "keyword": "DREAD HOST",
+          "abilities": [
+            {
+              "name": "Wrath of the Throne",
+              "flavor": "Fear is a familiar weapon to the Imperium, used to deter enemies and keep seething populations in line. There is no terror as pure and absolute as that invoked when the Emperor's own fury is unleashed to punish his foes.",
+              "effect": "At the start of the first round of combat, or when you enter combat, enemies who can see you who lack the IMPERIUM keyword must pass a DN 2 +Rank Fear test."
+            }
+          ]
+        },
+        {
+          "id": "aquilan_shield",
+          "name": "Aquilan Shield",
+          "keyword": "AQUILAN SHIELD",
+          "abilities": [
+            {
+              "name": "Guardian",
+              "flavor": "Certain servants of the Emperor bear great responsibilities deemed directly relevant to the safety of Terra. Such esteemed figures are afforded the protection of the Aquilan Shield, until their usefulness is thought to be at its end.",
+              "effect": "At the start of the first round of combat, or when you enter combat, you may select a single ally with the IMPERIUM keyword. While that ally is within 3 metres of you, they add +Rank to their Defence."
+            }
+          ]
+        },
+        {
+          "id": "solar_watch",
+          "name": "Solar Watch",
+          "keyword": "SOLAR WATCH",
+          "abilities": [
+            {
+              "name": "Swift Onslaught",
+              "flavor": "The Solar Watch move fast and strike hard, launching their Talon Sorties to eliminate those threats in or around the Sol System itself. Their wrath is swift and terrible, delivered with a martial precision that few could match.",
+              "effect": "When you Run, Sprint, or Charge, you increase your Speed by +1. Further, you may Fall Back as a Simple Action rather than a Combat Action."
+            }
+          ]
+        },
+        {
+          "id": "emissaries_imperatus",
+          "name": "Emissaries Imperatus",
+          "keyword": "EMISSARIES IMPERATUS",
+          "abilities": [
+            {
+              "name": "Herald of the Throne",
+              "flavor": "In the days of the Great Crusade, the Emperor often entrusted crucial messages or artefacts to be borne by his Custodians. It is a duty they still fulfil now, speaking, acting and making war with the absolute authority of the Master of Mankind himself.",
+              "effect": "Allies within 9m who possess the IMPERIUM keyword increase their Resolve and Conviction by +Rank."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "drukhari_aoa",
+    "name": "Drukhari (Abundance of Apocrypha)",
+    "description": "The Drukhari are a twisted reflection of the Aeldari, dwelling in the interdimensional city of Commorragh within the Webway. They feed upon the suffering of others to sustain their withered souls against the predations of Slaanesh.",
+    "cost": 10,
+    "speed": 8,
+    "size": "Average",
+    "baseAttributes": {
+      "agility": 3,
+      "initiative": 3
+    },
+    "baseSkills": {},
+    "attributeMaximums": {
+      "strength": 7,
+      "toughness": 7,
+      "agility": 12,
+      "initiative": 12,
+      "willpower": 12,
+      "intellect": 10,
+      "fellowship": 6
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "Blade Artist",
+        "effect": "When you make an attack with a melee weapon, increase the weapon's AP by 1 (i.e., from -1 to -2) if you shift one or more Icons on the attack. This stacks with effects such as the Rending weapon trait."
+      },
+      {
+        "name": "The Thirst",
+        "effect": "You cannot recover Shock by spending Wrath, or through the Medicae skill. However, you recover 1d3+Rank shock whenever you inflict Shock on an opponent, kill an opponent, whenever you succeed at an Intimidation interaction attack, or when an enemy fails a Resolve test. The GM gains +1 Ruin whenever you become Exhausted."
+      },
+      {
+        "name": "She Who Thirsts",
+        "effect": "Reduce your Maximum Shock by an amount equal to your Corruption Level."
+      }
+    ],
+    "keywords": [
+      "AELDARI",
+      "DRUKHARI"
+    ],
+    "source": "apocrypha",
+    "page": 8,
+    "subOptions": {
+      "type": "subfaction",
+      "label": "Kabal/Cult/Coven",
+      "required": false,
+      "addKeyword": true,
+      "options": [
+        {
+          "id": "black_heart",
+          "name": "The Black Heart",
+          "keyword": "BLACK HEART",
+          "abilities": [
+            {
+              "name": "Kabal of the Black Heart",
+              "flavor": "The enforcers of Asdrubael Vect's iron rule of Commorragh, the Kabal of the Black Heart are ruthless and cruel.",
+              "effect": "Increase the character's Resolve and Determination by +Rank."
+            }
+          ]
+        },
+        {
+          "id": "poisoned_tongue",
+          "name": "The Poisoned Tongue",
+          "keyword": "POISONED TONGUE",
+          "abilities": [
+            {
+              "name": "Kabal of the Poisoned Tongue",
+              "flavor": "The Kabal of the Poisoned Tongue are cunning, using guile and subtlety to corner their foes before striking with the vilest of poisons.",
+              "effect": "The character adds +Rank dice to Stealth tests and adds +Rank ED to any damage rolls with Fleshbane weapons."
+            }
+          ]
+        },
+        {
+          "id": "flayed_skull",
+          "name": "The Flayed Skull",
+          "keyword": "FLAYED SKULL",
+          "abilities": [
+            {
+              "name": "Kabal of the Flayed Skull",
+              "flavor": "The Kabal of the Flayed Skull are masters of the skies, bringing death from above to countless worlds.",
+              "effect": "The character adds +Rank to all ranged attacks or melee attacks made when they are above their target."
+            }
+          ]
+        },
+        {
+          "id": "obsidian_rose",
+          "name": "The Obsidian Rose",
+          "keyword": "OBSIDIAN ROSE",
+          "abilities": [
+            {
+              "name": "Kabal of the Obsidian Rose",
+              "flavor": "The Kabal of the Obsidian Rose are noted for their exquisite artisanship, whose implements of agony and death are crafted with obsessive precision.",
+              "effect": "The short range of any ranged weapon the character possesses is increased by +Rank, the medium range is increased by +Double Rank, and the long range is increased by three times Rank. In addition, the character may re-roll up to Rank ED when determining damage with one of their own weapons."
+            }
+          ]
+        },
+        {
+          "id": "cult_of_strife",
+          "name": "The Cult of Strife",
+          "keyword": "STRIFE",
+          "abilities": [
+            {
+              "name": "Cult of Strife",
+              "flavor": "The mightiest and most respected of Wych Cults, the Cult of Strife are exemplars of the spectacle of bloodshed, and they do not hesitate to show their skill.",
+              "effect": "The character may Seize the Initiative without spending Glory. They may do this a number of times per scene equal to Rank."
+            }
+          ]
+        },
+        {
+          "id": "cursed_blade",
+          "name": "The Cursed Blade",
+          "keyword": "CURSED BLADE",
+          "abilities": [
+            {
+              "name": "The Cursed Blade",
+              "flavor": "The Cult of the Cursed Blade are paragons of betrayal, seeing it as the pinnacle of their craft.",
+              "effect": "When the character rolls Determination against damage inflicted in melee, each Exalted Icon rolled inflicts a single Mortal Wound upon the attacker."
+            }
+          ]
+        },
+        {
+          "id": "red_grief",
+          "name": "The Red Grief",
+          "keyword": "RED GRIEF",
+          "abilities": [
+            {
+              "name": "The Red Grief",
+              "flavor": "The Cult of the Red Grief seek to attack so swiftly that few even know an attack has begun before the first drops of blood are shed. They are lethally fast and compete amongst themselves to be the first into battle.",
+              "effect": "The character's Speed is increased by +Rank when they Advance or Charge."
+            }
+          ]
+        },
+        {
+          "id": "prophets_of_flesh",
+          "name": "The Prophets of Flesh",
+          "keyword": "PROPHETS OF FLESH",
+          "abilities": [
+            {
+              "name": "Prophets of Flesh",
+              "flavor": "No sadistic art is beyond or beneath these fleshcrafters and their countless, mutated thralls.",
+              "effect": "The character adds +Rank to their Determination, and each Exalted Icon rolled when rolling Determination restores a single lost Wound after the attack is resolved."
+            }
+          ]
+        },
+        {
+          "id": "dark_creed",
+          "name": "The Dark Creed",
+          "keyword": "DARK CREED",
+          "abilities": [
+            {
+              "name": "The Dark Creed",
+              "flavor": "This monstrous coven cultivate terror and wield it as the first weapon in their arsenal.",
+              "effect": "Enemies within 6m add +2 DN to all Resolve tests. In addition, the character adds +Rank dice to all attacks against enemies with a lower Resolve than them."
+            }
+          ]
+        },
+        {
+          "id": "coven_of_twelve",
+          "name": "The Coven of Twelve",
+          "keyword": "COVEN OF TWELVE",
+          "abilities": [
+            {
+              "name": "Coven of Twelve",
+              "flavor": "Masters of close-quarters butchery, the Coven of Twelve are known for their inventive approach to violence, seeking to find novel forms of murder to inflict upon their foes.",
+              "effect": "When making a melee attack, the character improves the AP of their weapon by 1 (i.e., from -1 to -2). In addition, the character reduces the total penalty of any Multi-Action they attempt by Rank."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "kin_aoa",
+    "name": "Kin (Abundance of Apocrypha)",
+    "description": "The Kin, also known as the Leagues of Votann, are an abhuman species that have forged a mighty civilisation in the galactic core. Short and stocky, they are a clone-based society guided by ancient machine intelligences known as Votann.",
+    "cost": 30,
+    "speed": 5,
+    "size": "Average",
+    "baseAttributes": {
+      "toughness": 3,
+      "willpower": 3
+    },
+    "baseSkills": {
+      "tech": 1
+    },
+    "attributeMaximums": {
+      "strength": 10,
+      "toughness": 10,
+      "agility": 6,
+      "initiative": 8,
+      "willpower": 10,
+      "intellect": 9,
+      "fellowship": 7
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "Shrouded Soul",
+        "effect": "Your Conviction increases by +2."
+      },
+      {
+        "name": "Kin-Bond",
+        "effect": "On any Interaction-based skill test with another member of your own Kindred, gain +2 bonus dice."
+      },
+      {
+        "name": "Cloneskein",
+        "effect": "Kin receive the ABHUMAN keyword. In addition, each Kin may select a single Cloneskein Trait from the list below."
+      }
+    ],
+    "keywords": [
+      "LEAGUES OF VOTANN",
+      "[LEAGUE]"
+    ],
+    "source": "apocrypha",
+    "page": 3,
+    "subOptions": {
+      "type": "cloneskein",
+      "label": "Cloneskein Trait",
+      "required": true,
+      "addKeyword": false,
+      "options": [
+        {
+          "id": "fortified_constitution",
+          "name": "Thermographic Vision",
+          "abilities": [
+            {
+              "name": "Thermographic Vision",
+              "effect": "You ignore penalties or DN increases on skill tests due to visual conditions, as if you were wearing Preysense Goggles."
+            }
+          ]
+        },
+        {
+          "id": "enhanced_cognition",
+          "name": "Heightened Reflexes",
+          "abilities": [
+            {
+              "name": "Heightened Reflexes",
+              "effect": "In combat, each round, if you have not yet acted, your side may Keep the Initiative without spending Ruin, but only if you are the next character to act."
+            }
+          ]
+        },
+        {
+          "id": "warrior_instincts",
+          "name": "Void-Hardened",
+          "abilities": [
+            {
+              "name": "Void-Hardened",
+              "effect": "You gain +2 bonus dice on all Toughness tests to resist the effects of suffocation, extreme heat and cold, and radiation."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "ironkin_aoa",
+    "name": "Ironkin (Abundance of Apocrypha)",
+    "description": "The Ironkin are artificial beings created by the Leagues of Votann, granted the same rights and respect as biological Kin. Each Ironkin is a fully sapient machine intelligence, regarded as a person in their own right by Kin society.",
+    "cost": 30,
+    "speed": 5,
+    "size": "Average",
+    "baseAttributes": {
+      "strength": 3,
+      "toughness": 4
+    },
+    "baseSkills": {
+      "tech": 1
+    },
+    "attributeMaximums": {
+      "strength": 10,
+      "toughness": 10,
+      "agility": 6,
+      "initiative": 8,
+      "willpower": 10,
+      "intellect": 9,
+      "fellowship": 7
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "Cerebral Unit",
+        "effect": "Your Conviction increases by +2. Further, if you are slain, your Cerebral Unit (CU) can be retrieved and a new body built for you."
+      },
+      {
+        "name": "Synthetic Emotion",
+        "effect": "You increase the DN of any interaction-based skill test with any character who lacks the LEAGUES OF VOTANN keyword by +1."
+      },
+      {
+        "name": "Machine",
+        "effect": "Ironkin receive the ROBOT keyword. You are immune to the Bleeding and Poisoned conditions and cannot suffocate. You are healed using the Tech skill instead of Medicae."
+      }
+    ],
+    "keywords": [
+      "LEAGUES OF VOTANN",
+      "[LEAGUE]"
+    ],
+    "source": "apocrypha",
+    "page": 10,
+    "subOptions": {
+      "type": "league",
+      "label": "League",
+      "required": false,
+      "addKeyword": true,
+      "options": [
+        {
+          "id": "greater_thurian_league",
+          "name": "Greater Thurian League",
+          "keyword": "GREATER THURIAN LEAGUE",
+          "abilities": [
+            {
+              "name": "Highly Efficient",
+              "flavor": "One of the original founding Leagues, as of its most recent count the Greater Thurian League consists of over two hundred allied Kindred. Between them they boast vast fleets of ships and huge armies of Kinhost warriors.",
+              "effect": "You add +1 to your Influence, and you gain +1 Wealth at the end of each session."
+            }
+          ]
+        },
+        {
+          "id": "ymyr_conglomerate",
+          "name": "Ymyr Conglomerate",
+          "keyword": "YMYR CONGLOMERATE",
+          "abilities": [
+            {
+              "name": "Elite Artisans",
+              "flavor": "Considered an 'elite' League, a Kindred's entry into the Ymyr Conglomerate is dependent upon them proving exceptional skill in craftsmanship and a territory that yields a suitably high bounty of resources.",
+              "effect": "You add +Rank to Tech skill tests and add +1 to the AR of any armour you wear."
+            }
+          ]
+        },
+        {
+          "id": "ursr",
+          "name": "Urani-Surtr Regulates",
+          "keyword": "URANI-SURTR REGULATES",
+          "abilities": [
+            {
+              "name": "To the Last",
+              "flavor": "The Kindreds of the URSR have long held onto a swathe of heavily contested and enemy-ridden territories in the southern reaches of the Galactic Core. On one border they face the Necron Samnokh Dynasty, from the Shattered Stars the raiding Ork fleets of Bogg Da Freeboota King.",
+              "effect": "You add +Rank to your Resolve, and you add +1 to your Determination."
+            }
+          ]
+        },
+        {
+          "id": "trans_hyperian_alliance",
+          "name": "Trans-Hyperian Alliance",
+          "keyword": "TRANS-HYPERIAN ALLIANCE",
+          "abilities": [
+            {
+              "name": "Nomadic Explorers",
+              "flavor": "Known as peerless explorers and adventurers, they seek out new warp routes, trade partners, and mysteries with a compulsive determination. While they control vast swathes of territory both within and without the Galactic Core, these holdings are far-flung and thinly spread.",
+              "effect": "You increase your Passive Awareness by +Rank and add +1d to all Pilot skill tests."
+            }
+          ]
+        },
+        {
+          "id": "kronus_hegemony",
+          "name": "Kronus Hegemony",
+          "keyword": "KRONUS HEGEMONY",
+          "abilities": [
+            {
+              "name": "Aggressive Expansion",
+              "flavor": "A relatively young League, it was founded less than a millennium ago when the Fane of Kôrynn's Kindred achieved self-awareness. This newly ascended Ancestor Core exhibited an aggressive drive for knowledge and demanding appetite for raw materials.",
+              "effect": "You may re-roll Rank dice on melee attacks when you charge and add +1ED to the damage of all melee attacks when you charge."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "navigator_aoa",
+    "name": "Navigator (Abundance of Apocrypha)",
+    "description": "Navigators are a unique strain of humanity, blessed and cursed with the Navigator Gene. This mutation grants them a third eye, the Warp Eye, which allows them to perceive the currents of the Warp and guide ships through its treacherous depths.",
+    "cost": 40,
+    "speed": 6,
+    "size": "Average",
+    "baseAttributes": {
+      "willpower": 3
+    },
+    "baseSkills": {
+      "awareness": 1,
+      "pilot": 1,
+      "scholar": 1
+    },
+    "attributeMaximums": {
+      "strength": 8,
+      "toughness": 8,
+      "agility": 8,
+      "initiative": 8,
+      "willpower": 12,
+      "intellect": 10,
+      "fellowship": 6
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "Hereditary Mutations",
+        "effect": "+2DN to all Interaction tests with IMPERIAL characters."
+      },
+      {
+        "name": "Warp Eye",
+        "effect": "You are considered to be a PSYKER, though you may only select Navigator powers. When you use Psyniscience, double the range for each Exalted Icon shifted. Further, you cannot gain Corruption from looking into or being exposed to the Warp."
+      },
+      {
+        "name": "Mutant",
+        "effect": "Your form has been twisted and distorted by exposure to the Immaterium and by generations of inbreeding. Choose one of your attributes; any skill tests using that attribute suffer +1DN, and any derived traits from that attribute are reduced by 1."
+      }
+    ],
+    "keywords": [
+      "IMPERIUM",
+      "NAVIS NOBILITE",
+      "[NAVIGATOR HOUSE]"
+    ],
+    "source": "apocrypha",
+    "page": 11
+  },
+  {
+    "id": "pariah_aoa",
+    "name": "Pariah (Abundance of Apocrypha)",
+    "description": "Pariahs, also known as Blanks, Untouchables, or Nulls, are extraordinarily rare humans who possess the Pariah Gene. They have no presence in the Warp whatsoever, making them anathema to psykers and daemons alike.",
+    "cost": 40,
+    "speed": 6,
+    "size": "Average",
+    "baseAttributes": {
+      "willpower": 3
+    },
+    "baseSkills": {},
+    "attributeMaximums": {
+      "strength": 8,
+      "toughness": 8,
+      "agility": 8,
+      "initiative": 8,
+      "willpower": 10,
+      "intellect": 8,
+      "fellowship": 6
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "Abhorrent Presence",
+        "effect": "+2DN to all interaction tests with non-pariah characters. +4DN to interaction tests with PSYKERS. Pariahs reduce their Influence by 1."
+      },
+      {
+        "name": "Psychic Abomination",
+        "effect": "A pariah cannot be directly affected by psychic powers or other warp phenomena, whether positive or negative. A pariah can never gain the PSYKER keyword, nor can they ever gain Faith points or any other ability that requires drawing upon the Warp for power. Any psychic powers attempted or targeted within a number of metres of the Pariah equal to their Willpower increase their DN by twice the Pariah's Rank."
+      },
+      {
+        "name": "Untouchable",
+        "effect": "A pariah cannot gain Corruption from warp phenomena, and they automatically succeed at Resolve tests caused by DAEMONS."
+      }
+    ],
+    "keywords": [
+      "IMPERIUM"
+    ],
+    "source": "apocrypha",
+    "page": 122
+  },
+  {
+    "id": "perpetual_aoa",
+    "name": "Perpetual (Abundance of Apocrypha)",
+    "description": "Perpetuals are extraordinarily rare immortal beings who cannot truly die. When killed, they regenerate over time, returning to life. They have existed since the dawn of humanity, walking among mortals for millennia.",
+    "cost": 100,
+    "speed": 6,
+    "size": "Average",
+    "baseAttributes": {},
+    "baseSkills": {
+      "scholar": 2
+    },
+    "attributeMaximums": {
+      "strength": 8,
+      "toughness": 8,
+      "agility": 8,
+      "initiative": 8,
+      "willpower": 10,
+      "intellect": 10,
+      "fellowship": 8
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "Immortal",
+        "effect": "You cannot die, though you can still suffer injuries and enter the dying state. If you would suffer from Annihilation (suffering damage equal to twice your Maximum Wounds), you instead suffer Traumatic Injuries equal to the game's Tier +2. You automatically remove one Traumatic Injury after each Respite."
+      },
+      {
+        "name": "Clandestine Connections",
+        "effect": "You've accumulated a great many contacts across your impossibly long life. When you attempt an Influence test, you may roll additional Wrath dice equal to the game's Tier, but a Wrath Complication means that some detail of your immortal nature has reached those who would hunt you."
+      },
+      {
+        "name": "Despised by the Unholy",
+        "effect": "If a Perpetual is present in a game, the GM's starting and maximum Ruin are increased by 1."
+      }
+    ],
+    "keywords": [
+      "IMPERIUM"
+    ],
+    "source": "apocrypha",
+    "page": 168
+  },
+  {
+    "id": "beastman_aoa",
+    "name": "Beastman (Abundance of Apocrypha)",
+    "description": "Beastmen are abhuman mutants bearing bestial features such as horns, hooves, and fur. While most are shunned or persecuted by the Imperium, some serve as expendable auxiliaries in the Astra Militarum.",
+    "cost": 10,
+    "speed": 7,
+    "size": "Average",
+    "baseAttributes": {
+      "strength": 3,
+      "toughness": 3
+    },
+    "baseSkills": {
+      "survival": 1
+    },
+    "attributeMaximums": {
+      "strength": 10,
+      "toughness": 10,
+      "agility": 9,
+      "initiative": 8,
+      "willpower": 8,
+      "intellect": 6,
+      "fellowship": 6
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "Reviled Abhuman",
+        "effect": "+2DN to all Interaction tests with characters who do not possess the CHAOS keyword."
+      },
+      {
+        "name": "Horns",
+        "effect": "You may make melee attacks with your horns ([S]+5 +2ED / AP -). Thus, you are always armed."
+      },
+      {
+        "name": "Bestial Savagery",
+        "effect": "+1d to all Intimidation tests."
+      }
+    ],
+    "keywords": [
+      "IMPERIUM"
+    ],
+    "source": "apocrypha",
+    "page": 14
+  },
+  {
+    "id": "tau_shas_aoa",
+    "name": "T'au - Fire Caste (Abundance of Apocrypha)",
+    "description": "The Fire Caste (Shas) are the warriors of the T'au Empire, trained from birth in the arts of war and dedicated to protecting the T'au and furthering the Greater Good through military might.",
+    "cost": 14,
+    "speed": 7,
+    "size": "Average",
+    "baseAttributes": {
+      "agility": 3
+    },
+    "baseSkills": {
+      "ballisticSkill": 1,
+      "survival": 1
+    },
+    "attributeMaximums": {
+      "strength": 7,
+      "toughness": 8,
+      "agility": 8,
+      "initiative": 8,
+      "willpower": 8,
+      "intellect": 9,
+      "fellowship": 7
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "For the Greater Good (Shas)",
+        "effect": "When you assist an ally using Awareness, Ballistic Skill, or Stealth, you may halve the number of dice you would add and add that many Icons to the test you are assisting."
+      },
+      {
+        "name": "Dull Soul",
+        "effect": "You cannot gain the PSYKER keyword under any circumstances."
+      }
+    ],
+    "keywords": [
+      "T'AU",
+      "T'AU EMPIRE",
+      "[SEPT]"
+    ],
+    "source": "apocrypha",
+    "page": 15,
+    "subOptions": {
+      "type": "sept",
+      "label": "Sept",
+      "required": false,
+      "addKeyword": true,
+      "options": [
+        {
+          "id": "borkan",
+          "name": "Bork'an",
+          "keyword": "BORK'AN",
+          "abilities": [
+            {
+              "name": "Bork'an Sept - Air Caste",
+              "flavor": "Bork'an is a centre of learning and academia, and it is the home to many of the T'au Empire's universities and research facilities.",
+              "effect": "Air Caste: Add +1 to the Speed, Wounds, and Resilience of their vehicles, due to superior engineering. Earth Caste: Add +2 to their Medicae, Scholar, and Tech skills. Fire Caste: Add +2 to the short range of their ranged weapons, +4 to the medium range, and +6 to the long range. Water Caste: May re-roll a 1 on their Wrath die when attempting a Cunning, Deception, Insight, or Persuasion test."
+            }
+          ]
+        },
+        {
+          "id": "dalyth",
+          "name": "Dal'yth",
+          "keyword": "DAL'YTH",
+          "abilities": [
+            {
+              "name": "Dal'yth Sept - All Castes",
+              "flavor": "Dal'yth is a hub of trade and commerce for the T'au Empire, and it is home to countless merchant guilds, embassies, and markets.",
+              "effect": "Air Caste: Add +2 to the Defence of their vehicles when they perform Evasive Action. Earth Caste: Carry devices which are cunningly wrought with hidden functions or secret countermeasures; double the range of the character's Tech interaction attacks. Fire Caste: Employ advanced camouflage systems to obscure their presence; if they do not move during their turn, they add +2 to their Defence (as if in cover) until the start of their next turn. Water Caste: Add +2 to their Cunning, Deception, Insight, and Persuasion skills."
+            }
+          ]
+        },
+        {
+          "id": "farsight_enclaves",
+          "name": "Farsight Enclaves",
+          "keyword": "FARSIGHT ENCLAVES",
+          "abilities": [
+            {
+              "name": "Farsight Enclaves - All Castes",
+              "flavor": "The Farsight Enclaves are a series of heavily fortified T'au colony worlds that are independent and indeed opposed to the rule of the T'au Empire. They are led by the legendary Commander Farsight.",
+              "effect": "All T'au: Add +2 to their Conviction (rebels free from the dogma and deceptions of the Ethereals). Fire Caste: Drilled to engage enemies at close range; they add an extra +2 to all attacks made against enemies within 9m."
+            }
+          ]
+        },
+        {
+          "id": "sacea",
+          "name": "Sa'cea",
+          "keyword": "SA'CEA",
+          "abilities": [
+            {
+              "name": "Sa'cea Sept - All Castes",
+              "flavor": "Sa'cea is a hot, densely populated world, once overrun by fearsome predators which the Fire caste's warriors had to slay before the settlers could land. A highly militarised world, it contains a large population of Fire caste warriors.",
+              "effect": "All T'au: Add +1 to their Resolve. Air Caste: Hone their skills in the skies above dense cityscapes, where absolute precision is needed; they may re-roll any 1s rolled (even on a Wrath die) for Pilot tests. Earth Caste: Keenly observant, almost to a point of wariness, and add +2d to all Awareness tests. Fire Caste: Have exceptional fire discipline; they may re-roll one die on any Ballistic Skill test they attempt."
+            }
+          ]
+        },
+        {
+          "id": "tau_sept",
+          "name": "T'au",
+          "keyword": "T'AU",
+          "abilities": [
+            {
+              "name": "T'au Sept - All Castes",
+              "flavor": "The birthworld of the species which shares its name, T'au is a world of traditions, for everything within the T'au Empire has an origin there. Its people have a reputation for wisdom and reverence.",
+              "effect": "All T'au: Grant +1 additional die when they assist an ally. Further, whenever they use an ability which affects T'AU EMPIRE allies, the range is increased by +3m."
+            }
+          ]
+        },
+        {
+          "id": "viorla",
+          "name": "Vior'la",
+          "keyword": "VIOR'LA",
+          "abilities": [
+            {
+              "name": "Vior'la Sept - All Castes",
+              "flavor": "Vior'la means 'hot-blooded' in the T'au language, and its people live up to that moniker, for they are passionate, quick to anger, and even aggressive.",
+              "effect": "Air Caste: Have a knack for high-speed manoeuvres that other T'au might balk at; they ignore the additional Wrath Dice that comes piloting a vehicle at Breakneck speed. Earth Caste: Quick to experiment and jury-rig the devices they use; they may add a second Wrath die to any Tech test they attempt. Fire Caste: Advance and redeploy quickly, adding +1 to their Speed during the first round of each combat, and +1 Speed when they Run or Sprint. Water Caste: Fast-talking and effusive; they may add a second Wrath die to any Persuasion test they attempt."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "tau_fio_aoa",
+    "name": "T'au - Earth Caste (Abundance of Apocrypha)",
+    "description": "The Earth Caste (Fio) provides for the manufacturing, agricultural, industrial, artisan, and engineering needs of the T'au Empire. By far the largest caste in sheer numbers, they produce new technology and provide food.",
+    "cost": 14,
+    "speed": 5,
+    "size": "Average",
+    "baseAttributes": {
+      "intellect": 3
+    },
+    "baseSkills": {
+      "scholar": 1,
+      "tech": 1
+    },
+    "attributeMaximums": {
+      "strength": 6,
+      "toughness": 8,
+      "agility": 7,
+      "initiative": 8,
+      "willpower": 8,
+      "intellect": 10,
+      "fellowship": 6
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "For the Greater Good (Fio)",
+        "effect": "When you assist an ally using Medicae, Scholar, or Tech, you may halve the number of dice you would add and add that many Icons to the test you are assisting."
+      },
+      {
+        "name": "Dull Soul",
+        "effect": "You cannot gain the PSYKER keyword under any circumstances."
+      }
+    ],
+    "keywords": [
+      "T'AU",
+      "T'AU EMPIRE",
+      "[SEPT]"
+    ],
+    "source": "apocrypha",
+    "page": 15,
+    "subOptions": {
+      "type": "sept",
+      "label": "Sept",
+      "required": false,
+      "addKeyword": true,
+      "options": [
+        {
+          "id": "borkan",
+          "name": "Bork'an",
+          "keyword": "BORK'AN",
+          "abilities": [
+            {
+              "name": "Bork'an Sept - Air Caste",
+              "flavor": "Bork'an is a centre of learning and academia, and it is the home to many of the T'au Empire's universities and research facilities.",
+              "effect": "Air Caste: Add +1 to the Speed, Wounds, and Resilience of their vehicles, due to superior engineering. Earth Caste: Add +2 to their Medicae, Scholar, and Tech skills. Fire Caste: Add +2 to the short range of their ranged weapons, +4 to the medium range, and +6 to the long range. Water Caste: May re-roll a 1 on their Wrath die when attempting a Cunning, Deception, Insight, or Persuasion test."
+            }
+          ]
+        },
+        {
+          "id": "dalyth",
+          "name": "Dal'yth",
+          "keyword": "DAL'YTH",
+          "abilities": [
+            {
+              "name": "Dal'yth Sept - All Castes",
+              "flavor": "Dal'yth is a hub of trade and commerce for the T'au Empire, and it is home to countless merchant guilds, embassies, and markets.",
+              "effect": "Air Caste: Add +2 to the Defence of their vehicles when they perform Evasive Action. Earth Caste: Carry devices which are cunningly wrought with hidden functions or secret countermeasures; double the range of the character's Tech interaction attacks. Fire Caste: Employ advanced camouflage systems to obscure their presence; if they do not move during their turn, they add +2 to their Defence (as if in cover) until the start of their next turn. Water Caste: Add +2 to their Cunning, Deception, Insight, and Persuasion skills."
+            }
+          ]
+        },
+        {
+          "id": "farsight_enclaves",
+          "name": "Farsight Enclaves",
+          "keyword": "FARSIGHT ENCLAVES",
+          "abilities": [
+            {
+              "name": "Farsight Enclaves - All Castes",
+              "flavor": "The Farsight Enclaves are a series of heavily fortified T'au colony worlds that are independent and indeed opposed to the rule of the T'au Empire. They are led by the legendary Commander Farsight.",
+              "effect": "All T'au: Add +2 to their Conviction (rebels free from the dogma and deceptions of the Ethereals). Fire Caste: Drilled to engage enemies at close range; they add an extra +2 to all attacks made against enemies within 9m."
+            }
+          ]
+        },
+        {
+          "id": "sacea",
+          "name": "Sa'cea",
+          "keyword": "SA'CEA",
+          "abilities": [
+            {
+              "name": "Sa'cea Sept - All Castes",
+              "flavor": "Sa'cea is a hot, densely populated world, once overrun by fearsome predators which the Fire caste's warriors had to slay before the settlers could land. A highly militarised world, it contains a large population of Fire caste warriors.",
+              "effect": "All T'au: Add +1 to their Resolve. Air Caste: Hone their skills in the skies above dense cityscapes, where absolute precision is needed; they may re-roll any 1s rolled (even on a Wrath die) for Pilot tests. Earth Caste: Keenly observant, almost to a point of wariness, and add +2d to all Awareness tests. Fire Caste: Have exceptional fire discipline; they may re-roll one die on any Ballistic Skill test they attempt."
+            }
+          ]
+        },
+        {
+          "id": "tau_sept",
+          "name": "T'au",
+          "keyword": "T'AU",
+          "abilities": [
+            {
+              "name": "T'au Sept - All Castes",
+              "flavor": "The birthworld of the species which shares its name, T'au is a world of traditions, for everything within the T'au Empire has an origin there. Its people have a reputation for wisdom and reverence.",
+              "effect": "All T'au: Grant +1 additional die when they assist an ally. Further, whenever they use an ability which affects T'AU EMPIRE allies, the range is increased by +3m."
+            }
+          ]
+        },
+        {
+          "id": "viorla",
+          "name": "Vior'la",
+          "keyword": "VIOR'LA",
+          "abilities": [
+            {
+              "name": "Vior'la Sept - All Castes",
+              "flavor": "Vior'la means 'hot-blooded' in the T'au language, and its people live up to that moniker, for they are passionate, quick to anger, and even aggressive.",
+              "effect": "Air Caste: Have a knack for high-speed manoeuvres that other T'au might balk at; they ignore the additional Wrath Dice that comes piloting a vehicle at Breakneck speed. Earth Caste: Quick to experiment and jury-rig the devices they use; they may add a second Wrath die to any Tech test they attempt. Fire Caste: Advance and redeploy quickly, adding +1 to their Speed during the first round of each combat, and +1 Speed when they Run or Sprint. Water Caste: Fast-talking and effusive; they may add a second Wrath die to any Persuasion test they attempt."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "tau_kor_aoa",
+    "name": "T'au - Air Caste (Abundance of Apocrypha)",
+    "description": "The Air Caste (Kor) is charged with holding the T'au Empire together through the Kor'vattra, the T'au Empire's merchant and war-fleet. They are the tallest and most slender of all T'au, with hollow bones.",
+    "cost": 14,
+    "speed": 7,
+    "size": "Average",
+    "baseAttributes": {
+      "agility": 3
+    },
+    "baseSkills": {
+      "awareness": 1,
+      "pilot": 1
+    },
+    "attributeMaximums": {
+      "strength": 6,
+      "toughness": 6,
+      "agility": 9,
+      "initiative": 8,
+      "willpower": 8,
+      "intellect": 9,
+      "fellowship": 7
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "For the Greater Good (Kor)",
+        "effect": "When you assist an ally using Awareness, Pilot, or Tech, you may halve the number of dice you would add and add that many Icons to the test you are assisting."
+      },
+      {
+        "name": "Grav-Adapted",
+        "effect": "You ignore all DN increases for high, low, or zero-gravity, and you gain a Flying Speed equal to your normal Speed when in zero gravity."
+      },
+      {
+        "name": "Dull Soul",
+        "effect": "You cannot gain the PSYKER keyword under any circumstances."
+      }
+    ],
+    "keywords": [
+      "T'AU",
+      "T'AU EMPIRE",
+      "[SEPT]"
+    ],
+    "source": "apocrypha",
+    "page": 16,
+    "subOptions": {
+      "type": "sept",
+      "label": "Sept",
+      "required": false,
+      "addKeyword": true,
+      "options": [
+        {
+          "id": "borkan",
+          "name": "Bork'an",
+          "keyword": "BORK'AN",
+          "abilities": [
+            {
+              "name": "Bork'an Sept - Air Caste",
+              "flavor": "Bork'an is a centre of learning and academia, and it is the home to many of the T'au Empire's universities and research facilities.",
+              "effect": "Air Caste: Add +1 to the Speed, Wounds, and Resilience of their vehicles, due to superior engineering. Earth Caste: Add +2 to their Medicae, Scholar, and Tech skills. Fire Caste: Add +2 to the short range of their ranged weapons, +4 to the medium range, and +6 to the long range. Water Caste: May re-roll a 1 on their Wrath die when attempting a Cunning, Deception, Insight, or Persuasion test."
+            }
+          ]
+        },
+        {
+          "id": "dalyth",
+          "name": "Dal'yth",
+          "keyword": "DAL'YTH",
+          "abilities": [
+            {
+              "name": "Dal'yth Sept - All Castes",
+              "flavor": "Dal'yth is a hub of trade and commerce for the T'au Empire, and it is home to countless merchant guilds, embassies, and markets.",
+              "effect": "Air Caste: Add +2 to the Defence of their vehicles when they perform Evasive Action. Earth Caste: Carry devices which are cunningly wrought with hidden functions or secret countermeasures; double the range of the character's Tech interaction attacks. Fire Caste: Employ advanced camouflage systems to obscure their presence; if they do not move during their turn, they add +2 to their Defence (as if in cover) until the start of their next turn. Water Caste: Add +2 to their Cunning, Deception, Insight, and Persuasion skills."
+            }
+          ]
+        },
+        {
+          "id": "farsight_enclaves",
+          "name": "Farsight Enclaves",
+          "keyword": "FARSIGHT ENCLAVES",
+          "abilities": [
+            {
+              "name": "Farsight Enclaves - All Castes",
+              "flavor": "The Farsight Enclaves are a series of heavily fortified T'au colony worlds that are independent and indeed opposed to the rule of the T'au Empire. They are led by the legendary Commander Farsight.",
+              "effect": "All T'au: Add +2 to their Conviction (rebels free from the dogma and deceptions of the Ethereals). Fire Caste: Drilled to engage enemies at close range; they add an extra +2 to all attacks made against enemies within 9m."
+            }
+          ]
+        },
+        {
+          "id": "sacea",
+          "name": "Sa'cea",
+          "keyword": "SA'CEA",
+          "abilities": [
+            {
+              "name": "Sa'cea Sept - All Castes",
+              "flavor": "Sa'cea is a hot, densely populated world, once overrun by fearsome predators which the Fire caste's warriors had to slay before the settlers could land. A highly militarised world, it contains a large population of Fire caste warriors.",
+              "effect": "All T'au: Add +1 to their Resolve. Air Caste: Hone their skills in the skies above dense cityscapes, where absolute precision is needed; they may re-roll any 1s rolled (even on a Wrath die) for Pilot tests. Earth Caste: Keenly observant, almost to a point of wariness, and add +2d to all Awareness tests. Fire Caste: Have exceptional fire discipline; they may re-roll one die on any Ballistic Skill test they attempt."
+            }
+          ]
+        },
+        {
+          "id": "tau_sept",
+          "name": "T'au",
+          "keyword": "T'AU",
+          "abilities": [
+            {
+              "name": "T'au Sept - All Castes",
+              "flavor": "The birthworld of the species which shares its name, T'au is a world of traditions, for everything within the T'au Empire has an origin there. Its people have a reputation for wisdom and reverence.",
+              "effect": "All T'au: Grant +1 additional die when they assist an ally. Further, whenever they use an ability which affects T'AU EMPIRE allies, the range is increased by +3m."
+            }
+          ]
+        },
+        {
+          "id": "viorla",
+          "name": "Vior'la",
+          "keyword": "VIOR'LA",
+          "abilities": [
+            {
+              "name": "Vior'la Sept - All Castes",
+              "flavor": "Vior'la means 'hot-blooded' in the T'au language, and its people live up to that moniker, for they are passionate, quick to anger, and even aggressive.",
+              "effect": "Air Caste: Have a knack for high-speed manoeuvres that other T'au might balk at; they ignore the additional Wrath Dice that comes piloting a vehicle at Breakneck speed. Earth Caste: Quick to experiment and jury-rig the devices they use; they may add a second Wrath die to any Tech test they attempt. Fire Caste: Advance and redeploy quickly, adding +1 to their Speed during the first round of each combat, and +1 Speed when they Run or Sprint. Water Caste: Fast-talking and effusive; they may add a second Wrath die to any Persuasion test they attempt."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "tau_por_aoa",
+    "name": "T'au - Water Caste (Abundance of Apocrypha)",
+    "description": "The Water Caste (Por) serve the T'au Empire as traders, merchants, public servants, bureaucrats, administrators, diplomats, and ambassadors. They are known for their great linguistic, diplomatic, and negotiation skills.",
+    "cost": 14,
+    "speed": 6,
+    "size": "Average",
+    "baseAttributes": {
+      "fellowship": 3
+    },
+    "baseSkills": {
+      "insight": 1,
+      "persuasion": 1
+    },
+    "attributeMaximums": {
+      "strength": 6,
+      "toughness": 6,
+      "agility": 7,
+      "initiative": 8,
+      "willpower": 8,
+      "intellect": 9,
+      "fellowship": 10
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "For the Greater Good (Por)",
+        "effect": "When you assist an ally using Cunning, Deception, or Persuasion, you may halve the number of dice you would add and add that many Icons to the test you are assisting."
+      },
+      {
+        "name": "Polyglot",
+        "effect": "You know additional languages equal to your Scholar rank. When you encounter an unfamiliar language, you gain +Double Rank on Scholar tests to learn or translate that language."
+      },
+      {
+        "name": "Dull Soul",
+        "effect": "You cannot gain the PSYKER keyword under any circumstances."
+      }
+    ],
+    "keywords": [
+      "T'AU",
+      "T'AU EMPIRE",
+      "[SEPT]"
+    ],
+    "source": "apocrypha",
+    "page": 16,
+    "subOptions": {
+      "type": "sept",
+      "label": "Sept",
+      "required": false,
+      "addKeyword": true,
+      "options": [
+        {
+          "id": "borkan",
+          "name": "Bork'an",
+          "keyword": "BORK'AN",
+          "abilities": [
+            {
+              "name": "Bork'an Sept - Air Caste",
+              "flavor": "Bork'an is a centre of learning and academia, and it is the home to many of the T'au Empire's universities and research facilities.",
+              "effect": "Air Caste: Add +1 to the Speed, Wounds, and Resilience of their vehicles, due to superior engineering. Earth Caste: Add +2 to their Medicae, Scholar, and Tech skills. Fire Caste: Add +2 to the short range of their ranged weapons, +4 to the medium range, and +6 to the long range. Water Caste: May re-roll a 1 on their Wrath die when attempting a Cunning, Deception, Insight, or Persuasion test."
+            }
+          ]
+        },
+        {
+          "id": "dalyth",
+          "name": "Dal'yth",
+          "keyword": "DAL'YTH",
+          "abilities": [
+            {
+              "name": "Dal'yth Sept - All Castes",
+              "flavor": "Dal'yth is a hub of trade and commerce for the T'au Empire, and it is home to countless merchant guilds, embassies, and markets.",
+              "effect": "Air Caste: Add +2 to the Defence of their vehicles when they perform Evasive Action. Earth Caste: Carry devices which are cunningly wrought with hidden functions or secret countermeasures; double the range of the character's Tech interaction attacks. Fire Caste: Employ advanced camouflage systems to obscure their presence; if they do not move during their turn, they add +2 to their Defence (as if in cover) until the start of their next turn. Water Caste: Add +2 to their Cunning, Deception, Insight, and Persuasion skills."
+            }
+          ]
+        },
+        {
+          "id": "farsight_enclaves",
+          "name": "Farsight Enclaves",
+          "keyword": "FARSIGHT ENCLAVES",
+          "abilities": [
+            {
+              "name": "Farsight Enclaves - All Castes",
+              "flavor": "The Farsight Enclaves are a series of heavily fortified T'au colony worlds that are independent and indeed opposed to the rule of the T'au Empire. They are led by the legendary Commander Farsight.",
+              "effect": "All T'au: Add +2 to their Conviction (rebels free from the dogma and deceptions of the Ethereals). Fire Caste: Drilled to engage enemies at close range; they add an extra +2 to all attacks made against enemies within 9m."
+            }
+          ]
+        },
+        {
+          "id": "sacea",
+          "name": "Sa'cea",
+          "keyword": "SA'CEA",
+          "abilities": [
+            {
+              "name": "Sa'cea Sept - All Castes",
+              "flavor": "Sa'cea is a hot, densely populated world, once overrun by fearsome predators which the Fire caste's warriors had to slay before the settlers could land. A highly militarised world, it contains a large population of Fire caste warriors.",
+              "effect": "All T'au: Add +1 to their Resolve. Air Caste: Hone their skills in the skies above dense cityscapes, where absolute precision is needed; they may re-roll any 1s rolled (even on a Wrath die) for Pilot tests. Earth Caste: Keenly observant, almost to a point of wariness, and add +2d to all Awareness tests. Fire Caste: Have exceptional fire discipline; they may re-roll one die on any Ballistic Skill test they attempt."
+            }
+          ]
+        },
+        {
+          "id": "tau_sept",
+          "name": "T'au",
+          "keyword": "T'AU",
+          "abilities": [
+            {
+              "name": "T'au Sept - All Castes",
+              "flavor": "The birthworld of the species which shares its name, T'au is a world of traditions, for everything within the T'au Empire has an origin there. Its people have a reputation for wisdom and reverence.",
+              "effect": "All T'au: Grant +1 additional die when they assist an ally. Further, whenever they use an ability which affects T'AU EMPIRE allies, the range is increased by +3m."
+            }
+          ]
+        },
+        {
+          "id": "viorla",
+          "name": "Vior'la",
+          "keyword": "VIOR'LA",
+          "abilities": [
+            {
+              "name": "Vior'la Sept - All Castes",
+              "flavor": "Vior'la means 'hot-blooded' in the T'au language, and its people live up to that moniker, for they are passionate, quick to anger, and even aggressive.",
+              "effect": "Air Caste: Have a knack for high-speed manoeuvres that other T'au might balk at; they ignore the additional Wrath Dice that comes piloting a vehicle at Breakneck speed. Earth Caste: Quick to experiment and jury-rig the devices they use; they may add a second Wrath die to any Tech test they attempt. Fire Caste: Advance and redeploy quickly, adding +1 to their Speed during the first round of each combat, and +1 Speed when they Run or Sprint. Water Caste: Fast-talking and effusive; they may add a second Wrath die to any Persuasion test they attempt."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "tau_aun_aoa",
+    "name": "T'au - Ethereal Caste (Abundance of Apocrypha)",
+    "description": "The Ethereal Caste (Aun) are the leaders of T'au society, serving as philosopher-kings and spiritual leaders. Their power over the T'au is such that an Ethereal could tell a T'au to die and that T'au would do so quickly and gladly.",
+    "cost": 40,
+    "speed": 6,
+    "size": "Average",
+    "baseAttributes": {
+      "agility": 3,
+      "willpower": 3
+    },
+    "baseSkills": {
+      "leadership": 2,
+      "scholar": 3,
+      "weaponSkill": 1
+    },
+    "attributeMaximums": {
+      "strength": 8,
+      "toughness": 8,
+      "agility": 8,
+      "initiative": 8,
+      "willpower": 10,
+      "intellect": 9,
+      "fellowship": 10
+    },
+    "woundBonus": 0,
+    "abilities": [
+      {
+        "name": "Ethereal Presence",
+        "effect": "T'AU characters within 12m always add bonus dice equal to twice the Ethereal's Rank to their Resolve and Conviction tests. T'AU characters cannot willingly harm an Ethereal and must pass a DN 5 Resolve test or become Pinned if their actions allow an Ethereal to be harmed."
+      },
+      {
+        "name": "Dull Soul",
+        "effect": "You cannot gain the PSYKER keyword under any circumstances."
+      }
+    ],
+    "keywords": [
+      "T'AU",
+      "T'AU EMPIRE",
+      "[SEPT]"
+    ],
+    "source": "apocrypha",
+    "page": 17,
+    "subOptions": {
+      "type": "sept",
+      "label": "Sept",
+      "required": false,
+      "addKeyword": true,
+      "options": [
+        {
+          "id": "borkan",
+          "name": "Bork'an",
+          "keyword": "BORK'AN",
+          "abilities": [
+            {
+              "name": "Bork'an Sept - Air Caste",
+              "flavor": "Bork'an is a centre of learning and academia, and it is the home to many of the T'au Empire's universities and research facilities.",
+              "effect": "Air Caste: Add +1 to the Speed, Wounds, and Resilience of their vehicles, due to superior engineering. Earth Caste: Add +2 to their Medicae, Scholar, and Tech skills. Fire Caste: Add +2 to the short range of their ranged weapons, +4 to the medium range, and +6 to the long range. Water Caste: May re-roll a 1 on their Wrath die when attempting a Cunning, Deception, Insight, or Persuasion test."
+            }
+          ]
+        },
+        {
+          "id": "dalyth",
+          "name": "Dal'yth",
+          "keyword": "DAL'YTH",
+          "abilities": [
+            {
+              "name": "Dal'yth Sept - All Castes",
+              "flavor": "Dal'yth is a hub of trade and commerce for the T'au Empire, and it is home to countless merchant guilds, embassies, and markets.",
+              "effect": "Air Caste: Add +2 to the Defence of their vehicles when they perform Evasive Action. Earth Caste: Carry devices which are cunningly wrought with hidden functions or secret countermeasures; double the range of the character's Tech interaction attacks. Fire Caste: Employ advanced camouflage systems to obscure their presence; if they do not move during their turn, they add +2 to their Defence (as if in cover) until the start of their next turn. Water Caste: Add +2 to their Cunning, Deception, Insight, and Persuasion skills."
+            }
+          ]
+        },
+        {
+          "id": "farsight_enclaves",
+          "name": "Farsight Enclaves",
+          "keyword": "FARSIGHT ENCLAVES",
+          "abilities": [
+            {
+              "name": "Farsight Enclaves - All Castes",
+              "flavor": "The Farsight Enclaves are a series of heavily fortified T'au colony worlds that are independent and indeed opposed to the rule of the T'au Empire. They are led by the legendary Commander Farsight.",
+              "effect": "All T'au: Add +2 to their Conviction (rebels free from the dogma and deceptions of the Ethereals). Fire Caste: Drilled to engage enemies at close range; they add an extra +2 to all attacks made against enemies within 9m."
+            }
+          ]
+        },
+        {
+          "id": "sacea",
+          "name": "Sa'cea",
+          "keyword": "SA'CEA",
+          "abilities": [
+            {
+              "name": "Sa'cea Sept - All Castes",
+              "flavor": "Sa'cea is a hot, densely populated world, once overrun by fearsome predators which the Fire caste's warriors had to slay before the settlers could land. A highly militarised world, it contains a large population of Fire caste warriors.",
+              "effect": "All T'au: Add +1 to their Resolve. Air Caste: Hone their skills in the skies above dense cityscapes, where absolute precision is needed; they may re-roll any 1s rolled (even on a Wrath die) for Pilot tests. Earth Caste: Keenly observant, almost to a point of wariness, and add +2d to all Awareness tests. Fire Caste: Have exceptional fire discipline; they may re-roll one die on any Ballistic Skill test they attempt."
+            }
+          ]
+        },
+        {
+          "id": "tau_sept",
+          "name": "T'au",
+          "keyword": "T'AU",
+          "abilities": [
+            {
+              "name": "T'au Sept - All Castes",
+              "flavor": "The birthworld of the species which shares its name, T'au is a world of traditions, for everything within the T'au Empire has an origin there. Its people have a reputation for wisdom and reverence.",
+              "effect": "All T'au: Grant +1 additional die when they assist an ally. Further, whenever they use an ability which affects T'AU EMPIRE allies, the range is increased by +3m."
+            }
+          ]
+        },
+        {
+          "id": "viorla",
+          "name": "Vior'la",
+          "keyword": "VIOR'LA",
+          "abilities": [
+            {
+              "name": "Vior'la Sept - All Castes",
+              "flavor": "Vior'la means 'hot-blooded' in the T'au language, and its people live up to that moniker, for they are passionate, quick to anger, and even aggressive.",
+              "effect": "Air Caste: Have a knack for high-speed manoeuvres that other T'au might balk at; they ignore the additional Wrath Dice that comes piloting a vehicle at Breakneck speed. Earth Caste: Quick to experiment and jury-rig the devices they use; they may add a second Wrath die to any Tech test they attempt. Fire Caste: Advance and redeploy quickly, adding +1 to their Speed during the first round of each combat, and +1 Speed when they Run or Sprint. Water Caste: Fast-talking and effusive; they may add a second Wrath die to any Persuasion test they attempt."
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

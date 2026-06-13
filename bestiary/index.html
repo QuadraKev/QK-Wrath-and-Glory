@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+
+    <title>Wrath and Glory Bestiary</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css?v=74">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <button class="hamburger-btn" id="hamburger-btn" aria-label="Toggle menu">
+                    <span></span><span></span><span></span>
+                </button>
+                <h1 class="app-title">Wrath & Glory</h1>
+                <span class="app-subtitle">Bestiary</span>
+            </div>
+            <div class="header-right">
+                <span class="threat-count" id="threat-count">0 Threats</span>
+            </div>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-nav">
+            <div class="tab-nav-tabs">
+                <button class="tab-btn active" data-tab="threats">THREATS</button>
+                <button class="tab-btn" data-tab="builder">THREAT BUILDER</button>
+                <button class="tab-btn" data-tab="encounter">ENCOUNTER BUILDER</button>
+                <button class="tab-btn" data-tab="glossary">GLOSSARY</button>
+                <button class="tab-btn" data-tab="references">REFERENCES</button>
+                <button class="tab-btn" data-tab="settings">SETTINGS</button>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <div class="main-container">
+            <!-- Threats Tab -->
+            <div id="tab-threats" class="tab-content active">
+                <!-- Left Sidebar - Filters -->
+                <aside class="sidebar">
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Filters</h3>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <label class="filter-label">Search</label>
+                        <input type="text" id="search-input" class="search-input" placeholder="Search threats...">
+                    </div>
+
+                    <div class="sidebar-section">
+                        <label class="filter-label">Tier</label>
+                        <select id="tier-filter" class="filter-select">
+                            <option value="all">All Tiers</option>
+                            <option value="1">Tier 1</option>
+                            <option value="2">Tier 2</option>
+                            <option value="3">Tier 3</option>
+                            <option value="4">Tier 4</option>
+                            <option value="5">Tier 5</option>
+                        </select>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <label class="filter-label">Threat Level</label>
+                        <div id="threat-level-filters" class="filter-btn-group"></div>
+                    </div>
+
+                    <div class="sidebar-section faction-section">
+                        <label class="filter-label">Faction</label>
+                        <div id="faction-filters" class="filter-btn-group faction-filter-group">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <button id="btn-clear-filters" class="btn-secondary">Reset Filters</button>
+                    </div>
+                </aside>
+
+                <!-- Threat List and Detail -->
+                <main class="content">
+                    <div class="content-split">
+                        <!-- Threat List -->
+                        <div class="threat-list-container">
+                            <div id="threat-list" class="threat-list">
+                                <!-- Threat list items populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <!-- Threat Detail -->
+                        <div class="threat-detail-container">
+                            <div id="threat-detail" class="threat-detail">
+                                <div class="threat-detail-placeholder">
+                                    <p>Select a threat from the list to view details</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <!-- Threat Builder Tab -->
+            <div id="tab-builder" class="tab-content">
+                <!-- Builder sidebar (hamburger drawer on mobile) -->
+                <aside class="sidebar builder-sidebar" id="builder-sidebar">
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Template</h3>
+                        <div class="builder-template-wrapper">
+                            <input type="text" id="builder-template-search-sidebar" class="builder-template-input" placeholder="Search threats to load as template...">
+                            <div id="builder-template-dropdown-sidebar" class="builder-template-dropdown hidden"></div>
+                        </div>
+                    </div>
+                    <div class="sidebar-section builder-sidebar-buttons">
+                        <button id="btn-builder-save-sidebar" class="btn-secondary">Save to File</button>
+                        <button id="btn-builder-load-sidebar" class="btn-secondary">Load from File</button>
+                        <button id="btn-builder-clear-sidebar" class="btn-action btn-action-danger">Clear All</button>
+                    </div>
+                </aside>
+                <div class="builder-action-bar">
+                    <div class="builder-actions">
+                        <button id="btn-builder-save" class="btn-action">Save to File</button>
+                        <button id="btn-builder-load" class="btn-action">Load from File</button>
+                        <button id="btn-builder-preview" class="btn-action btn-preview-mobile">Preview</button>
+                        <span class="builder-inject-group">
+                            <input type="number" id="builder-inject-count" class="builder-inject-count" value="1" min="1" max="20" title="Number to add">
+                            <button id="btn-builder-inject" class="btn-action">Add to Encounter</button>
+                        </span>
+                        <button id="btn-builder-clear" class="btn-action btn-action-danger">Clear All</button>
+                    </div>
+                </div>
+                <div class="builder-content-wrapper">
+                    <div class="builder-editor">
+                        <div id="builder-editor-sections">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                    <div class="builder-preview">
+                        <div class="builder-preview-label">Preview</div>
+                        <div id="builder-preview-content">
+                            <div class="threat-detail-placeholder">
+                                <p>Edit threat details to see a preview</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Encounter Tab -->
+            <div id="tab-encounter" class="tab-content">
+                <!-- Encounter Action Bar -->
+                <div class="encounter-action-bar">
+                    <div class="encounter-name-section">
+                        <label class="action-bar-label">Encounter:</label>
+                        <input type="text" id="encounter-name" class="encounter-name-input" placeholder="Unnamed Encounter">
+                    </div>
+                    <div class="encounter-round-section">
+                        <label class="action-bar-label">Round:</label>
+                        <button id="btn-round-minus" class="round-btn">&minus;</button>
+                        <span id="round-display" class="round-display">1</span>
+                        <button id="btn-round-plus" class="round-btn">+</button>
+                    </div>
+                    <div class="encounter-actions">
+                        <button id="btn-save-encounter" class="btn-action">Save Encounter</button>
+                        <button id="btn-load-encounter" class="btn-action">Load Encounter</button>
+                        <button id="btn-import-threat" class="btn-action">Import Threat</button>
+                        <button id="btn-clear-encounter" class="btn-action btn-action-danger">Clear Encounter</button>
+                    </div>
+                </div>
+
+                <!-- Encounter Content Wrapper (sidebar + main) -->
+                <div class="encounter-content-wrapper">
+                <!-- Left Sidebar - Settings & Add -->
+                <aside class="sidebar encounter-sidebar">
+                    <div class="sidebar-section encounter-name-sidebar-section">
+                        <label class="filter-label">Encounter</label>
+                        <input type="text" id="encounter-name-sidebar" class="search-input" placeholder="Unnamed Encounter">
+                    </div>
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Encounter Settings</h3>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <label class="filter-label">Tier</label>
+                        <select id="encounter-tier" class="filter-select">
+                            <option value="1">Tier 1</option>
+                            <option value="2">Tier 2</option>
+                            <option value="3">Tier 3</option>
+                            <option value="4">Tier 4</option>
+                            <option value="5">Tier 5</option>
+                        </select>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <label class="filter-label">Player Count</label>
+                        <input type="number" id="encounter-players" class="search-input" value="4" min="1" max="10">
+                    </div>
+
+                    <div class="sidebar-section player-characters-section">
+                        <label class="filter-label">Player Characters</label>
+                        <div id="player-character-inputs" class="player-character-inputs">
+                            <!-- Populated by JavaScript based on player count -->
+                        </div>
+                        <div class="player-list-buttons">
+                            <button id="btn-save-players" class="btn-secondary">Save Players</button>
+                            <button id="btn-load-players" class="btn-secondary">Load Players</button>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <button id="btn-sort-initiative" class="btn-secondary">Sort by Initiative</button>
+                    </div>
+                    <div class="sidebar-section encounter-sidebar-actions">
+                        <h3 class="sidebar-title">Encounter Actions</h3>
+                        <div class="encounter-sidebar-action-buttons">
+                            <button id="btn-save-encounter-sidebar" class="btn-secondary">Save Encounter</button>
+                            <button id="btn-load-encounter-sidebar" class="btn-secondary">Load Encounter</button>
+                            <button id="btn-import-threat-sidebar" class="btn-secondary">Import Threat</button>
+                            <button id="btn-clear-encounter-sidebar" class="btn-danger">Clear Encounter</button>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Encounter List and Detail -->
+                <main class="content">
+                    <div class="content-split">
+                        <!-- Encounter List -->
+                        <div class="encounter-list-container">
+                            <div id="encounter-list" class="encounter-list">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <!-- Entry Detail -->
+                        <div class="encounter-detail-container">
+                            <div id="encounter-detail" class="encounter-detail">
+                                <div class="encounter-detail-placeholder">
+                                    <p>Select an entry to view details</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                </div><!-- End encounter-content-wrapper -->
+            </div>
+
+            <!-- Glossary Tab -->
+            <div id="tab-glossary" class="tab-content tab-fullwidth">
+                <div class="glossary-container">
+                    <h2>Glossary</h2>
+                    <div class="glossary-controls">
+                        <input type="text" id="glossary-search" placeholder="Search terms..." class="search-input">
+                        <div class="glossary-filters">
+                            <button class="glossary-filter-btn active" data-category="all">All</button>
+                            <button class="glossary-filter-btn" data-category="characterTerms">Character Terms</button>
+                            <button class="glossary-filter-btn" data-category="conditions">Conditions</button>
+                            <button class="glossary-filter-btn" data-category="combatTerms">Combat Rules</button>
+                            <button class="glossary-filter-btn" data-category="terms">Game Rules</button>
+                            <button class="glossary-filter-btn" data-category="weaponTraits">Weapon Traits</button>
+                            <button class="glossary-filter-btn" data-category="armorTraits">Armor Traits</button>
+                            <button class="glossary-filter-btn" data-category="keywords">Keywords</button>
+                        </div>
+                    </div>
+                    <div id="glossary-content">
+                        <!-- Glossary entries populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- References Tab -->
+            <div id="tab-references" class="tab-content tab-fullwidth">
+                <div class="glossary-container">
+                    <h2>References</h2>
+                    <div class="glossary-controls">
+                        <input type="text" id="references-search" placeholder="Search references..." class="search-input">
+                        <div class="glossary-filters">
+                            <button class="references-filter-btn active" data-category="all">All</button>
+                            <button class="references-filter-btn" data-category="talents">Talents</button>
+                            <button class="references-filter-btn" data-category="weapons">Weapons</button>
+                            <button class="references-filter-btn" data-category="grenades">Grenades & Missiles</button>
+                            <button class="references-filter-btn" data-category="armor">Armor</button>
+                            <button class="references-filter-btn" data-category="augmetics">Augmetics</button>
+                            <button class="references-filter-btn" data-category="equipment">Equipment</button>
+                            <button class="references-filter-btn" data-category="psychicPowers">Psychic Powers</button>
+                            <button class="references-filter-btn" data-category="weaponUpgrades">Upgrades</button>
+                            <button class="references-filter-btn" data-category="ascensionPackages">Ascension</button>
+                            <button class="references-filter-btn" data-category="archetypes">Archetypes</button>
+                            <button class="references-filter-btn" data-category="archetypeAbilities">Archetype Abilities</button>
+                            <button class="references-filter-btn" data-category="speciesAbilities">Species Abilities</button>
+                            <button class="references-filter-btn" data-category="mutations">Mutations</button>
+                        </div>
+                    </div>
+                    <div id="references-content">
+                        <!-- References entries populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="tab-settings" class="tab-content tab-fullwidth">
+                <div class="settings-content">
+                    <h2>Settings</h2>
+                    <h3>Source Books</h3>
+                    <p class="section-desc">Enable or disable content from specific source books.</p>
+                    <div id="source-filter-buttons" class="filter-btn-group"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <span class="footer-info">Wrath & Glory Bestiary</span>
+        </footer>
+
+        <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+        <!-- Bottom Sheet (mobile slide-up panel) -->
+        <div class="bottom-sheet" id="bottom-sheet">
+            <div class="bottom-sheet-overlay" id="bottom-sheet-overlay"></div>
+            <div class="bottom-sheet-panel" id="bottom-sheet-panel">
+                <div class="bottom-sheet-handle-row" id="bottom-sheet-handle-row">
+                    <div class="bottom-sheet-handle-bar"></div>
+                </div>
+                <div class="bottom-sheet-content" id="bottom-sheet-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile menu toggle -->
+    <script>
+    document.getElementById('hamburger-btn').addEventListener('click', function() {
+        document.body.classList.toggle('sidebar-open');
+    });
+    document.getElementById('sidebar-backdrop').addEventListener('click', function() {
+        document.body.classList.remove('sidebar-open');
+    });
+    </script>
+
+    <!-- Scripts -->
+    <script src="js/web-api.js?v=73"></script>
+    <script src="js/data-loader.js?v=73"></script>
+    <script src="js/glossary.js?v=73"></script>
+    <script src="js/encounter-state.js?v=73"></script>
+    <script src="js/threat-builder-state.js?v=73"></script>
+    <script src="tabs/settings-tab.js?v=73"></script>
+    <script src="tabs/threats-tab.js?v=73"></script>
+    <script src="tabs/glossary-tab.js?v=73"></script>
+    <script src="tabs/references-tab.js?v=73"></script>
+    <script src="tabs/encounter-tab.js?v=73"></script>
+    <script src="tabs/threat-builder-tab.js?v=73"></script>
+    <script src="js/app.js?v=73"></script>
+</body>
+</html>

@@ -1,0 +1,1593 @@
+[
+  {
+    "id": "ammo_drum",
+    "name": "Ammo Drum",
+    "type": "magazine",
+    "description": "A large drum of ammunition replacing the typical magazine.",
+    "effect": "You can carry one additional Ammo.",
+    "value": 3,
+    "rarity": "Common",
+    "keywords": [
+      "IMPERIUM",
+      "SCUM"
+    ],
+    "restrictions": {
+      "weaponType": "ranged"
+    },
+    "source": "core",
+    "page": 227
+  },
+  {
+    "id": "autoloader",
+    "name": "Autoloader",
+    "type": "magazine",
+    "description": "A miracle of the Machine God, pressing an Autoloader's activation rune triggers a mechanism that automatically reloads your weapon.",
+    "effect": "You can Reload your weapon as a Free Action.",
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM"
+    ],
+    "restrictions": {
+      "weaponType": "ranged"
+    },
+    "source": "core",
+    "page": 227
+  },
+  {
+    "id": "bayonet_lug",
+    "name": "Bayonet Lug",
+    "type": "melee_attachment",
+    "description": "A simple device that allows you to mount a blade on a firearm.",
+    "effect": "You can use this weapon as a Knife.",
+    "value": 1,
+    "rarity": "Common",
+    "keywords": [
+      "ANY"
+    ],
+    "restrictions": {
+      "weaponType": "ranged"
+    },
+    "source": "core",
+    "page": 227
+  },
+  {
+    "id": "chain_bayonet",
+    "name": "Chain Bayonet",
+    "type": "melee_attachment",
+    "description": "A whirring, rending bayonet mechanically attached to a firearm.",
+    "effect": "You can use this weapon as a Chain Bayonet.",
+    "value": 4,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "CHAOS"
+    ],
+    "restrictions": {
+      "weaponType": "ranged"
+    },
+    "source": "core",
+    "page": 211
+  },
+  {
+    "id": "combi_weapon",
+    "name": "Combi Weapon",
+    "type": "special",
+    "description": "Whether hastily welded together or meticulously linked during the forging process, two ranged weapons are combined into one versatile death bringer.",
+    "effect": "A combi-weapon may be fired as either or both of its component weapons each round. Firing both component weapons is treated as a Multi-Attack. You must own the two ranged weapons you want to combine when you purchase this upgrade. Pistols can only be combined with other Pistols, and weapons with the Heavy Trait cannot take this upgrade.",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "CHAOS",
+      "ORK",
+      "SCUM"
+    ],
+    "restrictions": {
+      "weaponType": "ranged",
+      "excludeTraits": [
+        "Heavy"
+      ],
+      "requiresSecondWeapon": true
+    },
+    "source": "core",
+    "page": 227
+  },
+  {
+    "id": "distinction",
+    "name": "Distinction",
+    "type": "cosmetic",
+    "description": "Some weapons garner infamy as deadly tools of destruction, while others simply look the part. Through custom paint jobs, grizzly additions, or a storied history, a weapon with distinction can speak a thousand words without uttering a sound.",
+    "effect": "+1 bonus die to Intimidation (Wil) Tests when you brandish this weapon. Distinction does not count toward a weapon's maximum number of upgrades.",
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "ANY"
+    ],
+    "restrictions": {},
+    "doesNotCountTowardLimit": true,
+    "source": "core",
+    "page": 228
+  },
+  {
+    "id": "duelling_grip",
+    "name": "Duelling Grip",
+    "type": "grip",
+    "description": "Finely crafted for a specific user, duelling grips are highly sought after alterations that grant finer control and accuracy, aiming to eliminate the gap between warrior and weapon.",
+    "effect": "+1 bonus die on Attack Tests using this weapon. This upgrade can only be applied to Pistols or one-handed melee weapons.",
+    "value": 3,
+    "rarity": "Uncommon",
+    "keywords": [
+      "ANY"
+    ],
+    "restrictions": {
+      "requireOneOf": [
+        "pistol",
+        "one_handed_melee"
+      ]
+    },
+    "bonusDice": 1,
+    "source": "core",
+    "page": 228
+  },
+  {
+    "id": "gene_grip",
+    "name": "Gene-Grip Bio-Verator",
+    "type": "grip",
+    "description": "Popular among law enforcement and paranoid gunslingers, these custom grips check the bio-signature of the wielder every time they are held, ensuring that only authorised personnel can activate the weapon.",
+    "effect": "Any mechanisms your weapon has (triggers, chain engines, etc.) will not activate for anyone but you.",
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM"
+    ],
+    "restrictions": {},
+    "source": "core",
+    "page": 228
+  },
+  {
+    "id": "mastercrafted",
+    "name": "Mastercrafted",
+    "type": "quality",
+    "description": "Some weapons are simply made better; forged from high quality materials or by unparalleled artisans.",
+    "effect": "The weapon gains the Reliable Trait. You gain +2 bonus dice to any Attack Test made with this weapon.",
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "ANY"
+    ],
+    "restrictions": {},
+    "addsTraits": [
+      "Reliable"
+    ],
+    "bonusDice": 2,
+    "source": "core",
+    "page": 228
+  },
+  {
+    "id": "megathoule_accelerator",
+    "name": "Megathoule Accelerator (Lucius Pattern)",
+    "type": "power",
+    "description": "Based on a design used by the Death Korps of Krieg, this upgrade drastically increases a Las weapon's rate of fire. Extensive additional heat-sink rings along the length of the barrel aim to prevent overheating.",
+    "effect": "The weapon gains +2 Damage. The weapon loses the Reliable Trait. This upgrade can only be applied to a Las weapon.",
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "LAS"
+      ]
+    },
+    "bonusDamage": 2,
+    "removesTraits": [
+      "Reliable"
+    ],
+    "source": "core",
+    "page": 228
+  },
+  {
+    "id": "magnocular_scope",
+    "name": "Magnocular Scope",
+    "type": "scope",
+    "description": "This advanced arrangement of lenses and prisms functions as both a rangefinder and visual aid, and can be easily attached and detached from most firearms.",
+    "effect": "Awareness (Int) Tests made with a Magnocular Scope suffer no penalties due to distance. When attached to a weapon, all Range penalties are reduced by -2.",
+    "value": 2,
+    "rarity": "Uncommon",
+    "keywords": [
+      "ANY"
+    ],
+    "restrictions": {
+      "weaponType": "ranged"
+    },
+    "source": "core",
+    "page": 228
+  },
+  {
+    "id": "percussive_muzzle_brake",
+    "name": "Percussive Muzzle Brake",
+    "type": "barrel",
+    "description": "These recoil absorbing muzzle brakes help the wielder keep targets in their sights while firing on full-auto.",
+    "effect": "The weapon gains +1 Salvo. This upgrade can only be applied to a weapon that does not have the Heavy Trait.",
+    "value": 3,
+    "rarity": "Uncommon",
+    "keywords": [
+      "ANY"
+    ],
+    "restrictions": {
+      "weaponType": "ranged",
+      "excludeTraits": [
+        "Heavy"
+      ]
+    },
+    "bonusSalvo": 1,
+    "source": "core",
+    "page": 228
+  },
+  {
+    "id": "preysense_sight",
+    "name": "Preysense Sight",
+    "type": "scope",
+    "description": "Preysense sights utilise precision thermal optics, allowing the wearer to see targets in low light or even total darkness.",
+    "effect": "This weapon upgrade allows the wielder to detect targets via ambient heat, even in total darkness.",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "SCUM",
+      "ANY"
+    ],
+    "restrictions": {
+      "weaponType": "ranged"
+    },
+    "source": "core",
+    "page": 228
+  },
+  {
+    "id": "red_dot_sight",
+    "name": "Red-Dot Sight",
+    "type": "scope",
+    "description": "An integrated low-power laser emitter that highlights the weapon's target with a tell-tale crimson dot. Often this light is the last thing a target notices before their death.",
+    "effect": "+1 bonus die to ranged attacks made with this weapon.",
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "SCUM"
+    ],
+    "restrictions": {
+      "weaponType": "ranged"
+    },
+    "bonusDice": 1,
+    "source": "core",
+    "page": 228
+  },
+  {
+    "id": "silencer",
+    "name": "Silencer",
+    "type": "barrel",
+    "description": "This barrel extension is specifically designed to conceal muzzle flash and muffle the sound of gunfire.",
+    "effect": "The weapon gains the Silent Trait. This upgrade can only be applied to a weapon with the BOLT or PROJECTILE Keywords.",
+    "value": 3,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "SCUM",
+      "ANY"
+    ],
+    "restrictions": {
+      "weaponType": "ranged",
+      "requireKeywords": [
+        "BOLT",
+        "PROJECTILE"
+      ]
+    },
+    "addsTraits": [
+      "Silent"
+    ],
+    "source": "core",
+    "page": 229
+  },
+  {
+    "id": "aethyric_capacitor_aoa",
+    "name": "Aethyric Capacitor (Abundance of Apocrypha)",
+    "type": "special",
+    "description": "The weapon's psycho-crystalline conduits have been enhanced to allow it to store psychic energy for later use. Not all weapons can be adapted as easily to this, as the modifications are fragile.",
+    "effect": "When the wielder of this weapon succeeds at using a psychic power, they may store Exalted Icons rolled on that Psychic Mastery test. These icons may be spent to gain additional dice on subsequent Psychic Mastery tests, or to purchase Potency options on psychic powers used later. The weapon may store a maximum of 3 Exalted Icons.",
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIAL",
+      "ADEPTUS ASTRA TELEPATHICA",
+      "AELDARI"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "FORCE"
+      ],
+      "weaponType": "melee"
+    },
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "darkstar_weapon_aoa",
+    "name": "Darkstar Weapon (Abundance of Apocrypha)",
+    "type": "special",
+    "description": "This weapon has been crafted with a blade of the rare and deadly Darkstar ore. This mineral has the strange property of being able to shut down the electrical and biological processes in anything it strikes.",
+    "effect": "The weapon's damage is increased by +2, and it gains +1ED and the Mortal (1) trait. Further, damage inflicted by a Darkstar weapon cannot be negated by rolling Determination.",
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "DARKSTAR",
+      "LEAGUES OF VOTANN"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "BLADE"
+      ],
+      "weaponType": "melee"
+    },
+    "bonusDamage": 2,
+    "bonusED": 1,
+    "addsTraits": [
+      "Mortal (1)"
+    ],
+    "source": "apocrypha",
+    "page": 387
+  },
+  {
+    "id": "digital_weapon_aoa",
+    "name": "Digital Weapon (Abundance of Apocrypha)",
+    "type": "special",
+    "description": "Sophisticated, miniaturised weapons concealed within ornate rings or other jewellery, digital weapons are prized by the rich and powerful, and those seeking the most concealable armament.",
+    "effect": "The weapon's ranges are halved, the weapon has only 1 reload, and it can only be reloaded during a Regroup. A character wearing multiple Digital Weapons may fire up to three as part of a Multi-Action. Any LAS, MELTA, FIRE, or NEEDLE weapon with the Pistol trait may be upgraded to a Digital Weapon.",
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "AELDARI",
+      "JOKAERO"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "LAS",
+        "MELTA",
+        "FIRE",
+        "NEEDLE"
+      ],
+      "requireTraits": [
+        "Pistol"
+      ],
+      "weaponType": "ranged"
+    },
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "envenomed_blade_aoa",
+    "name": "Envenomed Blade (Abundance of Apocrypha)",
+    "type": "special",
+    "description": "In the darker, crueller parts of the galaxy, a venom-coated blade can be just the edge needed to survive.",
+    "effect": "The wielder of the weapon may spend a Simple Action during combat applying venom to the blade from a hidden reservoir. The weapon gains the Inflict (Poisoned 3) trait until the end of the current scene. Any melee weapon with the BLADE keyword may take this upgrade.",
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "ANY"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "BLADE"
+      ],
+      "weaponType": "melee"
+    },
+    "addsTraits": [
+      "Inflict (Poisoned 3)"
+    ],
+    "source": "apocrypha",
+    "page": 387
+  },
+  {
+    "id": "exterminator_cartridge_aoa",
+    "name": "Exterminator Cartridge (Abundance of Apocrypha)",
+    "type": "special",
+    "description": "Common amongst some of the most destructive zealots and redemptionist sects in the Imperium, an Exterminator cartridge is a compact, improvised flame-projector affixed to a larger weapon.",
+    "effect": "An Exterminator may be mounted onto any other weapon, and it counts as a hand flamer which may only be fired once.",
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "FIRE",
+      "IMPERIUM",
+      "SCUM",
+      "ADEPTUS MINISTORUM"
+    ],
+    "restrictions": {},
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "folding_stock_aoa",
+    "name": "Folding Stock (Abundance of Apocrypha)",
+    "type": "grip",
+    "description": "Mounted onto the back of a pistol, this attachment add stability and effective range to the weapon, at the cost of mobility.",
+    "effect": "The weapon loses the Pistol trait, but its Short range is increased by +3, its medium range is increased by +6, and its long range is increased by 9. A Folding Stock can be fitted onto any Pistol weapon.",
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "SCUM"
+    ],
+    "restrictions": {
+      "requireTraits": [
+        "Pistol"
+      ],
+      "weaponType": "ranged"
+    },
+    "removesTraits": [
+      "Pistol"
+    ],
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "foregrip_aoa",
+    "name": "Foregrip (Abundance of Apocrypha)",
+    "type": "grip",
+    "description": "A forward grip helps control a weapon when firing on the move.",
+    "effect": "The weapon gains the Assault trait, if it did not already have it. If the weapon already had the Assault trait, it instead ignores the DN increase for firing as part of a Sprint action. Can be fitted onto any Assault or Rapid Fire weapon which does not have the Heavy trait.",
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "SCUM"
+    ],
+    "restrictions": {
+      "weaponType": "ranged",
+      "excludeTraits": [
+        "Heavy"
+      ]
+    },
+    "addsTraits": [
+      "Assault"
+    ],
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "independent_weapon_mount_aoa",
+    "name": "Independent Weapon Mount (Abundance of Apocrypha)",
+    "type": "special",
+    "description": "This heavy bracing allows a single ranged weapon to be mounted along the arm, on a shoulder, or somewhere else on the character's body or armour. It allows the user to keep both hands free to use other weapons or tools.",
+    "effect": "The value and rarity of this mod varies by weapon size. Value: 4 (Rare) for Pistols, 6 (Rare) for non-Heavy weapons, 8 (Very Rare) for Heavy weapons.",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "ANY"
+    ],
+    "restrictions": {
+      "weaponType": "ranged"
+    },
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "matched_pair_aoa",
+    "name": "Matched Pair (Abundance of Apocrypha)",
+    "type": "special",
+    "description": "This weapon is part of a set, designed with an identical counterpart to be wielded in the other hand.",
+    "effect": "The weapons gain the Paired trait. This modification may be applied to a pair of identical melee weapons or to a pair of identical pistols. If either weapon has any other upgrades, both must have that upgrade.",
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "ANY"
+    ],
+    "restrictions": {},
+    "addsTraits": [
+      "Paired"
+    ],
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "mass_accelerator_aoa",
+    "name": "Mass Accelerator (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "This weapon incorporates a more advanced mass driver engine than most of its kind, amplifying the impact forces even further. Such weapons are often referred to as Mass weapons rather than Concussion weapons.",
+    "effect": "The weapon gains +3 ED. Any MASS DRIVER weapon may take this upgrade.",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "LEAGUES OF VOTANN"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "MASS DRIVER"
+      ]
+    },
+    "bonusED": 3,
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "overcharge_capacitor_aoa",
+    "name": "Overcharge Capacitor (Abundance of Apocrypha)",
+    "type": "power",
+    "description": "This modification to a las weapon increases the energy of each shot, though at the cost of reduced reliability and a lowered refire rate. While sanctioned patterns of high output lasgun exist, most instances of overcharged las weapon are illegal modifications, which the Adeptus Mechanicus does not look kindly upon.",
+    "effect": "+2 ED, weapon loses the Reliable trait and reduces Salvo by 1. This modification may be applied to any las weapon which lacks the Heavy trait.",
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "SCUM"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "LAS"
+      ],
+      "excludeTraits": [
+        "Heavy"
+      ],
+      "weaponType": "ranged"
+    },
+    "bonusED": 2,
+    "removesTraits": [
+      "Reliable"
+    ],
+    "bonusSalvo": -1,
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "powered_blade_aoa",
+    "name": "Powered Blade (Abundance of Apocrypha)",
+    "type": "melee_attachment",
+    "description": "The Aeldari do not commonly mount crude bayonets onto their weapons, but a few exotic Aeldari weapons do mount a slender powered blade, such as the scythe-like blades found on some Shuriken Cannons used by Dark Reapers in emulation of their forebear's Maugetar.",
+    "effect": "You may use this weapon as a Power Blade.",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI"
+    ],
+    "restrictions": {
+      "weaponType": "ranged"
+    },
+    "source": "apocrypha",
+    "page": 388
+  },
+  {
+    "id": "sanctified_aoa",
+    "name": "Sanctified (Abundance of Apocrypha)",
+    "type": "quality",
+    "description": "Having weapons blessed by a priest or other blessed servant of the Throne is a common enough practice in the Imperium, particularly amongst those going into battle against the unholy. Some weapons, however, are etched and engraved with devotional sigils, inlaid with blessed and purified materials, and anointed with holy oils, the blood of the martyred, or the tears of the sainted, remaking them as instruments of holy wrath.",
+    "effect": "The weapon gains the Blessed (2) trait. This quality may only be applied to melee weapons, and cannot be applied to unique weapons, or weapons of Xenos or Chaos manufacture.",
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS MINISTORUM"
+    ],
+    "restrictions": {
+      "weaponType": "melee"
+    },
+    "addsTraits": [
+      "Blessed (2)"
+    ],
+    "source": "apocrypha",
+    "page": 388
+  },
+  {
+    "id": "suspensor_rig_aoa",
+    "name": "Suspensor Rig (Abundance of Apocrypha)",
+    "type": "special",
+    "description": "A set of anti-grav motors and support gyroscopes stabilise the motion of a heavy weapon, allowing it to be operated effectively even on the move. This advanced technology was once commonplace, but it is difficult to produce today. The Aeldari produce similar devices, though far more efficiently.",
+    "effect": "The weapon is always considered to be braced, even when the user is moving. This quality may be applied to any Heavy weapon.",
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "ANY"
+    ],
+    "restrictions": {
+      "requireTraits": [
+        "Heavy"
+      ]
+    },
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "warp_focus_aoa",
+    "name": "Warp Focus (Abundance of Apocrypha)",
+    "type": "special",
+    "description": "The weapon is etched with blasphemous runes and sigils of arcane power that allow the wielder to direct their powers through it.",
+    "effect": "Add +2d3 metres to the range of any psychic power the wielder uses while wielding this weapon. This may be added to any melee weapon.",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "CHAOS"
+    ],
+    "restrictions": {
+      "weaponType": "melee"
+    },
+    "source": "apocrypha",
+    "page": 389
+  },
+  {
+    "id": "amputator_rounds_aoa",
+    "name": "Amputator Rounds (Abundance of Apocrypha)",
+    "type": "ammo",
+    "description": "Filled with explosive micro-shrapnel, these bullets and shotgun shells are designed to shred flesh and shatter bone, causing limbs to be blown away.",
+    "effect": "+1 ED and the Brutal trait. These rounds may be used by weapons with the PROJECTILE keyword. Weapons with the Heavy trait may not use this ammunition.",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "PROJECTILE"
+      ],
+      "excludeTraits": [
+        "Heavy"
+      ],
+      "weaponType": "ranged"
+    },
+    "bonusED": 1,
+    "addsTraits": [
+      "Brutal"
+    ],
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "blessed_promethium_aoa",
+    "name": "Blessed Promethium (Abundance of Apocrypha)",
+    "type": "ammo",
+    "description": "This flame weapon has been carefully sanctified, and its fuel supply has been purified and thrice blessed. No foe of humanity can withstand these holy flames.",
+    "effect": "The weapon's damage is increased by +2 and it gains the Blessed (2) trait. This modification may be applied to any FIRE weapon with the IMPERIUM keyword.",
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS MINISTORUM"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "FIRE"
+      ]
+    },
+    "bonusDamage": 2,
+    "addsTraits": [
+      "Blessed (2)"
+    ],
+    "source": "apocrypha",
+    "page": 389
+  },
+  {
+    "id": "bolt_shells_aoa",
+    "name": "Bolt Shells (Abundance of Apocrypha)",
+    "type": "ammo",
+    "description": "Many hive gangers and others cannot afford a proper bolter, but they often jury-rig scavenged bolt rounds to be fired from a shotgun. These are a little unreliable, but nevertheless effective.",
+    "effect": "Damage is changed to 10 +1ED, add the Brutal trait, lose the Spread trait. These shells may be used with a shotgun or combat shotgun.",
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "SCUM"
+    ],
+    "restrictions": {
+      "weaponType": "ranged"
+    },
+    "addsTraits": [
+      "Brutal"
+    ],
+    "removesTraits": [
+      "Spread"
+    ],
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "dragonfire_bolt_rounds_aoa",
+    "name": "Dragonfire Bolt Rounds (Abundance of Apocrypha)",
+    "type": "ammo",
+    "description": "These bolt rounds detonate in a wash of flame near their targets, allowing the firer to flush enemies out of cover.",
+    "effect": "Weapon gains the Spread trait and the FIRE keyword.",
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "DEATHWATCH"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "BOLT"
+      ],
+      "weaponType": "ranged"
+    },
+    "addsTraits": [
+      "Spread"
+    ],
+    "addsKeywords": [
+      "FIRE"
+    ],
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "enhanced_web_chem_aoa",
+    "name": "Enhanced Web-Chem (Abundance of Apocrypha)",
+    "type": "ammo",
+    "description": "A higher grade of webber chemicals can make their web harder to avoid or escape.",
+    "effect": "Web weapons firing Enhanced Web-Chem add +2 to the rating of their Inflict (Restrained X) trait. This upgrade can only be applied to WEB weapons.",
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "ADEPTUS ARBITES"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "WEB"
+      ],
+      "weaponType": "ranged"
+    },
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "enriched_ammunition_aoa",
+    "name": "Enriched Ammunition (Abundance of Apocrypha)",
+    "type": "ammo",
+    "description": "The Adeptus Mechanicus employ a number of radioactive alloys in the production of their weapons, and radioactive munitions are often deployed to deadly effect.",
+    "effect": "+1 ED and the Rad (1) trait. If the weapon already has the Rad trait, add 1 to the rating. These rounds may be used by weapons with the PROJECTILE keyword. Weapons with the Heavy trait may not use this ammunition.",
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "ADEPTUS MECHANICUS"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "PROJECTILE"
+      ],
+      "excludeTraits": [
+        "Heavy"
+      ],
+      "weaponType": "ranged"
+    },
+    "bonusED": 1,
+    "addsTraits": [
+      "Rad (1)"
+    ],
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "executioner_shells_aoa",
+    "name": "Executioner Shells (Abundance of Apocrypha)",
+    "type": "ammo",
+    "description": "Executioner shells are used by the Adeptus Arbites. They contain a tiny machine spirit that allows them to home in on their target. However, it takes a moment for them to acquire their target and so are more accurate at longer ranges.",
+    "effect": "Weapon loses Spread, but gains +1ED. A shotgun using Executioner shells reverses the normal modifiers for firing at Short or Long range. These shells may be used with a shotgun or combat shotgun.",
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "ADEPTUS ARBITES"
+    ],
+    "restrictions": {
+      "weaponType": "ranged"
+    },
+    "bonusED": 1,
+    "removesTraits": [
+      "Spread"
+    ],
+    "source": "apocrypha",
+    "page": 390
+  },
+  {
+    "id": "exitus_hellfire_rounds_aoa",
+    "name": "Exitus Hellfire Rounds (Abundance of Apocrypha)",
+    "type": "ammo",
+    "description": "Vindicare Assassins are often entrusted with Hellfire rounds for dealing with especially resilient targets. These rounds contain a concentrated payload of volatile corrosive toxins which can burn a target's body to ash.",
+    "effect": "+2ED, +3ED against organic targets. In addition, the weapon gains the Careful and Inflict (Poisoned 5) trait, but its Salvo rating is reduced to - for this shot. Poisoned: A creature Poisoned by an Exitus round suffers 1d3 Mortal Wounds at the start of each of their turns. Single Shot: A reload of Exitus special ammunition consists of a single round.",
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "TEMPLUM VINDICARE"
+    ],
+    "restrictions": {
+      "weaponType": "ranged"
+    },
+    "bonusED": 2,
+    "addsTraits": [
+      "Careful",
+      "Inflict (Poisoned 5)"
+    ],
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "exitus_shield_breaker_rounds_aoa",
+    "name": "Exitus Shield-breaker Rounds (Abundance of Apocrypha)",
+    "type": "ammo",
+    "description": "Vindicare Assassins are often entrusted with Shield-breaker rounds for dealing with targets which are known to be protected by force fields. These rounds contain a concentrated energy field generator which overloads force field projectors and similar defences.",
+    "effect": "The weapon gains the Careful and Warp Weapon traits, but its Salvo rating is reduced to - for this shot. Enemies may not roll Determination against this attack. Single Shot: A reload of Exitus special ammunition consists of a single round.",
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "TEMPLUM VINDICARE"
+    ],
+    "restrictions": {
+      "weaponType": "ranged"
+    },
+    "addsTraits": [
+      "Careful",
+      "Warp Weapon"
+    ],
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "exitus_turbo_penetrator_rounds_aoa",
+    "name": "Exitus Turbo-Penetrator Rounds (Abundance of Apocrypha)",
+    "type": "ammo",
+    "description": "Vindicare Assassins are often entrusted with Turbo-Penetrator rounds for dealing with heavily armoured targets, enemies in fortified bunkers, and enemies in armoured vehicles. These rounds contain a powerful explosive charge that propels a secondary sabot dart through even the toughest armour.",
+    "effect": "The weapon gains the Careful, Brutal, and Rending [4] traits, but its Salvo rating is reduced to - for this shot. Single Shot: A reload of Exitus special ammunition consists of a single round.",
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "TEMPLUM VINDICARE"
+    ],
+    "restrictions": {
+      "weaponType": "ranged"
+    },
+    "addsTraits": [
+      "Careful",
+      "Brutal",
+      "Rending (4)"
+    ],
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "flechette_rounds_aoa",
+    "name": "Flechette Rounds (Abundance of Apocrypha)",
+    "type": "ammo",
+    "description": "These bullets are finely engineered to fragment into a bundle of razor-sharp flechettes in flight, inflicting numerous nasty lacerations instead of single gunshot wounds. They're often favoured by gunslingers and bounty hunters who can afford them, to even the odds against numerous foes.",
+    "effect": "The weapon gains Spread and may re-roll up to 2 dice when making an attack while spending one or more Reloads. These rounds may be used by weapons with the PROJECTILE keyword. Weapons with the Heavy keyword may not use this ammunition.",
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "SCUM"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "PROJECTILE"
+      ],
+      "excludeTraits": [
+        "Heavy"
+      ],
+      "weaponType": "ranged"
+    },
+    "addsTraits": [
+      "Spread"
+    ],
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "hot_shot_charge_pack_aoa",
+    "name": "Hot-shot Charge Pack (Abundance of Apocrypha)",
+    "type": "ammo",
+    "description": "Modified, high-output charge packs for lasguns and laspistols, favoured by snipers and elite shock troops in the Imperial Guard. These are like the charge packs used for Hot-shot las-weapons, hence the name, but they're used instead in conventional lasguns. However, this increased intensity without the sturdier construction of hot-shot lasguns means that they burn out more quickly as well.",
+    "effect": "The weapon gains +2ED, and the Careful, Brutal and Rending (2) traits, but it loses the Reliable trait and its Salvo rating is reduced to - for this shot. Single Shot: A Hot-shot Charge Pack is expended after a single shot. This ammo may only be used in a Lasgun, Laspistol, Duelling Laspistol, or Long Las.",
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "SCUM"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "LAS"
+      ],
+      "weaponType": "ranged"
+    },
+    "bonusED": 2,
+    "addsTraits": [
+      "Careful",
+      "Brutal",
+      "Rending (2)"
+    ],
+    "removesTraits": [
+      "Reliable"
+    ],
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "incendiary_shells_aoa",
+    "name": "Incendiary Shells (Abundance of Apocrypha)",
+    "type": "ammo",
+    "description": "Filled with a promethium gel, a phosphorine compound, or some similar incendiary, these shells ignite whatever they strike. They're sometimes utilised by the Arbites and the Inquisition for dealing with targets which require incineration.",
+    "effect": "The weapon gains the Inflict (On Fire) trait, and the FIRE keyword. These shells may be used with a shotgun or combat shotgun.",
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "restrictions": {
+      "weaponType": "ranged"
+    },
+    "addsTraits": [
+      "Inflict (On Fire)"
+    ],
+    "addsKeywords": [
+      "FIRE"
+    ],
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "inferno_bolt_rounds_aoa",
+    "name": "Inferno Bolt Rounds (Abundance of Apocrypha)",
+    "type": "ammo",
+    "description": "Imbued with the sorcerous power of Tzeentch, Inferno bolts are a weapon favoured by warriors of the Thousand Sons Legion, but the secrets of their manufacture have spread to other servants of the Changer of Ways as well. A bolter loaded with Inferno bolts can blast through all but the toughest armour with a burst of iridescent blue flame.",
+    "effect": "AP -2, and the FIRE keyword.",
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "CHAOS",
+      "HERETIC ASTARTES",
+      "TZEENTCH"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "BOLT"
+      ],
+      "weaponType": "ranged"
+    },
+    "bonusAP": -2,
+    "addsKeywords": [
+      "FIRE"
+    ],
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "micro_blast_needles_aoa",
+    "name": "Micro-blast Needles (Abundance of Apocrypha)",
+    "type": "ammo",
+    "description": "An exceedingly rare creation, these tiny metallic needles contain miniature explosive charges, which detonate a split-second after embedding themselves in the target's flesh. Some assassins prefer the explosive impact of these needles to the toxic payload of a conventional needler.",
+    "effect": "+1ED and Brutal, lose Inflict (Poisoned X) trait. Any NEEDLE weapon may use this ammo.",
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "NEEDLE"
+      ],
+      "weaponType": "ranged"
+    },
+    "bonusED": 1,
+    "addsTraits": [
+      "Brutal"
+    ],
+    "removesTraits": [
+      "Inflict (Poisoned X)"
+    ],
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "psybolt_bolt_rounds_aoa",
+    "name": "Psybolt Bolt Rounds (Abundance of Apocrypha)",
+    "type": "ammo",
+    "description": "Psybolts are silver-tipped, psychically charged shells, used in storm bolters and similar weapons. When fired, each bolt becomes imbued with a portion of the firer's innate psychic power.",
+    "effect": "Bolt weapons loaded with Psybolt ammo gain the Force trait.",
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "ORDO MALLEUS",
+      "GREY KNIGHTS"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "BOLT"
+      ],
+      "weaponType": "ranged"
+    },
+    "addsTraits": [
+      "Force"
+    ],
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "shrieker_bio_explosive_discs_aoa",
+    "name": "Shrieker Bio-Explosive Discs (Abundance of Apocrypha)",
+    "type": "ammo",
+    "description": "Named Margrech by the Eldar, these discs are laden with a potent bioweapon. The centripetal force of the shell's spinning is sufficient to inject the serum into the victim through the barbs of the disc, after which it wreaks havoc upon the victim's biology, causing their organs to react violently with one another. Those who succumb fully to the serum are slain in an explosion of viscera. It is commonly loaded into Shuriken Cannons by Harlequin Death Jesters.",
+    "effect": "The weapon gains the Careful and Inflict (Poisoned 7) trait, but its Salvo rating is reduced to - for this shot. Bio-Explosive: A character who is Poisoned by Shrieker ammo is also Staggered and suffers 1d3 Mortal Wounds at the start of each of their turns. If they are slain by this damage, they explode with a Blast (6), inflicting 10 +6ED damage to anyone within the explosion. Any of the victim's allies within 15 metres must attempt a Terror test (DN 7). Single Shot: A reload of Shrieker ammo consists of a single round. This ammo may only be used in SHURIKEN weapons.",
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "HARLEQUIN"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "SHURIKEN"
+      ],
+      "weaponType": "ranged"
+    },
+    "addsTraits": [
+      "Careful",
+      "Inflict (Poisoned 7)"
+    ],
+    "source": "apocrypha",
+    "page": 391
+  },
+  {
+    "id": "soulseeker_splinters_aoa",
+    "name": "Soulseeker Splinters (Abundance of Apocrypha)",
+    "type": "ammo",
+    "description": "With the proper treatment of Wraithbone, Drukhari can create these alternatives to the standard-issue Splinter Crystal rounds for their basic weapons. These soulseeker splinters are shaved from crystals impregnated with tortured Wraithbone. When broken down by the gun to form projectiles, the souls trapped in the crystal, driven mad during the treatment process, seek to enact revenge on the first living thing they can find, and imparts so much force in this endeavour that it can change the trajectory of the round, even so much as to be able to curve around trees and bushes.",
+    "effect": "Targets do not receive the benefits of cover when attacked by a splinter weapon loaded with soulseeker splinters. This ammo may only be used in SPLINTER weapons.",
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "DRUKHARI"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "SPLINTER"
+      ],
+      "weaponType": "ranged"
+    },
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "stalker_silenced_bolt_rounds_aoa",
+    "name": "Stalker Silenced Bolt Rounds (Abundance of Apocrypha)",
+    "type": "ammo",
+    "description": "Utilising a compressed gas propellant instead of the conventional rocket engine and replacing the warhead with a high-density liquid metal core to increase impact force, Stalker bolt rounds are designed to make minimum noise when fired.",
+    "effect": "Bolt weapons firing Stalker bolt rounds gain the Silent trait. If the weapon already has the Silent trait, then firing the weapon no longer affects the character's Stealth score.",
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "ADEPTUS ASTARTES"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "BOLT"
+      ],
+      "weaponType": "ranged"
+    },
+    "addsTraits": [
+      "Silent"
+    ],
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "agonite_aoa",
+    "name": "Agonite (Abundance of Apocrypha)",
+    "type": "poison",
+    "description": "This venom spreads waves of agony so intense that even the most robust physiologies are overwhelmed with pain.",
+    "effect": "While Poisoned, the target may not roll Determination. This poison may be used on any DRUKHARI weapon with the Fleshbane trait or with the Inflict (Poisoned X) trait.",
+    "value": 6,
+    "rarity": "Uncommon",
+    "keywords": [
+      "DRUKHARI",
+      "TOXIN"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "DRUKHARI"
+      ]
+    },
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "deathbloom_aoa",
+    "name": "Deathbloom (Abundance of Apocrypha)",
+    "type": "poison",
+    "description": "A savagely applied dose of this toxin overloads the victim's organs with concentrated adrenal infusions that cause them to function so quickly that they rupture and burst in seconds.",
+    "effect": "While the target is Poisoned, they suffer a Mortal Wound at the start of each Turn.",
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "DRUKHARI",
+      "TOXIN"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "DRUKHARI"
+      ]
+    },
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "essence_of_perfect_vitriol_aoa",
+    "name": "Essence of Perfect Vitriol (Abundance of Apocrypha)",
+    "type": "poison",
+    "description": "Perfect Vitriol is the universal solvent, a corrosive agent capable of dissolving absolutely everything. No substance is proof against this liquid's fury, and it must be stored in magnetic suspension because no material container exists that can hold it. Not to be stymied in their quest to weaponise everything in their grasp, the Drukhari cleverly use fields and other exotic distribution systems to imbue their blades and projectiles with the vapours produced by this substance without degrading their own equipment too quickly for it to be of use.",
+    "effect": "The target is left enfeebled and vulnerable. While poisoned, the target halves their Resilience, rounding up.",
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "DRUKHARI",
+      "TOXIN"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "DRUKHARI"
+      ]
+    },
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "feralex_aoa",
+    "name": "Feralex (Abundance of Apocrypha)",
+    "type": "poison",
+    "description": "Those infected with this venom find themselves lashing out uncontrollably at all around them. Allies look on in terror as they are struck on by frenzied death throes.",
+    "effect": "The target suffers the Frenzied condition while the Poisoned effect lasts, and they are incapable of distinguishing friend from foe while Frenzied. Any attempts to remove the Frenzied condition fail while the Poisoned effect remains.",
+    "value": 6,
+    "rarity": "Uncommon",
+    "keywords": [
+      "DRUKHARI",
+      "TOXIN"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "DRUKHARI"
+      ]
+    },
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "final_breath_aoa",
+    "name": "Final Breath (Abundance of Apocrypha)",
+    "type": "poison",
+    "description": "A targeted paralytic agent that is derived from a plant native to a distant Death World, Final Breath causes rapid respiratory shutdown. The Drukhari first discovered the effect of the plant when a group of slaves tasked with cleaning the pen of a Clawed Fiend was discovered dying after inhaling its deadly pollen. They were most impressed by the agonising death that this humble plant had inflicted upon their slaves, and so they immediately set about finding a way to turn the plant's toxic pollen into a weapon.",
+    "effect": "The target gasps for air while Poisoned, and begins to suffocate.",
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "DRUKHARI",
+      "TOXIN"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "DRUKHARI"
+      ]
+    },
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "heartfire_aoa",
+    "name": "Heartfire (Abundance of Apocrypha)",
+    "type": "poison",
+    "description": "Heartfire is a substance produced by the razor-spined fungi that inhabit certain parts of the Dark City. This poison self-replicates within a victim's body, polluting his blood with a kinetically unstable chemical that may ignite at any moment. Vigorous motion is often sufficient to set the poisoned blood off, consuming the victim with a fire within his own veins and arteries, burning up the oxygen in his blood.",
+    "effect": "The target's blood becomes volatile while Poisoned; whenever the character suffers damage, is knocked prone, runs, or sprints, they suffer 1d3 Mortal Wounds.",
+    "value": 6,
+    "rarity": "Uncommon",
+    "keywords": [
+      "DRUKHARI",
+      "TOXIN"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "DRUKHARI"
+      ]
+    },
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "icevein_aoa",
+    "name": "Icevein (Abundance of Apocrypha)",
+    "type": "poison",
+    "description": "Once in the victim's bloodstream, the poison causes necrotic flesh to radiate an intense chill that numbs their allies, preventing their swift escape.",
+    "effect": "While the target is Poisoned, any of the target's allies within 5m are Staggered.",
+    "value": 6,
+    "rarity": "Uncommon",
+    "keywords": [
+      "DRUKHARI",
+      "TOXIN"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "DRUKHARI"
+      ]
+    },
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "liquid_agony_aoa",
+    "name": "Liquid Agony (Abundance of Apocrypha)",
+    "type": "poison",
+    "description": "Popular amongst nobles of the Kabal of the Splintered Talon involved in realspace raids against particularly valuable targets and those fighting rivals at home alike, Liquid Agony is a potent neurotoxin that amplifies nerve conductivity to extreme levels, turning even the weight of clothing and the caress of the air into torturous sensations. Some Drukhari in the depths of Commorragh imbibe tiny quantities of Liquid Agony to heighten the sensations they experience, but overdoses are all too common and leave the wretched beings in a state of perpetual agony just long enough for a hungry soul to find the source of the screams and drink deep of the self-inflicted pain.",
+    "effect": "The target's senses are overwhelmed with pain while Poisoned; the character suffers 1d3 Shock at the start of each of their turns, and doubles the amount of Shock they suffer from other sources.",
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "DRUKHARI",
+      "TOXIN"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "DRUKHARI"
+      ]
+    },
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "nerveshard_aoa",
+    "name": "Nerveshard (Abundance of Apocrypha)",
+    "type": "poison",
+    "description": "The toxin overloads the victim's synapses, their drawn-out agonised screams sending their allies fleeing in terror.",
+    "effect": "While the target is Poisoned, any of the target's allies within 5m adds +2DN to Resolve Tests.",
+    "value": 5,
+    "rarity": "Common",
+    "keywords": [
+      "DRUKHARI",
+      "TOXIN"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "DRUKHARI"
+      ]
+    },
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "nightmare_philtre_aoa",
+    "name": "Nightmare Philtre (Abundance of Apocrypha)",
+    "type": "poison",
+    "description": "This toxin creates terror in its victims, no more, no less. Though the exact composition of this poison is a jealously guarded secret of those Haemonculi Covens and Shaimeshi Toxin-Cults who have mastered it. By chemically influencing the \"fight or flight\" reaction, and then triggering it, an overwhelming sense of panic and dread afflicts the victim, without obvious cause or reason—something that is arguably more terrifying than being afraid of anything specific.",
+    "effect": "The target is filled with dread while Poisoned; the character is under the effects of Terror while Poisoned and they cannot recover from Terror until after the Poisoned effect is ended. Ork characters become Frenzied instead, while Adeptus Astartes and Primaris Astartes characters are completely unaffected by this poison.",
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "DRUKHARI",
+      "TOXIN"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "DRUKHARI"
+      ]
+    },
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "sanguine_exodus_aoa",
+    "name": "Sanguine Exodus (Abundance of Apocrypha)",
+    "type": "poison",
+    "description": "This toxin causes the victim to begin exsanguinating rapidly, their blood pouring from every wound and orifice as if seeking to escape the body. Sanguine Exodus in part on the saliva of rare Xenos Haemovores common to a number of Death Worlds the Drukhari raid, and it has become popular amongst many Wyches as it allows them to kill with even greater elegance and conservation of motion.",
+    "effect": "The target bleeds profusely while Poisoned and suffers the Bleeding condition while the Poisoned effect lasts. Any attempts to remove the Bleeding condition fail while the Poisoned effect remains.",
+    "value": 5,
+    "rarity": "Common",
+    "keywords": [
+      "DRUKHARI",
+      "TOXIN"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "DRUKHARI"
+      ]
+    },
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "shattergift_aoa",
+    "name": "Shattergift (Abundance of Apocrypha)",
+    "type": "poison",
+    "description": "This venom causes any psychic activity to send shards of agony through the victim's mind, disrupting aetheric abilities.",
+    "effect": "The target's psychic abilities are impaired while Poisoned, suffering +4DN on all Psychic Mastery Tests, and inflicting 1d3 Shock each time a Psychic Mastery Test is attempted.",
+    "value": 7,
+    "rarity": "Uncommon",
+    "keywords": [
+      "DRUKHARI",
+      "TOXIN"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "DRUKHARI"
+      ]
+    },
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "vitae_rebellion_aoa",
+    "name": "Vitae Rebellion (Abundance of Apocrypha)",
+    "type": "poison",
+    "description": "A cruel and savage toxin, Vitae Rebellion is a genetic serum of incredible potency created in only a handful of Haemonculi laboratories and Shaimeshi venom-distilleries. It is sold to Dark Eldar nobles who desire a certain explosive flair to their kills. Vitae Rebellion aggressively transforms the biochemistry of its victims, transmogrifying critical fluids into chemicals and compounds that react violently with one another. The result is gruesome and spectacular, as the victim detonates in a shower of mutated gore. Alas, the effect is not as potent as the serums used by Death Jesters in their Shrieker Cannons, but it is still spectacular.",
+    "effect": "At the start of the victim's first turn after suffering the Poisoned condition, if they fail the Toughness test to shake off the effects then they suffer enough Mortal Wounds to exceed their Max Wounds by 1, then they immediately suffer a Traumatic Injury and begin Dying.",
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "DRUKHARI",
+      "TOXIN"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "DRUKHARI"
+      ]
+    },
+    "source": "apocrypha",
+    "page": 386
+  },
+  {
+    "id": "nethreun_penetrators",
+    "name": "Nethreun Penetrators",
+    "type": "ammo",
+    "description": "Nethrius is a world of unspeakable danger, from the continual upheaval of tectonic shifts to the monstrous creatures that blight the planet’s surface. Even among the network of ventilation and maintenance ducts that service the giant domed city structures of the planet, small but equally vicious predators belligerently stalk the darkness in search of fresh prey.\n\nWhile gun-servitors and emplacements offer a degree of relative safety, the majority of Nethrian service personnel put their trust in the native Penetrator round. These solid-state, large calibre bullets are fitted with an explosive propellant and a timed thermobaric cap, designed to initially pierce through thick hide or scales with ease before detonating milliseconds later with devastating explosive force from within the target.",
+    "effect": "AP –2 & +1 ED",
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "PROJECTILE"
+      ],
+      "excludeTraits": [
+        "Heavy"
+      ],
+      "weaponType": "ranged"
+    },
+    "bonusAP": -2,
+    "bonusED": 1,
+    "source": "shotguns",
+    "page": 10
+  },
+  {
+    "id": "avachrun_forgeshot",
+    "name": "Avachrun Forgeshot",
+    "type": "ammo",
+    "description": "The mineral-rich world of Avachrus has long been utilised by the hallowed Adeptus Mechanicus as both a source of valuable resources and as a site of tremendous industry. Under the binary guidance of the Archdominus, the swelling mass of manufactorums and forges are watched with great vigilance to ensure the highest standards of productivity are maintained.\n\nAvachrun Forgeshot is a product of this prudence. Mineral-dense dust, gathered as a by-product from the industrial extraction of the planet’s core, is recycled and pressed for further reuse. These condensed slabs are then used in the fabrication of shell casings for the famed Forgeshot. With a metallurgical density several times that of common steel, the resultant shot can easily puncture through armour or bulkheads at short range.",
+    "effect": "AP –2",
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "SCUM"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "PROJECTILE"
+      ],
+      "excludeTraits": [
+        "Heavy"
+      ],
+      "weaponType": "ranged"
+    },
+    "bonusAP": -2,
+    "source": "shotguns",
+    "page": 10
+  },
+  {
+    "id": "vxii_auto_guidesys_targeting_shells",
+    "name": "VXII Auto-GuideSys Targeting Shells",
+    "type": "ammo",
+    "description": "Favoured by the noble prosecution forces of GIlead Prime, these shells pair directly with the targeting system of the Shotgun before making use of an intelligent guidance system built into the shell itself that allows each round to track and hit targets with great accuracy.\n\nIn situations that require apprehending high-priority scum or recidivists who have cowardly sought refuge among busy crowds or densely populated areas, the VXII Auto-GuideSys round excels. Fired at range the shell takes an initial moment to acquire bio-lock on its target before relentlessly pursuing them to their explosive conclusion. Due to their complexity, this ammunition type requires the use of sophisticated targeting equipment unavailable to most.",
+    "effect": "+1 bonus die to your Ballistic Skill (A) Test when targeting enemies outside Short Range, if weapon is equipped with a Magnocular Scope, or if the user has a properly calibrated augmetic eye.",
+    "value": 3,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "PROJECTILE"
+      ],
+      "excludeTraits": [
+        "Heavy"
+      ],
+      "weaponType": "ranged"
+    },
+    "source": "shotguns",
+    "page": 10
+  },
+  {
+    "id": "enochian_prayershot",
+    "name": "Enochian Prayershot",
+    "type": "ammo",
+    "description": "To the Sisters of the Adepta Sororitas, the sacred Chaplet Ecclesiasticus is more than just an ornate cluster of devotional prayer beads. Each gleaming adamantium sphere represents an individual or collective act of penitence undertaken by the bearer. Alternatively, they act as an unwavering reminder of the virtues of the beloved Emperor that the Sister personally holds dearest, a symbol of their devotion and unshakable faith.\n\nFrom the broken bodies of Sisters honoured enough to die in service of the Emperor, the shattered and sundered Chaplets are recovered. These fragments are eventually returned to the manufactorums of Enoch from which they originate. In the sweltering heat below the towering, sanctified spires, skilled artisans take these blessed remnants and set them in intricately carved and inscribed shell casings which are then anointed with blessings and devotional prayers. The resulting shot, empowered by the faith of the fallen, is brutally effective in the persecution of daemons and other Warp-spawned monstrosities.",
+    "effect": "+3 ED against enemies with the DAEMON Keyword",
+    "value": 4,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTA SORORITAS"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "PROJECTILE"
+      ],
+      "excludeTraits": [
+        "Heavy"
+      ],
+      "weaponType": "ranged"
+    },
+    "source": "shotguns",
+    "page": 11
+  },
+  {
+    "id": "gravedigger_shells",
+    "name": "Gravedigger Shells",
+    "type": "ammo",
+    "description": "Well known for their zealotry, the ranks of the Gilead Gravediggers have been known to customise their own ammunition, from additional blessings over las-packs to the unmistakable Gravedigger Shell — all in direct violation of decrees issued by both the Adeptus Mechanicus and the Departmento Munitorum.\n\nThe most well-known and highly regarded of these illicit modifications is the aforementioned ‘Gravedigger’ Shell. Its production involves the Guardsman carefully removing a small portion of shot from a common Scatter round and replacing it with shavings taken from the explosive compound commonly found in demo charges or nav markers. When fired, the round explodes with a blinding white flash that disorientates targets in proximity and ignites the remaining shot, showering the target in flaming shrapnel.",
+    "effect": "When fired, any target within Short Range also gains the Blinded Condition.",
+    "value": 2,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "PROJECTILE"
+      ],
+      "excludeTraits": [
+        "Heavy"
+      ],
+      "weaponType": "ranged"
+    },
+    "addsTraits": [
+      "Inflict (Blinded)"
+    ],
+    "source": "shotguns",
+    "page": 11
+  },
+  {
+    "id": "illuminator_flare_round",
+    "name": "Illuminator Flare Round",
+    "type": "ammo",
+    "description": "Extensively used by the Explorators that first ventured into the Gilead System, the Illuminator Flare Round is now a rare and often overlooked ammunition variant. Based on a standard-pattern shell, this purpose-specific round is designed to act as a source of illumination or as a guiding beacon in times of distress.\n\nDue to the Flare Round’s immense size and ignition system it can only be fired from the wide-bore Shotgun Pistol. The round is designed to soar high into the air when fired, and contains a small fuel-cell based propellant system that can cause a devastating explosion if fired at close range or in enclosed spaces. This is an ill-advised use, however, as the resulting blast is capable of blowing a hole clean through even reinforced armoured hulls, while the accompanying flare has the potential to cause severe visual impairment and additional combustion.",
+    "effect": "When used as a Flare, the Illuminator Round soars high into the air before exploding with a burning bright marker that hangs in the sky. Its visibility and duration is situationally dependent and at the GM’s discretion. When used as ammunition against a Threat, the round is treated as if it had AP –2/+1 ED/Blast (5)/ Inflict Blinded and On Fire. The blast radius is centred on the initial target.",
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "PROJECTILE"
+      ],
+      "weaponType": "ranged"
+    },
+    "bonusAP": -2,
+    "bonusED": 1,
+    "addsTraits": [
+      "Blast (5)",
+      "Inflict (Blinded)",
+      "Inflict (On Fire)"
+    ],
+    "source": "shotguns",
+    "page": 12
+  },
+  {
+    "id": "biologis_impacter_nmf76",
+    "name": "Biologis Impacter N-MF-76",
+    "type": "ammo",
+    "description": "Specifically designed by representatives of the Adeptus Mechanicus stationed on Nethrius for the persecution of organic targets, the Biologis Impacter X76 round contains a lethal synaptic inhibitor poison derived from the native megafauna.\nThe round consists of small glass beads in replacement of the standard ceramite shot. These shatter on firing, releasing their virulent contents and creating a deadly hail of toxin tipped shards.\nWhen hit, the deadly toxicant within acts upon the targets biology at a cellular level. This ensures that should the initial force fail to completely neutralise the threat, within a few seconds they are rendered incapacitated as the poison runs rampant through their system, allowing for them to be dispatched with ease.",
+    "effect": "+1 ED, Inflict (Poisoned - 2)",
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "PROJECTILE"
+      ],
+      "excludeTraits": [
+        "Heavy"
+      ],
+      "weaponType": "ranged"
+    },
+    "bonusED": 1,
+    "addsTraits": [
+      "Inflict (Poisoned 2)"
+    ],
+    "source": "shotguns",
+    "page": 12
+  },
+  {
+    "id": "cryptclearer",
+    "name": "Cryptclearer",
+    "type": "ammo",
+    "description": "These explosive shells rupture on contact, showering the area of the blast in lethal shrapnel. Used in areas where densely packed or fast moving Xenos foes would seek to gain advantage, the lethal fragmentary payload quickly spreads within enclosed spaces, cutting down threats with ease.",
+    "effect": "+4 ED against targets within Short Range",
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "PROJECTILE"
+      ],
+      "excludeTraits": [
+        "Heavy"
+      ],
+      "weaponType": "ranged"
+    },
+    "source": "shotguns",
+    "page": 13
+  },
+  {
+    "id": "xenopurge",
+    "name": "Xenopurge",
+    "type": "ammo",
+    "description": "From within the exalted arsenal of the Deathwatch of the Adeptus Astartes, the ammunition known as Xenopurge fires a heavy slug designed to punch through the natural armour of many xenos species and shred their vital organs.\n\nThis quality ensures it sees notable usage against Tyranids and other entomic species that favour the simplicity of swarm tactics. As with many of the tools of the Deathwatch, its exact construction is known only to the specially chosen Tech-Priests who meet the Deathwatch’s strict vetting and are sworn to secrecy.",
+    "effect": "AP -2, +2 ED",
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "PROJECTILE"
+      ],
+      "excludeTraits": [
+        "Heavy"
+      ],
+      "weaponType": "ranged"
+    },
+    "bonusAP": -2,
+    "bonusED": 2,
+    "source": "shotguns",
+    "page": 13
+  },
+  {
+    "id": "wyrmsbreath",
+    "name": "Wyrmsbreath",
+    "type": "ammo",
+    "description": "Wyrmsbreath shells, most commonly used by the Adeptus Astartes of the Deathwatch, unleash wave-like bursts of sanctified flame that are particularly useful against large mobs of baying recidivists or xenos. Capable of quickly engulfing whole rooms or tightly packed corridors in searing flame, these shells excel against poorly-armoured threats, the initial blast ripping through soft flesh with ease before igniting the target.",
+    "effect": "Any individual within Short Range of an attack made using Wyrmsbreath ammunition also gains the On Fire Condition",
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "PROJECTILE"
+      ],
+      "excludeTraits": [
+        "Heavy"
+      ],
+      "weaponType": "ranged"
+    },
+    "addsTraits": [
+      "Inflict (On Fire)"
+    ],
+    "source": "shotguns",
+    "page": 13
+  }
+]

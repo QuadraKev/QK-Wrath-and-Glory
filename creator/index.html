@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=84">
-    <link rel="stylesheet" href="../shared/feedback.css?v=84">
+    <link rel="stylesheet" href="css/styles.css?v=85">
+    <link rel="stylesheet" href="../shared/feedback.css?v=85">
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
 <body>
@@ -26,18 +26,24 @@
                 <span class="app-subtitle">Character Creator</span>
             </div>
             <div class="header-right">
-                <button id="btn-new" class="header-btn" title="New Character">
-                    <span class="btn-icon">+</span> New
-                </button>
-                <button id="btn-load" class="header-btn" title="Load Character">
-                    <span class="btn-icon">&#128193;</span> Load
-                </button>
-                <button id="btn-save" class="header-btn" title="Save Character">
-                    <span class="btn-icon">&#128190;</span> Save
-                </button>
-                <button id="btn-feedback" class="header-btn" title="Report Feedback">
-                    <span class="btn-icon">&#128172;</span> Feedback
-                </button>
+                <div class="header-overflow">
+                    <button class="header-btn header-overflow-toggle" id="btn-overflow" aria-label="More actions" aria-haspopup="true" aria-expanded="false"><span class="btn-icon">&#8942;</span></button>
+                    <div class="header-actions">
+                        <a href="../" class="header-btn header-menu-home" id="btn-home-menu"><span class="btn-icon">&#127968;</span> Home</a>
+                        <button id="btn-new" class="header-btn" title="New Character">
+                            <span class="btn-icon">+</span> New
+                        </button>
+                        <button id="btn-load" class="header-btn" title="Load Character">
+                            <span class="btn-icon">&#128193;</span> Load
+                        </button>
+                        <button id="btn-save" class="header-btn" title="Save Character">
+                            <span class="btn-icon">&#128190;</span> Save
+                        </button>
+                        <button id="btn-feedback" class="header-btn" title="Report Feedback">
+                            <span class="btn-icon">&#128172;</span> Feedback
+                        </button>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -489,29 +495,30 @@
     </script>
 
     <!-- Scripts -->
-    <script src="js/web-api.js?v=84"></script>
-    <script src="js/data-loader.js?v=84"></script>
-    <script src="js/xp-calculator.js?v=84"></script>
-    <script src="js/derived-stats.js?v=84"></script>
-    <script src="js/prerequisite.js?v=84"></script>
-    <script src="js/state.js?v=84"></script>
-    <script src="js/character-io.js?v=84"></script>
-    <script src="js/glossary.js?v=84"></script>
-    <script src="tabs/setting-tab.js?v=84"></script>
-    <script src="tabs/species-tab.js?v=84"></script>
-    <script src="tabs/archetype-tab.js?v=84"></script>
-    <script src="tabs/ascension-tab.js?v=84"></script>
-    <script src="tabs/stats-tab.js?v=84"></script>
-    <script src="tabs/talents-tab.js?v=84"></script>
-    <script src="tabs/wargear-tab.js?v=84"></script>
-    <script src="tabs/powers-tab.js?v=84"></script>
-    <script src="tabs/background-tab.js?v=84"></script>
-    <script src="tabs/injuries-tab.js?v=84"></script>
-    <script src="tabs/character-sheet-tab.js?v=84"></script>
-    <script src="tabs/glossary-tab.js?v=84"></script>
-    <script src="tabs/references-tab.js?v=84"></script>
-    <script src="tabs/settings-tab.js?v=84"></script>
-    <script src="js/app.js?v=84"></script>
-    <script src="../shared/feedback.js?v=84"></script>
+    <script src="js/web-api.js?v=85"></script>
+    <script src="js/data-loader.js?v=85"></script>
+    <script src="js/xp-calculator.js?v=85"></script>
+    <script src="js/derived-stats.js?v=85"></script>
+    <script src="js/prerequisite.js?v=85"></script>
+    <script src="js/state.js?v=85"></script>
+    <script src="js/character-io.js?v=85"></script>
+    <script src="js/glossary.js?v=85"></script>
+    <script src="tabs/setting-tab.js?v=85"></script>
+    <script src="tabs/species-tab.js?v=85"></script>
+    <script src="tabs/archetype-tab.js?v=85"></script>
+    <script src="tabs/ascension-tab.js?v=85"></script>
+    <script src="tabs/stats-tab.js?v=85"></script>
+    <script src="tabs/talents-tab.js?v=85"></script>
+    <script src="tabs/wargear-tab.js?v=85"></script>
+    <script src="tabs/powers-tab.js?v=85"></script>
+    <script src="tabs/background-tab.js?v=85"></script>
+    <script src="tabs/injuries-tab.js?v=85"></script>
+    <script src="tabs/character-sheet-tab.js?v=85"></script>
+    <script src="tabs/glossary-tab.js?v=85"></script>
+    <script src="tabs/references-tab.js?v=85"></script>
+    <script src="tabs/settings-tab.js?v=85"></script>
+    <script src="js/app.js?v=85"></script>
+    <script src="js/header-overflow.js?v=85"></script>
+    <script src="../shared/feedback.js?v=85"></script>
 </body>
 </html>

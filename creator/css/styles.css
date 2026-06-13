@@ -132,6 +132,29 @@ body {
     font-size: 14px;
 }
 
+/* Header overflow (kebab) menu — desktop: actions shown inline, toggle hidden */
+.header-overflow {
+    display: flex;
+    gap: 8px;
+}
+
+.header-overflow-toggle {
+    display: none;
+}
+
+.header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.header-menu-home {
+    display: none;
+}
+
+a.header-menu-home {
+    text-decoration: none;
+}
+
 /* ===== Tab Navigation ===== */
 .tab-nav {
     display: flex;
@@ -4350,6 +4373,8 @@ textarea {
 @media (max-width: 480px) {
     .app-title {
         font-size: 16px;
+        overflow: visible;
+        text-overflow: clip;
     }
 
     .app-subtitle {
@@ -4358,6 +4383,69 @@ textarea {
 
     .app-header {
         padding: 0 12px;
+    }
+
+    /* Header overflow (kebab) menu — collapse actions into a dropdown */
+    .header-left #btn-home {
+        display: none;
+    }
+
+    .header-overflow {
+        position: relative;
+    }
+
+    .header-overflow-toggle {
+        display: flex;
+    }
+
+    .header-actions {
+        display: none;
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-sm);
+        padding: 6px;
+        box-shadow: var(--shadow-lg);
+        z-index: 1000;
+        min-width: 160px;
+    }
+
+    .header-actions.open {
+        display: flex;
+    }
+
+    .header-actions .header-btn {
+        font-size: 13px;
+        justify-content: flex-start;
+        width: 100%;
+        border: none;
+        background: transparent;
+        padding: 8px 10px;
+    }
+
+    .header-actions .header-btn:hover {
+        background: var(--bg-hover);
+    }
+
+    .header-actions .btn-icon {
+        font-size: 16px;
+    }
+
+    .header-menu-home {
+        display: flex;
+    }
+
+    /* Footer: show only the centered XP on phones */
+    .footer-keywords {
+        display: none;
+    }
+
+    .app-footer {
+        justify-content: center;
     }
 
     .tab-nav {

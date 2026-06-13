@@ -3305,6 +3305,11 @@ body {
         font-size: 12px;
     }
 
+    /* Footer: hidden on phones (no per-app info needed) */
+    .app-footer {
+        display: none;
+    }
+
     /* Wound/shock trackers side by side shrink */
     .wound-shock-trackers {
         flex-direction: column;

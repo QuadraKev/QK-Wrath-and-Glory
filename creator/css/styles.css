@@ -81,7 +81,7 @@ body {
 
 .header-left {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 12px;
     min-width: 0;
     flex-shrink: 1;

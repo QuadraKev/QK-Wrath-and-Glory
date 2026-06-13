@@ -252,7 +252,7 @@ const App = {
     },
 
     // Tabs whose content has no sidebar, so the header hamburger is a dead control
-    TABS_WITHOUT_SIDEBAR: ['references', 'settings'],
+    TABS_WITHOUT_SIDEBAR: ['character-sheet', 'glossary', 'references', 'settings'],
 
     // Hide the hamburger on tabs with no sidebar; show it on tabs that have one
     updateHamburgerVisibility(tabName) {

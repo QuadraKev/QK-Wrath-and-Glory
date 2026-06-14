@@ -21,12 +21,6 @@ Vanilla JS, no build step, no framework. Serve the repo root with any static ser
 they must be served from the repo root, not opened as files). Pushing to `main` auto-deploys to
 GitHub Pages.
 
-## Notes
-
-- The original single-app repos (`wrath-and-glory-creator-web`, `wrath-and-glory-bestiary-web`)
-  remain online as a migration snapshot.
-- Sourcebook PDFs are **not** in this repo (they are copyrighted); the apps use licensed text only.
-
 ---
 
 *Warhammer 40,000, Wrath & Glory, and related marks are property of their respective owners.

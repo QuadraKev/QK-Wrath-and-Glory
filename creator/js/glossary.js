@@ -297,39 +297,81 @@ const Glossary = {
         if (type === 'characterTerm') return 'Character Term';
         if (type === 'combatTerm') return 'Combat Rule';
         if (type === 'psychicPower') return 'Psychic Power';
+        if (type === 'weapon') return 'Weapon';
+        if (type === 'armor') return 'Armor';
+        if (type === 'talent') return 'Talent';
+        if (type === 'equipment') return 'Equipment';
+        if (type === 'archetype') return 'Archetype';
+        if (type === 'species') return 'Species';
         return 'Term';
     },
 
     // Collect all entries whose name matches (case-insensitive) the given name,
     // scanning categories in canonical discovery order. Each returned object is
     // the raw entry augmented with its span `type`.
+    // Scans the glossary's own categories first, then the Compendium data files
+    // (weapons/armor/talents/equipment/archetypes/species) via DataLoader, then
+    // keywords last so a mixed-case definition wins the popup title over an
+    // UPPERCASE keyword. psychicPowers and the Compendium categories are
+    // deliberately NOT in buildTermMap (names like "Doom"/"Knife"/"Human"/"Fear"
+    // would turn common words into false links); they only surface here when a
+    // clicked glossary term shares their name (e.g. tapping the AELDARI keyword
+    // also shows the Aeldari species, or the Telepathy keyword the full power).
     gatherDefinitionsByName(name) {
         const target = name.toLowerCase();
-        const categoryToType = [
+        const results = [];
+        // type/key are set AFTER the spread so they win over any same-named
+        // field on the source entry (e.g. a weapon/armor entry's own `type`).
+        const pushMatch = (value, type, key) => {
+            if (value && value.name && value.name.toLowerCase() === target) {
+                results.push({ ...value, type, key });
+            }
+        };
+
+        // 1. Glossary categories (keyed objects in this.data), keywords excepted.
+        const glossaryCats = [
             ['conditions', 'condition'],
             ['terms', 'term'],
             ['combatTerms', 'combatTerm'],
             ['weaponTraits', 'weaponTrait'],
             ['armorTraits', 'armorTrait'],
             ['characterTerms', 'characterTerm'],
-            // psychicPowers is intentionally NOT in buildTermMap (300 powers
-            // would turn common words like "Doom"/"Guide" into false links), but
-            // it IS gathered here so a clicked term that shares a power's name
-            // (e.g. the Telepathy keyword) also surfaces the full power. Placed
-            // before keywords so the mixed-case power name wins the popup title.
-            ['psychicPowers', 'psychicPower'],
-            ['keywords', 'keyword']
+            ['psychicPowers', 'psychicPower']
         ];
-        const results = [];
-        for (const [category, type] of categoryToType) {
+        for (const [category, type] of glossaryCats) {
             const block = this.data[category];
             if (!block) continue;
             for (const [key, value] of Object.entries(block)) {
-                if (value.name && value.name.toLowerCase() === target) {
-                    results.push({ type, key, ...value });
+                pushMatch(value, type, key);
+            }
+        }
+
+        // 2. Compendium data files (arrays via DataLoader). Lookup-only.
+        if (typeof DataLoader !== 'undefined') {
+            const compendium = [
+                ['weapon', DataLoader.getAllWeapons],
+                ['armor', DataLoader.getAllArmor],
+                ['talent', DataLoader.getAllTalents],
+                ['equipment', DataLoader.getAllEquipment],
+                ['archetype', DataLoader.getAllArchetypes],
+                ['species', DataLoader.getAllSpecies]
+            ];
+            for (const [type, getter] of compendium) {
+                if (typeof getter !== 'function') continue;
+                const list = getter.call(DataLoader) || [];
+                for (const value of list) {
+                    pushMatch(value, type, value && value.id);
                 }
             }
         }
+
+        // 3. Keywords last so an earlier mixed-case match wins the popup title.
+        if (this.data.keywords) {
+            for (const [key, value] of Object.entries(this.data.keywords)) {
+                pushMatch(value, 'keyword', key);
+            }
+        }
+
         return results;
     },
 
@@ -345,7 +387,8 @@ const Glossary = {
         // definition this collapses to exactly the prior markup (no subheader,
         // no divider) so the common case is visually unchanged.
         const sections = definitions.map((def, index) => {
-            const processedDescription = this.processText(def.description);
+            // Compendium entries (talents) use `effect`, not `description`.
+            const processedDescription = this.processText(def.description || def.effect || '');
 
             // Format source + page reference for this specific definition.
             const sourceRef = typeof DataLoader !== 'undefined' ? DataLoader.formatSourcePage(def) : '';

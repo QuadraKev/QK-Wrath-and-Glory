@@ -9,6 +9,9 @@ const ALLOWED_ORIGINS = [
 ];
 const MAX_TITLE = 150;
 const MAX_BODY = 5000;
+const ALLOWED_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // server cap; the client targets ~3 MB
+const IMAGE_EXT = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/gif': 'gif' };
 
 function corsHeaders(origin) {
   // Explicit deny: only echo Allow-Origin for allow-listed origins; others get none.
@@ -30,6 +33,43 @@ function json(body, status, origin) {
 
 function sanitize(s) {
   return s.toString().replace(/[\r\n]+/g, ' ').replace(/[`*_<>]/g, '').slice(0, 300);
+}
+
+function decodeBase64(b64) {
+  // Strip a data: URL prefix if one slipped through.
+  const comma = b64.indexOf(',');
+  const raw = (comma >= 0 && b64.slice(0, comma).includes('base64')) ? b64.slice(comma + 1) : b64;
+  const bin = atob(raw);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes;
+}
+
+// Identify an image by its magic bytes so a forged content-type can't smuggle
+// non-image content into the bucket.
+function sniffImageType(b) {
+  if (b.length >= 4 && b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47) return 'image/png';
+  if (b.length >= 3 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return 'image/jpeg';
+  if (b.length >= 6 && b[0] === 0x47 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x38) return 'image/gif';
+  if (b.length >= 12 && b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46 &&
+      b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50) return 'image/webp';
+  return null;
+}
+
+// Upload a screenshot to R2 and return its public URL. Throws on any problem so
+// the caller can degrade to a text-only issue.
+async function uploadImage(env, imageBase64, declaredType) {
+  if (!env.FEEDBACK_BUCKET || !env.R2_PUBLIC_BASE) throw new Error('R2 not configured');
+  if (!ALLOWED_IMAGE_TYPES.includes(declaredType)) throw new Error('Unsupported image type');
+  const bytes = decodeBase64(imageBase64);
+  if (bytes.length === 0 || bytes.length > MAX_IMAGE_BYTES) throw new Error('Bad image size');
+  const sniffed = sniffImageType(bytes);
+  if (!sniffed || sniffed !== declaredType) throw new Error('Image content does not match type');
+
+  const now = new Date();
+  const key = `feedback/${now.getUTCFullYear()}/${String(now.getUTCMonth() + 1).padStart(2, '0')}/${crypto.randomUUID()}.${IMAGE_EXT[sniffed]}`;
+  await env.FEEDBACK_BUCKET.put(key, bytes, { httpMetadata: { contentType: sniffed } });
+  return `${env.R2_PUBLIC_BASE.replace(/\/+$/, '')}/${key}`;
 }
 
 async function createIssue(env, payload) {
@@ -82,6 +122,18 @@ export default {
     const tsResult = await ts.json();
     if (!tsResult.success) return json({ ok: false, error: 'Spam check failed' }, 403, origin);
 
+    // Optional screenshot -> R2, embedded in the issue body. Non-fatal: if the
+    // upload fails we still file the feedback so nothing is lost.
+    let imageMarkdown = '';
+    if (data.imageBase64) {
+      try {
+        const imageUrl = await uploadImage(env, String(data.imageBase64), String(data.imageContentType || ''));
+        imageMarkdown = `\n\n![screenshot](${imageUrl})`;
+      } catch {
+        imageMarkdown = '\n\n*(screenshot upload failed)*';
+      }
+    }
+
     // Build issue
     const app = ['creator', 'bestiary'].includes(data.app) ? data.app : 'unknown';
     const context = [
@@ -94,7 +146,7 @@ export default {
 
     const issue = {
       title: `[${type === 'bug' ? 'Bug' : 'Feature'}] ${title}`,
-      body: `${details || '(no details provided)'}\n${context}`,
+      body: `${details || '(no details provided)'}${imageMarkdown}\n${context}`,
       labels: [type === 'bug' ? 'bug' : 'enhancement'],
     };
 

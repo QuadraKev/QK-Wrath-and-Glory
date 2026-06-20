@@ -279,6 +279,7 @@ const Glossary = {
             weaponTrait: 'weaponTraits',
             armorTrait: 'armorTraits',
             characterTerm: 'characterTerms',
+            psychicPower: 'psychicPowers',
             keyword: 'keywords'
         };
         const category = typeToCategory[type];
@@ -295,6 +296,7 @@ const Glossary = {
         if (type === 'keyword') return 'Keyword';
         if (type === 'characterTerm') return 'Character Term';
         if (type === 'combatTerm') return 'Combat Rule';
+        if (type === 'psychicPower') return 'Psychic Power';
         return 'Term';
     },
 
@@ -310,6 +312,12 @@ const Glossary = {
             ['weaponTraits', 'weaponTrait'],
             ['armorTraits', 'armorTrait'],
             ['characterTerms', 'characterTerm'],
+            // psychicPowers is intentionally NOT in buildTermMap (300 powers
+            // would turn common words like "Doom"/"Guide" into false links), but
+            // it IS gathered here so a clicked term that shares a power's name
+            // (e.g. the Telepathy keyword) also surfaces the full power. Placed
+            // before keywords so the mixed-case power name wins the popup title.
+            ['psychicPowers', 'psychicPower'],
             ['keywords', 'keyword']
         ];
         const results = [];

@@ -221,6 +221,15 @@ const GlossaryTab = {
             }
         }
 
+        // Re-rendered expanded entries are inlined raw (no click fired), so
+        // enhance them now to keep their glossary links after a re-render (#8).
+        for (const entry of batch) {
+            if (this.expandedEntries.has(entry.id)) {
+                const body = document.querySelector(`#glossary-content .glossary-entry[data-entry-id="${CSS.escape(entry.id)}"] .glossary-entry-body`);
+                this._enhanceBody(body);
+            }
+        }
+
         this._renderedCount += batch.length;
     },
 
@@ -300,16 +309,25 @@ const GlossaryTab = {
             }
 
             // Enhance glossary terms on demand
-            const desc = body.querySelector('.glossary-entry-description');
-            if (desc && !desc.dataset.enhanced) {
-                if (typeof Glossary !== 'undefined' && Glossary.enhanceElement) {
-                    Glossary.enhanceElement(desc);
-                }
-                desc.dataset.enhanced = 'true';
-            }
+            this._enhanceBody(body);
 
             // Update URL hash
             history.replaceState(null, '', '#glossary/' + entryId);
+        }
+    },
+
+    // Wrap the description in clickable glossary terms. Idempotent via the
+    // description's data-enhanced flag. Called on expand (click) and after a
+    // re-render that inlines an already-expanded body (filter/search change),
+    // which would otherwise leave the text raw with no clickable links (#8).
+    _enhanceBody(body) {
+        if (!body) return;
+        const desc = body.querySelector('.glossary-entry-description');
+        if (desc && !desc.dataset.enhanced) {
+            if (typeof Glossary !== 'undefined' && Glossary.enhanceElement) {
+                Glossary.enhanceElement(desc);
+            }
+            desc.dataset.enhanced = 'true';
         }
     },
 

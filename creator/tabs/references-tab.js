@@ -387,6 +387,16 @@ const ReferencesTab = {
             }
         }
 
+        // Re-rendered expanded entries are inlined raw (no click fired), so their
+        // glossary links would be missing after a filter/search re-render. Enhance
+        // them now so the links survive the re-render (#8).
+        for (const entry of batch) {
+            if (this.expandedEntries.has(entry.id)) {
+                const body = document.querySelector(`#references-content .glossary-entry[data-entry-id="${CSS.escape(entry.id)}"] .glossary-entry-body`);
+                this._enhanceBody(body);
+            }
+        }
+
         this._renderedCount += batch.length;
     },
 
@@ -454,15 +464,22 @@ const ReferencesTab = {
             }
 
             // Enhance glossary terms on demand (stats + description, not copy button)
-            if (!body.dataset.enhanced) {
-                if (typeof Glossary !== 'undefined' && Glossary.enhanceElement) {
-                    body.querySelectorAll('.ref-stats, .glossary-entry-description').forEach(el => Glossary.enhanceElement(el));
-                }
-                body.dataset.enhanced = 'true';
-            }
+            this._enhanceBody(body);
 
             history.replaceState(null, '', '#references/' + entryId);
         }
+    },
+
+    // Wrap description/stat text in clickable glossary terms. Idempotent via the
+    // body's data-enhanced flag. Called both on expand (click) and after a
+    // re-render that inlines an already-expanded body (filter/search change),
+    // which would otherwise leave the body raw with no clickable links (#8).
+    _enhanceBody(body) {
+        if (!body || body.dataset.enhanced) return;
+        if (typeof Glossary !== 'undefined' && Glossary.enhanceElement) {
+            body.querySelectorAll('.ref-stats, .glossary-entry-description').forEach(el => Glossary.enhanceElement(el));
+        }
+        body.dataset.enhanced = 'true';
     },
 
     renderBody(entry) {

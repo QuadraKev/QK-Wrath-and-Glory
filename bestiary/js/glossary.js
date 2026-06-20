@@ -37,7 +37,7 @@ const Glossary = {
         // Add conditions
         if (this.data.conditions) {
             for (const [key, value] of Object.entries(this.data.conditions)) {
-                this.termMap.set(value.name.toLowerCase(), { type: 'condition', key, ...value });
+                this.addTerm(value.name.toLowerCase(), { type: 'condition', key, ...value });
                 this.addTermVariations(value.name, { type: 'condition', key, ...value });
             }
         }
@@ -45,7 +45,7 @@ const Glossary = {
         // Add terms
         if (this.data.terms) {
             for (const [key, value] of Object.entries(this.data.terms)) {
-                this.termMap.set(value.name.toLowerCase(), { type: 'term', key, ...value });
+                this.addTerm(value.name.toLowerCase(), { type: 'term', key, ...value });
                 this.addTermVariations(value.name, { type: 'term', key, ...value });
             }
         }
@@ -53,7 +53,7 @@ const Glossary = {
         // Add combat terms
         if (this.data.combatTerms) {
             for (const [key, value] of Object.entries(this.data.combatTerms)) {
-                this.termMap.set(value.name.toLowerCase(), { type: 'combatTerm', key, ...value });
+                this.addTerm(value.name.toLowerCase(), { type: 'combatTerm', key, ...value });
                 this.addTermVariations(value.name, { type: 'combatTerm', key, ...value });
             }
         }
@@ -61,7 +61,7 @@ const Glossary = {
         // Add weapon traits
         if (this.data.weaponTraits) {
             for (const [key, value] of Object.entries(this.data.weaponTraits)) {
-                this.termMap.set(value.name.toLowerCase(), { type: 'weaponTrait', key, ...value });
+                this.addTerm(value.name.toLowerCase(), { type: 'weaponTrait', key, ...value });
                 this.addTermVariations(value.name, { type: 'weaponTrait', key, ...value });
             }
         }
@@ -69,7 +69,7 @@ const Glossary = {
         // Add armor traits
         if (this.data.armorTraits) {
             for (const [key, value] of Object.entries(this.data.armorTraits)) {
-                this.termMap.set(value.name.toLowerCase(), { type: 'armorTrait', key, ...value });
+                this.addTerm(value.name.toLowerCase(), { type: 'armorTrait', key, ...value });
                 this.addTermVariations(value.name, { type: 'armorTrait', key, ...value });
             }
         }
@@ -77,7 +77,7 @@ const Glossary = {
         // Add character terms (attributes, skills, derived stats)
         if (this.data.characterTerms) {
             for (const [key, value] of Object.entries(this.data.characterTerms)) {
-                this.termMap.set(value.name.toLowerCase(), { type: 'characterTerm', key, ...value });
+                this.addTerm(value.name.toLowerCase(), { type: 'characterTerm', key, ...value });
                 this.addTermVariations(value.name, { type: 'characterTerm', key, ...value });
             }
         }
@@ -85,19 +85,24 @@ const Glossary = {
         // Add keywords (these often appear in ALL CAPS)
         if (this.data.keywords) {
             for (const [key, value] of Object.entries(this.data.keywords)) {
-                this.termMap.set(value.name.toLowerCase(), { type: 'keyword', key, ...value });
-                this.termMap.set('__KEYWORD__' + value.name.toUpperCase(), { type: 'keyword', key, ...value });
+                this.addTerm(value.name.toLowerCase(), { type: 'keyword', key, ...value });
+                this.addTerm('__KEYWORD__' + value.name.toUpperCase(), { type: 'keyword', key, ...value });
                 this.addTermVariations(value.name, { type: 'keyword', key, ...value });
             }
         }
+    },
 
-        // Add talents
-        if (this.data.talents) {
-            for (const [key, value] of Object.entries(this.data.talents)) {
-                this.termMap.set(value.name.toLowerCase(), { type: 'talent', key, ...value });
-                this.addTermVariations(value.name, { type: 'talent', key, ...value });
-            }
+    // Append an entry to the list stored under a map key, preserving discovery
+    // order. Each map key holds an ARRAY of entries so that a name shared by
+    // multiple categories keeps every matching definition instead of having
+    // later categories silently overwrite earlier ones.
+    addTerm(mapKey, data) {
+        let list = this.termMap.get(mapKey);
+        if (!list) {
+            list = [];
+            this.termMap.set(mapKey, list);
         }
+        list.push(data);
     },
 
     addTermVariations(name, data) {
@@ -107,7 +112,7 @@ const Glossary = {
 
         if (skipVariations.includes(lowerName)) {
             if (lowerName.includes('(')) {
-                this.termMap.set(lowerName.split('(')[0].trim(), data);
+                this.addTerm(lowerName.split('(')[0].trim(), data);
             }
             return;
         }
@@ -115,17 +120,17 @@ const Glossary = {
         if (lowerName.endsWith('ed') && lowerName.length > 4) {
             const base = lowerName.slice(0, -2);
             if (base.length >= 4) {
-                this.termMap.set(base, data);
+                this.addTerm(base, data);
             }
         }
         if (lowerName.endsWith('ing') && lowerName.length > 5) {
             const base = lowerName.slice(0, -3);
             if (base.length >= 4) {
-                this.termMap.set(base, data);
+                this.addTerm(base, data);
             }
         }
         if (lowerName.includes('(')) {
-            this.termMap.set(lowerName.split('(')[0].trim(), data);
+            this.addTerm(lowerName.split('(')[0].trim(), data);
         }
     },
 
@@ -148,7 +153,10 @@ const Glossary = {
         const replacements = [];
 
         for (const term of sortedTerms) {
-            let termData = this.termMap.get(term);
+            // Each map key holds an array of entries; use the first as the
+            // representative for the span attributes. handleTermClick re-resolves
+            // every matching definition by name when the term is clicked.
+            let termData = this.termMap.get(term)[0];
             const regex = new RegExp(`\\b(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'gi');
 
             result = result.replace(regex, (match) => {
@@ -157,7 +165,7 @@ const Glossary = {
                     const keywordKey = '__KEYWORD__' + match.toUpperCase();
                     const keywordData = this.termMap.get(keywordKey);
                     if (keywordData) {
-                        useTermData = keywordData;
+                        useTermData = keywordData[0];
                     }
                 }
 
@@ -231,47 +239,149 @@ const Glossary = {
         });
         if (alreadyOpen) return;
 
-        let termData = null;
-        if (type === 'condition' && this.data.conditions[key]) {
-            termData = this.data.conditions[key];
-        } else if (type === 'term' && this.data.terms[key]) {
-            termData = this.data.terms[key];
-        } else if (type === 'weaponTrait' && this.data.weaponTraits[key]) {
-            termData = this.data.weaponTraits[key];
-        } else if (type === 'armorTrait' && this.data.armorTraits[key]) {
-            termData = this.data.armorTraits[key];
-        } else if (type === 'keyword' && this.data.keywords[key]) {
-            termData = this.data.keywords[key];
-        } else if (type === 'characterTerm' && this.data.characterTerms[key]) {
-            termData = this.data.characterTerms[key];
-        } else if (type === 'combatTerm' && this.data.combatTerms[key]) {
-            termData = this.data.combatTerms[key];
-        } else if (type === 'talent' && this.data.talents[key]) {
-            termData = this.data.talents[key];
-        }
+        // Resolve the clicked entry, then gather EVERY definition that shares
+        // its name so the popup can stack them (e.g. a keyword + the species or
+        // power of the same name). For a unique name this returns one entry.
+        const clickedEntry = this.getEntry(type, key);
+        if (!clickedEntry) return;
 
-        if (termData) {
-            this.showPopup(termData, termElement, type, key);
-        }
+        const definitions = this.gatherDefinitionsByName(clickedEntry.name);
+        if (definitions.length === 0) return;
+
+        this.showPopup(definitions, termElement, key);
     },
 
-    showPopup(termData, anchorElement, type, termKey) {
+    // Look up a single raw entry by its span type + data key.
+    getEntry(type, key) {
+        const typeToCategory = {
+            condition: 'conditions',
+            term: 'terms',
+            combatTerm: 'combatTerms',
+            weaponTrait: 'weaponTraits',
+            armorTrait: 'armorTraits',
+            characterTerm: 'characterTerms',
+            psychicPower: 'psychicPowers',
+            keyword: 'keywords'
+        };
+        const category = typeToCategory[type];
+        const block = category && this.data[category];
+        return block && block[key] ? block[key] : null;
+    },
+
+    // Human-readable label for a span/category type. Single source of truth for
+    // both the single-definition header and the multi-definition subheaders.
+    getTypeLabel(type) {
+        if (type === 'condition') return 'Condition';
+        if (type === 'weaponTrait') return 'Weapon Trait';
+        if (type === 'armorTrait') return 'Armor Trait';
+        if (type === 'keyword') return 'Keyword';
+        if (type === 'characterTerm') return 'Character Term';
+        if (type === 'combatTerm') return 'Combat Rule';
+        if (type === 'psychicPower') return 'Psychic Power';
+        if (type === 'weapon') return 'Weapon';
+        if (type === 'armor') return 'Armor';
+        if (type === 'talent') return 'Talent';
+        if (type === 'equipment') return 'Equipment';
+        if (type === 'archetype') return 'Archetype';
+        if (type === 'species') return 'Species';
+        return 'Term';
+    },
+
+    // Collect all entries whose name matches (case-insensitive) the given name.
+    // Scans the glossary's own categories first, then the Compendium data files
+    // (weapons/armor/talents/equipment/archetypes/species) via DataLoader, then
+    // keywords last so a mixed-case definition wins the popup title over an
+    // UPPERCASE keyword. psychicPowers and the Compendium categories are
+    // deliberately NOT in buildTermMap (names like "Doom"/"Knife"/"Human"/"Fear"
+    // would turn common words into false links); they only surface here when a
+    // clicked glossary term shares their name (e.g. tapping the AELDARI keyword
+    // also shows the Aeldari species, or the Telepathy keyword the full power).
+    gatherDefinitionsByName(name) {
+        const target = name.toLowerCase();
+        const results = [];
+        // type/key are set AFTER the spread so they win over any same-named
+        // field on the source entry (e.g. a weapon/armor entry's own `type`).
+        const pushMatch = (value, type, key) => {
+            if (value && value.name && value.name.toLowerCase() === target) {
+                results.push({ ...value, type, key });
+            }
+        };
+
+        // 1. Glossary categories (keyed objects in this.data), keywords excepted.
+        const glossaryCats = [
+            ['conditions', 'condition'],
+            ['terms', 'term'],
+            ['combatTerms', 'combatTerm'],
+            ['weaponTraits', 'weaponTrait'],
+            ['armorTraits', 'armorTrait'],
+            ['characterTerms', 'characterTerm'],
+            ['psychicPowers', 'psychicPower']
+        ];
+        for (const [category, type] of glossaryCats) {
+            const block = this.data[category];
+            if (!block) continue;
+            for (const [key, value] of Object.entries(block)) {
+                pushMatch(value, type, key);
+            }
+        }
+
+        // 2. Compendium data files (arrays via DataLoader). Lookup-only.
+        if (typeof DataLoader !== 'undefined') {
+            const compendium = [
+                ['weapon', DataLoader.getAllWeapons],
+                ['armor', DataLoader.getAllArmor],
+                ['talent', DataLoader.getAllTalents],
+                ['equipment', DataLoader.getAllEquipment],
+                ['archetype', DataLoader.getAllArchetypes],
+                ['species', DataLoader.getAllSpecies]
+            ];
+            for (const [type, getter] of compendium) {
+                if (typeof getter !== 'function') continue;
+                const list = getter.call(DataLoader) || [];
+                for (const value of list) {
+                    pushMatch(value, type, value && value.id);
+                }
+            }
+        }
+
+        // 3. Keywords last so an earlier mixed-case match wins the popup title.
+        if (this.data.keywords) {
+            for (const [key, value] of Object.entries(this.data.keywords)) {
+                pushMatch(value, 'keyword', key);
+            }
+        }
+
+        return results;
+    },
+
+    showPopup(definitions, anchorElement, termKey) {
         const popupId = `glossary-popup-${this.popupIdCounter++}`;
 
-        let typeLabel = 'Term';
-        if (type === 'condition') typeLabel = 'Condition';
-        else if (type === 'weaponTrait') typeLabel = 'Weapon Trait';
-        else if (type === 'armorTrait') typeLabel = 'Armor Trait';
-        else if (type === 'keyword') typeLabel = 'Keyword';
-        else if (type === 'characterTerm') typeLabel = 'Character Term';
-        else if (type === 'combatTerm') typeLabel = 'Combat Rule';
-        else if (type === 'talent') typeLabel = 'Talent';
+        // Title is shown once, from the first definition.
+        const title = definitions[0].name;
+        const multiple = definitions.length > 1;
 
-        const processedDescription = this.processText(termData.description);
+        // Build the body: one section per definition. With a single definition
+        // this collapses to the prior markup (no subheader, no divider).
+        const sections = definitions.map((def, index) => {
+            // Compendium entries (talents) use `effect`, not `description`.
+            const processedDescription = this.processText(def.description || def.effect || '');
 
-        // Format source + page reference
-        const sourceRef = typeof DataLoader !== 'undefined' ? DataLoader.formatSourcePage(termData) : '';
-        const sourceRefHtml = sourceRef ? `<div class="source-ref">${sourceRef}</div>` : '';
+            const sourceRef = typeof DataLoader !== 'undefined' ? DataLoader.formatSourcePage(def) : '';
+            const sourceRefHtml = sourceRef ? `<div class="source-ref">${sourceRef}</div>` : '';
+
+            const subheaderHtml = multiple
+                ? `<div class="glossary-popup-subheader"><span class="glossary-popup-type">${this.getTypeLabel(def.type)}</span></div>`
+                : '';
+
+            const dividerHtml = index > 0 ? '<hr>' : '';
+
+            return `${dividerHtml}${subheaderHtml}${processedDescription}${sourceRefHtml}`;
+        }).join('');
+
+        const headerTypeHtml = multiple
+            ? ''
+            : `<span class="glossary-popup-type">${this.getTypeLabel(definitions[0].type)}</span>`;
 
         const popup = document.createElement('div');
         popup.className = 'glossary-popup';
@@ -279,13 +389,12 @@ const Glossary = {
         popup.dataset.glossaryKey = termKey || '';
         popup.innerHTML = `
             <div class="glossary-popup-header">
-                <span class="glossary-popup-type">${typeLabel}</span>
-                <span class="glossary-popup-title">${termData.name}</span>
+                ${headerTypeHtml}
+                <span class="glossary-popup-title">${title}</span>
                 <button class="glossary-popup-close" title="Close">&times;</button>
             </div>
             <div class="glossary-popup-content">
-                ${processedDescription}
-                ${sourceRefHtml}
+                ${sections}
             </div>
         `;
 

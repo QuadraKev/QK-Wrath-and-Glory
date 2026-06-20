@@ -1200,6 +1200,17 @@ body {
     overflow-y: auto;
 }
 
+/* Stacked same-name definitions (issue #5) */
+.glossary-popup-content .glossary-popup-subheader {
+    margin: 0 0 6px;
+}
+
+.glossary-popup-content hr {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 14px 0;
+}
+
 .glossary-table-scroll {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;

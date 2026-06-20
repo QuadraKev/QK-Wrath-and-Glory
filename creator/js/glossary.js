@@ -37,7 +37,7 @@ const Glossary = {
         // Add conditions
         if (this.data.conditions) {
             for (const [key, value] of Object.entries(this.data.conditions)) {
-                this.termMap.set(value.name.toLowerCase(), { type: 'condition', key, ...value });
+                this.addTerm(value.name.toLowerCase(), { type: 'condition', key, ...value });
                 // Also add variations
                 this.addTermVariations(value.name, { type: 'condition', key, ...value });
             }
@@ -46,7 +46,7 @@ const Glossary = {
         // Add terms
         if (this.data.terms) {
             for (const [key, value] of Object.entries(this.data.terms)) {
-                this.termMap.set(value.name.toLowerCase(), { type: 'term', key, ...value });
+                this.addTerm(value.name.toLowerCase(), { type: 'term', key, ...value });
                 this.addTermVariations(value.name, { type: 'term', key, ...value });
             }
         }
@@ -54,7 +54,7 @@ const Glossary = {
         // Add combat terms
         if (this.data.combatTerms) {
             for (const [key, value] of Object.entries(this.data.combatTerms)) {
-                this.termMap.set(value.name.toLowerCase(), { type: 'combatTerm', key, ...value });
+                this.addTerm(value.name.toLowerCase(), { type: 'combatTerm', key, ...value });
                 this.addTermVariations(value.name, { type: 'combatTerm', key, ...value });
             }
         }
@@ -62,7 +62,7 @@ const Glossary = {
         // Add weapon traits
         if (this.data.weaponTraits) {
             for (const [key, value] of Object.entries(this.data.weaponTraits)) {
-                this.termMap.set(value.name.toLowerCase(), { type: 'weaponTrait', key, ...value });
+                this.addTerm(value.name.toLowerCase(), { type: 'weaponTrait', key, ...value });
                 this.addTermVariations(value.name, { type: 'weaponTrait', key, ...value });
             }
         }
@@ -70,7 +70,7 @@ const Glossary = {
         // Add armor traits
         if (this.data.armorTraits) {
             for (const [key, value] of Object.entries(this.data.armorTraits)) {
-                this.termMap.set(value.name.toLowerCase(), { type: 'armorTrait', key, ...value });
+                this.addTerm(value.name.toLowerCase(), { type: 'armorTrait', key, ...value });
                 this.addTermVariations(value.name, { type: 'armorTrait', key, ...value });
             }
         }
@@ -78,7 +78,7 @@ const Glossary = {
         // Add character terms (attributes, skills, derived stats)
         if (this.data.characterTerms) {
             for (const [key, value] of Object.entries(this.data.characterTerms)) {
-                this.termMap.set(value.name.toLowerCase(), { type: 'characterTerm', key, ...value });
+                this.addTerm(value.name.toLowerCase(), { type: 'characterTerm', key, ...value });
                 this.addTermVariations(value.name, { type: 'characterTerm', key, ...value });
             }
         }
@@ -88,12 +88,25 @@ const Glossary = {
         if (this.data.keywords) {
             for (const [key, value] of Object.entries(this.data.keywords)) {
                 // Store with lowercase for normal matching
-                this.termMap.set(value.name.toLowerCase(), { type: 'keyword', key, ...value });
+                this.addTerm(value.name.toLowerCase(), { type: 'keyword', key, ...value });
                 // Also store with special uppercase key for ALL CAPS matching
-                this.termMap.set('__KEYWORD__' + value.name.toUpperCase(), { type: 'keyword', key, ...value });
+                this.addTerm('__KEYWORD__' + value.name.toUpperCase(), { type: 'keyword', key, ...value });
                 this.addTermVariations(value.name, { type: 'keyword', key, ...value });
             }
         }
+    },
+
+    // Append an entry to the list stored under a map key, preserving discovery
+    // order. Each map key holds an ARRAY of entries so that a name shared by
+    // multiple categories keeps every matching definition instead of having
+    // later categories silently overwrite earlier ones.
+    addTerm(mapKey, data) {
+        let list = this.termMap.get(mapKey);
+        if (!list) {
+            list = [];
+            this.termMap.set(mapKey, list);
+        }
+        list.push(data);
     },
 
     addTermVariations(name, data) {
@@ -105,7 +118,7 @@ const Glossary = {
         if (skipVariations.includes(lowerName)) {
             // Only add parenthetical variations, not suffix-stripping
             if (lowerName.includes('(')) {
-                this.termMap.set(lowerName.split('(')[0].trim(), data);
+                this.addTerm(lowerName.split('(')[0].trim(), data);
             }
             return;
         }
@@ -116,19 +129,19 @@ const Glossary = {
             const base = lowerName.slice(0, -2);
             // Only add if the base is at least 4 characters to avoid overly short matches
             if (base.length >= 4) {
-                this.termMap.set(base, data);
+                this.addTerm(base, data);
             }
         }
         // "Bleeding" -> "Bleed"
         if (lowerName.endsWith('ing') && lowerName.length > 5) {
             const base = lowerName.slice(0, -3);
             if (base.length >= 4) {
-                this.termMap.set(base, data);
+                this.addTerm(base, data);
             }
         }
         // Handle parenthetical notations like "Rapid Fire (1)"
         if (lowerName.includes('(')) {
-            this.termMap.set(lowerName.split('(')[0].trim(), data);
+            this.addTerm(lowerName.split('(')[0].trim(), data);
         }
     },
 
@@ -153,7 +166,10 @@ const Glossary = {
         const replacements = [];
 
         for (const term of sortedTerms) {
-            let termData = this.termMap.get(term);
+            // Each map key holds an array of entries; use the first as the
+            // representative for the span attributes. handleTermClick re-resolves
+            // every matching definition by name when the term is clicked.
+            let termData = this.termMap.get(term)[0];
             // Create regex that matches the term as a whole word (with optional trailing punctuation)
             const regex = new RegExp(`\\b(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'gi');
 
@@ -164,7 +180,7 @@ const Glossary = {
                     const keywordKey = '__KEYWORD__' + match.toUpperCase();
                     const keywordData = this.termMap.get(keywordKey);
                     if (keywordData) {
-                        useTermData = keywordData;
+                        useTermData = keywordData[0];
                     }
                 }
 
@@ -241,46 +257,110 @@ const Glossary = {
         });
         if (alreadyOpen) return;
 
-        let termData = null;
-        if (type === 'condition' && this.data.conditions[key]) {
-            termData = this.data.conditions[key];
-        } else if (type === 'term' && this.data.terms[key]) {
-            termData = this.data.terms[key];
-        } else if (type === 'weaponTrait' && this.data.weaponTraits[key]) {
-            termData = this.data.weaponTraits[key];
-        } else if (type === 'armorTrait' && this.data.armorTraits[key]) {
-            termData = this.data.armorTraits[key];
-        } else if (type === 'keyword' && this.data.keywords[key]) {
-            termData = this.data.keywords[key];
-        } else if (type === 'characterTerm' && this.data.characterTerms[key]) {
-            termData = this.data.characterTerms[key];
-        } else if (type === 'combatTerm' && this.data.combatTerms[key]) {
-            termData = this.data.combatTerms[key];
-        }
+        // Resolve the clicked entry from its category + key.
+        const clickedEntry = this.getEntry(type, key);
+        if (!clickedEntry) return;
 
-        if (termData) {
-            this.showPopup(termData, termElement, type, key);
-        }
+        // Gather EVERY definition that shares this name across categories so a
+        // single popup can stack them (e.g. "Power Field" as both an Armor Trait
+        // and a Keyword). For a name unique to one category this returns one.
+        const definitions = this.gatherDefinitionsByName(clickedEntry.name);
+        if (definitions.length === 0) return;
+
+        this.showPopup(definitions, termElement, key);
     },
 
-    showPopup(termData, anchorElement, type, termKey) {
+    // Look up a single raw entry by its span type + data key.
+    getEntry(type, key) {
+        const typeToCategory = {
+            condition: 'conditions',
+            term: 'terms',
+            combatTerm: 'combatTerms',
+            weaponTrait: 'weaponTraits',
+            armorTrait: 'armorTraits',
+            characterTerm: 'characterTerms',
+            keyword: 'keywords'
+        };
+        const category = typeToCategory[type];
+        const block = category && this.data[category];
+        return block && block[key] ? block[key] : null;
+    },
+
+    // Human-readable label for a span/category type. Single source of truth for
+    // both the single-definition header and the multi-definition subheaders.
+    getTypeLabel(type) {
+        if (type === 'condition') return 'Condition';
+        if (type === 'weaponTrait') return 'Weapon Trait';
+        if (type === 'armorTrait') return 'Armor Trait';
+        if (type === 'keyword') return 'Keyword';
+        if (type === 'characterTerm') return 'Character Term';
+        if (type === 'combatTerm') return 'Combat Rule';
+        return 'Term';
+    },
+
+    // Collect all entries whose name matches (case-insensitive) the given name,
+    // scanning categories in canonical discovery order. Each returned object is
+    // the raw entry augmented with its span `type`.
+    gatherDefinitionsByName(name) {
+        const target = name.toLowerCase();
+        const categoryToType = [
+            ['conditions', 'condition'],
+            ['terms', 'term'],
+            ['combatTerms', 'combatTerm'],
+            ['weaponTraits', 'weaponTrait'],
+            ['armorTraits', 'armorTrait'],
+            ['characterTerms', 'characterTerm'],
+            ['keywords', 'keyword']
+        ];
+        const results = [];
+        for (const [category, type] of categoryToType) {
+            const block = this.data[category];
+            if (!block) continue;
+            for (const [key, value] of Object.entries(block)) {
+                if (value.name && value.name.toLowerCase() === target) {
+                    results.push({ type, key, ...value });
+                }
+            }
+        }
+        return results;
+    },
+
+    showPopup(definitions, anchorElement, termKey) {
         const popupId = `glossary-popup-${this.popupIdCounter++}`;
 
-        // Get type label
-        let typeLabel = 'Term';
-        if (type === 'condition') typeLabel = 'Condition';
-        else if (type === 'weaponTrait') typeLabel = 'Weapon Trait';
-        else if (type === 'armorTrait') typeLabel = 'Armor Trait';
-        else if (type === 'keyword') typeLabel = 'Keyword';
-        else if (type === 'characterTerm') typeLabel = 'Character Term';
-        else if (type === 'combatTerm') typeLabel = 'Combat Rule';
+        // Title is shown once, from the first definition (matches the prior
+        // single-entry behavior, which used the clicked entry's name).
+        const title = definitions[0].name;
+        const multiple = definitions.length > 1;
 
-        // Process description to make nested terms clickable
-        const processedDescription = this.processText(termData.description);
+        // Build the body: one section per definition. When there is only one
+        // definition this collapses to exactly the prior markup (no subheader,
+        // no divider) so the common case is visually unchanged.
+        const sections = definitions.map((def, index) => {
+            const processedDescription = this.processText(def.description);
 
-        // Format source + page reference
-        const sourceRef = typeof DataLoader !== 'undefined' ? DataLoader.formatSourcePage(termData) : '';
-        const sourceRefHtml = sourceRef ? `<div class="source-ref">${sourceRef}</div>` : '';
+            // Format source + page reference for this specific definition.
+            const sourceRef = typeof DataLoader !== 'undefined' ? DataLoader.formatSourcePage(def) : '';
+            const sourceRefHtml = sourceRef ? `<div class="source-ref">${sourceRef}</div>` : '';
+
+            // Category subheader (reuses the inline gold pill style from the
+            // header) only when stacking multiple definitions. The wrapping div
+            // puts the inline pill on its own line above the description.
+            const subheaderHtml = multiple
+                ? `<div class="glossary-popup-subheader"><span class="glossary-popup-type">${this.getTypeLabel(def.type)}</span></div>`
+                : '';
+
+            // Divider between consecutive definitions.
+            const dividerHtml = index > 0 ? '<hr>' : '';
+
+            return `${dividerHtml}${subheaderHtml}${processedDescription}${sourceRefHtml}`;
+        }).join('');
+
+        // In the single-definition case, keep the original header layout where
+        // the type label and title sit side by side in the header.
+        const headerTypeHtml = multiple
+            ? ''
+            : `<span class="glossary-popup-type">${this.getTypeLabel(definitions[0].type)}</span>`;
 
         // Create popup element
         const popup = document.createElement('div');
@@ -289,13 +369,12 @@ const Glossary = {
         popup.dataset.glossaryKey = termKey || '';
         popup.innerHTML = `
             <div class="glossary-popup-header">
-                <span class="glossary-popup-type">${typeLabel}</span>
-                <span class="glossary-popup-title">${termData.name}</span>
+                ${headerTypeHtml}
+                <span class="glossary-popup-title">${title}</span>
                 <button class="glossary-popup-close" title="Close">&times;</button>
             </div>
             <div class="glossary-popup-content">
-                ${processedDescription}
-                ${sourceRefHtml}
+                ${sections}
             </div>
         `;
 

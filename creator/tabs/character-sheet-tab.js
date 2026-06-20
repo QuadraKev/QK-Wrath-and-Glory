@@ -1,6 +1,12 @@
 // Character Sheet Tab - Renders a comprehensive character summary
 
 const CharacterSheetTab = {
+    // Table-of-contents floating button + panel (created once in init)
+    _tocFab: null,
+    _tocPanel: null,
+    _tocEscHandler: null,
+    _tocDismissHandler: null,
+
     // Initialize the tab
     init() {
         // Print button
@@ -12,6 +18,11 @@ const CharacterSheetTab = {
         document.getElementById('btn-copy-summary').addEventListener('click', (e) => {
             this.copySummary(e.target);
         });
+
+        // Build the table-of-contents FAB + panel once, and keep its
+        // visibility tied to whether the Character Sheet tab is active.
+        this._ensureTocElements();
+        this._observeTabVisibility();
     },
 
     // Refresh the character sheet
@@ -78,6 +89,156 @@ const CharacterSheetTab = {
 
         // Bind session tracking controls
         this.bindSessionTrackingControls(container);
+
+        // Give each section a stable id and rebuild the jump-to-section list
+        this._assignSectionIds(container);
+        this._buildTocList();
+    },
+
+    // ===== Table of Contents (jump-to-section) =====
+
+    // Create the floating button + panel once and append them to #app
+    _ensureTocElements() {
+        if (this._tocFab) return;
+
+        const app = document.getElementById('app');
+        if (!app) return;
+
+        const fab = document.createElement('button');
+        fab.className = 'sheet-toc-fab';
+        fab.setAttribute('aria-label', 'Jump to section');
+        fab.setAttribute('title', 'Jump to section');
+        fab.innerHTML = '&#9776;';
+
+        const panel = document.createElement('div');
+        panel.className = 'sheet-toc-panel hidden';
+        panel.innerHTML = `
+            <div class="sheet-toc-header">Jump to Section</div>
+            <ul class="sheet-toc-list"></ul>
+        `;
+
+        // Toggle the panel when the button is clicked
+        fab.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this._toggleTocPanel();
+        });
+
+        // Jumping to a section hides the panel (event delegation)
+        panel.querySelector('.sheet-toc-list').addEventListener('click', (e) => {
+            const item = e.target.closest('.sheet-toc-item');
+            if (!item) return;
+            const target = document.getElementById(item.dataset.sectionId);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            this._closeTocPanel();
+        });
+
+        app.appendChild(fab);
+        app.appendChild(panel);
+        this._tocFab = fab;
+        this._tocPanel = panel;
+    },
+
+    // Show/hide the FAB based on whether the Character Sheet tab is active
+    _observeTabVisibility() {
+        const tab = document.getElementById('tab-character-sheet');
+        if (!tab) return;
+
+        const sync = () => {
+            const active = tab.classList.contains('active');
+            if (this._tocFab) this._tocFab.classList.toggle('hidden', !active);
+            // Never leave the panel open when the tab is hidden
+            if (!active) this._closeTocPanel();
+        };
+
+        new MutationObserver(sync).observe(tab, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+        sync();
+    },
+
+    // Slugify a section title for use as a stable element id
+    _slugifySection(text) {
+        return 'sheet-section-' + text
+            .toLowerCase()
+            .replace(/&/g, ' and ')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+    },
+
+    // Assign an id to each rendered section based on its title
+    _assignSectionIds(container) {
+        const used = new Set();
+        container.querySelectorAll('.sheet-section').forEach(section => {
+            const titleEl = section.querySelector('.sheet-section-title');
+            if (!titleEl) return; // header block has no h2
+            let id = this._slugifySection(titleEl.textContent);
+            // Guard against duplicate slugs
+            let unique = id;
+            let n = 2;
+            while (used.has(unique)) unique = `${id}-${n++}`;
+            used.add(unique);
+            section.id = unique;
+        });
+    },
+
+    // Rebuild the TOC list from the currently rendered sections
+    _buildTocList() {
+        if (!this._tocPanel) return;
+        const container = document.getElementById('character-sheet-content');
+        if (!container) return;
+
+        const list = this._tocPanel.querySelector('.sheet-toc-list');
+        const items = [];
+        container.querySelectorAll('.sheet-section').forEach(section => {
+            const titleEl = section.querySelector('.sheet-section-title');
+            if (!titleEl || !section.id) return;
+            items.push(`<li class="sheet-toc-item" data-section-id="${section.id}">${this.escapeHtml(titleEl.textContent)}</li>`);
+        });
+        list.innerHTML = items.join('');
+    },
+
+    _toggleTocPanel() {
+        if (!this._tocPanel) return;
+        if (this._tocPanel.classList.contains('hidden')) {
+            this._openTocPanel();
+        } else {
+            this._closeTocPanel();
+        }
+    },
+
+    _openTocPanel() {
+        if (!this._tocPanel) return;
+        this._buildTocList();
+        this._tocPanel.classList.remove('hidden');
+
+        // Dismiss on outside click
+        this._tocDismissHandler = (e) => {
+            if (!this._tocPanel.contains(e.target) && e.target !== this._tocFab) {
+                this._closeTocPanel();
+            }
+        };
+        setTimeout(() => document.addEventListener('click', this._tocDismissHandler), 0);
+
+        // Dismiss on Escape
+        this._tocEscHandler = (e) => {
+            if (e.key === 'Escape') this._closeTocPanel();
+        };
+        document.addEventListener('keydown', this._tocEscHandler);
+    },
+
+    _closeTocPanel() {
+        if (this._tocPanel) this._tocPanel.classList.add('hidden');
+        if (this._tocDismissHandler) {
+            document.removeEventListener('click', this._tocDismissHandler);
+            this._tocDismissHandler = null;
+        }
+        if (this._tocEscHandler) {
+            document.removeEventListener('keydown', this._tocEscHandler);
+            this._tocEscHandler = null;
+        }
     },
 
     // Bind event handlers for session tracking (boxes and +/- buttons)

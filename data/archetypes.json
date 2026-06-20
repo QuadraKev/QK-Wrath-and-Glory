@@ -3030,7 +3030,7 @@
     ],
     "startingWargear": [
       "heavy_aspect_armour",
-      "forceshield",
+      "force_shield_aeldari",
       "back_banner",
       "war_mask",
       "spirit_stone"
@@ -3987,7 +3987,7 @@
     ],
     "startingWargear": [
       "corsair_armour",
-      "mist_shield",
+      "mistshield",
       "shuriken_pistol",
       "master_crafted_void_sabre",
       "plasma_grenades",

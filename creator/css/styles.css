@@ -3946,10 +3946,6 @@ textarea {
 }
 
 /* ===== Glossary Tab ===== */
-#tab-glossary {
-    padding: 20px;
-}
-
 #tab-glossary h2,
 #tab-references h2 {
     margin-bottom: 20px;
@@ -5548,4 +5544,119 @@ textarea {
     font-size: 12px;
     font-weight: 600;
     color: var(--accent-green);
+}
+
+/* ===== Glossary popup: stacked same-name definitions (issue #5) ===== */
+.glossary-popup-content .glossary-popup-subheader {
+    margin: 0 0 6px;
+}
+
+.glossary-popup-content hr {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 14px 0;
+}
+
+/* ===== Character Sheet Table of Contents (jump-to-section) (issue #6) ===== */
+.sheet-toc-fab {
+    position: fixed;
+    bottom: calc(var(--footer-height) + 25px);
+    right: 20px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    box-shadow: var(--shadow-lg);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 1500;
+    transition: all 0.2s;
+}
+
+.sheet-toc-fab:hover {
+    background: var(--bg-hover);
+    border-color: var(--accent-gold);
+}
+
+.sheet-toc-fab.hidden {
+    display: none;
+}
+
+.sheet-toc-panel {
+    position: fixed;
+    bottom: calc(var(--footer-height) + 80px);
+    right: 20px;
+    width: 240px;
+    max-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-secondary);
+    border: 1px solid var(--accent-gold);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    z-index: 1500;
+    overflow: hidden;
+    animation: glossary-fade-in 0.15s ease-out;
+}
+
+.sheet-toc-panel.hidden {
+    display: none;
+}
+
+.sheet-toc-header {
+    flex-shrink: 0;
+    padding: 10px 12px;
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-color);
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+}
+
+.sheet-toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 4px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.sheet-toc-item {
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.sheet-toc-item:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+/* Mobile: keep clear of the footer, widen the tap targets a touch */
+@media (max-width: 768px) {
+    .sheet-toc-panel {
+        width: calc(100vw - 40px);
+        max-width: 280px;
+    }
+    .sheet-toc-item {
+        padding: 10px 12px;
+    }
+}
+
+@media print {
+    .sheet-toc-fab,
+    .sheet-toc-panel {
+        display: none !important;
+    }
 }

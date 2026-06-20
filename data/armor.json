@@ -888,48 +888,6 @@
     "page": 93
   },
   {
-    "id": "forceshield",
-    "name": "Forceshield",
-    "type": "shield",
-    "description": "An Aeldari shield that projects a barrier of pure psychic energy. The Forceshield can deflect both physical and warp-based attacks through the will of its bearer.",
-    "ar": 2,
-    "traits": [
-      "Power Field",
-      "Shield"
-    ],
-    "value": 7,
-    "rarity": "Very Rare",
-    "keywords": [
-      "AELDARI",
-      "ASURYANI",
-      "POWER FIELD"
-    ],
-    "invulnerable": true,
-    "source": "aeldari",
-    "page": 92
-  },
-  {
-    "id": "mist_shield",
-    "name": "Mist Shield",
-    "type": "shield",
-    "description": "Used by Corsair warriors, the Mist Shield projects a swirling barrier of distortion that makes incoming attacks difficult to aim. The shield flickers with ethereal light.",
-    "ar": 2,
-    "traits": [
-      "Power Field",
-      "Shield"
-    ],
-    "value": 7,
-    "rarity": "Very Rare",
-    "keywords": [
-      "AELDARI",
-      "ANHRATHE",
-      "POWER FIELD"
-    ],
-    "invulnerable": true,
-    "source": "aeldari",
-    "page": 92
-  },
-  {
     "id": "aeronautica_flight_suit_aoa",
     "name": "Aeronautica Flight Suit (Abundance of Apocrypha)",
     "type": "light",

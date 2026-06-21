@@ -734,7 +734,13 @@ const ReferencesTab = {
             html += `<div class="ref-stat"><span class="ref-label">Skill Bonuses:</span> ${parts.join(', ')}</div>`;
         }
         if (entry.startingWargear && entry.startingWargear.length > 0) {
-            const names = entry.startingWargear.map(id => id.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()));
+            // Wargear entries may be a plain id string or a { id, qty } object.
+            const names = entry.startingWargear.map(w => {
+                const id = (w && typeof w === 'object') ? w.id : w;
+                const qty = (w && typeof w === 'object') ? w.qty : null;
+                const name = String(id).replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                return (qty && qty > 1) ? `${name} (×${qty})` : name;
+            });
             html += `<div class="ref-stat"><span class="ref-label">Starting Wargear:</span> ${names.join(', ')}</div>`;
         }
         html += '</div>';

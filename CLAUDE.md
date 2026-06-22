@@ -16,7 +16,15 @@ single dataset and deployed as two sites from one GitHub Pages repo.
 Vanilla JS, global-object module pattern (`const ThreatsTab = {…}`), no bundler/build step.
 Each app loads data through `window.api.loadGameData(filename)` in `js/web-api.js`, which
 fetches from the shared dataset: `fetch('../data/' + filename …)`. Serve the repo ROOT with
-any static server and open `/creator/` or `/bestiary/`.
+any static server and open `/creator/` or `/bestiary/` — use port **8137** (the localhost
+origin allow-listed by the feedback Worker's CORS + Turnstile).
+
+`creator/` and `bestiary/` keep parallel copies of `tabs/references-tab.js` and
+`tabs/glossary-tab.js` (plus the shared popup engine `js/glossary.js`); a fix/feature usually
+applies to BOTH apps, and the bestiary copies have intentional divergences (extra
+double-processing guards, hover/pin popups, native `DataLoader.loadGlossary`). Those two tabs
+render as **Rules Reference** and **Compendium**, but their internal keys, ids, and URL hashes
+are still `glossary` / `references`.
 
 ## Single data source (the reason this repo exists)
 
@@ -39,7 +47,11 @@ text. Data text should be verbatim sourcebook text where the book has it.
 
 `creator/js/web-api.js` appends `?v=N` to data fetches; `bestiary/js/web-api.js` does not.
 For CSS/JS, bump the `?v=N` on ALL `<script>`/`<link>` tags in that app's `index.html`
-together. After a data edit, bump creator's data `?v=` so clients refetch.
+together. After a data edit, bump creator's data `?v=` so clients refetch. Editing a `shared/`
+file (e.g. `feedback.js`/`feedback.css`) means bumping `?v=` in BOTH `creator/index.html` and
+`bestiary/index.html` (each references it with its own `?v=`). When browser-testing a CSS/JS
+edit, bump `?v=` or hard-reload — a `?cb=` on the page URL only busts `index.html`, not the
+`?v=`-keyed sub-scripts, which stay cached.
 
 ## Deploy
 
@@ -51,7 +63,10 @@ GitHub Actions (`.github/workflows/deploy.yml`) deploys the whole repo to Pages 
 In-app "Report Feedback" (`shared/feedback.js`, button in each header) POSTs to a Cloudflare
 Worker (`feedback-worker/`) that verifies Cloudflare Turnstile, then opens a GitHub Issue here.
 The GitHub token + Turnstile secret live ONLY as Cloudflare Worker secrets — never in the repo.
-Setup / rotation: `feedback-worker/README.md`.
+An optional screenshot is downscaled to WebP in-browser, uploaded by the Worker to a Cloudflare
+R2 bucket (binding `FEEDBACK_BUCKET`, public base var `R2_PUBLIC_BASE`), and embedded in the
+issue by URL — GitHub's API can't accept file attachments. Setup / rotation:
+`feedback-worker/README.md`.
 
 ## Commits / auth
 

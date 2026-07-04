@@ -42,6 +42,15 @@ const SettingsTab = {
                 this._applyToState();
             });
         });
+
+        // House rule: ignore prerequisites toggle
+        const prereqBtn = document.getElementById('ignore-prereqs-btn');
+        if (prereqBtn) {
+            prereqBtn.addEventListener('click', () => {
+                State.setIgnorePrerequisites(!State.ignorePrerequisites);
+                this._updateButtonStates();
+            });
+        }
     },
 
     _toggleAll() {
@@ -90,6 +99,9 @@ const SettingsTab = {
                 btn.classList.toggle('active', State.isSourceEnabled(source));
             }
         });
+
+        const prereqBtn = document.getElementById('ignore-prereqs-btn');
+        if (prereqBtn) prereqBtn.classList.toggle('active', State.ignorePrerequisites);
     },
 
     refresh() {

@@ -10,6 +10,9 @@ const State = {
     // Enabled source books
     enabledSources: ['core', 'fspg', 'redacted1', 'redacted2', 'church', 'voa', 'aeldari', 'apocrypha', 'dh', 'shotguns'],
 
+    // House rule: ignore prerequisites/requirements when selecting content
+    ignorePrerequisites: false,
+
     // Event listeners for state changes
     listeners: [],
 
@@ -1278,6 +1281,12 @@ const State = {
         return this.enabledSources.includes(source);
     },
 
+    // Set the ignore-prerequisites house rule
+    setIgnorePrerequisites(enabled) {
+        this.ignorePrerequisites = !!enabled;
+        this.notifyListeners('houseRules');
+    },
+
     // Register a listener for state changes
     addListener(callback) {
         this.listeners.push(callback);
@@ -1320,6 +1329,7 @@ const State = {
             const data = {
                 character: this.character,
                 enabledSources: this.enabledSources,
+                ignorePrerequisites: this.ignorePrerequisites,
                 timestamp: Date.now()
             };
             localStorage.setItem(this._AUTO_SAVE_KEY, JSON.stringify(data));

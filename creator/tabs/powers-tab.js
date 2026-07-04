@@ -42,7 +42,7 @@ const PowersTab = {
         const character = State.getCharacter();
 
         // Check if character is a psyker
-        if (!State.isPsyker()) {
+        if (!State.isPsyker() && !State.ignorePrerequisites) {
             document.getElementById('section-powers').innerHTML = `
                 <h2>Manage Powers</h2>
                 <div class="info-box" style="padding: 20px; background: var(--bg-card); border-radius: var(--radius-md); text-align: center;">

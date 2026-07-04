@@ -3,6 +3,10 @@
 const PrerequisiteChecker = {
     // Check if a character meets all prerequisites for a talent
     checkTalentPrerequisites(talent, character) {
+        // House rule: ignore prerequisites
+        if (State.ignorePrerequisites) {
+            return { met: true, reasons: [] };
+        }
         if (!talent.prerequisites) {
             return { met: true, reasons: [] };
         }
@@ -106,6 +110,10 @@ const PrerequisiteChecker = {
 
     // Check if a character meets prerequisites for a psychic power
     checkPowerPrerequisites(power, character) {
+        // House rule: ignore prerequisites
+        if (State.ignorePrerequisites) {
+            return { met: true, reasons: [] };
+        }
         // First check if character has PSYKER keyword
         const keywords = this.getCharacterKeywords(character);
         if (!keywords.includes('PSYKER')) {

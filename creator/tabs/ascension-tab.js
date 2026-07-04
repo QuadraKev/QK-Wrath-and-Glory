@@ -103,7 +103,7 @@ const AscensionTab = {
 
             // Hide packages with fundamentally incompatible species/keyword prerequisites
             const prereqs = pkg.prerequisites;
-            if (prereqs) {
+            if (prereqs && !State.ignorePrerequisites) {
                 // Species prerequisite — character can never change species
                 if (prereqs.species && prereqs.species.length > 0) {
                     if (!charSpeciesName || !prereqs.species.some(s => s.toLowerCase() === charSpeciesName)) continue;
@@ -299,7 +299,7 @@ const AscensionTab = {
         let html = '<div class="ascension-options">';
         html += '<p class="ascension-note">Archetype Ascension: You gain the archetype\'s abilities, wargear options, and influence modifier, but NOT attribute or skill bonuses. Requires Rank 3+. No XP cost.</p>';
 
-        const rankMet = (character.rank || 1) >= 3;
+        const rankMet = (character.rank || 1) >= 3 || State.ignorePrerequisites;
         if (!rankMet) {
             html += '<p class="ascension-prereqs unmet">Requires Rank 3 or higher</p>';
         }
@@ -450,7 +450,7 @@ const AscensionTab = {
         }
 
         return {
-            met: allMet,
+            met: allMet || State.ignorePrerequisites,
             text: parts.length > 0 ? `Prerequisites: ${parts.join(', ')}` : ''
         };
     },
@@ -484,7 +484,7 @@ const AscensionTab = {
         }
 
         return {
-            met: allMet,
+            met: allMet || State.ignorePrerequisites,
             text: parts.length > 0 ? `Stat Prerequisites: ${parts.join(', ')}` : ''
         };
     },

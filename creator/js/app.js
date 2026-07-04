@@ -455,6 +455,9 @@ const App = {
         if (saved.enabledSources) {
             State.setEnabledSources(saved.enabledSources);
         }
+        if (saved.ignorePrerequisites) {
+            State.setIgnorePrerequisites(true);
+        }
         if (saved.character) {
             State.loadCharacter(saved.character);
         }

@@ -219,6 +219,8 @@ const ArchetypeTab = {
                 ${(archetype.keywords || []).map(k => `<span class="keyword">${k}</span>`).join('')}
             </div>
 
+            ${this.renderKeywordChoices(archetype, character)}
+
             ${archetype.abilities && archetype.abilities.length > 0 ? `
                 <div class="detail-section">
                     ${archetype.abilities.map(a => `
@@ -249,12 +251,91 @@ const ArchetypeTab = {
             this.renderList();
         });
 
+        this.bindKeywordChoiceEvents(detail);
+
         // Enhance ability descriptions with glossary terms
         detail.querySelectorAll('.ability-desc').forEach(el => {
             Glossary.enhanceElement(el);
         });
 
         detail.classList.remove('hidden');
+    },
+
+    // Map a bracket placeholder like "[FORGE WORLD]" to a keyword-category key
+    placeholderToCategoryKey(placeholder) {
+        return placeholder.replace(/[\[\]]/g, '').toLowerCase().replace(/ /g, '_');
+    },
+
+    // Sub-faction keyword pickers for the archetype's bracket keywords (e.g. [FORGE WORLD] -> Mars).
+    // Skipped when the current species' sub-options already handle the pick (e.g. [CHAPTER]).
+    renderKeywordChoices(archetype, character) {
+        const bracketKeywords = (archetype.keywords || []).filter(k => /^\[.+\]$/.test(k));
+        if (bracketKeywords.length === 0) return '';
+
+        const species = DataLoader.getSpecies(character.species?.id);
+        const subOptionTypes = species?.subOptions
+            ? (Array.isArray(species.subOptions) ? species.subOptions : [species.subOptions]).map(c => c.type)
+            : [];
+
+        const choices = character.archetypeKeywordChoices || {};
+        let html = '';
+        for (const placeholder of bracketKeywords) {
+            const key = this.placeholderToCategoryKey(placeholder);
+            if (subOptionTypes.includes(key)) continue;
+            const category = DataLoader.getKeywordCategory(key);
+            if (!category) continue;
+
+            const currentValue = choices[placeholder] || '';
+            html += `<div class="archetype-keyword-choice" data-placeholder="${placeholder}">`;
+            html += `<div class="ascension-choice-label">${category.label} (${placeholder}):</div>`;
+
+            if (category.options.length > 0) {
+                const isCustom = currentValue && !category.options.some(o => o.value === currentValue);
+                html += `<select class="keyword-choice-select">`;
+                html += `<option value="">-- Select --</option>`;
+                for (const opt of category.options) {
+                    html += `<option value="${opt.value}"${currentValue === opt.value ? ' selected' : ''}>${opt.label}</option>`;
+                }
+                if (category.allowCustom) {
+                    html += `<option value="__custom__"${isCustom ? ' selected' : ''}>${category.customLabel || 'Other'}...</option>`;
+                }
+                html += `</select>`;
+                if (category.allowCustom) {
+                    html += `<input type="text" class="keyword-choice-custom" placeholder="Enter keyword" value="${isCustom ? currentValue : ''}" style="display: ${isCustom ? 'block' : 'none'}; margin-top: 8px;">`;
+                }
+                html += KeywordBonus.renderPanel(currentValue);
+            } else {
+                html += `<input type="text" class="keyword-choice-text" placeholder="Enter keyword (e.g., IMPERIUM)" value="${currentValue}">`;
+            }
+
+            html += `</div>`;
+        }
+
+        return html ? `<div class="detail-section"><div class="detail-section-title">Sub-faction Keywords</div>${html}</div>` : '';
+    },
+
+    bindKeywordChoiceEvents(detail) {
+        detail.querySelectorAll('.archetype-keyword-choice .keyword-choice-select').forEach(select => {
+            select.addEventListener('change', (e) => {
+                const div = e.target.closest('.archetype-keyword-choice');
+                const placeholder = div.dataset.placeholder;
+                if (e.target.value === '__custom__') {
+                    State.setArchetypeKeywordChoice(placeholder, '');
+                    const custom = div.querySelector('.keyword-choice-custom');
+                    if (custom) custom.style.display = 'block';
+                } else {
+                    State.setArchetypeKeywordChoice(placeholder, e.target.value);
+                    this.renderDetail();
+                }
+            });
+        });
+
+        detail.querySelectorAll('.archetype-keyword-choice .keyword-choice-custom, .archetype-keyword-choice .keyword-choice-text').forEach(input => {
+            input.addEventListener('input', (e) => {
+                const div = e.target.closest('.archetype-keyword-choice');
+                State.setArchetypeKeywordChoice(div.dataset.placeholder, e.target.value.toUpperCase());
+            });
+        });
     },
 
     // Render the custom archetype configuration view

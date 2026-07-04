@@ -309,6 +309,13 @@ const State = {
         return currentMutations.length < this.getKrootMutationCount();
     },
 
+    // Set a sub-faction keyword choice for an archetype bracket keyword (e.g. "[FORGE WORLD]" -> "MARS")
+    setArchetypeKeywordChoice(placeholder, value) {
+        if (!this.character.archetypeKeywordChoices) this.character.archetypeKeywordChoices = {};
+        this.character.archetypeKeywordChoices[placeholder] = value;
+        this.notifyListeners('archetypeKeywords');
+    },
+
     // Set archetype
     setArchetype(archetypeId) {
         const archetype = DataLoader.getArchetype(archetypeId);
@@ -317,6 +324,9 @@ const State = {
                 id: archetypeId,
                 xpCost: archetype.cost || 0
             };
+
+            // Reset sub-faction keyword picks from any previous archetype
+            this.character.archetypeKeywordChoices = {};
 
             // Apply archetype attribute bonuses
             if (archetype.attributeBonus) {

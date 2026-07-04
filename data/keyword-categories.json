@@ -36,7 +36,11 @@
       { "value": "SALAMANDERS", "label": "Salamanders", "bonus": "Promethean Cult + Infernal Inheritance" },
       { "value": "SPACE WOLVES", "label": "Space Wolves", "bonus": "Hunters Unleashed + Savage Within" },
       { "value": "ULTRAMARINES", "label": "Ultramarines", "bonus": "Tactical Versatility + Pride of Ultramar" },
-      { "value": "WHITE SCARS", "label": "White Scars", "bonus": "Lightning Assault + Ritual Scarring" }
+      { "value": "WHITE SCARS", "label": "White Scars", "bonus": "Lightning Assault + Ritual Scarring" },
+      { "value": "BLACK TEMPLARS", "label": "Black Templars", "apocryphaBonus": {"name": null, "effect": "Righteous Zeal: When you charge, you may re-roll up to Rank dice on your Weapon Skill test. In addition, you may re-roll Rank dice when you roll Determination.\nGene-Seed Flaw: You are missing implant 12: Sus-an Membrane, and implant 17: Betcher's Gland.\nCharacters with the BLACK TEMPLARS keyword may not, under any circumstances, take the PSYKER keyword: The Black Templars accept no psykers within their ranks.", "page": 27} },
+      { "value": "CRIMSON FISTS", "label": "Crimson Fists", "apocryphaBonus": {"name": null, "effect": "No Matter the Odds: When making an attack while you and your allies are outnumbered at least two-to-one, you may add Rank dice to your Ballistic Skill or Weapon Skill test.\nGene-Seed Flaw: You are missing implant 12: Sus-an Membrane, and implant 17: Betcher's Gland.", "page": 27} },
+      { "value": "FLESH TEARERS", "label": "Flesh Tearers", "apocryphaBonus": {"name": null, "effect": "Fury Within: You may re-roll Double Rank dice once per melee attack Test. In addition, if you shift one or more Icons on a melee attack, improve the AP of your attack by 1 (i.e., from -1 to -2).\nThe Red Thirst: Whenever you are in melee combat and see blood, you must make a DN 4 Willpower Test. If you fail, you are Frenzied.", "page": 28} },
+      { "value": "GREY KNIGHTS", "label": "Grey Knights", "apocryphaBonus": {"name": null, "effect": "Daemonbane: When attacking a creature with the DAEMON keyword in melee combat, you add +Rank ED to the attack's damage. You also add +Rank to your Conviction.\nSecretive: You suffer a +2DN penalty for Interaction tests involving anyone who lacks the Grey Knights or Inquisition keywords.\nDue to their unique geneseed and secretive nature, the Grey Knights do not yet count any Primaris Marines amongst their number. As such, Primaris Astartes characters cannot select this CHAPTER.", "page": 28} }
     ],
     "allowCustom": true,
     "customLabel": "Other Chapter"
@@ -67,8 +71,25 @@
   "order": {
     "label": "Order",
     "options": [
-      { "value": "ORDER OF OUR MARTYRED LADY", "label": "Order of Our Martyred Lady" },
-      { "value": "ORDER OF THE SANCTIFIED SHIELD", "label": "Order of the Sanctified Shield" }
+      { "value": "ORDER OF OUR MARTYRED LADY", "label": "Order of Our Martyred Lady", "apocryphaBonus": {"name": "The Blood of Martyrs", "effect": "You regain all spent Faith points when you start Dying. You regain 1 Faith point whenever an ally is slain or starts Dying.", "page": 34} },
+      { "value": "ORDER OF THE SANCTIFIED SHIELD", "label": "Order of the Sanctified Shield" },
+      { "value": "ORDER OF THE ARGENT SHROUD", "label": "Order of the Argent Shroud", "apocryphaBonus": {"name": "Deeds, Not Words", "effect": "When you make an attack, you may re-roll up to Rank dice on that attack.", "page": 34} },
+      { "value": "ORDER OF THE BLOODY ROSE", "label": "Order of the Bloody Rose", "apocryphaBonus": {"name": "Quick to Anger", "effect": "Add +Rank bonus dice to your melee attacks when you Charge.", "page": 34} },
+      { "value": "ORDER OF THE EBON CHALICE", "label": "Order of the Ebon Chalice", "apocryphaBonus": {"name": "Daughter of the Emperor", "effect": "When you roll Determination, you may spend 1 Faith. If you do so, negate all damage the attack would cause, including Mortal Wounds, but do not suffer any Shock.", "page": 34} },
+      { "value": "ORDER OF THE SACRED ROSE", "label": "Order of the Sacred Rose", "apocryphaBonus": {"name": "Devout Serenity", "effect": "You increase your Resolve by +Rank. Further, if you ever roll a 6 on your Wrath die when making a Resolve test, you gain 1 Faith.", "page": 34} },
+      { "value": "ORDER OF THE VALOROUS HEART", "label": "Order of the Valorous Heart", "apocryphaBonus": {"name": "Stoic Endurance", "effect": "You add +Rank bonus dice to Determination rolls.", "page": 34} },
+      { "value": "ORDER OF THE HOLY WORD", "label": "Order of the Holy Word", "apocryphaBonus": {"name": "Voice of the Church", "effect": "You gain +Rank bonus dice on all Persuasion tests.", "page": 35} },
+      { "value": "ORDER OF THE QUILL", "label": "Order of the Quill", "apocryphaBonus": {"name": "Pious Scrutiny", "effect": "Your Passive Awareness is increased by +Rank.", "page": 35} },
+      { "value": "ORDER OF THE SACRED OATH", "label": "Order of the Sacred Oath", "apocryphaBonus": {"name": "Voice of Judgement", "effect": "When you attempt a Persuasion interaction attack, you may spend 1 Faith Point to target +Rank enemies.", "page": 35} },
+      { "value": "ORDER OF THE LEXICON", "label": "Order of the Lexicon", "apocryphaBonus": {"name": "Unquestioned Faith", "effect": "You increase your Conviction by +Rank.", "page": 35} },
+      { "value": "ORDER OF THE KEY", "label": "Order of the Key", "apocryphaBonus": {"name": "Key to Power", "effect": "You increase your Influence by +1.", "page": 35} },
+      { "value": "ORDER OF THE GATE", "label": "Order of the Gate", "apocryphaBonus": {"name": "Watchful Counselor", "effect": "When you attempt an Awareness, Insight, Leadership, Scholar, or Persuasion test, each point of Glory you spend adds +2 dice.", "page": 35} },
+      { "value": "ORDER OF THE HOLY SEAL", "label": "Order of the Holy Seal", "apocryphaBonus": {"name": "Inescapable Scrutiny", "effect": "When you succeed at an Insight test, you may spend 1 Faith point to discern some inner truth or secret shame of the target. Ask the GM one question about the target.", "page": 35} },
+      { "value": "ORDER OF THE SACRED COIN", "label": "Order of the Sacred Coin", "apocryphaBonus": {"name": "Faith and Coin", "effect": "When you attempt an Influence test to requisition items, you may spend 2 Glory to gain the effects of 1 Wealth.", "page": 35} },
+      { "value": "ORDER OF THE ETERNAL CANDLE", "label": "Order of the Eternal Candle", "apocryphaBonus": {"name": "Healing Light", "effect": "When you succeed at a Medicae test to heal wounds or stabilise a dying character, or when you heal Wounds during a Regroup, you may spend 1 Faith to heal an additional +Double Rank Wounds.", "page": 36} },
+      { "value": "ORDER OF SERENITY", "label": "Order of Serenity", "apocryphaBonus": {"name": "Serene Endurance", "effect": "When you succeed at a Medicae test to recover a patient's Shock, recover +Rank shock. Your own Maximum Shock is increased by +Rank.", "page": 36} },
+      { "value": "ORDER OF THE CLEANSING WATER", "label": "Order of the Cleansing Water", "apocryphaBonus": {"name": "Indomitable Purity", "effect": "Allies with the IMPERIUM keyword within 6m of you reduce the rating of any Poisoned condition, or the DN of any test to resist disease, by 1+ double your Rank. If this would reduce the rating or DN to 0, then the poison or disease has no effect.", "page": 36} },
+      { "value": "ORDER OF THE TORCH", "label": "Order of the Torch", "apocryphaBonus": {"name": "Purifying Flame", "effect": "When you attempt a Medicae test to remove a condition, you gain +Rank bonus dice on the test.", "page": 36} }
     ],
     "allowCustom": true,
     "customLabel": "Other Order"
@@ -76,11 +97,13 @@
   "craftworld": {
     "label": "Craftworld",
     "options": [
-      { "value": "ALAITOC", "label": "Alaitoc" },
-      { "value": "BIEL-TAN", "label": "Biel-Tan" },
-      { "value": "IYANDEN", "label": "Iyanden" },
+      { "value": "ALAITOC", "label": "Alaitoc", "apocryphaBonus": {"name": "Puritanical Discipline", "effect": "Your Conviction is increased by +Rank.", "page": 38} },
+      { "value": "BIEL-TAN", "label": "Biel-Tan", "apocryphaBonus": {"name": "Prowess of the Bladewind", "effect": "Select either ranged attacks or melee attacks. You may re-roll up to Rank dice on the chosen type of attack.", "page": 38} },
+      { "value": "IYANDEN", "label": "Iyanden", "apocryphaBonus": {"name": "Stoic and Tenacious", "effect": "Your Resolve is increased by +Rank.", "page": 38} },
       { "value": "UL-KHARI", "label": "Ul-Khari" },
-      { "value": "ULTHWE", "label": "Ulthwe" }
+      { "value": "ULTHWE", "label": "Ulthwe", "apocryphaBonus": {"name": "Foresight of the Damned", "effect": "You increase your Passive Perception by +Rank.", "page": 38} },
+      { "value": "ALTANSAR", "label": "Altansar", "apocryphaBonus": {"name": "Grim Survivors", "effect": "Your Determination is increased by +Rank.", "page": 38} },
+      { "value": "SAIM-HANN", "label": "Saim-Hann", "apocryphaBonus": {"name": "Fury of the Wild Hunt", "effect": "You increase your Speed by +Rank when you Sprint or Charge, or when mounted on an AELDARI vehicle with the Hover trait.", "page": 38} }
     ],
     "allowCustom": true,
     "customLabel": "Other Craftworld"
@@ -99,9 +122,13 @@
     "label": "Forge World",
     "options": [
       { "value": "AVACHRUS", "label": "Avachrus" },
-      { "value": "MARS", "label": "Mars" },
-      { "value": "RYZA", "label": "Ryza" },
-      { "value": "METALICA", "label": "Metalica" }
+      { "value": "MARS", "label": "Mars", "apocryphaBonus": {"name": "Glory to the Omnissiah", "effect": "You may shift up to two dice to Glory on a single Test, rather than one.", "page": 37} },
+      { "value": "RYZA", "label": "Ryza", "apocryphaBonus": {"name": "Red in Cog and Claw", "effect": "You may re-roll up to Rank dice when making a melee attack.", "page": 37} },
+      { "value": "METALICA", "label": "Metalica", "apocryphaBonus": {"name": "Relentless March", "effect": "When you Sprint, you may fire a ranged weapon as if it had the Assault trait. You may not fire a Heavy weapon in this way.", "page": 37} },
+      { "value": "AGRIPINAA", "label": "Agripinaa", "apocryphaBonus": {"name": "Staunch Defenders", "effect": "When you are in cover and did not move during your turn, you add +Rank bonus dice to your ranged attacks.", "page": 37} },
+      { "value": "GRAIA", "label": "Graia", "apocryphaBonus": {"name": "Refusal to Yield", "effect": "When you make a Test while Dying, you heal 1 Wound for each Wrath Critical you roll. When you make a Test while under the effects of Fear, Terror or Pinning, a Wrath Critical causes you to recover from that condition immediately. However, you must spend a point of Glory to Fall Back.", "page": 37} },
+      { "value": "LUCIUS", "label": "Lucius", "apocryphaBonus": {"name": "The Solar Blessing", "effect": "When attacked by a weapon with only 1 ED, gain +1 Resilience.", "page": 37} },
+      { "value": "STYGIES VIII", "label": "Stygies VIII", "apocryphaBonus": {"name": "Shroud Protocols", "effect": "You add +Rank bonus dice to Stealth Tests and gain an additional +1 to Defence against ranged attacks from more than 12 metres away.", "page": 37} }
     ],
     "allowCustom": true,
     "customLabel": "Other Forge World"
@@ -109,12 +136,119 @@
   "legion": {
     "label": "Legion",
     "options": [
-      { "value": "BLACK LEGION", "label": "Black Legion" },
-      { "value": "DEATH GUARD", "label": "Death Guard" },
-      { "value": "WORD BEARERS", "label": "Word Bearers" }
+      { "value": "BLACK LEGION", "label": "Black Legion", "apocryphaBonus": {"name": null, "effect": "The Tip of the Spear: You may re-roll Rank dice on all Ballistic Skill tests made with a ranged weapon at close range. You may also re-roll Rank dice on Weapon Skill tests made when you Charge. You also gain +1 Resolve.\nBitter Pride: You suffer a +2DN penalty for Interaction tests involving anyone outside the Black Legion, unless those people are subordinate to the Black Legion character.", "page": 32} },
+      { "value": "DEATH GUARD", "label": "Death Guard", "apocryphaBonus": {"name": null, "effect": "Inexorable Advance: You suffer no penalty for operating a Heavy weapon without bracing it, and when you take a normal move, you may use your Simple Action to aim.\nIntractable: You must spend a point of Glory to take the Sprint action.\nCharacters with the DEATH GUARD keyword must take NURGLE as their [MARK OF CHAOS] keyword.", "page": 31} },
+      { "value": "WORD BEARERS", "label": "Word Bearers", "apocryphaBonus": {"name": null, "effect": "Profane Zeal: When you charge, you may re-roll up to Rank dice on your Weapon Skill test. In addition, you may re-roll Rank dice when you roll Determination. In addition, you are immune to fear caused by creatures with the DAEMON keyword.\nThe Will of the Gods: You start each session with 1 Wrath Point instead of 2.", "page": 32} },
+      { "value": "EMPEROR'S CHILDREN", "label": "Emperor's Children", "apocryphaBonus": {"name": null, "effect": "In Pursuit of Perfection: Select one of the following skills: Awareness, Ballistic Skill, Leadership, Pilot, Weapon Skill. You gain +Rank dice as a bonus to all uses of that skill.\nFear of Imperfection: Whenever you suffer a complication on the skill chosen for Pursuit of Perfection, above, the GM gains 1 Ruin, in addition to any other results.\nCharacters with the EMPEROR'S CHILDREN keyword must take SLAANESH as their [MARK OF CHAOS] keyword.", "page": 29} },
+      { "value": "IRON WARRIORS", "label": "Iron Warriors", "apocryphaBonus": {"name": null, "effect": "Siege Masters: You may reroll Double Rank dice whenever you attack a building, fortification, or an enemy in cover. You may also add +Rank dice whenever you make a test related to architectural engineering.\nScorn for the Weak: If one of your allies fails a Resolve test, you must pass a Willpower test (DN 3). On a failure, you feel a strong urge to punish that ally. If the failure involves a complication, the urge becomes a compulsion. The GM may alter the DN based on the severity or significance of the failure.", "page": 29} },
+      { "value": "NIGHT LORDS", "label": "Night Lords", "apocryphaBonus": {"name": null, "effect": "Ave Dominus Nox: While under cover of darkness, you may add +Rank to your Defence and Speed. As a free action at the start of combat, you may spend one Glory to cause Fear for the duration of the fight; enemies who see you must pass a Fear test (DN 2 + Double Rank).\nBlood of Nostramo: If you see an ally fail a Resolve or Fear test, you must attempt a Resolve test (DN 3) or become pinned.", "page": 30} },
+      { "value": "WORLD EATERS", "label": "World Eaters", "apocryphaBonus": {"name": null, "effect": "Incarnate Violence: You may reroll Double Rank dice on any melee attack test.\nButcher's Nails: Upon engaging in melee combat, you become Frenzied for the rest of the battle. The Willpower test to restrain your frenzy increases by +1 for every enemy you have killed during the battle.\nCharacters with the WORLD EATERS keyword must take KHORNE as their [MARK OF CHAOS] keyword.", "page": 30} },
+      { "value": "THOUSAND SONS", "label": "Thousand Sons", "apocryphaBonus": {"name": null, "effect": "The Rubric: You gain the Favoured by The Warp talent.\nGift of Mutation: You gain an additional +1 Corruption whenever you would gain one or more Corruption points. You also increase the DN of all tests to resist Corruption or Malignancy by +1.\nCharacters with the THOUSAND SONS keyword must take TZEENTCH as their [MARK OF CHAOS] keyword.", "page": 31} },
+      { "value": "ALPHA LEGION", "label": "Alpha Legion", "apocryphaBonus": {"name": null, "effect": "Mutable Tactics: After each Respite, select one of the following skills: Athletics, Cunning, Deception, Intimidation, Persuasion, Stealth, or Tech. You may re-roll up to Rank dice on any test involving the chosen skill.\nI Am Alpharius: Add 1 to Ruin when you fail an Intellect test, as your carefully wrought plans and contingencies fail you.", "page": 33} }
     ],
     "allowCustom": true,
     "customLabel": "Other Legion"
+  },
+  "shield_host": {
+    "label": "Shield Host",
+    "options": [
+      { "value": "EMPEROR'S CHOSEN", "label": "Emperor's Chosen", "apocryphaBonus": {"name": "Exemplar", "effect": "You increase your Influence, Resolve, and Conviction each by +1.", "page": 42} },
+      { "value": "SHADOWKEEPERS", "label": "Shadowkeepers", "apocryphaBonus": {"name": "Warden", "effect": "When an enemy engaged with you attempts to Fall Back, roll a number of d6 equal to Double Rank. For each Icon rolled, the enemy's Speed is reduced by 1.", "page": 42} },
+      { "value": "DREAD HOST", "label": "Dread Host", "apocryphaBonus": {"name": "Wrath of the Throne", "effect": "At the start of the first round of combat, or when you enter combat, enemies who can see you who lack the IMPERIUM keyword must pass a DN 2 +Rank Fear test.", "page": 42} },
+      { "value": "AQUILAN SHIELD", "label": "Aquilan Shield", "apocryphaBonus": {"name": "Guardian", "effect": "At the start of the first round of combat, or when you enter combat, you may select a single ally with the IMPERIUM keyword. While that ally is within 3 metres of you, they add +Rank to their Defence.", "page": 42} },
+      { "value": "SOLAR WATCH", "label": "Solar Watch", "apocryphaBonus": {"name": "Swift Onslaught", "effect": "When you Run, Sprint, or Charge, you increase your Speed by +1. Further, you may Fall Back as a Simple Action rather than a Combat Action.", "page": 42} },
+      { "value": "EMISSARIES IMPERATUS", "label": "Emissaries Imperatus", "apocryphaBonus": {"name": "Herald of the Throne", "effect": "Allies within 9m who possess the IMPERIUM keyword increase their Resolve and Conviction by +Rank.", "page": 42} }
+    ],
+    "allowCustom": true,
+    "customLabel": "Other Shield Host"
+  },
+  "saedath": {
+    "label": "Saedath",
+    "options": [
+      { "value": "THE DARK", "label": "The Dark", "apocryphaBonus": {"name": "Dark Deeds", "effect": "When the character makes a melee attack, improve the AP of that attack by 1.", "page": 46} },
+      { "value": "THE LIGHT", "label": "The Light", "apocryphaBonus": {"name": "Blaze of Light", "effect": "When the character is the target of a ranged attack and their attacker is 12 of more metres away, add +1 to the character's Defence.", "page": 47} },
+      { "value": "THE TWILIGHT", "label": "The Twilight", "apocryphaBonus": {"name": "Twilight Falls", "effect": "When the character uses the Charge action, they gain +1 bonus dice when making their attack.", "page": 47} }
+    ],
+    "allowCustom": true,
+    "customLabel": "Other Saedath"
+  },
+  "house": {
+    "label": "Navigator House",
+    "options": [
+      { "value": "NOMADIC", "label": "Nomadic", "apocryphaBonus": {"name": null, "effect": "They grant +Rank dice to Pilot tests and Conviction.", "page": 53} },
+      { "value": "MAGISTERIAL", "label": "Magisterial", "apocryphaBonus": {"name": null, "effect": "They add +Rank to their Influence and Wealth.", "page": 53} },
+      { "value": "SHROUDED", "label": "Shrouded", "apocryphaBonus": {"name": null, "effect": "They add +Rank to Cunning and Stealth tests.", "page": 53} },
+      { "value": "RENEGADE", "label": "Renegade", "apocryphaBonus": {"name": null, "effect": "They begin with 1d3x Tier Corruption but add +Rank to Psychic Mastery tests and Maximum Shock.", "page": 53} }
+    ],
+    "allowCustom": true,
+    "customLabel": "Other Navigator House"
+  },
+  "kabal": {
+    "label": "Kabal",
+    "options": [
+      { "value": "BLACK HEART", "label": "The Black Heart", "apocryphaBonus": {"name": null, "effect": "Increase the character's Resolve and Determination by +Rank.", "page": 58} },
+      { "value": "POISONED TONGUE", "label": "The Poisoned Tongue", "apocryphaBonus": {"name": null, "effect": "The character adds +Rank dice to Stealth tests and adds +Rank ED to any damage rolls with Fleshbane weapons.", "page": 58} },
+      { "value": "FLAYED SKULL", "label": "The Flayed Skull", "apocryphaBonus": {"name": null, "effect": "The character adds +Rank to all ranged attacks or melee attacks made when they are above their target.", "page": 58} },
+      { "value": "OBSIDIAN ROSE", "label": "The Obsidian Rose", "apocryphaBonus": {"name": null, "effect": "The short range of any ranged weapon the character possesses is increased by +Rank, the medium range is increased by +Double Rank, and the long range is increased by three times Rank. In addition, the character may re-roll up to Rank ED when determining damage with one of their own weapons.", "page": 58} }
+    ],
+    "allowCustom": true,
+    "customLabel": "Other Kabal"
+  },
+  "wych_cult": {
+    "label": "Wych Cult",
+    "options": [
+      { "value": "STRIFE", "label": "The Cult of Strife", "apocryphaBonus": {"name": null, "effect": "The character may Seize the Initiative without spending Glory. They may do this a number of times per scene equal to Rank.", "page": 59} },
+      { "value": "CURSED BLADE", "label": "The Cursed Blade", "apocryphaBonus": {"name": null, "effect": "When the character rolls Determination against damage inflicted in melee, each Exalted Icon rolled inflicts a single Mortal Wound upon the attacker.", "page": 59} },
+      { "value": "RED GRIEF", "label": "The Red Grief", "apocryphaBonus": {"name": null, "effect": "The character's Speed is increased by +Rank when they Advance or Charge.", "page": 59} }
+    ],
+    "allowCustom": true,
+    "customLabel": "Other Wych Cult"
+  },
+  "coven": {
+    "label": "Haemonculus Coven",
+    "options": [
+      { "value": "PROPHETS OF FLESH", "label": "The Prophets of Flesh", "apocryphaBonus": {"name": null, "effect": "The character adds +Rank to their Determination, and each Exalted Icon rolled when rolling Determination restores a single lost Wound after the attack is resolved.", "page": 59} },
+      { "value": "DARK CREED", "label": "The Dark Creed", "apocryphaBonus": {"name": null, "effect": "Enemies within 6m add +2 DN to all Resolve tests. In addition, the character adds +Rank dice to all attacks against enemies with a lower Resolve than them.", "page": 59} },
+      { "value": "COVEN OF TWELVE", "label": "The Coven of Twelve", "apocryphaBonus": {"name": null, "effect": "When making a melee attack, the character improves the AP of their weapon by 1 (i.e., from -1 to -2). In addition, the character reduces the total penalty of any Multi-Action they attempt by Rank.", "page": 59} }
+    ],
+    "allowCustom": true,
+    "customLabel": "Other Coven"
+  },
+  "league": {
+    "label": "League",
+    "options": [
+      { "value": "GREATER THURIAN LEAGUE", "label": "The Greater Thurian League", "apocryphaBonus": {"name": "Highly Efficient", "effect": "You add +1 to your Influence, and you gain +1 Wealth at the end of each session.", "page": 64} },
+      { "value": "YMYR CONGLOMERATE", "label": "The Ymyr Conglomerate", "apocryphaBonus": {"name": "Elite Artisans", "effect": "You add +Rank to Tech skill tests and add +1 to the AR of any armour you wear.", "page": 64} },
+      { "value": "URANI-SURTR REGULATES", "label": "Urani-Surtr Regulates", "apocryphaBonus": {"name": "To the Last", "effect": "You add +Rank to your Resolve, and you add +1 to your Determination.", "page": 64} },
+      { "value": "TRANS-HYPERIAN ALLIANCE", "label": "Trans-Hyperian Alliance", "apocryphaBonus": {"name": "Nomadic Explorers", "effect": "You increase your Passive Awareness by +Rank and add +1d to all Pilot skill tests.", "page": 64} },
+      { "value": "KRONUS HEGEMONY", "label": "Kronus Hegemony", "apocryphaBonus": {"name": "Aggressive Expansion", "effect": "You may re-roll Rank dice on melee attacks when you charge and add +1ED to the damage of all melee attacks when you charge.", "page": 65} },
+      { "value": "THE GHULO INDUSTRIAL COMPLEX", "label": "The Ghulo Industrial Complex" },
+      { "value": "THE TYPHON-STYX PROTECTORATE", "label": "The Typhon-Styx Protectorate" },
+      { "value": "THE KAPELLAN LEAGUE", "label": "The Kapellan League" },
+      { "value": "THE SERAN-TOK MERCANTILE LEAGUES", "label": "The Seran-Tok Mercantile Leagues" },
+      { "value": "THE GRAND ORION COMPACT", "label": "The Grand Orion Compact" },
+      { "value": "THE BALOR-ATTAL CONGLOMERATE", "label": "The Balor-Attal Conglomerate" },
+      { "value": "THE PAN-TELLURIC COMMONWEALTH", "label": "The Pan-Telluric Commonwealth" },
+      { "value": "THE TETHYS EXPANSE", "label": "The Tethys Expanse" },
+      { "value": "THE SIGMA-DRAKONI UNION", "label": "The Sigma-Drakoni Union" },
+      { "value": "THE GRENDL DOMINANCE", "label": "The Grendl Dominance" },
+      { "value": "THE JOTUN-ERYDANI COMBINE", "label": "The Jotun-Erydani Combine" }
+    ],
+    "allowCustom": true,
+    "customLabel": "Other League"
+  },
+  "sept": {
+    "label": "Sept",
+    "options": [
+      { "value": "BORK'AN", "label": "Bork'an", "apocryphaBonus": {"name": null, "effect": "Air Caste: Add +1 to the Speed, Wounds, and Resilience of their vehicles, due to superior engineering.\nEarth Caste: Add +2 to their Medicae, Scholar, and Tech skills.\nFire Caste: Add +2 to the short range of their ranged weapons, +4 to the medium range, and +6 to the long range.\nWater Caste: May re-roll a 1 on their Wrath die when attempting a Cunning, Deception, Insight, or Persuasion test.", "page": 67} },
+      { "value": "DAL'YTH", "label": "Dal'yth", "apocryphaBonus": {"name": null, "effect": "Air Caste: Add +2 to the Defence of their vehicles when they perform Evasive Action.\nEarth Caste: Carry devices which are cunningly wrought with hidden functions or secret countermeasures: double the range of the character's Tech interaction attacks.\nFire Caste: Employ advanced camouflage systems to obscure their presence; if they do not move during their turn, they add +2 to their Defence (as if in cover) until the start of their next turn.\nWater Caste: Add +2 to their Cunning, Deception, Insight, and Persuasion skills.", "page": 68} },
+      { "value": "FARSIGHT ENCLAVES", "label": "The Farsight Enclaves", "apocryphaBonus": {"name": null, "effect": "All Caste: T'au from the Farsight Enclaves are rebels, free from the dogma and deceptions of the Ethereals, and add +2 to their Conviction.\nFire Caste: Drilled to engage enemies at close range: they add an extra +2 to all attacks made against enemies within 9m.", "page": 68} },
+      { "value": "SA'CEA", "label": "Sa'cea", "apocryphaBonus": {"name": null, "effect": "All Caste: Add +1 to their Resolve.\nAir Caste: Hone their skills in the skies above dense cityscapes, where absolute precision is needed: they may re-roll any 1s rolled (even on a Wrath die) for Pilot tests.\nEarth Caste: Keenly observant, almost to a point of wariness, and add +2d to all Awareness tests.\nFire Caste: Have exceptional fire discipline: they may re-roll one die on any Ballistic Skill test they attempt.", "page": 68} },
+      { "value": "T'AU", "label": "T'au", "apocryphaBonus": {"name": null, "effect": "All Caste: T'au from the T'au Sept grant +1 additional die when they assist an ally. Further, whenever they use an ability which affects T'AU EMPIRE allies, the range is increased by +3m.", "page": 68} },
+      { "value": "VIOR'LA", "label": "Vior'la", "apocryphaBonus": {"name": null, "effect": "Air Caste: Have a knack for high-speed manoeuvres that other T'au might balk at: they ignore the additional Wrath Dice that comes piloting a vehicle at Breakneck speed.\nEarth Caste: Quick to experiment and jury-rig the devices they use: they may add a second Wrath die to any Tech test they attempt, and thus have the potential for two criticals, two complications, or one of each.\nFire Caste: Advance and redeploy quickly, adding +1 to their Speed during the first round of each combat, and +1 Speed when they Run or Sprint.\nWater Caste: Fast-talking and effusive: they may add a second Wrath die to any Persuasion test they attempt, and thus have the potential for two criticals, two complications, or one of each.", "page": 68} }
+    ],
+    "allowCustom": true,
+    "customLabel": "Other Sept"
   },
   "any": {
     "label": "Faction Keyword",

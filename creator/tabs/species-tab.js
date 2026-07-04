@@ -212,6 +212,11 @@ const SpeciesTab = {
                 }
             }
 
+            // Sub-faction keyword bonus (official + Apocrypha homebrew), if catalogued
+            if (option.keyword) {
+                optionHtml += KeywordBonus.renderPanel(option.keyword);
+            }
+
             if (option.restricted) {
                 optionHtml += `<div class="choice-option-restricted">* Requires GM permission</div>`;
             }

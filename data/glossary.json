@@ -654,6 +654,12 @@
       "page": 375,
       "description": "The Aeronautica Imperialis are part of the Navis Imperialis, and are responsible for Imperial in-atmosphere aviation."
     },
+    "agripinaa": {
+      "name": "AGRIPINAA",
+      "source": "apocrypha",
+      "page": 37,
+      "description": "Adeptus Mechanicus Forge World. [Apocrypha homebrew sub-faction bonus] Staunch Defenders: When you are in cover and did not move during your turn, you add +Rank bonus dice to your ranged attacks."
+    },
     "air_caste": {
       "name": "AIR CASTE",
       "source": "apocrypha",
@@ -670,7 +676,19 @@
       "name": "ALAITOC",
       "source": "apocrypha",
       "page": null,
-      "description": "Far out on the frontiers of the galaxy, on the edge of explored space in the Ultima Segmentum, lies the Alaitoc craftworld. The Alaitoc Asuryani are zealous in their guard against the touch of Slaanesh, even more so than is common amongst the other Craftworld Aeldari. As such, Alaitoc is strictly governed to prevent any emergence of the sadistic obsessions that the Aeldari are prone to as a species."
+      "description": "Far out on the frontiers of the galaxy, on the edge of explored space in the Ultima Segmentum, lies the Alaitoc craftworld. The Alaitoc Asuryani are zealous in their guard against the touch of Slaanesh, even more so than is common amongst the other Craftworld Aeldari. As such, Alaitoc is strictly governed to prevent any emergence of the sadistic obsessions that the Aeldari are prone to as a species. [Apocrypha homebrew sub-faction bonus] Puritanical Discipline: Your Conviction is increased by +Rank."
+    },
+    "alpha_legion": {
+      "name": "ALPHA LEGION",
+      "source": "apocrypha",
+      "page": 33,
+      "description": "Heretic Astartes Legion. [Apocrypha homebrew sub-faction bonus] Mutable Tactics: After each Respite, select one of the following skills: Athletics, Cunning, Deception, Intimidation, Persuasion, Stealth, or Tech. You may re-roll up to Rank dice on any test involving the chosen skill. I Am Alpharius: Add 1 to Ruin when you fail an Intellect test, as your carefully wrought plans and contingencies fail you."
+    },
+    "altansar": {
+      "name": "ALTANSAR",
+      "source": "apocrypha",
+      "page": 38,
+      "description": "Asuryani Craftworld. [Apocrypha homebrew sub-faction bonus] Grim Survivors: Your Determination is increased by +Rank."
     },
     "anathema_psykana": {
       "name": "ANATHEMA PSYKANA",
@@ -701,6 +719,12 @@
       "source": "core",
       "page": 375,
       "description": "This Keyword can be replaced with any other Keyword of your choice. In almost all circumstances it makes the most sense to select a Faction Keyword. Discuss your choice with your GM and the group to ensure it makes sense for the narrative of your game."
+    },
+    "aquilan_shield": {
+      "name": "AQUILAN SHIELD",
+      "source": "apocrypha",
+      "page": 42,
+      "description": "Adeptus Custodes Shield Host. [Apocrypha homebrew sub-faction bonus] Guardian: At the start of the first round of combat, or when you enter combat, you may select a single ally with the IMPERIUM keyword. While that ally is within 3 metres of you, they add +Rank to their Defence."
     },
     "arc": {
       "name": "ARC",
@@ -798,17 +822,29 @@
       "page": null,
       "description": "[AI-Generated] Creatures that are animals or beast-like in nature, lacking true sapience but often dangerous in combat."
     },
+    "biel_tan": {
+      "name": "BIEL-TAN",
+      "source": "apocrypha",
+      "page": 38,
+      "description": "Asuryani Craftworld. [Apocrypha homebrew sub-faction bonus] Prowess of the Bladewind: Select either ranged attacks or melee attacks. You may re-roll up to Rank dice on the chosen type of attack."
+    },
+    "black_heart": {
+      "name": "BLACK HEART",
+      "source": "apocrypha",
+      "page": 58,
+      "description": "Drukhari Kabal. [Apocrypha homebrew sub-faction bonus] Increase the character's Resolve and Determination by +Rank."
+    },
     "black_legion": {
       "name": "BLACK LEGION",
       "source": "apocrypha",
       "page": null,
-      "description": "Once the Luna Wolves, and later the Sons of Horus, the Black Legion are what remains of the legion that Horus commanded during the Heresy. The Luna Wolves were a proud force, that exemplified the best qualities of the Legiones Astartes, but when they came became the Sons of Horus, a darker character has overcome them, a spiteful savagery that has only grown deeper and darker since the Heresy ended. The survivors reforged themselves as the Black Legion, to expunge the stain of Horus' defeat, and their hatred for the Imperium is greater than ever."
+      "description": "Once the Luna Wolves, and later the Sons of Horus, the Black Legion are what remains of the legion that Horus commanded during the Heresy. The Luna Wolves were a proud force, that exemplified the best qualities of the Legiones Astartes, but when they came became the Sons of Horus, a darker character has overcome them, a spiteful savagery that has only grown deeper and darker since the Heresy ended. The survivors reforged themselves as the Black Legion, to expunge the stain of Horus' defeat, and their hatred for the Imperium is greater than ever. [Apocrypha homebrew sub-faction bonus] The Tip of the Spear: You may re-roll Rank dice on all Ballistic Skill tests made with a ranged weapon at close range. You may also re-roll Rank dice on Weapon Skill tests made when you Charge. You also gain +1 Resolve. Bitter Pride: You suffer a +2DN penalty for Interaction tests involving anyone outside the Black Legion, unless those people are subordinate to the Black Legion character."
     },
     "black_templars": {
       "name": "BLACK TEMPLARS",
       "source": "apocrypha",
       "page": null,
-      "description": "Following the example set by First Captain Sigismund of the Imperial Fists Legion, the Black Templars are eternal crusaders, having devoted themselves utterly to the continued war against the enemies of the Emperor. The Black Templars' crusades have lasted the hundred centuries since their formation, making it the longest Astartes crusade ever carried out, and the Black Templars' fanaticism and righteous fury is legendary. Because of the far-ranging nature of their eternal crusades, groups of Black Templars can be found across the Imperium and beyond, from crusades consisting of several fighting companies of marines, to individual squads or lone warriors on detached duty or penitent mission.\n\nCharacters with the BLACK TEMPLARS keyword may not, under any circumstances, take the PSYKER keyword: The Black Templars accept no psykers within their ranks."
+      "description": "Following the example set by First Captain Sigismund of the Imperial Fists Legion, the Black Templars are eternal crusaders, having devoted themselves utterly to the continued war against the enemies of the Emperor. The Black Templars' crusades have lasted the hundred centuries since their formation, making it the longest Astartes crusade ever carried out, and the Black Templars' fanaticism and righteous fury is legendary. Because of the far-ranging nature of their eternal crusades, groups of Black Templars can be found across the Imperium and beyond, from crusades consisting of several fighting companies of marines, to individual squads or lone warriors on detached duty or penitent mission.\n\nCharacters with the BLACK TEMPLARS keyword may not, under any circumstances, take the PSYKER keyword: The Black Templars accept no psykers within their ranks. [Apocrypha homebrew sub-faction bonus] Righteous Zeal: When you charge, you may re-roll up to Rank dice on your Weapon Skill test. In addition, you may re-roll Rank dice when you roll Determination. Gene-Seed Flaw: You are missing implant 12: Sus-an Membrane, and implant 17: Betcher's Gland. Characters with the BLACK TEMPLARS keyword may not, under any circumstances, take the PSYKER keyword: The Black Templars accept no psykers within their ranks."
     },
     "blade": {
       "name": "BLADE",
@@ -839,6 +875,12 @@
       "source": "core",
       "page": 378,
       "description": "A firearm that fires the self-propelled, mass-reactive rounds known as Bolts, which explode when they penetrate the enemy."
+    },
+    "bork_an": {
+      "name": "BORK'AN",
+      "source": "apocrypha",
+      "page": 67,
+      "description": "T'au Sept. [Apocrypha homebrew sub-faction bonus] Air Caste: Add +1 to the Speed, Wounds, and Resilience of their vehicles, due to superior engineering. Earth Caste: Add +2 to their Medicae, Scholar, and Tech skills. Fire Caste: Add +2 to the short range of their ranged weapons, +4 to the medium range, and +6 to the long range. Water Caste: May re-roll a 1 on their Wrath die when attempting a Cunning, Deception, Insight, or Persuasion test."
     },
     "boss": {
       "name": "BOSS",
@@ -960,6 +1002,12 @@
       "page": null,
       "description": "Little encapsulates the ancient evil and inventive malice of the Drukhari quite like the Covens of the Haemonculi. These twisted fraternities of torturer-alchemists practice vile arts of life and death from their lairs in the Dark City's gnarled underworld. Replace the [COVEN] Keyword with any of the Covens below."
     },
+    "coven_of_twelve": {
+      "name": "COVEN OF TWELVE",
+      "source": "apocrypha",
+      "page": 59,
+      "description": "Drukhari Haemonculi Coven. [Apocrypha homebrew sub-faction bonus] When making a melee attack, the character improves the AP of their weapon by 1 (i.e., from -1 to -2). In addition, the character reduces the total penalty of any Multi-Action they attempt by Rank."
+    },
     "craftworld": {
       "name": "[CRAFTWORLD]",
       "source": "core",
@@ -976,7 +1024,7 @@
       "name": "CRIMSON FISTS",
       "source": "apocrypha",
       "page": null,
-      "description": "The other Second Founding Chapter formed from the Imperial Fists, the Crimson Fists were formed from those Imperial Fists who were calm, level-headed, and willing to embrace the logic and reason of the Codex Astartes. In the millennia since, the Crimson Fists have earned a reputation as stalwart, fierce warriors devoted to the preservation of the Imperium. But fate has not been kind: they were almost wiped out during an Ork invasion of their homeworld. In recent days, they have been brought back from the brink by reinforcements from Roboute Guilliman's Indomitus Crusade, and the new Primaris additions to the Chapter have been welcomed for they renew the strength of these fierce Sons of Dorn."
+      "description": "The other Second Founding Chapter formed from the Imperial Fists, the Crimson Fists were formed from those Imperial Fists who were calm, level-headed, and willing to embrace the logic and reason of the Codex Astartes. In the millennia since, the Crimson Fists have earned a reputation as stalwart, fierce warriors devoted to the preservation of the Imperium. But fate has not been kind: they were almost wiped out during an Ork invasion of their homeworld. In recent days, they have been brought back from the brink by reinforcements from Roboute Guilliman's Indomitus Crusade, and the new Primaris additions to the Chapter have been welcomed for they renew the strength of these fierce Sons of Dorn. [Apocrypha homebrew sub-faction bonus] No Matter the Odds: When making an attack while you and your allies are outnumbered at least two-to-one, you may add Rank dice to your Ballistic Skill or Weapon Skill test. Gene-Seed Flaw: You are missing implant 12: Sus-an Membrane, and implant 17: Betcher's Gland."
     },
     "cryptek": {
       "name": "CRYPTEK",
@@ -1026,6 +1074,12 @@
       "page": null,
       "description": "[AI-Generated] Mortal followers of the Ruinous Powers who serve Chaos through worship, sabotage, and rebellion against the Imperium."
     },
+    "cursed_blade": {
+      "name": "CURSED BLADE",
+      "source": "apocrypha",
+      "page": 59,
+      "description": "Drukhari Wych Cult. [Apocrypha homebrew sub-faction bonus] When the character rolls Determination against damage inflicted in melee, each Exalted Icon rolled inflicts a single Mortal Wound upon the attacker."
+    },
     "daemon": {
       "name": "DAEMON",
       "source": "core",
@@ -1050,6 +1104,12 @@
       "page": null,
       "description": "[AI-Generated] Mortal followers of Chaos whose bodies have been partially transformed by Warp energy, blurring the line between mortal and daemon."
     },
+    "dal_yth": {
+      "name": "DAL'YTH",
+      "source": "apocrypha",
+      "page": 68,
+      "description": "T'au Sept. [Apocrypha homebrew sub-faction bonus] Air Caste: Add +2 to the Defence of their vehicles when they perform Evasive Action. Earth Caste: Carry devices which are cunningly wrought with hidden functions or secret countermeasures: double the range of the character's Tech interaction attacks. Fire Caste: Employ advanced camouflage systems to obscure their presence; if they do not move during their turn, they add +2 to their Defence (as if in cover) until the start of their next turn. Water Caste: Add +2 to their Cunning, Deception, Insight, and Persuasion skills."
+    },
     "dark_angels": {
       "name": "DARK ANGELS",
       "source": "voa",
@@ -1061,6 +1121,12 @@
       "source": "apocrypha",
       "page": null,
       "description": "[AI-Generated] The leadership cadre of a Chaos cult, typically consisting of a Cult Demagogue and their inner circle of blessed devotees."
+    },
+    "dark_creed": {
+      "name": "DARK CREED",
+      "source": "apocrypha",
+      "page": 59,
+      "description": "Drukhari Haemonculi Coven. [Apocrypha homebrew sub-faction bonus] Enemies within 6m add +2 DN to all Resolve tests. In addition, the character adds +Rank dice to all attacks against enemies with a lower Resolve than them."
     },
     "dark_mechanicum": {
       "name": "DARK MECHANICUM",
@@ -1078,7 +1144,7 @@
       "name": "DEATH GUARD",
       "source": "dh",
       "page": null,
-      "description": "[AI-Generated] A Traitor Legion devoted to Nurgle, the Plague God. Bloated with disease and corruption, the Death Guard spread plague and entropy wherever they tread."
+      "description": "[AI-Generated] A Traitor Legion devoted to Nurgle, the Plague God. Bloated with disease and corruption, the Death Guard spread plague and entropy wherever they tread. [Apocrypha homebrew sub-faction bonus] Inexorable Advance: You suffer no penalty for operating a Heavy weapon without bracing it, and when you take a normal move, you may use your Simple Action to aim. Intractable: You must spend a point of Glory to take the Sprint action. Characters with the DEATH GUARD keyword must take NURGLE as their [MARK OF CHAOS] keyword."
     },
     "death_jester_keyword": {
       "name": "DEATH JESTER",
@@ -1122,6 +1188,12 @@
       "page": null,
       "description": "An Ork Painboy, also known as a Mad Dok or just a Dok, is a member of a special class of Ork Oddboyz who are responsible for fixing injuries even the highly regenerative Ork physiology cannot repair, such as severed limbs and brain damage."
     },
+    "dread_host": {
+      "name": "DREAD HOST",
+      "source": "apocrypha",
+      "page": 42,
+      "description": "Adeptus Custodes Shield Host. [Apocrypha homebrew sub-faction bonus] Wrath of the Throne: At the start of the first round of combat, or when you enter combat, enemies who can see you who lack the IMPERIUM keyword must pass a DN 2 +Rank Fear test."
+    },
     "dreadnought": {
       "name": "DREADNOUGHT",
       "source": "apocrypha",
@@ -1158,11 +1230,23 @@
       "page": null,
       "description": "The Earth caste—the Fio—provides for the manufacturing, agricultural, industrial, artisans, and engineering needs of the Tau Empire. By far the largest caste in sheer numbers, it is they who erect dwellings, provide food, and produce new technology. Members of the Earth Caste are often described as plain and dour, possessing a rather stoic outlook on life in general."
     },
+    "emissaries_imperatus": {
+      "name": "EMISSARIES IMPERATUS",
+      "source": "apocrypha",
+      "page": 42,
+      "description": "Adeptus Custodes Shield Host. [Apocrypha homebrew sub-faction bonus] Herald of the Throne: Allies within 9m who possess the IMPERIUM keyword increase their Resolve and Conviction by +Rank."
+    },
+    "emperor_s_chosen": {
+      "name": "EMPEROR'S CHOSEN",
+      "source": "apocrypha",
+      "page": 42,
+      "description": "Adeptus Custodes Shield Host. [Apocrypha homebrew sub-faction bonus] Exemplar: You increase your Influence, Resolve, and Conviction each by +1."
+    },
     "emperors_children": {
       "name": "EMPEROR'S CHILDREN",
       "source": "apocrypha",
       "page": null,
-      "description": "One of the nine Legions that betrayed the Emperor during the Horus Heresy, the Emperor's Children were once a shining example of what the Legiones Astartes could be. Driven to the pursuit of perfection in all of their endeavours, the Emperor's Children pushed themselves to the very limits of their abilities in the performance of their duties. During and after the Heresy, the Emperor's Children and their Primarch became creatures of excess and sensation, twisting their pursuit of perfection into a desire to experience ever-greater sensations, and no debauchery is beneath their appetites.\n\nCharacters with the EMPEROR'S CHILDREN keyword must take SLAANESH as their [MARK OF CHAOS] keyword."
+      "description": "One of the nine Legions that betrayed the Emperor during the Horus Heresy, the Emperor's Children were once a shining example of what the Legiones Astartes could be. Driven to the pursuit of perfection in all of their endeavours, the Emperor's Children pushed themselves to the very limits of their abilities in the performance of their duties. During and after the Heresy, the Emperor's Children and their Primarch became creatures of excess and sensation, twisting their pursuit of perfection into a desire to experience ever-greater sensations, and no debauchery is beneath their appetites.\n\nCharacters with the EMPEROR'S CHILDREN keyword must take SLAANESH as their [MARK OF CHAOS] keyword. [Apocrypha homebrew sub-faction bonus] In Pursuit of Perfection: Select one of the following skills: Awareness, Ballistic Skill, Leadership, Pilot, Weapon Skill. You gain +Rank dice as a bonus to all uses of that skill. Fear of Imperfection: Whenever you suffer a complication on the skill chosen for Pursuit of Perfection, above, the GM gains 1 Ruin, in addition to any other results. Characters with the EMPEROR'S CHILDREN keyword must take SLAANESH as their [MARK OF CHAOS] keyword."
     },
     "energy": {
       "name": "ENERGY",
@@ -1216,7 +1300,7 @@
       "name": "FARSIGHT ENCLAVES",
       "source": "apocrypha",
       "page": null,
-      "description": "The Farsight Enclaves are a series of heavily fortified T'au colony worlds that are independent and indeed opposed to the rule of the T'au Empire. They are led or ruled by the legendary T'au Fire Caste Commander Farsight and lie on the far side of the Damocles Gulf region of the Segmentum Ultima in the Eastern Fringe of the Milky Way Galaxy."
+      "description": "The Farsight Enclaves are a series of heavily fortified T'au colony worlds that are independent and indeed opposed to the rule of the T'au Empire. They are led or ruled by the legendary T'au Fire Caste Commander Farsight and lie on the far side of the Damocles Gulf region of the Segmentum Ultima in the Eastern Fringe of the Milky Way Galaxy. [Apocrypha homebrew sub-faction bonus] All Caste: T'au from the Farsight Enclaves are rebels, free from the dogma and deceptions of the Ethereals, and add +2 to their Conviction. Fire Caste: Drilled to engage enemies at close range: they add an extra +2 to all attacks made against enemies within 9m."
     },
     "fellgor": {
       "name": "FELLGOR",
@@ -1254,6 +1338,12 @@
       "page": null,
       "description": "[AI-Generated] A weapon that projects burning promethium or other incendiary substances."
     },
+    "flayed_skull": {
+      "name": "FLAYED SKULL",
+      "source": "apocrypha",
+      "page": 58,
+      "description": "Drukhari Kabal. [Apocrypha homebrew sub-faction bonus] The character adds +Rank to all ranged attacks or melee attacks made when they are above their target."
+    },
     "flayer": {
       "name": "FLAYER",
       "source": "core",
@@ -1264,7 +1354,7 @@
       "name": "FLESH TEARERS",
       "source": "apocrypha",
       "page": null,
-      "description": "A much-diminished successor of the Blood Angels, the Flesh Tearers are especially afflicted by the curse of the Black Rage, making them particularly brutal in battle. Their savagery is so notorious that few other servants of the Imperium will call upon their aid unless there is no other recourse, for more than once the Flesh Tearers have been gripped with madness and turned on their allies. In the Era Indomitus, an influx of Primaris Marines, less susceptible to the Red Thirst, may help bring redemption to the Chapter, or it may only prolong their slow decline."
+      "description": "A much-diminished successor of the Blood Angels, the Flesh Tearers are especially afflicted by the curse of the Black Rage, making them particularly brutal in battle. Their savagery is so notorious that few other servants of the Imperium will call upon their aid unless there is no other recourse, for more than once the Flesh Tearers have been gripped with madness and turned on their allies. In the Era Indomitus, an influx of Primaris Marines, less susceptible to the Red Thirst, may help bring redemption to the Chapter, or it may only prolong their slow decline. [Apocrypha homebrew sub-faction bonus] Fury Within: You may re-roll Double Rank dice once per melee attack Test. In addition, if you shift one or more Icons on a melee attack, improve the AP of your attack by 1 (i.e., from -1 to -2). The Red Thirst: Whenever you are in melee combat and see blood, you must make a DN 4 Willpower Test. If you fail, you are Frenzied."
     },
     "flyer": {
       "name": "FLYER",
@@ -1326,6 +1416,12 @@
       "page": null,
       "description": "[AI-Generated] An Ork Clan that values close combat above all else, Goffs are the toughest and most belligerent of all Orks, favouring brutal melee over shooting."
     },
+    "graia": {
+      "name": "GRAIA",
+      "source": "apocrypha",
+      "page": 37,
+      "description": "Adeptus Mechanicus Forge World. [Apocrypha homebrew sub-faction bonus] Refusal to Yield: When you make a Test while Dying, you heal 1 Wound for each Wrath Critical you roll. When you make a Test while under the effects of Fear, Terror or Pinning, a Wrath Critical causes you to recover from that condition immediately. However, you must spend a point of Glory to Fall Back."
+    },
     "grav": {
       "name": "GRAV",
       "source": "church",
@@ -1337,6 +1433,12 @@
       "source": "apocrypha",
       "page": null,
       "description": "[AI-Generated] The most powerful daemons of the Chaos Gods, Greater Daemons are towering entities of immense destructive capability that serve as generals and champions of their patron deity."
+    },
+    "greater_thurian_league": {
+      "name": "GREATER THURIAN LEAGUE",
+      "source": "apocrypha",
+      "page": 64,
+      "description": "League of Votann. [Apocrypha homebrew sub-faction bonus] Highly Efficient: You add +1 to your Influence, and you gain +1 Wealth at the end of each session."
     },
     "grenade": {
       "name": "GRENADE",
@@ -1354,7 +1456,7 @@
       "name": "GREY KNIGHTS",
       "source": "apocrypha",
       "page": null,
-      "description": "An ancient Chapter, founded in secret at the Emperor's bidding during the Horus Heresy, the Grey Knights exist to combat the threat of the daemonic, and to this end they serve as the Chamber Militant of the Ordo Malleus. Few even know that the Grey Knights exist, for witnesses to their actions are mind-wiped or executed to ensure that the secret is not revealed. Every Grey Knight is a psyker, trained and conditioned to wield their mental powers to ward themselves from corruption and drive back the daemons they battle.\n\nDue to their unique geneseed and secretive nature, the Grey Knights do not yet count any Primaris Marines amongst their number. As such, Primaris Astartes characters cannot select this CHAPTER."
+      "description": "An ancient Chapter, founded in secret at the Emperor's bidding during the Horus Heresy, the Grey Knights exist to combat the threat of the daemonic, and to this end they serve as the Chamber Militant of the Ordo Malleus. Few even know that the Grey Knights exist, for witnesses to their actions are mind-wiped or executed to ensure that the secret is not revealed. Every Grey Knight is a psyker, trained and conditioned to wield their mental powers to ward themselves from corruption and drive back the daemons they battle.\n\nDue to their unique geneseed and secretive nature, the Grey Knights do not yet count any Primaris Marines amongst their number. As such, Primaris Astartes characters cannot select this CHAPTER. [Apocrypha homebrew sub-faction bonus] Daemonbane: When attacking a creature with the DAEMON keyword in melee combat, you add +Rank ED to the attack's damage. You also add +Rank to your Conviction. Secretive: You suffer a +2DN penalty for Interaction tests involving anyone who lacks the Grey Knights or Inquisition keywords. Due to their unique geneseed and secretive nature, the Grey Knights do not yet count any Primaris Marines amongst their number. As such, Primaris Astartes characters cannot select this CHAPTER."
     },
     "grot": {
       "name": "GROT",
@@ -1518,11 +1620,17 @@
       "page": null,
       "description": "[AI-Generated] A First Founding Space Marine Chapter with deep ties to the Adeptus Mechanicus, known for replacing their flesh with bionics in pursuit of the perceived weakness of the organic form."
     },
+    "iron_warriors": {
+      "name": "IRON WARRIORS",
+      "source": "apocrypha",
+      "page": 29,
+      "description": "Heretic Astartes Legion. [Apocrypha homebrew sub-faction bonus] Siege Masters: You may reroll Double Rank dice whenever you attack a building, fortification, or an enemy in cover. You may also add +Rank dice whenever you make a test related to architectural engineering. Scorn for the Weak: If one of your allies fails a Resolve test, you must pass a Willpower test (DN 3). On a failure, you feel a strong urge to punish that ally. If the failure involves a complication, the urge becomes a compulsion. The GM may alter the DN based on the severity or significance of the failure."
+    },
     "iyanden": {
       "name": "IYANDEN",
       "source": "apocrypha",
       "page": null,
-      "description": "Iyanden drifts through the stars of the eastern rim. Once, its halls were busy and vibrant with life, but no longer. Now, it is but a shadow of its former glory, a sombre and desolate vessel where the dead walk and the living dwindle. The Iyanden people have endured much, and suffered great tragedy, but they do not allow their despair to consume them."
+      "description": "Iyanden drifts through the stars of the eastern rim. Once, its halls were busy and vibrant with life, but no longer. Now, it is but a shadow of its former glory, a sombre and desolate vessel where the dead walk and the living dwindle. The Iyanden people have endured much, and suffered great tragedy, but they do not allow their despair to consume them. [Apocrypha homebrew sub-faction bonus] Stoic and Tenacious: Your Resolve is increased by +Rank."
     },
     "jokaero": {
       "name": "JOKAERO",
@@ -1583,6 +1691,12 @@
       "source": "apocrypha",
       "page": null,
       "description": "[AI-Generated] Soldiers of the Death Korps of Krieg, fanatically devoted to the Emperor and willing to accept enormous casualties without hesitation in pursuit of atonement for their world's past heresy."
+    },
+    "kronus_hegemony": {
+      "name": "KRONUS HEGEMONY",
+      "source": "apocrypha",
+      "page": 65,
+      "description": "League of Votann. [Apocrypha homebrew sub-faction bonus] Aggressive Expansion: You may re-roll Rank dice on melee attacks when you charge and add +1ED to the damage of all melee attacks when you charge."
     },
     "kroot": {
       "name": "KROOT",
@@ -1650,11 +1764,23 @@
       "page": null,
       "description": "The Logos Historica Verita is a small Imperial organisation of the Adeptus Terra dedicated to recovering a full and accurate accounting of the history of Mankind unmarred by religious superstition or political bias.\n\nIt was created by Roboute Guilliman, the lord commander of the Imperium and the Primarch of the Ultramarines Legion, sometime after his resurrection.\n\nIt was the Primarch's intent to make a full and accurate accounting of the Imperium of Man's fragmentary and often contradictory history, the truth of which would inevitably help Humanity's advancement out of the darkness that had befallen it in the millennia after the Horus Heresy."
     },
+    "lucius": {
+      "name": "LUCIUS",
+      "source": "apocrypha",
+      "page": 37,
+      "description": "Adeptus Mechanicus Forge World. [Apocrypha homebrew sub-faction bonus] The Solar Blessing: When attacked by a weapon with only 1 ED, gain +1 Resilience."
+    },
     "luminen": {
       "name": "LUMINEN",
       "source": "apocrypha",
       "page": null,
       "description": "[AI-Generated] Adeptus Mechanicus weapons powered by the wielder's internal electrical charge."
+    },
+    "magisterial": {
+      "name": "MAGISTERIAL",
+      "source": "apocrypha",
+      "page": 53,
+      "description": "Navis Nobilite Navigator House. [Apocrypha homebrew sub-faction bonus] They add +Rank to their Influence and Wealth."
     },
     "mandrake": {
       "name": "MANDRAKE",
@@ -1698,6 +1824,12 @@
       "page": null,
       "description": "[AI-Generated] One of the four Marks of Chaos, denoting dedication to Tzeentch, the Changer of Ways. Warriors bearing this mark are gifted with sorcerous abilities and mutations."
     },
+    "mars": {
+      "name": "MARS",
+      "source": "apocrypha",
+      "page": 37,
+      "description": "Adeptus Mechanicus Forge World. [Apocrypha homebrew sub-faction bonus] Glory to the Omnissiah: You may shift up to two dice to Glory on a single Test, rather than one."
+    },
     "masque": {
       "name": "[MASQUE]",
       "source": "aeldari",
@@ -1721,6 +1853,12 @@
       "source": "core",
       "page": 379,
       "description": "Firing focused beams of extreme heat, these thermal firearms are powered by sub-atomic technology and make excellent anti-armour weapons."
+    },
+    "metalica": {
+      "name": "METALICA",
+      "source": "apocrypha",
+      "page": 37,
+      "description": "Adeptus Mechanicus Forge World. [Apocrypha homebrew sub-faction bonus] Relentless March: When you Sprint, you may fire a ranged weapon as if it had the Assault trait. You may not fire a Heavy weapon in this way."
     },
     "militarum_auxilla": {
       "name": "MILITARUM AUXILLA",
@@ -1800,6 +1938,12 @@
       "page": 379,
       "description": "These silent weapons have a two-stage firing mechanism: an invisible laser that penetrates the skin, followed by a poisonous crystalised needle of neurotoxin to ruthlessly dispatch foes at a distance."
     },
+    "night_lords": {
+      "name": "NIGHT LORDS",
+      "source": "apocrypha",
+      "page": 30,
+      "description": "Heretic Astartes Legion. [Apocrypha homebrew sub-faction bonus] Ave Dominus Nox: While under cover of darkness, you may add +Rank to your Defence and Speed. As a free action at the start of combat, you may spend one Glory to cause Fear for the duration of the fight; enemies who see you must pass a Fear test (DN 2 + Double Rank). Blood of Nostramo: If you see an ally fail a Resolve or Fear test, you must attempt a Resolve test (DN 3) or become pinned."
+    },
     "nob": {
       "name": "NOB",
       "source": "apocrypha",
@@ -1812,11 +1956,23 @@
       "page": null,
       "description": "[AI-Generated] A Necron of high rank within their dynasty's hierarchy, commanding legions of warriors and wielding authority over their tomb world."
     },
+    "nomadic": {
+      "name": "NOMADIC",
+      "source": "apocrypha",
+      "page": 53,
+      "description": "Navis Nobilite Navigator House. [Apocrypha homebrew sub-faction bonus] They grant +Rank dice to Pilot tests and Conviction."
+    },
     "nurgle": {
       "name": "NURGLE",
       "source": "core",
       "page": 376,
       "description": "One of the Ruinous Powers, the Plague God's domains are disease, decay, and entropy."
+    },
+    "obsidian_rose": {
+      "name": "OBSIDIAN ROSE",
+      "source": "apocrypha",
+      "page": 58,
+      "description": "Drukhari Kabal. [Apocrypha homebrew sub-faction bonus] The short range of any ranged weapon the character possesses is increased by +Rank, the medium range is increased by +Double Rank, and the long range is increased by three times Rank. In addition, the character may re-roll up to Rank ED when determining damage with one of their own weapons."
     },
     "officer": {
       "name": "OFFICER",
@@ -1847,6 +2003,114 @@
       "source": "core",
       "page": 378,
       "description": "The convents of the Adepta Sororitas train righteous servants of the God-Emperor to serve many roles, each known as an Order."
+    },
+    "order_of_our_martyred_lady": {
+      "name": "ORDER OF OUR MARTYRED LADY",
+      "source": "apocrypha",
+      "page": 34,
+      "description": "Adepta Sororitas Order. [Apocrypha homebrew sub-faction bonus] The Blood of Martyrs: You regain all spent Faith points when you start Dying. You regain 1 Faith point whenever an ally is slain or starts Dying."
+    },
+    "order_of_serenity": {
+      "name": "ORDER OF SERENITY",
+      "source": "apocrypha",
+      "page": 36,
+      "description": "Adepta Sororitas Order. [Apocrypha homebrew sub-faction bonus] Serene Endurance: When you succeed at a Medicae test to recover a patient's Shock, recover +Rank shock. Your own Maximum Shock is increased by +Rank."
+    },
+    "order_of_the_argent_shroud": {
+      "name": "ORDER OF THE ARGENT SHROUD",
+      "source": "apocrypha",
+      "page": 34,
+      "description": "Adepta Sororitas Order. [Apocrypha homebrew sub-faction bonus] Deeds, Not Words: When you make an attack, you may re-roll up to Rank dice on that attack."
+    },
+    "order_of_the_bloody_rose": {
+      "name": "ORDER OF THE BLOODY ROSE",
+      "source": "apocrypha",
+      "page": 34,
+      "description": "Adepta Sororitas Order. [Apocrypha homebrew sub-faction bonus] Quick to Anger: Add +Rank bonus dice to your melee attacks when you Charge."
+    },
+    "order_of_the_cleansing_water": {
+      "name": "ORDER OF THE CLEANSING WATER",
+      "source": "apocrypha",
+      "page": 36,
+      "description": "Adepta Sororitas Order. [Apocrypha homebrew sub-faction bonus] Indomitable Purity: Allies with the IMPERIUM keyword within 6m of you reduce the rating of any Poisoned condition, or the DN of any test to resist disease, by 1+ double your Rank. If this would reduce the rating or DN to 0, then the poison or disease has no effect."
+    },
+    "order_of_the_ebon_chalice": {
+      "name": "ORDER OF THE EBON CHALICE",
+      "source": "apocrypha",
+      "page": 34,
+      "description": "Adepta Sororitas Order. [Apocrypha homebrew sub-faction bonus] Daughter of the Emperor: When you roll Determination, you may spend 1 Faith. If you do so, negate all damage the attack would cause, including Mortal Wounds, but do not suffer any Shock."
+    },
+    "order_of_the_eternal_candle": {
+      "name": "ORDER OF THE ETERNAL CANDLE",
+      "source": "apocrypha",
+      "page": 36,
+      "description": "Adepta Sororitas Order. [Apocrypha homebrew sub-faction bonus] Healing Light: When you succeed at a Medicae test to heal wounds or stabilise a dying character, or when you heal Wounds during a Regroup, you may spend 1 Faith to heal an additional +Double Rank Wounds."
+    },
+    "order_of_the_gate": {
+      "name": "ORDER OF THE GATE",
+      "source": "apocrypha",
+      "page": 35,
+      "description": "Adepta Sororitas Order. [Apocrypha homebrew sub-faction bonus] Watchful Counselor: When you attempt an Awareness, Insight, Leadership, Scholar, or Persuasion test, each point of Glory you spend adds +2 dice."
+    },
+    "order_of_the_holy_seal": {
+      "name": "ORDER OF THE HOLY SEAL",
+      "source": "apocrypha",
+      "page": 35,
+      "description": "Adepta Sororitas Order. [Apocrypha homebrew sub-faction bonus] Inescapable Scrutiny: When you succeed at an Insight test, you may spend 1 Faith point to discern some inner truth or secret shame of the target. Ask the GM one question about the target."
+    },
+    "order_of_the_holy_word": {
+      "name": "ORDER OF THE HOLY WORD",
+      "source": "apocrypha",
+      "page": 35,
+      "description": "Adepta Sororitas Order. [Apocrypha homebrew sub-faction bonus] Voice of the Church: You gain +Rank bonus dice on all Persuasion tests."
+    },
+    "order_of_the_key": {
+      "name": "ORDER OF THE KEY",
+      "source": "apocrypha",
+      "page": 35,
+      "description": "Adepta Sororitas Order. [Apocrypha homebrew sub-faction bonus] Key to Power: You increase your Influence by +1."
+    },
+    "order_of_the_lexicon": {
+      "name": "ORDER OF THE LEXICON",
+      "source": "apocrypha",
+      "page": 35,
+      "description": "Adepta Sororitas Order. [Apocrypha homebrew sub-faction bonus] Unquestioned Faith: You increase your Conviction by +Rank."
+    },
+    "order_of_the_quill": {
+      "name": "ORDER OF THE QUILL",
+      "source": "apocrypha",
+      "page": 35,
+      "description": "Adepta Sororitas Order. [Apocrypha homebrew sub-faction bonus] Pious Scrutiny: Your Passive Awareness is increased by +Rank."
+    },
+    "order_of_the_sacred_coin": {
+      "name": "ORDER OF THE SACRED COIN",
+      "source": "apocrypha",
+      "page": 35,
+      "description": "Adepta Sororitas Order. [Apocrypha homebrew sub-faction bonus] Faith and Coin: When you attempt an Influence test to requisition items, you may spend 2 Glory to gain the effects of 1 Wealth."
+    },
+    "order_of_the_sacred_oath": {
+      "name": "ORDER OF THE SACRED OATH",
+      "source": "apocrypha",
+      "page": 35,
+      "description": "Adepta Sororitas Order. [Apocrypha homebrew sub-faction bonus] Voice of Judgement: When you attempt a Persuasion interaction attack, you may spend 1 Faith Point to target +Rank enemies."
+    },
+    "order_of_the_sacred_rose": {
+      "name": "ORDER OF THE SACRED ROSE",
+      "source": "apocrypha",
+      "page": 34,
+      "description": "Adepta Sororitas Order. [Apocrypha homebrew sub-faction bonus] Devout Serenity: You increase your Resolve by +Rank. Further, if you ever roll a 6 on your Wrath die when making a Resolve test, you gain 1 Faith."
+    },
+    "order_of_the_torch": {
+      "name": "ORDER OF THE TORCH",
+      "source": "apocrypha",
+      "page": 36,
+      "description": "Adepta Sororitas Order. [Apocrypha homebrew sub-faction bonus] Purifying Flame: When you attempt a Medicae test to remove a condition, you gain +Rank bonus dice on the test."
+    },
+    "order_of_the_valorous_heart": {
+      "name": "ORDER OF THE VALOROUS HEART",
+      "source": "apocrypha",
+      "page": 34,
+      "description": "Adepta Sororitas Order. [Apocrypha homebrew sub-faction bonus] Stoic Endurance: You add +Rank bonus dice to Determination rolls."
     },
     "ordo": {
       "name": "[ORDO]",
@@ -1944,6 +2208,12 @@
       "page": 379,
       "description": "Advanced firearms that shoot deadly pulses of superheated matter, these weapons revered for their destructive prowess and feared for their instability."
     },
+    "poisoned_tongue": {
+      "name": "POISONED TONGUE",
+      "source": "apocrypha",
+      "page": 58,
+      "description": "Drukhari Kabal. [Apocrypha homebrew sub-faction bonus] The character adds +Rank dice to Stealth tests and adds +Rank ED to any damage rolls with Fleshbane weapons."
+    },
     "power_field_keyword": {
       "name": "POWER FIELD",
       "source": "core",
@@ -1985,6 +2255,12 @@
       "source": "core",
       "page": 379,
       "description": "A firearm that uses ancient gunpowder technology to launch simple metal slugs at high speeds."
+    },
+    "prophets_of_flesh": {
+      "name": "PROPHETS OF FLESH",
+      "source": "apocrypha",
+      "page": 59,
+      "description": "Drukhari Haemonculi Coven. [Apocrypha homebrew sub-faction bonus] The character adds +Rank to their Determination, and each Exalted Icon rolled when rolling Determination restores a single lost Wound after the attack is resolved."
     },
     "psychic_keyword": {
       "name": "PSYCHIC",
@@ -2034,11 +2310,23 @@
       "page": null,
       "description": "[AI-Generated] A powerful Chaos warband of renegade Space Marines led by Huron Blackheart, operating from the Maelstrom as pirates and raiders."
     },
+    "red_grief": {
+      "name": "RED GRIEF",
+      "source": "apocrypha",
+      "page": 59,
+      "description": "Drukhari Wych Cult. [Apocrypha homebrew sub-faction bonus] The character's Speed is increased by +Rank when they Advance or Charge."
+    },
     "regiment": {
       "name": "[REGIMENT]",
       "source": "core",
       "page": 378,
       "description": "Each of the diverse planets of the Imperium owe a tithe of warriors to the Emperor to fight His holy wars. The tremendous variety of planets — from jungle-covered Death Worlds to honourable industrial worlds — mean that every planetary Regiment is vastly different in training, technique, and equipment."
+    },
+    "renegade": {
+      "name": "RENEGADE",
+      "source": "apocrypha",
+      "page": 53,
+      "description": "Navis Nobilite Navigator House. [Apocrypha homebrew sub-faction bonus] They begin with 1d3x Tier Corruption but add +Rank to Psychic Mastery tests and Maximum Shock."
     },
     "robot": {
       "name": "ROBOT",
@@ -2076,11 +2364,29 @@
       "page": null,
       "description": "[AI-Generated] The smallest and weakest of Orkoid creatures, such as Gretchin and Snotlings, who serve as menial labourers and cannon fodder for larger Orks."
     },
+    "ryza": {
+      "name": "RYZA",
+      "source": "apocrypha",
+      "page": 37,
+      "description": "Adeptus Mechanicus Forge World. [Apocrypha homebrew sub-faction bonus] Red in Cog and Claw: You may re-roll up to Rank dice when making a melee attack."
+    },
+    "sa_cea": {
+      "name": "SA'CEA",
+      "source": "apocrypha",
+      "page": 68,
+      "description": "T'au Sept. [Apocrypha homebrew sub-faction bonus] All Caste: Add +1 to their Resolve. Air Caste: Hone their skills in the skies above dense cityscapes, where absolute precision is needed: they may re-roll any 1s rolled (even on a Wrath die) for Pilot tests. Earth Caste: Keenly observant, almost to a point of wariness, and add +2d to all Awareness tests. Fire Caste: Have exceptional fire discipline: they may re-roll one die on any Ballistic Skill test they attempt."
+    },
     "saedath": {
       "name": "[SAEDATH]",
       "source": "apocrypha",
       "page": null,
       "description": "Since the Fall, a place has traditionally been reserved in a masque's structure should a Solitaire lend their considerable abilities to a cause, but they are otherwise unchanged, centred around three distinct Saedaths: the Light, the Dark, and the Twilight. Each contains a different cast of characters, grouped by outlook and symbolism. This structure ensures that each member is aware their fellows' roles, upon both stage and battlefield."
+    },
+    "saim_hann": {
+      "name": "SAIM-HANN",
+      "source": "apocrypha",
+      "page": 38,
+      "description": "Asuryani Craftworld. [Apocrypha homebrew sub-faction bonus] Fury of the Wild Hunt: You increase your Speed by +Rank when you Sprint or Charge, or when mounted on an AELDARI vehicle with the Hover trait."
     },
     "salamanders_chapter": {
       "name": "SALAMANDERS",
@@ -2142,6 +2448,12 @@
       "page": null,
       "description": "Shade Runners represent a fusion of Asuyrani and Drukhari fighting styles. They arm themselves with poisoned serrated blades commonly found amongst the Wych Cults of Commorragh, along with Warp jump packs not unlike those used by the Warp Spider Aspect Warriors."
     },
+    "shadowkeepers": {
+      "name": "SHADOWKEEPERS",
+      "source": "apocrypha",
+      "page": 42,
+      "description": "Adeptus Custodes Shield Host. [Apocrypha homebrew sub-faction bonus] Warden: When an enemy engaged with you attempts to Fall Back, roll a number of d6 equal to Double Rank. For each Icon rolled, the enemy's Speed is reduced by 1."
+    },
     "shield_host": {
       "name": "[SHIELD HOST]",
       "source": "apocrypha",
@@ -2152,7 +2464,7 @@
       "name": "SHROUDED",
       "source": "apocrypha",
       "page": null,
-      "description": "[AI-Generated] A creature or warrior concealed by darkness, stealth technology, or supernatural shadow, difficult to detect or target."
+      "description": "[AI-Generated] A creature or warrior concealed by darkness, stealth technology, or supernatural shadow, difficult to detect or target. [Apocrypha homebrew sub-faction bonus] They add +Rank to Cunning and Stealth tests."
     },
     "shuriken": {
       "name": "SHURIKEN",
@@ -2208,6 +2520,12 @@
       "page": null,
       "description": "[AI-Generated] The smallest Orkoid creatures, Snotlings are tiny, dim-witted beings that swarm around in large groups, occasionally used as living projectiles or as tenders for fungus farms."
     },
+    "solar_watch": {
+      "name": "SOLAR WATCH",
+      "source": "apocrypha",
+      "page": 42,
+      "description": "Adeptus Custodes Shield Host. [Apocrypha homebrew sub-faction bonus] Swift Onslaught: When you Run, Sprint, or Charge, you increase your Speed by +1. Further, you may Fall Back as a Simple Action rather than a Combat Action."
+    },
     "sonic": {
       "name": "SONIC",
       "source": "church",
@@ -2250,11 +2568,23 @@
       "page": null,
       "description": "[AI-Generated] Multi-limbed serpentine xenos mercenaries often found in the service of Drukhari Archons as loyal bodyguards."
     },
+    "strife": {
+      "name": "STRIFE",
+      "source": "apocrypha",
+      "page": 59,
+      "description": "Drukhari Wych Cult. [Apocrypha homebrew sub-faction bonus] The character may Seize the Initiative without spending Glory. They may do this a number of times per scene equal to Rank."
+    },
     "striking_scorpion": {
       "name": "STRIKING SCORPION",
       "source": "aeldari",
       "page": null,
       "description": "[AI-Generated] An Asuryani Aspect Warrior shrine devoted to close-quarters ambush tactics, equipped with chainswords, shuriken pistols, and mandiblasters."
+    },
+    "stygies_viii": {
+      "name": "STYGIES VIII",
+      "source": "apocrypha",
+      "page": 37,
+      "description": "Adeptus Mechanicus Forge World. [Apocrypha homebrew sub-faction bonus] Shroud Protocols: You add +Rank bonus dice to Stealth Tests and gain an additional +1 to Defence against ranged attacks from more than 12 metres away."
     },
     "synapse": {
       "name": "SYNAPSE",
@@ -2284,7 +2614,7 @@
       "name": "T'AU",
       "source": "core",
       "page": 377,
-      "description": "A young but technologically advanced xenos Species, the T'au empire is rapidly spreading on the eastern fringes of the galaxy."
+      "description": "A young but technologically advanced xenos Species, the T'au empire is rapidly spreading on the eastern fringes of the galaxy. [Apocrypha homebrew sub-faction bonus] All Caste: T'au from the T'au Sept grant +1 additional die when they assist an ally. Further, whenever they use an ability which affects T'AU EMPIRE allies, the range is increased by +3m."
     },
     "tau_auxiliaries": {
       "name": "T'AU AUXILIARIES",
@@ -2364,17 +2694,41 @@
       "page": null,
       "description": "Tesla weapons unleash hectic arcs of living lightning that seem to feed and flourish on the destruction they cause. The mechanism through which these weapons produce lightning is unknown and the behaviour of their caustic arcs is unpredictable, but the results are certain — death and destruction of both mortal life and mechanical systems."
     },
+    "the_dark": {
+      "name": "THE DARK",
+      "source": "apocrypha",
+      "page": 46,
+      "description": "Harlequin Saedath. [Apocrypha homebrew sub-faction bonus] Dark Deeds: When the character makes a melee attack, improve the AP of that attack by 1."
+    },
+    "the_light": {
+      "name": "THE LIGHT",
+      "source": "apocrypha",
+      "page": 47,
+      "description": "Harlequin Saedath. [Apocrypha homebrew sub-faction bonus] Blaze of Light: When the character is the target of a ranged attack and their attacker is 12 of more metres away, add +1 to the character's Defence."
+    },
+    "the_twilight": {
+      "name": "THE TWILIGHT",
+      "source": "apocrypha",
+      "page": 47,
+      "description": "Harlequin Saedath. [Apocrypha homebrew sub-faction bonus] Twilight Falls: When the character uses the Charge action, they gain +1 bonus dice when making their attack."
+    },
     "thousand_sons": {
       "name": "THOUSAND SONS",
       "source": "apocrypha",
       "page": null,
-      "description": "A Legion of psykers, being sanctioned by the Emperor for their reckless use of sorcery when the Heresy broke out, it was inevitable that the Thousand Sons turned to Horus after the Space Wolves sacked and razed their homeworld. Always a legion of scholars and savants, knowledge was at the heart of the Thousand Sons' existence, but they were punished for delving too deeply in lore that was forbidden, and in their desperation, they found a patron in Tzeentch. However, the instability of their geneseed made mutation rife amongst the Legion, and devotion to the Changer of Ways made this worse, leading the Legion's Chief Librarian, Ahriman, to perform a great ritual to burn this flaw from his brethren. This ritual led to all those with psychic power becoming mightier, but turned the rest of the Legion into automata, their bodies turned to dust within their armour.\n\nThese rules reflect those who possess psychic abilities, rather than the Rubricae automata that accompany them into battle.\n\nCharacters with the THOUSAND SONS keyword must take TZEENTCH as their [MARK OF CHAOS] keyword."
+      "description": "A Legion of psykers, being sanctioned by the Emperor for their reckless use of sorcery when the Heresy broke out, it was inevitable that the Thousand Sons turned to Horus after the Space Wolves sacked and razed their homeworld. Always a legion of scholars and savants, knowledge was at the heart of the Thousand Sons' existence, but they were punished for delving too deeply in lore that was forbidden, and in their desperation, they found a patron in Tzeentch. However, the instability of their geneseed made mutation rife amongst the Legion, and devotion to the Changer of Ways made this worse, leading the Legion's Chief Librarian, Ahriman, to perform a great ritual to burn this flaw from his brethren. This ritual led to all those with psychic power becoming mightier, but turned the rest of the Legion into automata, their bodies turned to dust within their armour.\n\nThese rules reflect those who possess psychic abilities, rather than the Rubricae automata that accompany them into battle.\n\nCharacters with the THOUSAND SONS keyword must take TZEENTCH as their [MARK OF CHAOS] keyword. [Apocrypha homebrew sub-faction bonus] The Rubric: You gain the Favoured by The Warp talent. Gift of Mutation: You gain an additional +1 Corruption whenever you would gain one or more Corruption points. You also increase the DN of all tests to resist Corruption or Malignancy by +1. Characters with the THOUSAND SONS keyword must take TZEENTCH as their [MARK OF CHAOS] keyword."
     },
     "toxin": {
       "name": "TOXIN",
       "source": "apocrypha",
       "page": null,
       "description": "These upgrades may be used on any DRUKHARI weapon with the Fleshbane trait or with the Inflict (Poisoned X), applying an additional effect upon any target who suffers one or more wounds from the weapon. This adds the Inflict (Poisoned 3) trait to the weapon, if it does not already have that trait or a better version, and applies a specific effect determined by the poison."
+    },
+    "trans_hyperian_alliance": {
+      "name": "TRANS-HYPERIAN ALLIANCE",
+      "source": "apocrypha",
+      "page": 64,
+      "description": "League of Votann. [Apocrypha homebrew sub-faction bonus] Nomadic Explorers: You increase your Passive Awareness by +Rank and add +1d to all Pilot skill tests."
     },
     "transonic": {
       "name": "TRANSONIC",
@@ -2428,7 +2782,7 @@
       "name": "ULTHWE",
       "source": "apocrypha",
       "page": null,
-      "description": "[AI-Generated] An Asuryani Craftworld situated near the Eye of Terror, renowned for its powerful psykers and the Black Guardians who defend it against the constant Chaos threat."
+      "description": "[AI-Generated] An Asuryani Craftworld situated near the Eye of Terror, renowned for its powerful psykers and the Black Guardians who defend it against the constant Chaos threat. [Apocrypha homebrew sub-faction bonus] Foresight of the Damned: You increase your Passive Perception by +Rank."
     },
     "ultramarines": {
       "name": "ULTRAMARINES",
@@ -2447,6 +2801,12 @@
       "source": "apocrypha",
       "page": null,
       "description": "[AI-Generated] Followers of Chaos who worship the Ruinous Powers as a pantheon rather than devoting themselves to a single Chaos God."
+    },
+    "urani_surtr_regulates": {
+      "name": "URANI-SURTR REGULATES",
+      "source": "apocrypha",
+      "page": 64,
+      "description": "League of Votann. [Apocrypha homebrew sub-faction bonus] To the Last: You add +Rank to your Resolve, and you add +1 to your Determination."
     },
     "vehicle": {
       "name": "VEHICLE",
@@ -2470,7 +2830,7 @@
       "name": "VIOR'LA",
       "source": "apocrypha",
       "page": null,
-      "description": "Vior'la means “hot-blooded” in the T'au language, and its people live up to that moniker, for they are passionate, quick to anger, and even aggressive."
+      "description": "Vior'la means “hot-blooded” in the T'au language, and its people live up to that moniker, for they are passionate, quick to anger, and even aggressive. [Apocrypha homebrew sub-faction bonus] Air Caste: Have a knack for high-speed manoeuvres that other T'au might balk at: they ignore the additional Wrath Dice that comes piloting a vehicle at Breakneck speed. Earth Caste: Quick to experiment and jury-rig the devices they use: they may add a second Wrath die to any Tech test they attempt, and thus have the potential for two criticals, two complications, or one of each. Fire Caste: Advance and redeploy quickly, adding +1 to their Speed during the first round of each combat, and +1 Speed when they Run or Sprint. Water Caste: Fast-talking and effusive: they may add a second Wrath die to any Persuasion test they attempt, and thus have the potential for two criticals, two complications, or one of each."
     },
     "vortex": {
       "name": "VORTEX",
@@ -2496,11 +2856,17 @@
       "page": null,
       "description": "[AI-Generated] A First Founding Space Marine Chapter renowned for their lightning-fast mobile warfare, drawn from the warrior traditions of their homeworld Chogoris."
     },
+    "word_bearers": {
+      "name": "WORD BEARERS",
+      "source": "apocrypha",
+      "page": 32,
+      "description": "Heretic Astartes Legion. [Apocrypha homebrew sub-faction bonus] Profane Zeal: When you charge, you may re-roll up to Rank dice on your Weapon Skill test. In addition, you may re-roll Rank dice when you roll Determination. In addition, you are immune to fear caused by creatures with the DAEMON keyword. The Will of the Gods: You start each session with 1 Wrath Point instead of 2."
+    },
     "world_eaters": {
       "name": "WORLD EATERS",
       "source": "apocrypha",
       "page": null,
-      "description": "One of the Legions that betrayed the Emperor during the Horus Heresy, the World Eaters were always known for their ferocity and brutality. The Twelfth Legion always applied maximum force to every conflict, leaving mountains of corpses in their wake, and they were only unleashed against enemies who could not be reasoned with or forced to yield. During the Heresy, their brutality grew, turning them into bloodthirsty berserkers who would struggle to tell friend from foe in the crimson haze of their frenzy.\n\nCharacters with the WORLD EATERS keyword must take KHORNE as their [MARK OF CHAOS] keyword."
+      "description": "One of the Legions that betrayed the Emperor during the Horus Heresy, the World Eaters were always known for their ferocity and brutality. The Twelfth Legion always applied maximum force to every conflict, leaving mountains of corpses in their wake, and they were only unleashed against enemies who could not be reasoned with or forced to yield. During the Heresy, their brutality grew, turning them into bloodthirsty berserkers who would struggle to tell friend from foe in the crimson haze of their frenzy.\n\nCharacters with the WORLD EATERS keyword must take KHORNE as their [MARK OF CHAOS] keyword. [Apocrypha homebrew sub-faction bonus] Incarnate Violence: You may reroll Double Rank dice on any melee attack test. Butcher's Nails: Upon engaging in melee combat, you become Frenzied for the rest of the battle. The Willpower test to restrain your frenzy increases by +1 for every enemy you have killed during the battle. Characters with the WORLD EATERS keyword must take KHORNE as their [MARK OF CHAOS] keyword."
     },
     "wraith_construct": {
       "name": "WRAITH CONSTRUCT",
@@ -2549,6 +2915,12 @@
       "source": "apocrypha",
       "page": null,
       "description": "[AI-Generated] A T'au heavy battlesuit designation, the XV88 Broadside is a fire-support platform equipped with devastating long-range weaponry."
+    },
+    "ymyr_conglomerate": {
+      "name": "YMYR CONGLOMERATE",
+      "source": "apocrypha",
+      "page": 64,
+      "description": "League of Votann. [Apocrypha homebrew sub-faction bonus] Elite Artisans: You add +Rank to Tech skill tests and add +1 to the AR of any armour you wear."
     },
     "ynnari": {
       "name": "YNNARI",

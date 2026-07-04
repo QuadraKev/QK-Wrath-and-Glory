@@ -224,6 +224,7 @@ const AscensionTab = {
                     const customDisplay = isCustom ? 'block' : 'none';
                     html += `<input type="text" class="keyword-choice-custom" placeholder="Enter keyword (e.g., ORDO SICARIUS)" value="${isCustom ? currentValue : ''}" style="display: ${customDisplay}; margin-top: 8px;">`;
                 }
+                html += KeywordBonus.renderPanel(currentValue);
             } else {
                 // Pure text input (for [ANY])
                 html += `<input type="text" class="keyword-choice-text" placeholder="Enter keyword (e.g., DEATH GUARD)" value="${currentValue}">`;
@@ -585,6 +586,7 @@ const AscensionTab = {
                         customInput.value = '';
                     }
                     State.setAscensionChoice(targetTier, placeholder, value);
+                    this.render();
                 }
             });
         });

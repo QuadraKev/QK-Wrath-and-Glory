@@ -2732,8 +2732,55 @@ textarea {
     margin-top: 10px;
 }
 
+/* Sub-faction keyword bonus panel (official + Apocrypha homebrew) */
+.keyword-bonus-panel {
+    margin-top: 8px;
+    padding: 10px 12px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 0.9em;
+}
+.keyword-bonus-line {
+    color: var(--text-secondary);
+}
+.keyword-bonus-label {
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+.keyword-bonus-apocrypha {
+    margin-top: 6px;
+}
+.keyword-bonus-header {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+.homebrew-tag {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 6px;
+    border: 1px solid var(--accent-gold);
+    border-radius: 8px;
+    font-size: 0.75em;
+    color: var(--accent-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+}
+.keyword-bonus-effect {
+    margin-top: 4px;
+    white-space: pre-line;
+}
+.archetype-keyword-choice {
+    margin: 8px 0 12px;
+}
 .ref-weapon-special {
     white-space: pre-line;
+}
+.archetype-keyword-choice .keyword-choice-select,
+.archetype-keyword-choice .keyword-choice-custom,
+.archetype-keyword-choice .keyword-choice-text {
+    max-width: 420px;
 }
 
 /* Sheet: ascension choice display */

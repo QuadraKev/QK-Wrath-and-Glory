@@ -226,6 +226,16 @@ const PrerequisiteChecker = {
             character.customArchetype.keywords.forEach(k => keywords.add(k));
         }
 
+        // Archetype bracket-keyword choices (e.g. [FORGE WORLD] resolved to MARS)
+        if (character.archetypeKeywordChoices) {
+            for (const [placeholder, value] of Object.entries(character.archetypeKeywordChoices)) {
+                if (value && keywords.has(placeholder)) {
+                    keywords.add(value);
+                    keywords.delete(placeholder);
+                }
+            }
+        }
+
         // Ascension package keywords (e.g., PSYKER from Psychic Revelations)
         for (const asc of character.ascensions || []) {
             if (asc.type === 'package' && asc.packageId) {

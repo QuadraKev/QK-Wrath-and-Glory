@@ -5374,6 +5374,2964 @@
     "page": 346
   },
   {
+    "id": "accursed_crozius_aoa",
+    "name": "Accursed Crozius (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Chaos",
+    "description": "An Accursed Crozius is a special form of Daemon Weapon and serves as the mark of office and primary melee weapon of a Dark Apostle. Twisted and warped from the pure Crozius Arcanum of Loyalist Astartes Chaplains into something hideously blasphemous, the Accused Crozius mocks the Imperium of Man with its mere existence.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 5
+    },
+    "ed": 5,
+    "ap": -1,
+    "traits": [
+      "Brutal",
+      "Corrupting"
+    ],
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "POWER FIELD",
+      "DAEMON",
+      "HERETIC ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 336
+  },
+  {
+    "id": "axe_of_khorne_aoa",
+    "name": "Axe of Khorne (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Chaos",
+    "description": "The ancient, bloodstained axes are saturated with Khorne's insatiable, endless bloodlust. They are heavy blades of dark iron, bound by brass to a haft of living bone, and they continually urge their wielder to greater and greater feats of bloodshed.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 5
+    },
+    "ed": 5,
+    "ap": -2,
+    "traits": [
+      "Brutal",
+      "Rending (2)",
+      "Sustained"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "BLADE",
+      "CHAOS",
+      "DAEMON",
+      "KHORNE"
+    ],
+    "source": "apocrypha",
+    "page": 336
+  },
+  {
+    "id": "bedlam_staff_aoa",
+    "name": "Bedlam Staff (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Chaos",
+    "description": "Twisted relics of the Horus Heresy, these staves were once the proud armaments of the Sorcerers of the Thousand Sons. Millennia later, these weapons have become steeped in the writhing madness of the Warp, and a single strike can drive all conscious thought from a victim's mind.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 4
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": 2,
+    "traits": [
+      "Agonising",
+      "Brutal",
+      "Force",
+      "Inflict (Hindered 4)"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "FORCE",
+      "2-HANDED",
+      "CHAOS",
+      "TZEENTCH"
+    ],
+    "source": "apocrypha",
+    "page": 336
+  },
+  {
+    "id": "bubotic_axe_aoa",
+    "name": "Bubotic Axe (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Chaos",
+    "description": "A favoured weapon of some melee specialists amongst the servants of Nurgle, the Bubotic Axe is a cruel, vile weapon that inflicts horrendous wounds.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 5
+    },
+    "ed": 5,
+    "ap": -2,
+    "traits": [
+      "Inflict (Poisoned 4)",
+      "Rending (1)"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "BLADE",
+      "CHAOS",
+      "NURGLE"
+    ],
+    "source": "apocrypha",
+    "page": 336
+  },
+  {
+    "id": "daemon_blade_aoa",
+    "name": "Daemon Blade (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Chaos",
+    "description": "A cruel sword containing the bound spirit of a minor Daemon of Chaos. These weapons are often gifts to Champions of the Dark Gods and contain daemons who have displeased their masters in some way. While many daemon weapons are weapons of terrifying power with reputations as dread as their owners, this represents the least examples of such weapons.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 4
+    },
+    "ed": 5,
+    "ap": -2,
+    "traits": [
+      "Parry",
+      "Mortal (1)"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "BLADE",
+      "CHAOS",
+      "DAEMON"
+    ],
+    "source": "apocrypha",
+    "page": 336
+  },
+  {
+    "id": "flail_of_corruption_aoa",
+    "name": "Flail of Corruption (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Chaos",
+    "description": "This massive flail is heavy with rusted chains and filth-encrusted spikes, weights, and barbs. Impact from the flail is dangerous enough, but the virulent diseases living upon the weapon's surfaces kill any who aren't slain by the weapon itself.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 6
+    },
+    "ed": 4,
+    "ap": -2,
+    "range": 2,
+    "traits": [
+      "Brutal",
+      "Inflict (Poisoned 4)",
+      "Overwhelming"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "CHAOS",
+      "NURGLE"
+    ],
+    "source": "apocrypha",
+    "page": 336
+  },
+  {
+    "id": "great_plague_cleaver_aoa",
+    "name": "Great Plague Cleaver (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Chaos",
+    "description": "A massive, heavy axe that can cleave a man in two, coated in the deadliest plagues and vilest toxins imaginable.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 8
+    },
+    "ed": 6,
+    "ap": -3,
+    "range": 2,
+    "traits": [
+      "Brutal",
+      "Inflict (Poisoned 4)",
+      "Unwieldy (2)"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "BLADE",
+      "2-HANDED",
+      "CHAOS",
+      "NURGLE"
+    ],
+    "source": "apocrypha",
+    "page": 336
+  },
+  {
+    "id": "heavy_chainaxe_aoa",
+    "name": "Heavy Chainaxe (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Chaos",
+    "description": "A massive version of the Chainaxe common to many Traitor Legion and Renegade Astartes forces, these weapons are utterly brutal and entirely unsubtle, and favoured by those who seek the purity of slaughter.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 8
+    },
+    "ed": 6,
+    "ap": -4,
+    "range": 2,
+    "traits": [
+      "Brutal",
+      "Rending (2)",
+      "Unwieldy (2)"
+    ],
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "CHAIN",
+      "CHAOS",
+      "2-HANDED"
+    ],
+    "source": "apocrypha",
+    "page": 336
+  },
+  {
+    "id": "lash_of_torment_aoa",
+    "name": "Lash of Torment (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Chaos",
+    "description": "Long tendrils of fleshy daemonflesh, this living whip is wrought from the sinuous tongues of Steeds of Slaanesh and gifted to the Dark Prince's most beloved Champions. With every strike, the lash drinks deep of the courage and certainty of its victims, leaving only dread and despair.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 4
+    },
+    "ed": 2,
+    "ap": 0,
+    "range": 4,
+    "traits": [
+      "Agonising",
+      "Inflict (Terror)"
+    ],
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "CHAOS",
+      "DAEMON",
+      "SLAANESH"
+    ],
+    "source": "apocrypha",
+    "page": 336
+  },
+  {
+    "id": "mace_of_contagion_aoa",
+    "name": "Mace of Contagion (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Chaos",
+    "description": "These cumbersome censer-maces emit a sickly miasma of disease. A Mace of Contagion combines heavy blows with a sickly fog that turns blood rancid and flesh necrotic.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 5
+    },
+    "ed": 5,
+    "ap": -1,
+    "traits": [
+      "Inflict (Poisoned 4)",
+      "Unwieldy (2)"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "2-HANDED",
+      "CHAOS",
+      "NURGLE"
+    ],
+    "source": "apocrypha",
+    "page": 336
+  },
+  {
+    "id": "manreaper_aoa",
+    "name": "Manreaper (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Chaos",
+    "description": "An iconic weapon of the Death Guard Legion, even during the days of the Great Crusade. Where once these grand power scythes were deadly weapons wielded in the Emperor's Name, now they are filth-encrusted reapers of souls, slaying in the name of the Lord of Plagues.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 7
+    },
+    "ed": 4,
+    "ap": -3,
+    "range": 2,
+    "traits": [
+      "Inflict (Poisoned 4)",
+      "Reaping"
+    ],
+    "value": 7,
+    "rarity": "Unique",
+    "keywords": [
+      "BLADE",
+      "2-HANDED",
+      "CHAOS",
+      "DAEMON",
+      "NURGLE",
+      "HERETIC ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 336
+  },
+  {
+    "id": "pandemic_staff_aoa",
+    "name": "Pandemic Staff (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Chaos",
+    "description": "Lovingly crafted from the wood of one of the Gnarlmaw trees in Nurgle's garden, this staff has soaked in pestilential waters and the blood of the infected for aeons uncounted in the Warp. At a moment's notice, it can unleash a great cloud of contagion.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 4
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": 2,
+    "traits": [
+      "Brutal",
+      "Force",
+      "Inflict (Poisoned 4)"
+    ],
+    "value": 7,
+    "rarity": "Unique",
+    "keywords": [
+      "FORCE",
+      "2-HANDED",
+      "CHAOS",
+      "NURGLE"
+    ],
+    "source": "apocrypha",
+    "page": 336
+  },
+  {
+    "id": "plague_knife_aoa",
+    "name": "Plague Knife (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Chaos",
+    "description": "A Plague Knife is a long-bladed, dagger-like weapon wielded by Plague Marines and other devotees of the Chaos God Nurgle. It possesses the capability of \"blessing\" anyone it touches with the daemonic infection known as Nurgle's Rot. These long, pitted knives are encrusted and dripping with the most virulent of toxins, viruses, and other pathogens. Their wielders believe that they have been directly blessed by the Plague God himself, for the rot the weapons spread is so powerful that it can lay low even the most monstrous or powerful of enemies in seconds.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 3
+    },
+    "ed": 2,
+    "ap": 0,
+    "traits": [
+      "Inflict (Poisoned 3)"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "BLADE",
+      "CHAOS",
+      "NURGLE"
+    ],
+    "source": "apocrypha",
+    "page": 336
+  },
+  {
+    "id": "plague_sword_aoa",
+    "name": "Plague Sword (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Chaos",
+    "description": "Plague Swords are a type of Daemonic weapon used by followers of Nurgle such as Plague Bearers and Plague Marines. These weapons are infused with foul infections and toxins that can make the merest scratch fatal.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 5
+    },
+    "ed": 4,
+    "ap": 0,
+    "traits": [
+      "Inflict (Poisoned 4)",
+      "Parry"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "BLADE",
+      "CHAOS",
+      "DAEMON",
+      "NURGLE"
+    ],
+    "source": "apocrypha",
+    "page": 336
+  },
+  {
+    "id": "prosperine_khopesh_aoa",
+    "name": "Prosperine Khopesh (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Chaos",
+    "description": "Ancient power weapons, once favoured by the elite honour guard of the Thousand Sons' Primarch, Magnus the Red. These weapons are still borne by the Scarab Occult Terminators and high-ranking sorcerers amongst the Thousand Sons.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 6
+    },
+    "ed": 5,
+    "ap": -3,
+    "traits": [
+      "Parry"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "POWER FIELD",
+      "CHAOS",
+      "TZEENTCH",
+      "HERETIC ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 336
+  },
+  {
+    "id": "biting_blade_aoa",
+    "name": "Biting Blade (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Aeldari",
+    "description": "Biting Blades are two-handed, long-bladed Chainswords wielded by Exarchs of the Striking Scorpions shrine. Biting Blades are slender and quiet, able to slice through the primitive hordes of the enemy.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 6
+    },
+    "ed": 4,
+    "ap": -1,
+    "range": 2,
+    "traits": [
+      "Brutal",
+      "Parry",
+      "Silent",
+      "Reaping"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "CHAIN",
+      "2-HANDED",
+      "ANCIENT",
+      "AELDARI",
+      "ASURYANI"
+    ],
+    "source": "apocrypha",
+    "page": 338
+  },
+  {
+    "id": "chainsabres_aoa",
+    "name": "Chainsabres (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Aeldari",
+    "description": "These carefully-balanced pairs of chainswords are matched with gauntlets mounting paired Shuriken Pistols. The ritual martial forms associated with these weapons allow the wielder to deliver a punishing and unceasing storm of attacks.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 5
+    },
+    "ed": 3,
+    "ap": -1,
+    "traits": [
+      "Brutal",
+      "Parry",
+      "Paired",
+      "Silent",
+      "Sustained"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "CHAIN",
+      "ANCIENT",
+      "AELDARI",
+      "ASURYANI"
+    ],
+    "source": "apocrypha",
+    "page": 338
+  },
+  {
+    "id": "diresword_aoa",
+    "name": "Diresword (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Aeldari",
+    "description": "A Diresword is an Aeldari Power Weapon only wielded by Exarchs of the Dire Avengers Aspect. These one-handed, single-edged Power Swords are crafted in the graceful Aeldari style, into which a potent Aeldari spirit has been placed through the incorporation of a Spirit Stone into the blade. When a blow is struck, the spirit within the sword will attempt to destroy the enemy's mind.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 5
+    },
+    "ed": 3,
+    "ap": -3,
+    "traits": [
+      "Force",
+      "Mortal (1)",
+      "Parry"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "POWER FIELD",
+      "FORCE",
+      "ANCIENT",
+      "AELDARI",
+      "ASURYANI"
+    ],
+    "source": "apocrypha",
+    "page": 338
+  },
+  {
+    "id": "harlequins_blade_aoa",
+    "name": "Harlequin's Blade (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Aeldari",
+    "description": "These perfectly balanced swords are so light as to be almost weightless, and so sharp that those who are cut may not realise it for several seconds. They seem to sing as they pass through the air, their tune an accompaniment to the Harlequins' deadly dance.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 4
+    },
+    "ed": 3,
+    "ap": 0,
+    "traits": [
+      "Parry",
+      "Rending (2)"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "BLADE",
+      "HARLEQUIN"
+    ],
+    "source": "apocrypha",
+    "page": 338
+  },
+  {
+    "id": "mirrorswords_aoa",
+    "name": "Mirrorswords (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Aeldari",
+    "description": "A Mirrorsword is a type of Aeldari Power Sword commonly employed by a Howling Banshee Exarch. Two Mirrorswords are commonly employed by those Howling Banshee Exarchs who have mastered a deadly ambidextrous style of combat that uses the paired blades to unleash a dazzling flurry of swift strikes and parries.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 5
+    },
+    "ed": 4,
+    "ap": -3,
+    "traits": [
+      "Paired",
+      "Parry",
+      "Reaping"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "POWER FIELD",
+      "AELDARI",
+      "ANCIENT",
+      "ASURYANI"
+    ],
+    "source": "apocrypha",
+    "page": 338
+  },
+  {
+    "id": "paragon_sabre_aoa",
+    "name": "Paragon Sabre (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Aeldari",
+    "description": "These ancient masterwork blades are perfectly balanced for striking from the saddle of a jetbike. At such speeds, a single precise cut can be devastating.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 5
+    },
+    "ed": 4,
+    "ap": -4,
+    "traits": [
+      "Parry",
+      "Tearing"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "POWER FIELD",
+      "ANCIENT",
+      "AELDARI",
+      "ASURYANI"
+    ],
+    "source": "apocrypha",
+    "page": 338
+  },
+  {
+    "id": "uge_choppa_aoa",
+    "name": "'Uge Choppa (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Ork",
+    "description": "These massive weapons can only be wielded by the largest of Orks, and are only seen in the hands of Warbosses and Warlords",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 8
+    },
+    "ed": 4,
+    "ap": -3,
+    "range": 2,
+    "traits": [
+      "Brutal",
+      "Waaagh!"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "CHAIN",
+      "TWO-HANDED",
+      "ORK"
+    ],
+    "source": "apocrypha",
+    "page": 343
+  },
+  {
+    "id": "urty_syringe_aoa",
+    "name": "'Urty Syringe (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Ork",
+    "description": "This massive metal syringe superficially resembles a tool of the chirurgeon's craft and tend to be filled with whatever toxic sludge the Painboy can find or create.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 4
+    },
+    "ed": 4,
+    "ap": 0,
+    "traits": [
+      "Careful",
+      "Inflict (Poisoned 4)",
+      "Waaagh!"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "EXOTIC",
+      "ORK"
+    ],
+    "source": "apocrypha",
+    "page": 343
+  },
+  {
+    "id": "grabba_stikk_aoa",
+    "name": "Grabba Stikk (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Ork",
+    "description": "Grabba Stikks are the traditional tool of Runtherdz, used for throttling anything in arm's reach. Consisting of a sturdy metal pole, a deceptively simple pulley system, and an articulated barbed claw, grabba stikks are used to capture and restrain potential slaves. In battle, Runtherdz often use them to throttle enemies within the weapon's reach.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 5
+    },
+    "ed": 3,
+    "ap": 0,
+    "range": 2,
+    "traits": [
+      "Inflict (Restrained)",
+      "Waaagh!"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "EXOTIC",
+      "ORK"
+    ],
+    "source": "apocrypha",
+    "page": 343
+  },
+  {
+    "id": "grot_prod_aoa",
+    "name": "Grot Prod (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Ork",
+    "description": "The more progressive Runtherdz use a simple Mek invention known as Grot-Prod to deliver a short, sharp shock to an errant Grot's vulnerable parts. It is like a cattle-prod and works by delivering jolts of electricity into a Grots body. These electric prods can also be made into a formidable close combat weapons by increasing the voltage to lethal levels.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 5
+    },
+    "ed": 5,
+    "ap": -1,
+    "traits": [
+      "Agonizing",
+      "Waaagh!"
+    ],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "EXOTIC",
+      "ORK"
+    ],
+    "source": "apocrypha",
+    "page": 343
+  },
+  {
+    "id": "killsaw_aoa",
+    "name": "Killsaw (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Ork",
+    "description": "Killsaws are powerful Ork melee weapons, normally employed by larger Mekboyz seeking to tear something apart for salvage or mounted onto the arm of a suit of Mega-Armour, allowing the wearer to cut through bulkheads, enemy armour, and everything else.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 7
+    },
+    "ed": 6,
+    "ap": -4,
+    "traits": [
+      "Brutal",
+      "Unwieldy (3)",
+      "Waaagh!"
+    ],
+    "value": 10,
+    "rarity": "Very Rare",
+    "keywords": [
+      "POWER FIELD",
+      "ORK"
+    ],
+    "source": "apocrypha",
+    "page": 343
+  },
+  {
+    "id": "power_snappa_aoa",
+    "name": "Power Snappa (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Ork",
+    "description": "Resembling a smaller, light-weight version of a Power Klaw, a Power Snappa is a pair of scissoring blades wreathed in a disruptive field, used to rip enemies apart without the bulk and awkwardness of a full-sized Klaw.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 5
+    },
+    "ed": 5,
+    "ap": -2,
+    "traits": [
+      "Brutal",
+      "Waaagh!"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "POWER FIELD",
+      "ORK"
+    ],
+    "source": "apocrypha",
+    "page": 343
+  },
+  {
+    "id": "power_stabba_aoa",
+    "name": "Power Stabba (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Ork",
+    "description": "A Power Stabba is an Ork Choppa, equipped with additional \"sparky bitz\" that generate a disruptive energy field.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 5
+    },
+    "ed": 4,
+    "ap": -2,
+    "traits": [
+      "Waaagh!"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "POWER FIELD",
+      "ORK"
+    ],
+    "source": "apocrypha",
+    "page": 343
+  },
+  {
+    "id": "tankhammer_aoa",
+    "name": "Tankhammer (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Ork",
+    "description": "The least subtle of Ork melee weapons is the Tankhammer. A rokkit on a pole, the Tankhammer is swung directly into a target with devastating effects. The main drawback, of course, is that the wielder will always be in the weapon's blast when the rokkit detonates.",
+    "damage": {
+      "base": 0,
+      "attribute": "strength",
+      "bonus": 10
+    },
+    "ed": 5,
+    "ap": -2,
+    "traits": [
+      "Careful",
+      "Blast (2)",
+      "Waaagh!"
+    ],
+    "value": 8,
+    "rarity": "Uncommon",
+    "keywords": [
+      "EXPLOSIVE",
+      "ORK"
+    ],
+    "source": "apocrypha",
+    "page": 343
+  },
+  {
+    "id": "needlespine_blaster_bolt_aoa",
+    "name": "Needlespine Blaster (Bolt) (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "The Needlespine Blaster combines a rapid-fire bolter component with a deadly needler that makes use of an enhanced synthetic venom. The preserve of Clave Adamus operatives, the Needlespine Blaster fires an intensified pulse-beam of las energy, through which darts of an exotic metallic alloy are projected at incredible speeds. In the trained hands of an Adamus Assassin this weapon can make a mockery of even the thickest armour, but to the uninitiated, its bulk and complexity make it all but unusable.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": 0,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 3,
+    "traits": [
+      "Brutal",
+      "Pistol",
+      "Rapid Fire (1)",
+      "Silent"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "BOLT",
+      "NEEDLE",
+      "OFFICIO ASSASSINORUM",
+      "TEMPLUM ADAMUS"
+    ],
+    "source": "apocrypha",
+    "page": 356
+  },
+  {
+    "id": "needlespine_blaster_needler_aoa",
+    "name": "Needlespine Blaster (Needler) (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "The Needlespine Blaster combines a rapid-fire bolter component with a deadly needler that makes use of an enhanced synthetic venom. The preserve of Clave Adamus operatives, the Needlespine Blaster fires an intensified pulse-beam of las energy, through which darts of an exotic metallic alloy are projected at incredible speeds. In the trained hands of an Adamus Assassin this weapon can make a mockery of even the thickest armour, but to the uninitiated, its bulk and complexity make it all but unusable.",
+    "damage": {
+      "base": 8,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": 0,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Agonizing",
+      "Fleshbane",
+      "Inflict (Poisoned 4)",
+      "Pistol",
+      "Silent"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "BOLT",
+      "NEEDLE",
+      "OFFICIO ASSASSINORUM",
+      "TEMPLUM ADAMUS"
+    ],
+    "source": "apocrypha",
+    "page": 357
+  },
+  {
+    "id": "neural_shredder_aoa",
+    "name": "Neural Shredder (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "A Neural Shredder is a vicious and shockingly effective weapon against living targets. Though short ranged, the weapon projects a cone of psionic disruption that tears apart a victims' neural pathways. Armour is no protection against his hideous attack, even the mightiest foes dropping to their knees, spasming violently as liquidised brain-matter froths from their eyes, ears, and mouths. This strange weapon's origin is unknown, although some speculate that it is but one of a range of psychic weapons developed by the Adeptus Astra Telepathica.",
+    "damage": {
+      "base": 4,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": 0,
+    "range": {
+      "short": 5,
+      "medium": 9,
+      "long": 14
+    },
+    "salvo": 0,
+    "traits": [
+      "Assault",
+      "Blast (6)"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "EXOTIC",
+      "OFFICIO ASSASSINORUM",
+      "TEMPLUM CALLIDUS"
+    ],
+    "source": "apocrypha",
+    "page": 357
+  },
+  {
+    "id": "phosphor_blast_pistol_aoa",
+    "name": "Phosphor Blast Pistol (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "Though a pale reflection of the horrific phosphex weaponry used during the Great Crusade and the Horus Heresy, the illuminating blasts of these weapons are nonetheless potent, and if they do not kill the enemy, they light the target up such that they cannot hide from the Omnissiah's wrath. These pistols are often carried by high-ranking Skitarii, and few outside the Adeptus Mechanicus are given leave to touch such arcane weaponry.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Inflict (On Fire)",
+      "Luminagen",
+      "Pistol"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "PHOSPHEX",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "apocrypha",
+    "page": 357
+  },
+  {
+    "id": "phosphor_carbine_aoa",
+    "name": "Phosphor Carbine (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "A potent, rapid-fire phosphor weapon, these carbines are used to provide concentrated fire for Skitarii Serberys cavalry units.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 4,
+    "traits": [
+      "Assault",
+      "Inflict (On Fire)",
+      "Luminagen"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "PHOSPHEX",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "apocrypha",
+    "page": 357
+  },
+  {
+    "id": "phosphor_pistol_aoa",
+    "name": "Phosphor Pistol (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "A lesser version of the Phosphor Blast Pistol, these pistols are less revered, and thus can be used by rank-and-file Skitarii troopers rather than only their leaders.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Pistol",
+      "Luminagen"
+    ],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "PHOSPHEX",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "apocrypha",
+    "page": 357
+  },
+  {
+    "id": "phosphor_torch_aoa",
+    "name": "Phosphor Torch (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "Spraying searing white phosphor flames, these weapons are used to scour, cleanse, and sterilise Mechanicus territories of taint and corruption.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Assault",
+      "Blast (6)",
+      "Inflict (On Fire)",
+      "Spread"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "FIRE",
+      "PHOSPHEX",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "apocrypha",
+    "page": 357
+  },
+  {
+    "id": "psilencer_aoa",
+    "name": "Psilencer (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "A weapon of mysterious origin, which focusses the will of the user through a crystalline capacitor and generates bolts of pure psychic energy. Used exclusively by the Grey Knights, these weapons are a potent tool against daemonic hordes and other enemies of mankind.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": 0,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 6,
+    "traits": [
+      "Force",
+      "Heavy (6)"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "FORCE",
+      "GREY KNIGHTS"
+    ],
+    "source": "apocrypha",
+    "page": 357
+  },
+  {
+    "id": "psycannon_aoa",
+    "name": "Psycannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "The Psycannon is a specialised form of bolt weapon used by the Grey Knights and the Ordo Malleus, loaded with blessed and sanctified bolt shells. The Grey Knights are trained to channel their own psychic power into the shells, making them even more potent.",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 4,
+    "traits": [
+      "Brutal",
+      "Force",
+      "Heavy (6)"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "BOLT",
+      "FORCE",
+      "GREY KNIGHTS",
+      "ORDO MALLEUS"
+    ],
+    "source": "apocrypha",
+    "page": 357
+  },
+  {
+    "id": "radium_serpenta_aoa",
+    "name": "Radium Serpenta (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Rad",
+    "description": "A compact form of the Radium carbine, these weapons are often employed as a sidearm for senior Skitarii officers.",
+    "damage": {
+      "base": 7,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": 0,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 1,
+    "traits": [
+      "Assault",
+      "Rad (2)"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "PROJECTILE",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "apocrypha",
+    "page": 357
+  },
+  {
+    "id": "toxin_ejector_aoa",
+    "name": "Toxin Ejector (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "The Toxin Ejector is a type of weapon used by the Venenum Temple of the Officio Assassinorum which can kill even the toughest of foes without any metabolic trace. They emit a variety of toxins from caustic poisons able to corrode armoured hulls and flesh deadly gas.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -1,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Pistol",
+      "Blast (4)",
+      "Fleshbane",
+      "Inflict (Poisoned 7)"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "GAS",
+      "TEMPLUM VENENUM"
+    ],
+    "source": "apocrypha",
+    "page": 357
+  },
+  {
+    "id": "transuranic_arquebus_aoa",
+    "name": "Transuranic Arquebus (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Solid Projectile",
+    "description": "A Transuranic Arquebus is a long-barrelled infantry weapon which epitomises the precision and inhuman efficiency that typify the cyborg Skitarii legions of the Adeptus Mechanicus. Firing a bullet of ultra-dense transuranic metal, the high-velocity shot contains immense kinetic energy, allowing it to pierce most armour – and anything inside the armour – with ease.",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 30,
+      "medium": 60,
+      "long": 90
+    },
+    "salvo": 0,
+    "traits": [
+      "Heavy (6)",
+      "Mortal (1)",
+      "Sniper (3)"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "PROJECTILE",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "apocrypha",
+    "page": 357
+  },
+  {
+    "id": "volkite_serpenta_aoa",
+    "name": "Volkite Serpenta (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Volkite",
+    "description": "The pistol variant of a Volkite Weapon wielded single-handed, the Volkite Serpenta was sometimes carried by high-ranking soldiers of the Imperial Army and the Tech-priests of the Mechanicum during the Great Crusade era.",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 5,
+      "medium": 10,
+      "long": 15
+    },
+    "salvo": 1,
+    "traits": [
+      "Inflict (On Fire)",
+      "Pistol"
+    ],
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "VOLKITE",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "apocrypha",
+    "page": 357
+  },
+  {
+    "id": "volkite_charger_aoa",
+    "name": "Volkite Charger (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Volkite",
+    "description": "The Volkite Charger was the assault weapon variant of a Volkite Weapon carried by Legiones Astartes infantry and the military forces of the Mechanicum. Whilst not benefiting from the range or power of its larger cousins, the Charger retained the Volkite thermal ray's deflagrating effects and allowed its wielder a greater degree of movement.",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 8,
+      "medium": 15,
+      "long": 23
+    },
+    "salvo": 2,
+    "traits": [
+      "Assault",
+      "Inflict (On Fire)"
+    ],
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "VOLKITE",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "apocrypha",
+    "page": 357
+  },
+  {
+    "id": "webber_aoa",
+    "name": "Webber (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "A Webber is an exotic, non-lethal weapon used to immobilise a target. It fires a fluid filled with a mass of filaments, which expands in the air to form a web of sticky, near-unbreakable material. Targets are quickly entangled in a painful embrace; if they attempt to struggle, the filaments constrict even more, further entrapping them. They are commonly employed by the Adeptus Arbites for riot suppression, crowd control, and capturing suspects alive. They would be more widespread, but the web chemical they use is often difficult to obtain.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 1,
+    "traits": [
+      "Assault",
+      "Blast (4)",
+      "Inflict (Restrained 4)"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "WEB",
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "source": "apocrypha",
+    "page": 357
+  },
+  {
+    "id": "web_pistol_aoa",
+    "name": "Web Pistol (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "A Webber is an exotic, non-lethal weapon used to immobilise a target. It fires a fluid filled with a mass of filaments, which expands in the air to form a web of sticky, near-unbreakable material. Targets are quickly entangled in a painful embrace; if they attempt to struggle, the filaments constrict even more, further entrapping them. They are commonly employed by the Adeptus Arbites for riot suppression, crowd control, and capturing suspects alive. They would be more widespread, but the web chemical they use is often difficult to obtain. Webber weapons are found in pistol and heavy weapon forms, the latter often mounted on Arbites combat vehicles such as Repressors.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Blast (2)",
+      "Inflict (Restrained 3)",
+      "Pistol"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "WEB",
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "source": "apocrypha",
+    "page": 358
+  },
+  {
+    "id": "webber_heavy_aoa",
+    "name": "Webber, Heavy (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "A Webber is an exotic, non-lethal weapon used to immobilise a target. It fires a fluid filled with a mass of filaments, which expands in the air to form a web of sticky, near-unbreakable material. Targets are quickly entangled in a painful embrace; if they attempt to struggle, the filaments constrict even more, further entrapping them. They are commonly employed by the Adeptus Arbites for riot suppression, crowd control, and capturing suspects alive. They would be more widespread, but the web chemical they use is often difficult to obtain. Webber weapons are found in pistol and heavy weapon forms, the latter often mounted on Arbites combat vehicles such as Repressors.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 1,
+    "traits": [
+      "Blast (8)",
+      "Heavy (6)",
+      "Inflict (Restrained 5)"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "WEB",
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "source": "apocrypha",
+    "page": 358
+  },
+  {
+    "id": "deffgun_aoa",
+    "name": "Deffgun (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Ork",
+    "description": "Deffguns are heavy Ork weapons, fine examples of the Mek's craft that are made from all kinds of materials, scavenged heavy weaponry of other races. Deffguns are so large they must be mounted on a special firing rig strapped to an Ork's broad shoulders. This cumbersome rig is needed to absorb bone-breaking recoil each time the Deffgun is fired.",
+    "damage": {
+      "base": 14,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": {
+      "short": 24,
+      "medium": 48,
+      "long": 72
+    },
+    "salvo": "1d3",
+    "traits": [
+      "Heavy (6)",
+      "Waaagh!"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "ORK"
+    ],
+    "source": "apocrypha",
+    "page": 377
+  },
+  {
+    "id": "kustom_mega_blasta_aoa",
+    "name": "Kustom Mega-Blasta (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Ork",
+    "description": "Ork Mekboys sometimes build a weapon that is far greater than the sum of its parts, a marvel of Ork technology that fires a focused blast of pure energy at its targets. Known as Kustom Mega-Blasta, it instantly vaporises targets even if they wear terminator armour. It is also highly effective against vehicles. However, like many Ork weapons, a Kustom Mega-Blasta is very unreliable and prone to overheating. It can even kill the greenskin after a particularly unlucky shot.",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 5,
+    "ap": -3,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 1,
+    "traits": [
+      "Assault",
+      "Blast (4)",
+      "Supercharge",
+      "Waaagh!"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "MEK",
+      "PLASMA",
+      "ORK"
+    ],
+    "source": "apocrypha",
+    "page": 377
+  },
+  {
+    "id": "kustom_mega_slugga_aoa",
+    "name": "Kustom Mega-Slugga (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Ork",
+    "description": "Kustom Mega Slugga is an experimental energy weapon, a pistol-sized version of Kustom Mega-Blasta, sometimes used by Ork Mekboys.",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -3,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Pistol",
+      "Supercharge",
+      "Waaagh!"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "MEK",
+      "PLASMA",
+      "ORK"
+    ],
+    "source": "apocrypha",
+    "page": 377
+  },
+  {
+    "id": "rokkit_pistol_aoa",
+    "name": "Rokkit Pistol (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Ork",
+    "description": "A smaller, hand-held version of an Ork Rokkit Launcha, Rokkit Pistols are an ideal anti-tank weapon for any individual unaware of the idea of \"minimum safe distance\".",
+    "damage": {
+      "base": 14,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": "1d3",
+    "ap": -2,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 0,
+    "traits": [
+      "Blast (2)",
+      "Pistol",
+      "Waaagh!"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "ORK"
+    ],
+    "source": "apocrypha",
+    "page": 377
+  },
+  {
+    "id": "tankbusta_bomb_aoa",
+    "name": "Tankbusta Bomb (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Ork",
+    "description": "Tankbusta Bombs are heavy magnetic discs size and shape of manhole covers. They are directional and are used when Stikkbombs simply aren't sufficient to destroy something. They are attached to the vehicles by magnetic clamps and detonated with deadly efficiency.",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -3,
+    "range": "-",
+    "salvo": 0,
+    "traits": [
+      "Brutal",
+      "Blast (2)",
+      "Waaagh!"
+    ],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "ORK"
+    ],
+    "source": "apocrypha",
+    "page": 377
+  },
+  {
+    "id": "thump_gun_aoa",
+    "name": "Thump Gun (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Ork",
+    "description": "A simple Ork firearm, comprising little more than a large-gauge barrel, a grip, and a trigger, built to launch fist-sized high-explosive shells. They're favoured by Beast Snagga Orks hunting monsters and vehicles.",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 1,
+    "traits": [
+      "Blast (4)",
+      "Waaagh!"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "ORK"
+    ],
+    "source": "apocrypha",
+    "page": 377
+  },
+  {
+    "id": "virus_grenade_aoa",
+    "name": "Virus Grenade (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Grenade",
+    "description": "Virus grenades contain a genetically tailored virus, like the virus bombs used to perform Exterminatus, but on a much smaller scale; the \"tactical\" virus weapon, compared to the \"strategic\" Life-Eater weapons used to kill worlds. Only the most hardened and merciless warriors can deploy such weapons without hesitation, for there is always an element of risk. The servants of the Chaos God Nurgle are known to employ such weapons as well, especially the Death Guard Heretic Astartes, who were experts in using chemical and biological weapons long before they fell to Chaos.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": "(S) x4m",
+    "salvo": 0,
+    "traits": [
+      "Blast (6)",
+      "Gas"
+    ],
+    "value": 12,
+    "rarity": "Unique",
+    "keywords": [
+      "EXOTIC",
+      "GAS",
+      "ADEPTUS MECHANICUS",
+      "INQUISITION",
+      "NURGLE"
+    ],
+    "source": "apocrypha",
+    "page": 362
+  },
+  {
+    "id": "vortex_grenade_aoa",
+    "name": "Vortex Grenade (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Grenade",
+    "description": "Vortex grenades are exceptionally rare weapons, for they are almost impossible to produce. Only the most skilled of Artisans in the Adeptus Mechanicus are entrusted with the secrets to produce them, and they are only deployed by the most senior Imperial agents in the direst of circumstances. Each grenade, a bulky, dense sphere, contains a miniaturised warp drive, too complex and temperamental to be anything but destructive. When activated, the grenade opens a rift between realspace and the Warp, which turns into a howling vortex that consumes all matter and energy it touches. These vortices are deadly because they are completely unpredictable once formed. Some collapse in a few moments, others remain for longer, and some may even grow or drift around the battlefield. The Aeldari are known to make use of similar technologies, though they favour more stable D-Cannon and Wraithcannon forms over unpredictable Vortex Grenades.",
+    "damage": {
+      "base": 20,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -6,
+    "range": "(S) x4m",
+    "salvo": 0,
+    "traits": [
+      "Blast (6)",
+      "Mortal (1)",
+      "Warp Weapon"
+    ],
+    "value": 13,
+    "rarity": "Unique",
+    "keywords": [
+      "EXOTIC",
+      "ADEPTUS MECHANICUS",
+      "ASURYANI"
+    ],
+    "source": "apocrypha",
+    "page": 362
+  },
+  {
+    "id": "web_grenade_aoa",
+    "name": "Web Grenade (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Grenade",
+    "description": "Web Grenades use the same ensnaring filament-filled gel as other webber weaponry, and a single grenade can entangle masses of targets in moments when they detonate. Over time, the web filaments will eventually become brittle and dissolve away.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": "(S) x4m or as Launcher",
+    "salvo": 0,
+    "traits": [
+      "Blast (6)",
+      "Inflict (Restrained 4)"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "WEB",
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "source": "apocrypha",
+    "page": 362
+  },
+  {
+    "id": "instigator_bolt_carbine_aoa",
+    "name": "Instigator Bolt Carbine (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Bolt",
+    "description": "An artificer-crafted form of Bolt Carbine, the Instigator is quiet and precise, without sacrificing mobility",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 1,
+    "traits": [
+      "Assault",
+      "Brutal",
+      "Silent",
+      "Sniper (1)"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "BOLT",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS"
+    ],
+    "source": "apocrypha",
+    "page": 346
+  },
+  {
+    "id": "marksman_bolt_carbine_aoa",
+    "name": "Marksman Bolt Carbine (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Bolt",
+    "description": "Employed by Primaris Infiltrators, the Marksman Bolt Carbine is designed to lay down short, precise bursts of fire. Marksman Bolt Carbines are fitted with a Monoscope as standard.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 1,
+    "traits": [
+      "Brutal",
+      "Rapid Fire (1)",
+      "Sniper (1)"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "BOLT",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS"
+    ],
+    "source": "apocrypha",
+    "page": 346
+  },
+  {
+    "id": "stalker_bolt_rifle_aoa",
+    "name": "Stalker Bolt Rifle (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Bolt",
+    "description": "A variant of the Primaris' Bolt Rifles, the Stalker Bolt Rifle emphasises range and precision over rate of fire. A Stalker Bolt Rifle comes with a Monoscope as standard.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 1,
+    "traits": [
+      "Brutal",
+      "Heavy (4)",
+      "Rapid Fire (1)",
+      "Sniper (1)"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "BOLT",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS"
+    ],
+    "source": "apocrypha",
+    "page": 346
+  },
+  {
+    "id": "stalker_pattern_boltgun_aoa",
+    "name": "Stalker-pattern Boltgun (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Bolt",
+    "description": "A modified boltgun, used by specialised snipers within the Adeptus Astartes, particularly the Deathwatch. Not a dedicated sniping weapon, it serves as a mid-point between boltgun and sniper rifle. A Stalker-pattern Boltgun comes with a Monoscope as standard.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 15,
+      "medium": 30,
+      "long": 45
+    },
+    "salvo": 2,
+    "traits": [
+      "Brutal",
+      "Heavy (4)",
+      "Rapid Fire (1)",
+      "Sniper (1)"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "BOLT",
+      "ADEPTUS ASTARTES",
+      "DEATHWATCH"
+    ],
+    "source": "apocrypha",
+    "page": 346
+  },
+  {
+    "id": "heavy_graviton_cannon_aoa",
+    "name": "Heavy Graviton Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Grav Weapons",
+    "description": "This larger, more potent version of the Grav-cannon is normally encountered upon Adeptus Mechanicus Kataphron battle servitors.",
+    "damage": {
+      "base": 8,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -3,
+    "range": {
+      "short": 15,
+      "medium": 30,
+      "long": 45
+    },
+    "salvo": 5,
+    "traits": [
+      "Grav",
+      "Heavy (8)"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "GRAV",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "apocrypha",
+    "page": 348
+  },
+  {
+    "id": "holdout_laspistol_aoa",
+    "name": "Holdout Laspistol (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Las",
+    "description": "Carried by diplomats, assassins and other people who want a tiny, concealable weapon, the Holdout Laspistol—often known as the Las-Derringer, after an Ancient Terran weapon of similar size—is small enough to fit into the palm of the hand, and both light and thin enough to go almost unnoticed under clothing. Its principal drawbacks are a lack of effective range, and limited power, but this is of little concern for those who choose to wield them. Its tiny power cell cannot be easily removed, though the weapon can be recharged after it has expended its ammunition.",
+    "damage": {
+      "base": 7,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 3,
+      "medium": 6,
+      "long": 9
+    },
+    "salvo": 0,
+    "traits": [
+      "Pistol"
+    ],
+    "value": 2,
+    "rarity": "Common",
+    "keywords": [
+      "LAS",
+      "IMPERIUM",
+      "SCUM"
+    ],
+    "source": "apocrypha",
+    "page": 349
+  },
+  {
+    "id": "lasgun_accatran_aoa",
+    "name": "Lasgun (Accatran) (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Las",
+    "description": "The Accatran pattern Mark IV Lasgun is a lightweight, compact weapon ideal for use by Drop Troop units, such as the Elysians, who are commonly equipped with these weapons. The length is reduced thanks to the 'bullpup' design, where the power pack is inserted into the shoulder stock, behind the handle. To conserve ammunition and reduce wastage, the weapon's refire rate is reduced, removing the capacity for automatic fire. It uses a high-charge capacitor, to improve stopping power during the initial stages of a firefight.",
+    "damage": {
+      "base": 8,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 1,
+    "traits": [
+      "Rapid Fire (1)",
+      "Reliable"
+    ],
+    "value": 4,
+    "rarity": "Common",
+    "keywords": [
+      "LAS",
+      "IMPERIUM"
+    ],
+    "source": "apocrypha",
+    "page": 349
+  },
+  {
+    "id": "lasgun_kantrael_aoa",
+    "name": "Lasgun (Kantrael) (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Las",
+    "description": "A weapon made famous for its use by Cadian infantry regiments, and thus found on battlefields across the Imperium. Kantrael-pattern weapons are notorious for their accuracy and use a larger charge that gives it slightly greater stopping power.",
+    "damage": {
+      "base": 8,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 14,
+      "medium": 28,
+      "long": 42
+    },
+    "salvo": 2,
+    "traits": [
+      "Rapid Fire (1)",
+      "Reliable"
+    ],
+    "value": 4,
+    "rarity": "Common",
+    "keywords": [
+      "LAS",
+      "IMPERIUM"
+    ],
+    "source": "apocrypha",
+    "page": 349
+  },
+  {
+    "id": "lasgun_lucius_aoa",
+    "name": "Lasgun (Lucius) (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Las",
+    "description": "These weapons were made famous by the siege regiments of Krieg, who have vast stockpiles of this pattern of Lasgun. It draws a much larger charge from its powerpack than most lasguns, which results in a much more potent shot, but increases component wear due to heating, and means an individual will use up the charge from a power pack much faster. The extra stresses placed on the weapon force it to have a slower rate of fire, allowing the barrel and capacitors to cool before firing, to prevent undue damage to the weapon. This cooling is sped up by the addition of additional heatsink rings around the base of the barrel, but the weapon itself is still limited to semi-automatic fire. This is amply compensated for by the increased hitting power.",
+    "damage": {
+      "base": 8,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": 0,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 1,
+    "traits": [
+      "Brutal",
+      "Reliable"
+    ],
+    "value": 4,
+    "rarity": "Common",
+    "keywords": [
+      "LAS",
+      "IMPERIUM"
+    ],
+    "source": "apocrypha",
+    "page": 349
+  },
+  {
+    "id": "lasgun_necromunda_aoa",
+    "name": "Lasgun (Necromunda) (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Las",
+    "description": "A common, if bulkier and less energy-efficient, variant of las-weapon, produced in vast quantities on the Hive World of Necromunda: a world well-known for its intense gang warfare and munitions factories. Lasweapons of Necromundan origin tend to have slightly faster recharge rates between shots, allowing for a greater rate of fire. The weapon has a higher-charge capacitor than is common for the Mars pattern, making the weapons less efficient but packing a heavier punch.",
+    "damage": {
+      "base": 8,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 3,
+    "traits": [
+      "Rapid Fire (2)",
+      "Reliable"
+    ],
+    "value": 4,
+    "rarity": "Common",
+    "keywords": [
+      "LAS",
+      "IMPERIUM"
+    ],
+    "source": "apocrypha",
+    "page": 349
+  },
+  {
+    "id": "lasgun_triplex_phall_aoa",
+    "name": "Lasgun (Triplex Phall Pattern) (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Las",
+    "description": "A variant design developed on the Forge World of Triplex Phall, these weapons demonstrates that Forge World's mastery of variable-charge capacitors and similar technologies, allowing these patterns to be set to higher settings for greater effect, at the cost of more power.",
+    "damage": {
+      "base": 7,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 2,
+    "traits": [
+      "Rapid Fire (1)",
+      "Reliable"
+    ],
+    "value": 4,
+    "rarity": "Common",
+    "keywords": [
+      "LAS",
+      "IMPERIUM"
+    ],
+    "source": "apocrypha",
+    "page": 349
+  },
+  {
+    "id": "laslock_aoa",
+    "name": "Laslock (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Las",
+    "description": "Normally produced only in resource-poor munitions factors, or on worlds too primitive to manufacture true lasguns, the Laslock—also known as the Las-musket—is a crude, bulky and unreliable single-shot lasweapons. While the weapon itself is potent, it is inaccurate compared to most standard Lasguns, which discharge their power cells with every shot.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": {
+      "short": 10,
+      "medium": 20,
+      "long": 30
+    },
+    "salvo": "-",
+    "traits": [
+      "Brutal"
+    ],
+    "value": 2,
+    "rarity": "Common",
+    "keywords": [
+      "LAS",
+      "SCUM"
+    ],
+    "source": "apocrypha",
+    "page": 349
+  },
+  {
+    "id": "laspistol_kantrael_aoa",
+    "name": "Laspistol (Kantrael) (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Las",
+    "description": "A weapon made famous for its use by Cadian infantry regiments, and thus found on battlefields across the Imperium. Kantrael-pattern weapons are notorious for their accuracy and use a larger charge that gives it slightly greater stopping power.",
+    "damage": {
+      "base": 8,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 7,
+      "medium": 14,
+      "long": 21
+    },
+    "salvo": 1,
+    "traits": [
+      "Pistol",
+      "Reliable"
+    ],
+    "value": 4,
+    "rarity": "Common",
+    "keywords": [
+      "LAS",
+      "IMPERIUM"
+    ],
+    "source": "apocrypha",
+    "page": 349
+  },
+  {
+    "id": "laspistol_necromunda_aoa",
+    "name": "Laspistol (Necromunda) (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Las",
+    "description": "A common, if bulkier and less energy-efficient, variant of las-weapon, produced in vast quantities on the Hive World of Necromunda: a world well-known for its intense gang warfare and munitions factories. Lasweapons of Necromundan origin tend to have slightly faster recharge rates between shots, allowing for a greater rate of fire. The weapon has a higher-charge capacitor than is common for the Mars pattern, making the weapons less efficient but packing a heavier punch.",
+    "damage": {
+      "base": 8,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 2,
+    "traits": [
+      "Pistol",
+      "Rapid Fire (1)"
+    ],
+    "value": 4,
+    "rarity": "Common",
+    "keywords": [
+      "LAS",
+      "IMPERIUM"
+    ],
+    "source": "apocrypha",
+    "page": 349
+  },
+  {
+    "id": "laspistol_triplex_phall_aoa",
+    "name": "Laspistol (Triplex Phall Pattern) (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Las",
+    "description": "A variant design developed on the Forge World of Triplex Phall, these weapons demonstrates that Forge World's mastery of variable-charge capacitors and similar technologies, allowing these patterns to be set to higher settings for greater effect, at the cost of more power.",
+    "damage": {
+      "base": 7,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Pistol",
+      "Reliable"
+    ],
+    "value": 4,
+    "rarity": "Common",
+    "keywords": [
+      "LAS",
+      "IMPERIUM"
+    ],
+    "source": "apocrypha",
+    "page": 349
+  },
+  {
+    "id": "navis_las_volley_aoa",
+    "name": "Navis Las-Volley (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Las",
+    "description": "A support weapon used by Imperial Navy Breacher units; the Las-Volley is a compact version of the Multi-laser found on many Astra Militarum vehicles. Reduced down to a man-portable scale, a Las-Volley can deliver a punishing salvo of searing lasbolts, ideal for clearing the passageways of a voidship. The Navis Las-Volley includes a backpack ammo supply.",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 4,
+    "traits": [
+      "Heavy (4)",
+      "Rapid Fire (2)",
+      "Reliable"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "LAS",
+      "IMPERIUM",
+      "NAVIS IMPERIALIS"
+    ],
+    "source": "apocrypha",
+    "page": 349
+  },
+  {
+    "id": "star_lance_aoa",
+    "name": "Star Lance (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Aeldari",
+    "description": "A high-powered form of laser lance, star lances are named for the legendary weapon of the Phoenix King, Asuryan, when he rode into battle during the War in Heaven. Like their namesake, they deliver punishing strikes that even the mightiest foes cannot resist.",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -4,
+    "range": {
+      "short": 3,
+      "medium": 6,
+      "long": 9
+    },
+    "salvo": 0,
+    "traits": [
+      "Assault",
+      "Lance"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "LAS",
+      "ANCIENT",
+      "AELDARI",
+      "ASURYANI"
+    ],
+    "source": "apocrypha",
+    "page": 370
+  },
+  {
+    "id": "sunrifle_aoa",
+    "name": "Sunrifle (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Aeldari",
+    "description": "A Sunrifle is a form of las-weapon most often wielded by Aeldari Swooping Hawk Exarchs, potent enough to assault whole squads of enemy troops with a burst of dazzling laser beams. While less potent than the bolts from a Hawk's Talon, the Sunrifle has an exceptionally high rate of fire, and often leaves survivors blinded by the fusillade.",
+    "damage": {
+      "base": 8,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -2,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 6,
+    "traits": [
+      "Assault",
+      "Inflict (Blinded)",
+      "Sustained"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "LAS",
+      "ANCIENT",
+      "AELDARI",
+      "ASURYANI"
+    ],
+    "source": "apocrypha",
+    "page": 370
+  },
+  {
+    "id": "tempest_launcher_aoa",
+    "name": "Tempest Launcher (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Aeldari",
+    "description": "The Tempest Launcher is a rare weapon sometimes carried by the Dark Reaper Exarchs. This weapon differs from the standard Reaper Launcher in that it is used to saturate an area with smaller, armour-piercing missiles via indirect fire in swarming, foe-seeking volleys.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -2,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 6,
+    "traits": [
+      "Barrage",
+      "Blast (6)",
+      "Indirect"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "EXPLOSIVE",
+      "ANCIENT",
+      "AELDARI",
+      "ASURYANI"
+    ],
+    "source": "apocrypha",
+    "page": 370
+  },
+  {
+    "id": "triskele_aoa",
+    "name": "Triskele (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Aeldari",
+    "description": "A Triskele is a deadly Aeldari ranged weapon composed of three powered blades that can be thrown in a great arc that slices through anything in its path before returning to its owner. The weapon can also be used as a Power Weapon in close combat.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": "-",
+    "traits": [
+      "Assault",
+      "Reaping"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "POWER",
+      "ANCIENT",
+      "AELDARI",
+      "ASURYANI"
+    ],
+    "source": "apocrypha",
+    "page": 370
+  },
+  {
+    "id": "web_of_skulls_aoa",
+    "name": "Web of Skulls (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Aeldari",
+    "description": "The Web of Skulls is an ancient Aeldari weapon, consisting of three heavy crystalline skulls linked together by lengths of chain. The weapon is grasped at the point where the chains meet and spun quickly before being hurled at a target. Cunningly concealed antigrav technology accelerates and propels the weapon to its targets, often to strike several targets in a row before returning. It can also be used in melee in a manner like a flail.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -1,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": "-",
+    "traits": [
+      "Assault"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "POWER",
+      "ANCIENT",
+      "AELDARI",
+      "ASURYANI"
+    ],
+    "source": "apocrypha",
+    "page": 370
+  },
+  {
+    "id": "pulse_rifle_aoa",
+    "name": "Pulse Rifle (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "Pulse Rifles are the most common form of Pulse Weapon, and these elongated rifles are utilised as standard weapons for T'au Fire Warriors. Pulse Rifles can be wielded effectively whether the user is stationary or moving to unleash devastating volleys at considerable range; indeed, it is reckoned that the Pulse Rifle inflicts more harm at longer ranges than even the boltguns of the Adeptus Astartes.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 2,
+    "traits": [
+      "Rapid Fire (1)"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PULSE",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 378
+  },
+  {
+    "id": "pulse_carbine_aoa",
+    "name": "Pulse Carbine (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "A Pulse Carbine is a T'au Pulse Weapon that utilises pulsed induction fields to propel lethal micro-bursts of plasma over long ranges. A Pulse Carbine is a shorter and more lightweight version of the Tau Pulse Rifle and has a damage output greater than the standard weapons of every other intelligent race the Tau have yet encountered.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 2,
+    "traits": [
+      "Assault"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PULSE",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 378
+  },
+  {
+    "id": "pulse_pistol_aoa",
+    "name": "Pulse Pistol (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "A Pulse Pistol is a far smaller version of the T'au Pulse Rifle, lacking in range but retaining the potent stopping power of their larger counterparts. As a pistol-sized Pulse Weapon, it is only used by certain T'au personnel as a basic defence and hold-out weapon for use in desperate situations.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Pistol"
+    ],
+    "value": 3,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PULSE",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 378
+  },
+  {
+    "id": "rail_rifle_aoa",
+    "name": "Rail Rifle (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "A potent weapon, the Rail Rifle makes use of the same technologies as the larger Railgun and Heavy Rail Rifle, albeit on a smaller scale so that it is infantry portable. Possessed of an impressively long range and ability to deal great damage, the Rail Rifle's true strength lies in its armour penetration capabilities. The Rail Rifle's hypersonic projectile can punch through the heaviest personal armour with ease. As a dedicated elite infantry killer, enemy units that manage to survive a Rail Rifle fusillade often find themselves pinned down, unable to do anything in the face of such deadly fire. The Rail Rifle also proves effective when used against light vehicles. Rail Rifles have only recently been authorised for issue to frontline Tau units, having completed an extensive field-testing phase.",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -4,
+    "range": {
+      "short": 15,
+      "medium": 30,
+      "long": 45
+    },
+    "salvo": 0,
+    "traits": [
+      "Heavy (4)",
+      "Mortal (1)",
+      "Sniper (1)"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "PROJECTILE",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 378
+  },
+  {
+    "id": "smart_missile_system_aoa",
+    "name": "Smart Missile System (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "A Smart Missile System is an advanced T'au weapon system that fires clusters of small missiles, each guided by a drone processor unit built into its warhead, intended for use against masses of enemy infantry, particularly those hiding in cover. Upon their launch, the \"Smart Missiles\" will search for targets within sensor range before selecting and engaging one based on criteria previously detailed by the weapon's operator. These targets do not have to be within line of sight of the operator, as once the target has been acquired, the missiles are able to effectively home in on it, manoeuvring their thrusters to propel them around any intervening terrain as they hunt the enemy down to an explosive conclusion.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": 0,
+    "range": {
+      "short": 15,
+      "medium": 30,
+      "long": 45
+    },
+    "salvo": 4,
+    "traits": [
+      "Barrage",
+      "Blast (2)",
+      "Heavy (6)",
+      "Indirect"
+    ],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 378
+  },
+  {
+    "id": "tau_flamer_aoa",
+    "name": "T'au Flamer (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "Like the flamers used by the Imperium, Aeldari, and Orks, T'au Empire developed flamers for use as a weapon system for Tau XV8 Crisis Battlesuits. Most often equipped when Battlesuit teams are expected to be fighting massed, lightly-armoured opponents, they are lethal weapons when used against foes in dense terrain.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 3,
+    "traits": [
+      "Assault",
+      "Flamer"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "FIRE",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 378
+  },
+  {
+    "id": "animus_speculum_aoa",
+    "name": "Animus Speculum (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "A helmet-mounted psychic weapon, the animus speculum focusses the negative psychic presence of the wearer into bolts of energy that overwhelm the minds and souls of others. They draw additional power from nearby psykers, becoming deadlier with each psyker nearby.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -4,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 3,
+    "traits": [
+      "Agonising",
+      "Assault"
+    ],
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "EXOTIC",
+      "OFFICIO ASSASSINORUM",
+      "TEMPLUM CULEXUS"
+    ],
+    "source": "apocrypha",
+    "page": 356
+  },
+  {
+    "id": "archeo_revolver_aoa",
+    "name": "Archeo-Revolver (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Solid Projectile",
+    "description": "Ancient and prized sidearms of the Adeptus Mechanicus, these seemingly simple pistols pack a surprisingly heavy punch due to arcane secrets used in the manufacture of the ammunition. They are entrusted to skilled Skitarii Alphas who have proven that they will not waste these precious shots.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Pistol",
+      "Reliable"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "PROJECTILE",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "apocrypha",
+    "page": 356
+  },
+  {
+    "id": "conversion_beamer_aoa",
+    "name": "Conversion Beamer (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "The Conversion Beamer, also called a Conversion Beam Projector, is an incredibly rare and deadly antimatter-based pre-Horus Heresy archaeotech weapon most likely developed during the Age of Technology. It fires a directed energy beam of antimatter particles which cause a matter-antimatter explosion in its target. It is a powerful, long-ranged weapon whose beam intensity actually becomes stronger the farther the range to its target, up to a terminal distance point where the beam finally begins to lose coherence.",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 21,
+      "medium": 42,
+      "long": 63
+    },
+    "salvo": 1,
+    "traits": [
+      "Blast (4)",
+      "Heavy (8)"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "EXOTIC",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "apocrypha",
+    "page": 356
+  },
+  {
+    "id": "deathwatch_frag_cannon_shrapnel_aoa",
+    "name": "Deathwatch Frag Cannon (Shrapnel) (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "A specialised firearm that projects adamantium shells, either solid or broken into a cloud of razor-sharp shrapnel. Though short-ranged, the weapon is extremely effective at slaying all manner of alien monstrosities.",
+    "damage": {
+      "base": 14,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": {
+      "short": 4,
+      "medium": 8,
+      "long": 12
+    },
+    "salvo": 2,
+    "traits": [
+      "Assault",
+      "Barrage",
+      "Blast (10)",
+      "Heavy (6)",
+      "Spread"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "PROJECTILE",
+      "DEATHWATCH"
+    ],
+    "source": "apocrypha",
+    "page": 356
+  },
+  {
+    "id": "deathwatch_frag_cannon_shell_aoa",
+    "name": "Deathwatch Frag Cannon (Shell) (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "A specialised firearm that projects adamantium shells, either solid or broken into a cloud of razor-sharp shrapnel. Though short-ranged, the weapon is extremely effective at slaying all manner of alien monstrosities.",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 2,
+    "traits": [
+      "Assault",
+      "Heavy (6)"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "PROJECTILE",
+      "DEATHWATCH"
+    ],
+    "source": "apocrypha",
+    "page": 356
+  },
+  {
+    "id": "executioner_pistol_bolt_aoa",
+    "name": "Executioner Pistol (Bolt) (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "The executioner pistol is the standard sidearm of all Eversor assassins, consisting of a master-crafted bolt pistol combined with a needle pistol.\n\nThis functions as a combi-weapon (Wrath & Glory rulebook, page 227), fitted with a gene-grip bio-veritor.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": 0,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Brutal",
+      "Pistol",
+      "Silent"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "BOLT",
+      "NEEDLE",
+      "OFFICIO ASSASSINORUM",
+      "TEMPLUM EVERSOR"
+    ],
+    "source": "apocrypha",
+    "page": 356
+  },
+  {
+    "id": "executioner_pistol_needler_aoa",
+    "name": "Executioner Pistol (Needler) (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "The executioner pistol is the standard sidearm of all Eversor assassins, consisting of a master-crafted bolt pistol combined with a needle pistol.\n\nThis functions as a combi-weapon (Wrath & Glory rulebook, page 227), fitted with a gene-grip bio-veritor.",
+    "damage": {
+      "base": 8,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": 0,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Agonising",
+      "Inflict (Poisoned 4)",
+      "Pistol",
+      "Silent"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "BOLT",
+      "NEEDLE",
+      "OFFICIO ASSASSINORUM",
+      "TEMPLUM EVERSOR"
+    ],
+    "source": "apocrypha",
+    "page": 356
+  },
+  {
+    "id": "exitus_longrifle_aoa",
+    "name": "Exitus Longrifle (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "The Exitus Longrifle is a purpose-built high-calibre sniper rifle, hand-crafted for each individual Vindicare assassin. Their ammunition is as rare and carefully manufactured as the weapon, with each formed from a unique high-density alloy with armour-piercing tips. Specialised ammunition also exists in this form, and Vindicare assassins are equipped with several such specialised rounds.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -3,
+    "range": {
+      "short": 36,
+      "medium": 72,
+      "long": 108
+    },
+    "salvo": 1,
+    "traits": [
+      "Sniper (3)",
+      "Reliable"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "PROJECTILE",
+      "OFFICIO ASSASSINORUM",
+      "TEMPLUM VINDICARE"
+    ],
+    "source": "apocrypha",
+    "page": 356
+  },
+  {
+    "id": "exitus_pistol_aoa",
+    "name": "Exitus Pistol (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "Exitus pistols are a counterpart for the Longrifle, hand-made sidearms that utilise the same high-powered ammunition as the rifles. Each Exitus Longrifle and Exitus Pistol is made as a pair for a specific Vindicare Assassin.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -3,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Pistol",
+      "Reliable"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "PROJECTILE",
+      "OFFICIO ASSASSINORUM",
+      "TEMPLUM VINDICARE"
+    ],
+    "source": "apocrypha",
+    "page": 356
+  },
+  {
+    "id": "flechette_carbine_aoa",
+    "name": "Flechette Carbine (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "A larger form of Flechette Blaster, the Flechette Carbine can lay down a huge volume of firepower in moments, to suppress or eviscerate enemies.",
+    "damage": {
+      "base": 7,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": 0,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 5,
+    "traits": [
+      "Assault",
+      "Spread"
+    ],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "PROJECTILE",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "apocrypha",
+    "page": 356
+  },
+  {
+    "id": "hot_shot_marksman_rifle_aoa",
+    "name": "Hot-shot Marksman Rifle (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Las",
+    "description": "A modified version of the Hot-shot Lasgun, this weapon is fitted with a precision extended barrel and a high-powered scope, allowing it to deliver shots with deadly accuracy. In exchange for that power and precision, the weapon depletes its power pack rapidly, and the components require extensive regular maintenance.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -2,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 0,
+    "traits": [
+      "Sniper (1)",
+      "Reliable"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "LAS",
+      "IMPERIUM",
+      "ASTRA MILITARUM"
+    ],
+    "source": "apocrypha",
+    "page": 349
+  },
+  {
+    "id": "las_fusil_aoa",
+    "name": "Las Fusil (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Las",
+    "description": "The Las Fusil is a powerful, anti-personnel heavy Laser Weapon used by Astartes Vanguard Eliminator squads as an antimateriel weapon. They are extremely precise, and only slightly less potent than a full-size lascannon, making them ideal for destroying enemy armour from ambush.",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -3,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 0,
+    "traits": [
+      "Heavy (4)",
+      "Sniper (1)"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "LAS",
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS"
+    ],
+    "source": "apocrypha",
+    "page": 349
+  },
+  {
     "id": "cos_atalan_incinerator",
     "name": "Atalan Incinerator",
     "type": "ranged",

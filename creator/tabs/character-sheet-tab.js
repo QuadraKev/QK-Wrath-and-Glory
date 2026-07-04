@@ -1174,10 +1174,10 @@ const CharacterSheetTab = {
         if (character.archetype?.id === 'custom' && character.customArchetype?.abilityArchetypeId) {
             const abilityArchetype = DataLoader.getArchetype(character.customArchetype.abilityArchetypeId);
             if (abilityArchetype?.abilities) {
-                abilityGroups.push({ source: null, abilities: abilityArchetype.abilities });
+                abilityGroups.push({ source: null, archetype: abilityArchetype, abilities: abilityArchetype.abilities });
             }
         } else if (archetype?.abilities) {
-            abilityGroups.push({ source: null, abilities: archetype.abilities });
+            abilityGroups.push({ source: null, archetype: archetype, abilities: archetype.abilities });
         }
 
         // Archetype ascension abilities
@@ -1195,7 +1195,7 @@ const CharacterSheetTab = {
         }
 
         const allAbilitiesHtml = abilityGroups.map(group => {
-            return group.abilities.map(ability => {
+            return group.abilities.map((ability, abilityIndex) => {
                 const flavor = ability.flavor || null;
                 const effect = ability.effect || ability.description;
 
@@ -1206,7 +1206,7 @@ const CharacterSheetTab = {
                 const sourceHtml = group.source
                     ? `<span class="sheet-ability-source">(from ${group.source} Ascension)</span>`
                     : '';
-                const sourceRefHtml = group.archetype
+                const sourceRefHtml = group.archetype && abilityIndex === group.abilities.length - 1
                     ? `<div class="source-ref">${DataLoader.formatSourcePage(group.archetype)}</div>`
                     : '';
 
@@ -1230,7 +1230,6 @@ const CharacterSheetTab = {
             <div class="sheet-section">
                 <h2 class="sheet-section-title">Archetype Abilities</h2>
                 ${allAbilitiesHtml}
-                ${archetype ? `<div class="source-ref">${DataLoader.formatSourcePage(archetype)}</div>` : ''}
             </div>
         `;
     },

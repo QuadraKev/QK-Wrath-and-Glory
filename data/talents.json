@@ -1295,6 +1295,34 @@
     "page": 234
   },
   {
+    "id": "companion_aoa",
+    "name": "Companion (Abundance of Apocrypha)",
+    "cost": 10,
+    "prerequisites": {
+      "skills": {
+        "leadership": 2
+      }
+    },
+    "effect": "Your companion is a single Troop level Threat, as described in Chapter 14 of the Wrath & Glory Core Rulebook. You may use the stats presented in the core rulebook or another bestiary, or use the following rules: Companion Attributes are equal to 1 + Double Rank. Companion Skills are equal to 1 + Double Rank. A companion’s Attributes and Skills cannot be higher than your own. Whenever you are hit by any form of attack, your companion may make a DN 5 Initiative Test as a Reflexive Action. If they succeed, the attack hits the companion instead of hitting you. Slain companions may be replaced for free with a new one the next time you visit a major encampment or city. Your companion may be an Elite Threat rather than a Troop Threat, but the cost of this Talent increases to 20xp.",
+    "flavor": "You’re accompanied by a loyal companion, a subordinate who will support you and follow your direction.",
+    "source": "apocrypha",
+    "page": 234
+  },
+  {
+    "id": "companion_elite_aoa",
+    "name": "Companion (Elite) (Abundance of Apocrypha)",
+    "cost": 20,
+    "prerequisites": {
+      "skills": {
+        "leadership": 2
+      }
+    },
+    "effect": "Your companion is a single Troop level Threat, as described in Chapter 14 of the Wrath & Glory Core Rulebook. You may use the stats presented in the core rulebook or another bestiary, or use the following rules: Companion Attributes are equal to 1 + Double Rank. Companion Skills are equal to 1 + Double Rank. A companion’s Attributes and Skills cannot be higher than your own. Whenever you are hit by any form of attack, your companion may make a DN 5 Initiative Test as a Reflexive Action. If they succeed, the attack hits the companion instead of hitting you. Slain companions may be replaced for free with a new one the next time you visit a major encampment or city. Your companion may be an Elite Threat rather than a Troop Threat, but the cost of this Talent increases to 20xp.",
+    "flavor": "You’re accompanied by a loyal companion, a subordinate who will support you and follow your direction.",
+    "source": "apocrypha",
+    "page": 234
+  },
+  {
     "id": "concealed_cavity",
     "name": "Concealed Cavity",
     "cost": 10,

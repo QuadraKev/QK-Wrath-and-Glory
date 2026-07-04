@@ -1243,6 +1243,14 @@ const State = {
         this.notifyListeners('ascension', targetTier);
     },
 
+    // Remove a choice from an ascension package (e.g., an extra Demanding Patron keyword)
+    removeAscensionChoice(targetTier, choiceKey) {
+        const entry = (this.character.ascensions || []).find(a => a.targetTier === targetTier);
+        if (!entry?.choices) return;
+        delete entry.choices[choiceKey];
+        this.notifyListeners('ascension', targetTier);
+    },
+
     // Get the effective tier (starting tier + number of non-creation ascensions)
     // Creation ascension = slot where targetTier <= starting tier
     getEffectiveTier() {

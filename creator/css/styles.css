@@ -2706,7 +2706,8 @@ textarea {
 }
 .keyword-choice-select,
 .keyword-choice-text,
-.keyword-choice-custom {
+.keyword-choice-custom,
+.keyword-extra-input {
     width: 100%;
     padding: 8px;
     background: var(--bg-card);
@@ -2717,6 +2718,18 @@ textarea {
 }
 .keyword-choice-select option {
     background: var(--bg-card);
+}
+.ascension-keyword-extra {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+.ascension-keyword-extra .keyword-extra-input {
+    width: auto;
+    flex: 1;
+}
+.ascension-keyword-add {
+    margin-top: 10px;
 }
 
 /* Sheet: ascension choice display */

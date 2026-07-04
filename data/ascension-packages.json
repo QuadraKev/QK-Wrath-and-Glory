@@ -54,7 +54,8 @@
       {
         "placeholder": "[ANY]",
         "category": "any",
-        "label": "Faction of your new patron"
+        "label": "Faction of your new patron",
+        "allowMultiple": true
       }
     ],
     "influenceModifier": 2,

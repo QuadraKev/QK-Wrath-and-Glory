@@ -229,10 +229,30 @@ const AscensionTab = {
                 html += `<input type="text" class="keyword-choice-text" placeholder="Enter keyword (e.g., DEATH GUARD)" value="${currentValue}">`;
             }
 
+            // Extra keywords (e.g., Demanding Patron: GM may assign more than one)
+            if (kc.allowMultiple) {
+                for (const key of this.getExtraKeywordKeys(choices, kc.placeholder)) {
+                    html += `
+                        <div class="ascension-keyword-extra" data-key="${key}">
+                            <input type="text" class="keyword-extra-input" placeholder="Enter keyword (e.g., ROGUE TRADER)" value="${choices[key] || ''}">
+                            <button class="btn-remove ascension-keyword-remove">Remove</button>
+                        </div>
+                    `;
+                }
+                html += `<button class="btn-small ascension-keyword-add" data-placeholder="${kc.placeholder}">+ Add Keyword</button>`;
+            }
+
             html += `</div>`;
         }
 
         return html;
+    },
+
+    // Extra keyword choice keys for a placeholder ("[ANY]2", "[ANY]3", ...), in numeric order
+    getExtraKeywordKeys(choices, placeholder) {
+        return Object.keys(choices)
+            .filter(k => k.startsWith(placeholder) && /^\d+$/.test(k.slice(placeholder.length)))
+            .sort((a, b) => parseInt(a.slice(placeholder.length)) - parseInt(b.slice(placeholder.length)));
     },
 
     // Render archetype selection UI for a slot
@@ -576,6 +596,43 @@ const AscensionTab = {
                 const targetTier = parseInt(choiceDiv.dataset.targetTier);
                 const placeholder = choiceDiv.dataset.placeholder;
                 State.setAscensionChoice(targetTier, placeholder, e.target.value.toUpperCase());
+            });
+        });
+
+        // Extra keyword text inputs (allowMultiple keyword choices)
+        container.querySelectorAll('.ascension-keyword-extra .keyword-extra-input').forEach(input => {
+            input.addEventListener('input', (e) => {
+                const row = e.target.closest('.ascension-keyword-extra');
+                const choiceDiv = row.closest('.ascension-keyword-choice');
+                const targetTier = parseInt(choiceDiv.dataset.targetTier);
+                State.setAscensionChoice(targetTier, row.dataset.key, e.target.value.toUpperCase());
+            });
+        });
+
+        // Add extra keyword buttons
+        container.querySelectorAll('.ascension-keyword-add').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const choiceDiv = e.target.closest('.ascension-keyword-choice');
+                const targetTier = parseInt(choiceDiv.dataset.targetTier);
+                const placeholder = btn.dataset.placeholder;
+                const current = (State.getCharacter().ascensions || []).find(a => a.targetTier === targetTier);
+                const existing = this.getExtraKeywordKeys(current?.choices || {}, placeholder);
+                const nextIndex = existing.length > 0
+                    ? parseInt(existing[existing.length - 1].slice(placeholder.length)) + 1
+                    : 2;
+                State.setAscensionChoice(targetTier, `${placeholder}${nextIndex}`, '');
+                this.render();
+            });
+        });
+
+        // Remove extra keyword buttons
+        container.querySelectorAll('.ascension-keyword-remove').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const row = e.target.closest('.ascension-keyword-extra');
+                const choiceDiv = row.closest('.ascension-keyword-choice');
+                const targetTier = parseInt(choiceDiv.dataset.targetTier);
+                State.removeAscensionChoice(targetTier, row.dataset.key);
+                this.render();
             });
         });
     },

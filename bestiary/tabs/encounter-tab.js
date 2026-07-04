@@ -1230,6 +1230,20 @@ const EncounterTab = {
                             <span class="mini-section-value" data-glossary-enhance>${threat.mobAbilities}</span>
                         </div>
                     ` : ''}
+
+                    ${threat.threatOptions ? `
+                        <div class="mini-section">
+                            <span class="mini-section-label">Threat Options:</span>
+                            <span class="mini-section-value" data-glossary-enhance>${threat.threatOptions}</span>
+                        </div>
+                    ` : ''}
+
+                    ${threat.biomorphs ? `
+                        <div class="mini-section">
+                            <span class="mini-section-label">Biomorphs:</span>
+                            <span class="mini-section-value" data-glossary-enhance>${threat.biomorphs}</span>
+                        </div>
+                    ` : ''}
                 </div>
             </div>
         `;

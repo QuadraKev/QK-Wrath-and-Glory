@@ -393,6 +393,12 @@ const ThreatsTab = {
         // Build bottom stats table
         const bottomStatsTable = this.renderBottomStatsTable(threat);
 
+        // Build optional text sections (threat options, mob rules, biomorphs)
+        const threatOptionsHtml = this.renderTextSection('Threat Options', threat.threatOptions);
+        const mobOptionsHtml = this.renderTextSection('Mob Options', threat.mobOptions);
+        const mobAbilitiesHtml = this.renderTextSection('Mob Abilities', threat.mobAbilities);
+        const biomorphsHtml = this.renderTextSection('Biomorphs', threat.biomorphs);
+
         // Build add to encounter controls (for header)
         const addToEncounterHtml = this.renderAddToEncounterHeader(threat);
 
@@ -446,6 +452,14 @@ const ThreatsTab = {
                         ${determinationHtml}
 
                         ${bottomStatsTable}
+
+                        ${threatOptionsHtml}
+
+                        ${mobOptionsHtml}
+
+                        ${mobAbilitiesHtml}
+
+                        ${biomorphsHtml}
                     </div>
                 </div>
             </div>
@@ -638,6 +652,18 @@ const ThreatsTab = {
             <div class="determination-row">
                 <span class="determination-label">DETERMINATION:</span>
                 <span class="determination-value" data-glossary-enhance>${determination}</span>
+            </div>
+        `;
+    },
+
+    // Optional multi-line text sections (Threat Options, Mob Options, Mob Abilities, Biomorphs)
+    renderTextSection(label, text) {
+        if (!text) return '';
+
+        return `
+            <div class="bonuses-section">
+                <div class="bonuses-header">${label}</div>
+                <div class="threat-text-section" data-glossary-enhance>${text}</div>
             </div>
         `;
     },

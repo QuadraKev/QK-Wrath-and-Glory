@@ -728,6 +728,14 @@ body {
     margin-bottom: 15px;
 }
 
+.threat-text-section {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    white-space: pre-line;
+    padding: 0 12px;
+}
+
 .bonuses-header {
     background: var(--bg-tertiary);
     padding: 8px 12px;
@@ -2531,6 +2539,7 @@ body {
     font-size: 13px;
     color: var(--text-secondary);
     line-height: 1.4;
+    white-space: pre-line;
 }
 
 /* ===== Threat Card Header with Add to Encounter ===== */

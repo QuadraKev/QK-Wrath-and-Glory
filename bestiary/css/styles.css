@@ -736,6 +736,10 @@ body {
     padding: 0 12px;
 }
 
+.ref-weapon-special {
+    white-space: pre-line;
+}
+
 .bonuses-header {
     background: var(--bg-tertiary);
     padding: 8px 12px;

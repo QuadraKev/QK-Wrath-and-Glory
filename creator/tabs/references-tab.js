@@ -586,6 +586,9 @@ const ReferencesTab = {
             html += `<div class="ref-stat"><span class="ref-label">Keywords:</span> ${entry.keywords.join(', ')}</div>`;
         }
         html += `<div class="ref-stat"><span class="ref-label">Value:</span> ${entry.value} &nbsp; <span class="ref-label">Rarity:</span> ${entry.rarity}</div>`;
+        if (entry.special) {
+            html += `<div class="ref-stat ref-weapon-special"><span class="ref-label">Special:</span> ${entry.special}</div>`;
+        }
         html += '</div>';
 
         if (entry.description) {

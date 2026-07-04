@@ -2732,6 +2732,10 @@ textarea {
     margin-top: 10px;
 }
 
+.ref-weapon-special {
+    white-space: pre-line;
+}
+
 /* Sheet: ascension choice display */
 .sheet-ascension-choice {
     font-size: 0.9em;

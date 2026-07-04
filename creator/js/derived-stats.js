@@ -314,16 +314,18 @@ const DerivedStats = {
 
         // Sum influence modifiers from ascension packages and archetype ascensions
         let ascensionBonus = 0;
-        const startingTier = character.tier || 1;
         for (const asc of character.ascensions || []) {
             if (asc.type === 'package' && asc.packageId) {
                 const pkg = DataLoader.getAscensionPackages().find(p => p.id === asc.packageId);
-                if (pkg) ascensionBonus += pkg.influenceModifier || 0;
+                if (pkg) {
+                    // Bonuses printed as "+N per Tier Ascended" scale with the tiers gained by this ascension
+                    const tiersAscended = this.getTiersAscended(character, asc);
+                    ascensionBonus += (pkg.influenceModifier || 0) * (pkg.influencePerTierAscended ? tiersAscended : 1);
 
-                // Demanding Patron: +2 Influence per Tier Ascended if "influence" choice is selected
-                if (asc.packageId === 'demanding_patron' && asc.choices?.patronBenefit === 'influence') {
-                    const tiersAscended = Math.max(0, asc.targetTier - startingTier);
-                    ascensionBonus += 2 * tiersAscended;
+                    // Demanding Patron: +2 Influence per Tier Ascended if "influence" choice is selected
+                    if (asc.packageId === 'demanding_patron' && asc.choices?.patronBenefit === 'influence') {
+                        ascensionBonus += 2 * tiersAscended;
+                    }
                 }
             }
             if (asc.type === 'archetype' && asc.archetypeId) {
@@ -333,6 +335,15 @@ const DerivedStats = {
         }
 
         return Math.max(0, fellowship - 1 + archetypeBonus + backgroundBonus + ascensionBonus);
+    },
+
+    // Tiers gained by a single ascension: experience ascensions are one tier each;
+    // a creation ascension spans the archetype's tier up to the campaign's starting tier
+    getTiersAscended(character, asc) {
+        const startingTier = character.tier || 1;
+        if (asc.targetTier > startingTier) return 1;
+        const archetypeTier = State.getArchetypeTier ? State.getArchetypeTier() : startingTier;
+        return Math.max(1, startingTier - archetypeTier);
     },
 
     // Calculate Wealth (equal to Effective Tier + Background Bonus)

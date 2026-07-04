@@ -58,7 +58,7 @@
         "allowMultiple": true
       }
     ],
-    "influenceModifier": 2,
+    "influenceModifier": 0,
     "requiresChoice": true,
     "choiceType": "patronBenefit",
     "choiceOptions": [
@@ -101,6 +101,7 @@
       }
     ],
     "influenceModifier": 2,
+    "influencePerTierAscended": true,
     "talentsGranted": [
       "devotees"
     ],
@@ -154,6 +155,7 @@
       "PSYKER"
     ],
     "influenceModifier": 1,
+    "influencePerTierAscended": true,
     "keywordsGranted": [
       "PSYKER"
     ],
@@ -190,6 +192,7 @@
     ],
     "keywordsGained": [],
     "influenceModifier": 1,
+    "influencePerTierAscended": true,
     "source": "core",
     "page": 154
   },
@@ -217,6 +220,7 @@
     ],
     "keywordsGained": [],
     "influenceModifier": 1,
+    "influencePerTierAscended": true,
     "source": "apocrypha",
     "page": 210
   },
@@ -256,6 +260,7 @@
       }
     ],
     "influenceModifier": 1,
+    "influencePerTierAscended": true,
     "source": "apocrypha",
     "page": 210
   },
@@ -296,6 +301,7 @@
       "ORDO XENOS"
     ],
     "influenceModifier": 1,
+    "influencePerTierAscended": true,
     "source": "apocrypha",
     "page": 211
   },
@@ -315,15 +321,16 @@
       "other": "Must have at least one Faith talent"
     },
     "benefits": [
-      "You are faced with trials of faith. Each Trial requires that certain deeds be performed, but each will provide a reward once those deeds have been completed. When you select this Ascension Package, select a single one of the Trials below. When you have completed that Trial, and received the listed reward, you may select another Trial to replace it. If you manage to complete all four Trials, you may gain Sainthood.",
-      "Trial of Faith — Boundless Faith: You may shift an Exalted Icon to regain 1 Faith.",
-      "Trial of Purity — Blazing Soulfire: You may spend 2 Faith points to unleash a burst of pure Soulfire as a Simple Action. Roll 3d6 for each enemy within 6m: each enemy suffers a Mortal Wound for each Icon rolled. PSYKERS and CHAOS enemies re-roll any dice which result in a failure.",
-      "Trial of Righteousness — Righteous Wrath: You may spend 2 Faith points at the end of one of your turns. If you do so, you may take a second turn later in that round.",
-      "Trial of Suffering — Miraculous Recovery: Your Traumatic Injuries are immediately healed, and new Traumatic Injuries heal immediately upon taking a Respite. Further, you may spend 2 Faith points as a simple action to immediately heal Wounds equal to the game's Tier.",
+      "You are faced with trials of faith. Each Trial — described below — requires that certain deeds be performed, but each will provide a reward once those deeds have been completed. When you select this Ascension Package, select a single one of the Trials below. When you have completed that Trial, and received the listed reward, you may select another Trial to replace it. If you manage to complete all four Trials, you may gain Sainthood.",
+      "Trial of Faith — To pass this Trial, you must accomplish any of the following deeds (in any combination) ten times: Spend three or more Faith points in a single day; Successfully invoke three or more Hymns of Battle in a single day; Invoke at least one Hymn of Battle with a Wrath Critical; The Glory pool is full at the end of at least one battle that day. Once you've passed this trial, gain the following ability — Boundless Faith: You may shift an Exalted Icon to regain 1 Faith.",
+      "Trial of Purity — To pass this Trial, you must accomplish any of the following deeds (in any combination) ten times: You slay an enemy PSYKER; You resist or avoid the effect of a Psychic Power targeted at you; You roll Determination and reduce the damage suffered to 0; If you become dying during a scene but are subsequently healed. Once you've passed this trial, gain the following ability — Blazing Soulfire: You may spend 2 Faith points to unleash a burst of pure Soulfire as a Simple Action. Roll 3d6 for each enemy within 6m: each enemy suffers a Mortal Wound for each Icon rolled. PSYKERS and CHAOS enemies re-roll any dice which result in a failure.",
+      "Trial of Righteousness — To pass this Trial, you must accomplish any of the following deeds (in any combination) ten times: You slay an enemy Adversary Threat; You slay one or more CHAOS Elites or Adversaries, or a mob of CHAOS Troops; If you slay a number of non-Troops enemies in a single battle greater than the game's Tier; If you inflict one or more Critical Hits or cause 3 or more Mortal Wounds in a single battle. Once you've passed this trial, gain the following ability — Righteous Wrath: You may spend 2 Faith points at the end of one of your turns. If you do so, you may take a second turn later in that round.",
+      "Trial of Suffering — To pass this Trial, you must accomplish any of the following deeds (in any combination) ten times: You become dying; You suffered three or more Mortal Wounds during a single battle; You suffer a Traumatic Injury; You gain the Exhausted condition. Once you've passed this trial, gain the following ability — Miraculous Recovery: Your Traumatic Injuries are immediately healed, and new Traumatic Injuries heal immediately upon taking a Respite. Further, you may spend 2 Faith points as a simple action to immediately heal Wounds equal to the game's Tier.",
       "Sainthood: When you die, roll a number of d6 equal to the maximum number of Faith Points you possess. If the number of Icons rolled equals or exceeds two plus the number of times you've died, you are miraculously restored to life. If you are not restored to life, then you die permanently. However, your martyrdom means any other ADEPTA SORORITAS characters in the scene gain 1 Faith Point for each Trial you have completed."
     ],
     "keywordsGained": [],
     "influenceModifier": 1,
+    "influencePerTierAscended": true,
     "source": "apocrypha",
     "page": 212
   },
@@ -374,6 +381,7 @@
     ],
     "keywordsGained": [],
     "influenceModifier": 1,
+    "influencePerTierAscended": true,
     "source": "apocrypha",
     "page": 214
   },
@@ -391,6 +399,7 @@
     ],
     "keywordsGained": [],
     "influenceModifier": 1,
+    "influencePerTierAscended": true,
     "source": "apocrypha",
     "page": 215
   },
@@ -419,6 +428,7 @@
       "ILLUMINATI"
     ],
     "influenceModifier": 1,
+    "influencePerTierAscended": true,
     "source": "apocrypha",
     "page": 215
   },
@@ -485,7 +495,7 @@
       "LOST TO WAR: You increase the DN of all Interaction tests against non-warriors by +2, and they suffer the same penalty in return.",
       "STUDENTS OF WAR: You gain followers as per the Devotees talent, without needing to meet the Leadership requirement. These followers are Aspect Warriors from your shrine.",
       "MASTER OF WAR: You may purchase Exarch powers. You may purchase one power if you are Tier 4, or two if you are Tier 5 or higher.",
-      "You replace your Aspect Armour with Exarch Armour, which provides the same functions but has an Armour Rating of 6 and loses the Bulky (X) or Cumbersome traits (if it had them). All your weapons gain the Master-Crafted upgrade, and you may replace one of your weapons with a weapon of any rarity and a Value of up to 5 + the new Tier."
+      "You replace your Aspect Armour with Exarch Armour, which provides the same functions but has an Armour Rating of 6 and loses the Bulky (X) or Cumbersome traits (if it had them). All your weapons gain the Master-Crafted upgrade, and you may replace one of your weapons with a weapon of any rarity and a Value of up to 5 + the new Tier. The GM may create a unique weapon, an ancient relic of the Aeldari, for this purpose."
     ],
     "keywordsGained": [
       "EXARCH"
@@ -494,6 +504,7 @@
       "EXARCH"
     ],
     "influenceModifier": 1,
+    "influencePerTierAscended": true,
     "source": "apocrypha",
     "page": 216
   },
@@ -550,6 +561,7 @@
     ],
     "keywordsGained": [],
     "influenceModifier": 1,
+    "influencePerTierAscended": true,
     "source": "apocrypha",
     "page": 217
   },
@@ -581,6 +593,7 @@
       "IMPERIUM"
     ],
     "influenceModifier": 1,
+    "influencePerTierAscended": true,
     "source": "apocrypha",
     "page": 218
   },
@@ -671,6 +684,7 @@
     ],
     "keywordsGained": [],
     "influenceModifier": 1,
+    "influencePerTierAscended": true,
     "source": "aeldari",
     "page": 57
   },
@@ -693,7 +707,7 @@
       "Leaving Drukhari: Lose the DRUKHARI, [KABAL], [WYCH CULT], [COVEN] and BLADES FOR HIRE Keywords. Joining Drukhari: Gain the DRUKHARI and BLADES FOR HIRE Keywords.",
       "Leaving Harlequins: Lose the HARLEQUIN and [MASQUE] Keywords. Joining Harlequins: Gain the HARLEQUIN and [MASQUE] Keywords.",
       "Leaving Ynnari: Lose the YNNARI Keyword. Joining Ynnari: Gain the YNNARI Keyword.",
-      "Whichever sub-faction you join or leave, you retain the benefits of any Talents, Archetype Abilities, Asuryani Paths, or psychic powers you had already obtained. As part of this Ascension Package, you may also undergo Archetype Ascension, so long as you meet the usual prerequisites."
+      "Whichever sub-faction you join or leave, you replace your Objectives with those of your new sub-faction, but retain the benefits of any Talents, Archetype Abilities, Asuryani Paths, or psychic powers you had already obtained. As part of this Ascension Package, you may also undergo Archetype Ascension, so long as you meet the usual prerequisites."
     ],
     "keywordsGained": [],
     "influenceModifier": -1,
@@ -716,12 +730,13 @@
       "skillRequirement": "Leadership Rating 3+"
     },
     "benefits": [
-      "You have woe, power, turf, status, or influence in the Dark City, and to the victor go the spoils. Gain 2 Wealth per Tier Ascended.",
+      "You have won power, turf, status, or influence in the Dark City, and to the victor go the spoils. Gain 2 Wealth per Tier Ascended.",
       "You may use this opportunity to spend any Wealth you have on sinister rituals that reduce your debt to She Who Thirsts. Lose 1 Corruption Point per point of Wealth spent.",
       "Optionally, you may also choose to gain an additional +1 Influence per Tier Ascended (+2 per Tier Ascended in total), but if you do so you earn the bitter enmity of another Kabal, Wych Cult, or Haemonculus Coven, who will seek to sabotage your operations in the future."
     ],
     "keywordsGained": [],
     "influenceModifier": 1,
+    "influencePerTierAscended": true,
     "source": "aeldari",
     "page": 58
   },
@@ -745,8 +760,7 @@
       "You have forever pledged yourself to the Warrior Path and become anointed an Exarch of Khaine. Choose an ASPECT WARRIOR Archetype you already have the Archetype Ability for and apply the following ongoing benefits.",
       "Whilst using the Archetype Ability of the chosen Archetype, you may substitute your Rank with your Tier.",
       "Whilst wearing the armour provided by your chosen Archetype's Wargear, you may roll Determination against attacks that deal Mortal Wounds.",
-      "Gain a new weapon with the ASPECT WARRIOR Keyword. If you choose a weapon already provided by your chosen Archetype's Wargear, it gains the Mastercrafted Upgrade (Wrath & Glory, page 228).",
-      "As part of this Ascension Package, you may also undergo Archetype Ascension, so long as you meet the usual prerequisites. You gain a new Rank with your Tier when doing so."
+      "Gain a new weapon with the ASPECT WARRIOR Keyword. If you choose a weapon already provided by your chosen Archetype's Wargear, it gains the Mastercrafted Upgrade (Wrath & Glory, page 228)."
     ],
     "keywordsGained": [
       "EXARCH"
@@ -755,6 +769,7 @@
       "EXARCH"
     ],
     "influenceModifier": 1,
+    "influencePerTierAscended": true,
     "source": "aeldari",
     "page": 59
   },
@@ -782,6 +797,7 @@
     ],
     "keywordsGained": [],
     "influenceModifier": 1,
+    "influencePerTierAscended": true,
     "source": "aeldari",
     "page": 59
   },
@@ -791,17 +807,24 @@
     "description": "Your reverent acts have not gone unnoticed, and consequently your superiors have assigned you a sacred task: take initiates under your wing, and lead them on a righteous quest in the name of your creed. Conversely, this task may have been foisted upon you as a sacred service or penance for some spiritual slight, leading novitates into the light to correct the errors of your ways. Whatever the cause, you now have a holy mission, and the eyes of your superiors are upon you — as well as the ever-burning gaze of the Emperor, or the manifold augmented eyes of the Omnissiah.",
     "cost": "30 x new Tier",
     "costMultiplier": 30,
-    "prerequisites": {
-      "other": "ANY; the Keyword of the Faction that gave you the quest and cadre"
-    },
+    "prerequisites": {},
     "benefits": [
       "Discuss the particulars with your GM: who gave you this cadre, for what purpose, and what are the following Devotees focused on achieving.",
-      "The Devotees Talent (Wrath & Glory Rulebook, page 132). You do not need to meet the Leadership (Wil) Skill prerequisite. When your Devotees die, you get +1 Influence.",
+      "The Devotees Talent (Wrath & Glory Rulebook, page 132). You do not need to meet the Leadership (Wil) Skill prerequisite. However, if your Devotees die, you get -1 Influence.",
       "A holy quest to perform. If you complete the quest, you gain +1 Influence.",
       "+Rank bonus dice on any Persuasion (Fel) Test targeting individuals with the awarded Keyword that know of your quest.",
       "Note: If this quest is a punishment, the Influence Bonus is –1 instead of +1."
     ],
-    "keywordsGained": [],
+    "keywordsGained": [
+      "[ANY] (the Keyword of the group that gave you the quest and cadre)"
+    ],
+    "keywordChoices": [
+      {
+        "placeholder": "[ANY]",
+        "category": "any",
+        "label": "Keyword of the group that gave you the quest and cadre"
+      }
+    ],
     "influenceModifier": 1,
     "source": "redacted2",
     "page": 73
@@ -817,15 +840,16 @@
         "ADEPTUS MECHANICUS",
         "ADEPTUS MINISTORUM"
       ],
-      "other": "ADEPTUS MECHANICUS or ADEPTUS MINISTORUM; plus the Keyword of the Faction holding the ceremony. If you already have the relevant Keyword, you gain an additional +1 Influence.",
       "keywordRequirement": "ADEPTUS MECHANICUS or ADEPTUS MINISTORUM"
     },
     "benefits": [
       "Work with your Gamemaster and your group to determine what exactly earned you such a reward and the details of the ceremony.",
-      "ADEPTUS MINISTORUM: You may take any Faith Talent that requires the ADEPTUS MINISTORUM Keyword. You have access to the Hepthelian Foresight and Julyanna's Banishment Rituals (Redacted Records II, pages 9 and 10).",
-      "ADEPTUS MECHANICUS: You can gain any Imperial augmetic, undergoing an augmentation ritual. You have access to the Avachrus Arch-Assemblage Ritual (Redacted Records II, page 11)."
+      "ADEPTUS MINISTORUM: You may take any Faith Talent that requires the ADEPTUS MINISTORUM Keyword. You have access to the Hephestian Foresight and Julyanna's Banishment Rituals (Redacted Records II, pages 9 and 10).",
+      "ADEPTUS MECHANICUS: You gain any Imperial augmetic, undergoing a lengthy installation ritual. You have access to the Avachrus Arch-Assemblage Ritual (Redacted Records II, page 11)."
     ],
-    "keywordsGained": [],
+    "keywordsGained": [
+      "ADEPTUS MECHANICUS or ADEPTUS MINISTORUM (the Faction holding the ceremony). If you already have the relevant Keyword, you gain an additional +1 Influence."
+    ],
     "influenceModifier": 1,
     "source": "redacted2",
     "page": 73
@@ -836,14 +860,21 @@
     "description": "You have proven your faith, and now must build a foundation to spread it to others. Your particular creed has recognised your dedication, and has tasked you with physically manifesting your pious devotion in the world by building a shrine, temple, or other holy site.",
     "cost": "20 x new Tier",
     "costMultiplier": 20,
-    "prerequisites": {
-      "other": "ANY; the Keyword of the Faction you built the holy site for. If you already have the relevant Keyword, you gain an additional +1 Influence."
-    },
+    "prerequisites": {},
     "benefits": [
-      "The holy site that you build. You can use this location as a base of operations and a place to rest. It may also provide other bonuses such as Rituals or wargear (particularly Ammo for weapons) connected to the Faction of the church at the Gamemaster's discretion. The holy site is also attended by some lowly functionaries of the appropriate Faction that may be able to aid you.",
+      "The holy site that you build. You can use this location as a base of operations and a place to rest. It may also provide other bonuses such as Rituals or wargear (particularly Ammo for weapons common to the Faction of the church) at the Gamemaster's discretion. The holy site is likely also attended by some lowly functionaries of the appropriate Faction that may be able to aid you depending on their capabilities.",
       "The Touched By Fate Talent (Wrath & Glory Rulebook, page 140)."
     ],
-    "keywordsGained": [],
+    "keywordsGained": [
+      "[ANY] (the Faction you built the holy site for). If you already have the relevant Keyword, you gain an additional +1 Influence."
+    ],
+    "keywordChoices": [
+      {
+        "placeholder": "[ANY]",
+        "category": "any",
+        "label": "Faction you built the holy site for"
+      }
+    ],
     "influenceModifier": 1,
     "source": "redacted2",
     "page": 74
@@ -854,15 +885,23 @@
     "description": "Faith is a duty, and to prove your piety you have been called upon to slay an enemy of your creed. You are named a holy avenger by your superiors, sent to destroy a traitor or a particularly odious foe of your creed. Your reputation for righteousness and reliability has earned you what is essentially an obligation to seek and destroy a particularly heinous foe with the maximum of ruthless brutality, and by fulfilling this task you will be known both for your faith and your ability to pursue your beliefs with violence.",
     "cost": "20 x new Tier",
     "costMultiplier": 20,
-    "prerequisites": {
-      "other": "ANY; the Keyword of the Faction that named you their holy avenger. If you already have the relevant Keyword, you gain an additional +1 Influence."
-    },
+    "prerequisites": {},
     "benefits": [
       "Work with your Gamemaster to determine the target of your holy vengeance. This mission, including the training beforehand and the fallout afterwards, may be the subject of an entire adventure. Perhaps these foes are located in the battlezones on pages 38 and 56 of Redacted Records II.",
       "Either the Deadshot or Eliminator Talent (Wrath & Glory Rulebook, pages 131 & 133).",
-      "+1 Wealth, and +1 Wealth when the assassination is confirmed."
+      "+1 Wealth, and another +1 Wealth when the assassination is confirmed.",
+      "Note: The +2 Influence Bonus applies when the assassination is complete."
     ],
-    "keywordsGained": [],
+    "keywordsGained": [
+      "[ANY] (the Faction that named you their holy avenger). If you already have the relevant Keyword, you gain an additional +1 Influence."
+    ],
+    "keywordChoices": [
+      {
+        "placeholder": "[ANY]",
+        "category": "any",
+        "label": "Faction that named you their holy avenger"
+      }
+    ],
     "influenceModifier": 2,
     "source": "redacted2",
     "page": 74
@@ -873,16 +912,23 @@
     "description": "Your purposefully pious deeds have been noticed by the powerful, particularly by people attempting to retrieve or purify a holy relic of dire significance. They have tasked you with retrieving or sanctifying a particular relic in the name of the Emperor or the Omnissiah, and safeguarding its immense power. You will become synonymous with this artefact, and tales of your glory will be inextricably linked to its history as you bring light to the darkness of the 41st Millennium.",
     "cost": "20 x new Tier",
     "costMultiplier": 20,
-    "prerequisites": {
-      "other": "ANY; the Keyword of the Faction that made the relic-based mission. If you already have the relevant Keyword, you gain an additional +1 Influence."
-    },
+    "prerequisites": {},
     "benefits": [
       "Work with your Gamemaster to determine which Faction you will be serving, and the relic they want you to secure, sanctify, or safeguard. This Ascension Package is designed to work with the rules in Chapter 1, either the premade Relics of Renown (page 20), Malign Artefacts (page 26), or a relic of your own creation (Creating Holy Relics, page 12).",
       "Knowledge of the location of a relic, as well as the permission to officially protect said relic.",
       "The Tenacious Talent (Wrath & Glory Rulebook, page 140).",
-      "Influence Bonus drops by 3 (to –3 total) if the relic is ever lost, destroyed, or falls into the hands of the enemy."
+      "Influence Bonus becomes –3 if the relic is ever lost, destroyed, or falls into the hands of the enemy."
     ],
-    "keywordsGained": [],
+    "keywordsGained": [
+      "[ANY] (the Faction that made the relic-based request). If you already have the relevant Keyword, you gain an additional +1 Influence."
+    ],
+    "keywordChoices": [
+      {
+        "placeholder": "[ANY]",
+        "category": "any",
+        "label": "Faction that made the relic-based request"
+      }
+    ],
     "influenceModifier": 1,
     "source": "redacted2",
     "page": 75

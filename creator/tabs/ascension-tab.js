@@ -132,7 +132,7 @@ const AscensionTab = {
                         <span class="card-title">${pkg.name}</span>
                         <span class="card-xp">${xpCost} XP</span>
                     </div>
-                    ${pkg.influenceModifier ? `<div class="ascension-influence">Influence: ${pkg.influenceModifier > 0 ? '+' : ''}${pkg.influenceModifier}</div>` : ''}
+                    ${pkg.influenceModifier ? `<div class="ascension-influence">Influence: ${pkg.influenceModifier > 0 ? '+' : ''}${pkg.influenceModifier}${pkg.influencePerTierAscended ? ' per Tier Ascended' : ''}</div>` : ''}
                     ${prereqResult.text ? `<div class="ascension-prereqs${prereqResult.met ? '' : ' unmet'}">${prereqResult.text}</div>` : ''}
                     ${!canAfford ? `<div class="ascension-unaffordable-note">Not enough XP (${xpCost} XP)</div>` : ''}
                     <div class="card-description">${pkg.description || ''}</div>

@@ -333,22 +333,23 @@
     "name": "Arc Maul",
     "type": "melee",
     "category": "Arc",
-    "description": "Favoured by Skitarii Alpha units, the Arc Maul discharges a powerful electrical shock upon impact. The crackling energy is particularly effective against machinery and armoured targets.",
+    "description": "These heavy metal staves sheathe themselves in crackling lightning at the wielder's command. They allow Skitarii to rupture the defences of enemy vehicles and reduce lesser combatants to ash within their armour. Units wielding such weapons are surrounded by crackling static and the stench of ozone.",
     "damage": {
-      "base": 5,
+      "base": 6,
       "attribute": "strength",
       "bonus": 0
     },
-    "ed": 1,
-    "ap": -1,
+    "ed": 3,
+    "ap": -2,
     "traits": [
-      "Arc (2)"
+      "Arc (3)",
+      "Brutal"
     ],
-    "value": 5,
-    "rarity": "Rare",
+    "value": 7,
+    "rarity": "Uncommon",
     "keywords": [
-      "ADEPTUS MECHANICUS",
-      "ARC"
+      "ARC",
+      "ADEPTUS MECHANICUS"
     ],
     "source": "redacted2",
     "page": 61
@@ -16679,5 +16680,741 @@
     ],
     "source": "core",
     "page": 221
+  },
+  {
+    "id": "tainted_blade",
+    "name": "Tainted Blade",
+    "type": "melee",
+    "category": "Chaos",
+    "description": "Some radical Inquisitors are not content to destroy unholy works or wait until a way to purge them of corruption is found. They attempt, instead, to turn these artefacts against the very foes that created them. The Tainted Blade is one such artefact. Once a blessed power sword, it was stolen by Chaos Space Marines and corrupted over centuries by the touch of the warp and possession by a daemonic forces. There is a malevolent will bound to these weapons, and they thirst for blood.",
+    "damage": {
+      "base": 8,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -4,
+    "traits": [
+      "Parry",
+      "Warp Weapon"
+    ],
+    "value": "-",
+    "rarity": "Unique",
+    "keywords": [
+      "CHAOS",
+      "POWER FIELD"
+    ],
+    "special": "Special: All rolled Complications using a Tainted Blade or a similarly corrupted weapon inflict 1 Mortal Wound on the user, in addition to any other effects.",
+    "source": "redacted2",
+    "page": 28
+  },
+  {
+    "id": "anointed_halberd",
+    "name": "Anointed Halberd",
+    "type": "melee",
+    "category": "Power",
+    "description": "One of the characteristic weapons carried by the Celestian Sacresants, this nine-foot power weapon bears a curved axe blade on one side of its haft, and a vicious spike on the other. Its main advantage is its reach, allowing the wielder to level the field of battle when fighting unnaturally large opponents.",
+    "damage": {
+      "base": 7,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -3,
+    "range": 2,
+    "traits": [
+      "Blessed (1)"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS MINISTORUM",
+      "ADEPTA SORORITAS"
+    ],
+    "source": "redacted2",
+    "page": 43
+  },
+  {
+    "id": "hallowed_mace",
+    "name": "Hallowed Mace",
+    "type": "melee",
+    "category": "Power",
+    "description": "Some Celestian Sacresants prefer to exchange the superior length and cutting edge of the Anointed Halberd for the sheer destructive power of a Hallowed Mace. Capable of crushing armour and shattering bones, the flanged head of this heavy melee weapon descending has been the last sight of many a heretic.",
+    "damage": {
+      "base": 6,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -2,
+    "traits": [
+      "Blessed (1)",
+      "Brutal"
+    ],
+    "value": 6,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS MINISTORUM",
+      "ADEPTA SORORITAS"
+    ],
+    "source": "redacted2",
+    "page": 43
+  },
+  {
+    "id": "mace_of_the_righteous",
+    "name": "Mace of the Righteous",
+    "type": "melee",
+    "category": "Power",
+    "description": "The symbol of office and weapon of the Sisters Dialogus, to wield a Mace of the Righteous is to command the fear and respect of the Adepta Sororitas. Often etched with extracts from devotional prayers, the most ornate have an integrated censer, spewing billowing clouds of sacred incense with each devastating swing.",
+    "damage": {
+      "base": 6,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -2,
+    "traits": [
+      "Blessed (2)",
+      "Brutal"
+    ],
+    "value": 8,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS MINISTORUM",
+      "ADEPTA SORORITAS"
+    ],
+    "source": "redacted2",
+    "page": 43
+  },
+  {
+    "id": "novitiate_melee_weapon",
+    "name": "Novitiate Melee Weapon",
+    "type": "melee",
+    "category": "Low-Tech",
+    "description": "On entering the cloister for the first time, a Novitiate is given a weapon along with her vestments, armour, and veil. Most commonly this takes the form of a sword, although maces and one-handed spears are preferred by some of the Orders Minoris.\n\nCompared to the armaments of fully-fledged Battle Sisters these weapons are simple, but their robust construction ensures efficacy for a lifetime, transmitting the forceful fervour with which they are wielded to the malign foes of the Adepta Sororitas.",
+    "damage": {
+      "base": 4,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": 0,
+    "traits": [
+      "Parry"
+    ],
+    "value": 4,
+    "rarity": "Common",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS MINISTORUM",
+      "ADEPTA SORORITAS"
+    ],
+    "source": "redacted2",
+    "page": 43
+  },
+  {
+    "id": "spear_of_the_faithful",
+    "name": "Spear of the Faithful",
+    "type": "melee",
+    "category": "Power",
+    "description": "To wield a Spear of the Faithful is to be accorded a high honour indeed. Those with skill in its use can turn it to advantage in both attack and defence; setting it to receive a charge, or parrying an incoming attack.",
+    "damage": {
+      "base": 7,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -3,
+    "range": 2,
+    "traits": [
+      "Parry",
+      "Blessed (2)"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS MINISTORUM",
+      "ADEPTA SORORITAS"
+    ],
+    "source": "redacted2",
+    "page": 43
+  },
+  {
+    "id": "vindictor",
+    "name": "Vindictor",
+    "type": "melee",
+    "category": "Chain",
+    "description": "For those whose mission requires both the blade of a chainsword and a flamer's cleansing light, the vindictor chainblade — four feet of whirling steel with a flame unit built into the grip — is the ideal weapon. It should be used only by those with the necessary training, lest it become more of a danger to allies than the enemy.",
+    "damage": {
+      "base": 5,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 5,
+    "ap": -2,
+    "range": 2,
+    "traits": [
+      "Brutal",
+      "Inflict (On Fire)"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "FLAME",
+      "IMPERIUM",
+      "ADEPTUS MINISTORUM",
+      "ADEPTA SORORITAS"
+    ],
+    "special": "Ranged: A Vindictor can be used as a Ranged weapon, using the following profile: Damage 11, ED 2, AP -1, Range 4-8-12, Salvo 0, Traits: Flamer.",
+    "source": "redacted2",
+    "page": 43
+  },
+  {
+    "id": "artificer_crafted_storm_bolter",
+    "name": "Artificer-crafted Storm Bolter",
+    "type": "ranged",
+    "category": "Bolt",
+    "description": "These exquisite double-barrelled bolt guns are given to Sisters who have proven themselves particularly zealous in leading a charge. Capable of delivering a twin volley of explosive bolter rounds at devastating speed, there are few targets that can withstand a sustained assault. Their sole disadvantage is the rate at which they burn through blessed bolt-shells.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": 0,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 4,
+    "traits": [
+      "Brutal",
+      "Heavy (3)",
+      "Rapid Fire (4)",
+      "Mastercrafted"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "BOLT",
+      "IMPERIUM",
+      "ADEPTUS MINISTORUM",
+      "ADEPTA SORORITAS"
+    ],
+    "source": "redacted2",
+    "page": 44
+  },
+  {
+    "id": "ministorum_flamer",
+    "name": "Ministorum Flamer",
+    "type": "ranged",
+    "category": "Flame",
+    "description": "Favoured by zealots and Adeptus Ministorum preachers as well as Sisters of Battle, these flamers spit gouts of cleansing fire, delivering the souls of heretics from their sinful lives. It is considered particularly holy to deploy Flamer, bolter, and Meltagun together, forming the holy battlefield trinity as the scriptures dictate.",
+    "damage": {
+      "base": 11,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": 0,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Flamer"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "FLAME",
+      "IMPERIUM",
+      "ADEPTUS MINISTORUM",
+      "ADEPTA SORORITAS"
+    ],
+    "source": "redacted2",
+    "page": 44
+  },
+  {
+    "id": "ministorum_hand_flamer",
+    "name": "Ministorum Hand Flamer",
+    "type": "ranged",
+    "category": "Flame",
+    "description": "A smaller pattern of flamer, this pistol is less powerful than its larger sibling, but considerably more portable. Zealots and preachers often carry one alongside their melee weapons, to draw a fight to a swift and painful close, or to cleanse any remains in its aftermath.",
+    "damage": {
+      "base": 8,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": 0,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Flamer",
+      "Pistol"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "FLAME",
+      "IMPERIUM",
+      "ADEPTUS MINISTORUM",
+      "ADEPTA SORORITAS"
+    ],
+    "source": "redacted2",
+    "page": 44
+  },
+  {
+    "id": "ministorum_shotgun",
+    "name": "Ministorum Shotgun",
+    "type": "ranged",
+    "category": "Solid Projectile",
+    "description": "Sometimes precision is less important than covering a wide area, and in those circumstances an Adeptus Ministorum shotgun is the ideal solution.\n\nParticularly prized by missionaries serving on frontier worlds, Munitorum Shotguns are cheap and readily available, and highly effective against unarmoured or lightly armoured targets.",
+    "damage": {
+      "base": 9,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": 0,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Spread"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PROJECTILE",
+      "IMPERIUM",
+      "ADEPTUS MINISTORUM",
+      "ADEPTA SORORITAS"
+    ],
+    "source": "redacted2",
+    "page": 44
+  },
+  {
+    "id": "cavalry_sabre",
+    "name": "Cavalry Sabre",
+    "type": "melee",
+    "category": "Low-Tech",
+    "description": "The blades of these heavy combat sabres are micro-etched with cutting surfaces and complex electoo patterns, allowing them to pass through most armour with distressing ease. When used from atop a mount, the weight and momentum of such a blow are crushing.",
+    "damage": {
+      "base": 3,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -1,
+    "traits": [],
+    "value": 3,
+    "rarity": "Common",
+    "keywords": [
+      "BLADE",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "redacted2",
+    "page": 61
+  },
+  {
+    "id": "clawed_serberys_limbs",
+    "name": "Clawed Serberys Limbs",
+    "type": "melee",
+    "category": "Exotic",
+    "description": "While not quite as sharp as the Cavalry Sabre, Cybercanid claws are extremely tough, and the creatures are trained to slash rapidly and repeatedly at any nearby enemies. A single kick or swipe from these beasts is more than capable of shattering the bones of a fully armoured soldier.",
+    "damage": {
+      "base": 4,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": 0,
+    "traits": [
+      "Brutal"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "redacted2",
+    "page": 61
+  },
+  {
+    "id": "electroleech_stave",
+    "name": "Electroleech Stave",
+    "type": "melee",
+    "category": "Exotic",
+    "description": "Truly arcane technological artefacts, these grim weapons syphon bio-electrical energy from living creatures and electrical energy from machinery. Wielded only by the Fulgurite sect of Electro-Priests, they leave their enemies as drained husks, repurposing the captured energy for the greater glory of the Omnissiah.",
+    "damage": {
+      "base": 5,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -2,
+    "traits": [
+      "Agonising",
+      "Brutal"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "redacted2",
+    "page": 61
+  },
+  {
+    "id": "electrostatic_gauntlets",
+    "name": "Electrostatic Gauntlets",
+    "type": "melee",
+    "category": "Exotic",
+    "description": "The Corpuscarii order of Electro-Priests use their abilities to channel blistering arcs of electricity from their dorsal generators through their paired Electrostatic Gauntlets as a display of the Motive Force. Each gauntlet is ringed with sparking coils that charge and focus each outpouring of light and power.",
+    "damage": {
+      "base": 5,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -1,
+    "traits": [
+      "Agonising",
+      "Brutal"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "ADEPTUS MECHANICUS"
+    ],
+    "special": "Ranged: Electrostatic Gauntlets can be used as a Ranged weapon, using the following profile: Damage 11, ED 1, AP -1, Range 6-12-18, Salvo 1, Traits: Agonising, Brutal.",
+    "source": "redacted2",
+    "page": 61
+  },
+  {
+    "id": "pteraxii_talons",
+    "name": "Pteraxii Talons",
+    "type": "melee",
+    "category": "Exotic",
+    "description": "Pteraxii have sharp hooked talons arrayed in a Mechadactyl Pattern augmetic limb, allowing them to safely lock themselves to a roosting point. Individually, their talons are sharp but not particularly potent, but when they attack in great swarms they are capable of shredding or hampering much more powerful foes.",
+    "damage": {
+      "base": 3,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -1,
+    "traits": [
+      "Reliable"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "redacted2",
+    "page": 61
+  },
+  {
+    "id": "archeo_revolver",
+    "name": "Archeo-revolver",
+    "type": "ranged",
+    "category": "Solid Projectile",
+    "description": "Exclusive to the Serberys Raiders, you could compare these ancient weapons to certain Imperial stub-guns, but only if you wanted to cause dire offence. An outsized pistol intended for augmetically assisted limbs, its stopping power is legendary. It doesn't hold many rounds, but then again, it doesn't need to.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Pistol"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "PROJECTILE"
+    ],
+    "source": "redacted2",
+    "page": 62
+  },
+  {
+    "id": "flechette_carbine",
+    "name": "Flechette Carbine",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "An upgraded version of the Flechette Blaster with a longer barrel and larger body, the Carbine has much greater accuracy at increased range. It maintains the same incredible rate of fire, making it particularly useful for strafing infantry formations. Pteraxxi armed with these weapons become figures of terror.",
+    "damage": {
+      "base": 8,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": 0,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 2,
+    "traits": [
+      "Assault",
+      "Rapid Fire (4)"
+    ],
+    "value": 4,
+    "rarity": "Common",
+    "keywords": [
+      "PROJECTILE",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "redacted2",
+    "page": 62
+  },
+  {
+    "id": "gamma_pistol",
+    "name": "Gamma Pistol",
+    "type": "ranged",
+    "category": "Rad",
+    "description": "Issued only to Cybernetica Datasmiths, these exotic archeotech pistols ensure that they are capable of defending themselves — even from their robotic charges, should that become necessary. The ionising radiation pulse emitted by these weapons can burn through almost any substance. To wield one is a sign of honour and trust.",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -3,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Pistol",
+      "Rad (3)"
+    ],
+    "value": 8,
+    "rarity": "Rare",
+    "keywords": [
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "redacted2",
+    "page": 62
+  },
+  {
+    "id": "galvanic_carbine",
+    "name": "Galvanic Carbine",
+    "type": "ranged",
+    "category": "Solid Projectile",
+    "description": "Although modelled on the ancient hunting flintlocks of Mars, only a fool sees this as a primitive weapon. Incredibly accurate rifles, they use electrical discharges to hurl servitor-guided bullets over long ranges. In the hands of a Raider, they become true instruments of death for the enemies of the Omnissiah.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 2,
+    "traits": [
+      "Rending (1)"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PROJECTILE",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "redacted2",
+    "page": 62
+  },
+  {
+    "id": "phosphor_blast_carbine",
+    "name": "Phosphor Blast Carbine",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "Examples of an ancient technology, Phosphor Blast Carbines saturate a large area in burning phosphorus spheres which are particularly difficult to extinguish. Often they are used by Serberys Sulphurhounds not just to kill, but to mark enemies for heavier weaponry to target. Infantry particularly fear such attacks.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": {
+      "short": 8,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 2,
+    "traits": [
+      "Assault",
+      "Blast (4)",
+      "Melta"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "PHOSPHEX",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "redacted2",
+    "page": 62
+  },
+  {
+    "id": "phosphor_blast_pistol",
+    "name": "Phosphor Blast Pistol",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "A miniaturised version of the Blast Carbine, the pistol still manages to immolate a large area, but its shorter effective range means that it can sometimes be as much of a threat to friend as foe. Elite Skitarii carry this as a backup weapon to avoid being overwhelmed by enemy infantry.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Blast (4)",
+      "Melta",
+      "Pistol"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "PHOSPHEX",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "redacted2",
+    "page": 62
+  },
+  {
+    "id": "phosphor_pistol",
+    "name": "Phosphor Pistol",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "Sulphurhounds tend to quickly close with enemies, and many carry matched pairs of Phosphor Pistols as their primary personal armaments. More precise than Blast Pistols, they can still burn clear through a target. Sulphurhounds like to get close enough to touch a foe before unleashing hell upon them.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Melta",
+      "Pistol"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "PHOSPHEX",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "redacted2",
+    "page": 62
+  },
+  {
+    "id": "phosphor_torch",
+    "name": "Phosphor Torch",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": "These long-barreled flamer weapons are employed by Pteraxii, and hence are surprisingly light considering their bulk. Originally intended for eradicating vermin in the depths of Adeptus Mechanicus facilities, they have seen increasing use as weapons of war. A torch wielding Pteraxxi can swoop down and immolate whole enemy units in seconds.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Flamer",
+      "Melta"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "PHOSPHEX",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "redacted2",
+    "page": 62
+  },
+  {
+    "id": "sulphur_breath",
+    "name": "Sulphur Breath",
+    "type": "ranged",
+    "category": "Flame",
+    "description": "When a Cybercanid is augmented for Sulphurhound duty, its face and digestive system are heavily modified. Fed on a diet laced with Nephrium and highly sulphurous promethium, the beast becomes capable of exhaling gouts of burning chemicals that stink like brimstone, causing most opponents to scatter in terror.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 0,
+    "traits": [
+      "Assault",
+      "Flamer"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "FLAMER",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "redacted2",
+    "page": 62
   }
 ]

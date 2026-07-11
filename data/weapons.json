@@ -17650,5 +17650,1599 @@
     "special": "Damage: Use the profile of the Missile fired.",
     "source": "voa",
     "page": 64
+  },
+  {
+    "id": "hammerstrike_missile_launcher_aoa",
+    "name": "Hammerstrike Missile Launcher (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Astartes",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -3,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 2,
+    "traits": [
+      "Barrage",
+      "Blast (2)",
+      "Mounted (Huge)"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 488
+  },
+  {
+    "id": "icarus_stormcannon_aoa",
+    "name": "Icarus Stormcannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Astartes",
+    "damage": {
+      "base": 14,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": {
+      "short": 24,
+      "medium": 48,
+      "long": 72
+    },
+    "salvo": 3,
+    "traits": [
+      "Bane (Flyer)",
+      "Mounted (Huge)"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "PROJECTILE",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 488,
+    "special": "An Icarus Stormcannon doubles its Salvo rating against flying targets."
+  },
+  {
+    "id": "melta_destroyer_aoa",
+    "name": "Melta Destroyer (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Astartes",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -4,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 3,
+    "traits": [
+      "Melta",
+      "Mounted (Huge)"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "MELTA",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 488
+  },
+  {
+    "id": "skyhammer_missile_launcher_aoa",
+    "name": "Skyhammer Missile Launcher (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Astartes",
+    "damage": {
+      "base": 14,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -1,
+    "range": {
+      "short": 30,
+      "medium": 60,
+      "long": 90
+    },
+    "salvo": 3,
+    "traits": [
+      "Mounted (Huge)"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 488,
+    "special": "A Skyhammer Missile Launcher adds +2 bonus dice on any attack made against a flying target."
+  },
+  {
+    "id": "skyspear_missile_launcher_aoa",
+    "name": "Skyspear Missile Launcher (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Astartes",
+    "damage": {
+      "base": 18,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -3,
+    "range": {
+      "short": 30,
+      "medium": 60,
+      "long": 90
+    },
+    "salvo": 0,
+    "traits": [
+      "Bane (Flyer)",
+      "Mounted (Huge)"
+    ],
+    "value": 9,
+    "rarity": "Very Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 488,
+    "special": "If a shot from this weapon misses its target, at the end of the target's next turn, make the attack's skill test again, adding +2 to the target's Defence."
+  },
+  {
+    "id": "stormstrike_missile_launcher_aoa",
+    "name": "Stormstrike Missile Launcher (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Astartes",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -3,
+    "range": {
+      "short": 36,
+      "medium": 72,
+      "long": 108
+    },
+    "salvo": 1,
+    "traits": [
+      "Blast (4)",
+      "Inflict (Staggered)",
+      "Mounted (Huge)"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 488
+  },
+  {
+    "id": "thunderhawk_cluster_bombs_aoa",
+    "name": "Thunderhawk Cluster Bombs (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Astartes",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -1,
+    "range": {
+      "short": 0,
+      "medium": 0,
+      "long": 0
+    },
+    "salvo": "-",
+    "traits": [
+      "Blast (6d6)",
+      "Bomb",
+      "Inflict (Pinning)",
+      "Mounted (Gtn)"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 488
+  },
+  {
+    "id": "thunderhawk_heavy_cannon_aoa",
+    "name": "Thunderhawk Heavy Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Astartes",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 5,
+    "ap": -2,
+    "range": {
+      "short": 24,
+      "medium": 48,
+      "long": 72
+    },
+    "salvo": 4,
+    "traits": [
+      "Barrage",
+      "Blast (6)",
+      "Mounted (Gtn)"
+    ],
+    "value": 13,
+    "rarity": "Unique",
+    "keywords": [
+      "EXPLOSIVE",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 488
+  },
+  {
+    "id": "thunderstrike_las_talon_aoa",
+    "name": "Thunderstrike Las-Talon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Astartes",
+    "damage": {
+      "base": 18,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -3,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 2,
+    "traits": [
+      "Mounted (Huge)",
+      "Rending (4)"
+    ],
+    "value": 12,
+    "rarity": "Very Rare",
+    "keywords": [
+      "LAS",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 488
+  },
+  {
+    "id": "turbo_laser_destructor_aoa",
+    "name": "Turbo-laser Destructor (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Astartes",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -5,
+    "range": {
+      "short": 48,
+      "medium": 96,
+      "long": 144
+    },
+    "salvo": 3,
+    "traits": [
+      "Mounted (Gtn)"
+    ],
+    "value": 13,
+    "rarity": "Unique",
+    "keywords": [
+      "LAS",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 488
+  },
+  {
+    "id": "avenger_bolt_cannon_aoa",
+    "name": "Avenger Bolt Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Aeronautica",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 10,
+    "traits": [
+      "Brutal",
+      "Mounted (Huge)",
+      "Rapid Fire (4)",
+      "Sustained"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "BOLT",
+      "AERONAUTICA IMPERIALIS"
+    ],
+    "source": "apocrypha",
+    "page": 493
+  },
+  {
+    "id": "heavy_bomb_aoa",
+    "name": "Heavy Bomb (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Aeronautica",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -1,
+    "range": {
+      "short": 0,
+      "medium": 0,
+      "long": 0
+    },
+    "salvo": "-",
+    "traits": [
+      "Blast (20)",
+      "Bomb",
+      "Mounted (Gtn)"
+    ],
+    "value": 6,
+    "rarity": "Uncommon",
+    "keywords": [
+      "EXPLOSIVE",
+      "AERONAUTICA IMPERIALIS"
+    ],
+    "source": "apocrypha",
+    "page": 493
+  },
+  {
+    "id": "inferno_bomb_aoa",
+    "name": "Inferno Bomb (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Aeronautica",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": 0,
+    "range": {
+      "short": 0,
+      "medium": 0,
+      "long": 0
+    },
+    "salvo": "-",
+    "traits": [
+      "Blast (20)",
+      "Bomb",
+      "Inflict (On Fire)",
+      "Inflict (Fear)",
+      "Mounted (Gtn)"
+    ],
+    "value": 7,
+    "rarity": "Uncommon",
+    "keywords": [
+      "FIRE",
+      "AERONAUTICA IMPERIALIS"
+    ],
+    "source": "apocrypha",
+    "page": 493
+  },
+  {
+    "id": "lightning_autocannon_aoa",
+    "name": "Lightning Autocannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Aeronautica",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": {
+      "short": 36,
+      "medium": 72,
+      "long": 108
+    },
+    "salvo": 3,
+    "traits": [
+      "Mounted (Huge)"
+    ],
+    "value": 6,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PROJECTILE",
+      "AERONAUTICA IMPERIALIS"
+    ],
+    "source": "apocrypha",
+    "page": 493
+  },
+  {
+    "id": "marauder_autocannon_battery_aoa",
+    "name": "Marauder Autocannon Battery (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Aeronautica",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": {
+      "short": 24,
+      "medium": 48,
+      "long": 72
+    },
+    "salvo": 12,
+    "traits": [
+      "Mounted (Gtn)",
+      "Rapid Fire (6)"
+    ],
+    "value": 8,
+    "rarity": "Rare",
+    "keywords": [
+      "PROJECTILE",
+      "AERONAUTICA IMPERIALIS"
+    ],
+    "source": "apocrypha",
+    "page": 493
+  },
+  {
+    "id": "thunderbolt_autocannon_battery_aoa",
+    "name": "Thunderbolt Autocannon Battery (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Aeronautica",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": {
+      "short": 24,
+      "medium": 48,
+      "long": 72
+    },
+    "salvo": 8,
+    "traits": [
+      "Mounted (Huge)",
+      "Rapid Fire (4)"
+    ],
+    "value": 7,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PROJECTILE",
+      "AERONAUTICA IMPERIALIS"
+    ],
+    "source": "apocrypha",
+    "page": 493
+  },
+  {
+    "id": "castigator_gatling_cannon_aoa",
+    "name": "Castigator Gatling Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Militarum",
+    "damage": {
+      "base": 11,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -1,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 12,
+    "traits": [
+      "Mounted (Huge)",
+      "Sustained",
+      "Rapid Fire (4)"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "PROJECTILE",
+      "ASTRA MILITARUM"
+    ],
+    "source": "apocrypha",
+    "page": 495
+  },
+  {
+    "id": "oppressor_cannon_aoa",
+    "name": "Oppressor Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Militarum",
+    "damage": {
+      "base": 20,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -3,
+    "range": {
+      "short": 45,
+      "medium": 90,
+      "long": 135
+    },
+    "salvo": "-",
+    "traits": [
+      "Blast (10)",
+      "Mounted (Gtn)"
+    ],
+    "value": 12,
+    "rarity": "Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "ASTRA MILITARUM"
+    ],
+    "source": "apocrypha",
+    "page": 495,
+    "special": "Co-Axial Autocannon: When making an attack with the Oppressor Cannon, make an attack with the co-axial autocannon first. If the autocannon attack is successful, add 1 ED, +1ED for each Exalted Icon shifted, to the damage against a single target in the Oppressor Cannon's blast."
+  },
+  {
+    "id": "pulveriser_cannon_aoa",
+    "name": "Pulveriser Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Militarum",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -2,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": "-",
+    "traits": [
+      "Blast (6)",
+      "Mounted (Huge)"
+    ],
+    "value": 8,
+    "rarity": "Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "ASTRA MILITARUM"
+    ],
+    "source": "apocrypha",
+    "page": 495
+  },
+  {
+    "id": "twin_battle_cannon_aoa",
+    "name": "Twin Battle Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Militarum",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -3,
+    "range": {
+      "short": 36,
+      "medium": 72,
+      "long": 108
+    },
+    "salvo": "-",
+    "traits": [
+      "Blast (10)",
+      "Mounted (Gtn)"
+    ],
+    "value": 10,
+    "rarity": "Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "ASTRA MILITARUM"
+    ],
+    "source": "apocrypha",
+    "page": 495
+  },
+  {
+    "id": "hornet_pulse_laser_aoa",
+    "name": "Hornet Pulse Laser (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Aeldari",
+    "damage": {
+      "base": 15,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 2,
+    "traits": [
+      "Mounted (Large)",
+      "Rapid Fire (1)"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "LAS",
+      "AELDARI",
+      "ASURYANI"
+    ],
+    "source": "apocrypha",
+    "page": 498
+  },
+  {
+    "id": "phoenix_pulse_laser_aoa",
+    "name": "Phoenix Pulse Laser (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Aeldari",
+    "damage": {
+      "base": 18,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -3,
+    "range": {
+      "short": 24,
+      "medium": 48,
+      "long": 72
+    },
+    "salvo": 3,
+    "traits": [
+      "Mounted (Huge)",
+      "Rapid Fire (2)"
+    ],
+    "value": 9,
+    "rarity": "Very Rare",
+    "keywords": [
+      "LAS",
+      "AELDARI",
+      "ASURYANI"
+    ],
+    "source": "apocrypha",
+    "page": 498
+  },
+  {
+    "id": "phoenix_missile_array_aoa",
+    "name": "Phoenix Missile Array (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Aeldari",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -3,
+    "range": {
+      "short": 24,
+      "medium": 48,
+      "long": 72
+    },
+    "salvo": 6,
+    "traits": [
+      "Barrage",
+      "Blast (6)",
+      "Mounted (Huge)"
+    ],
+    "value": 10,
+    "rarity": "Very Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "AELDARI"
+    ],
+    "source": "apocrypha",
+    "page": 498
+  },
+  {
+    "id": "nightfire_missile_array_aoa",
+    "name": "Nightfire Missile Array (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Aeldari",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -1,
+    "range": {
+      "short": 24,
+      "medium": 48,
+      "long": 72
+    },
+    "salvo": 6,
+    "traits": [
+      "Barrage",
+      "Blast (10)",
+      "Inflict (Pinned)",
+      "Mounted (Huge)"
+    ],
+    "value": 10,
+    "rarity": "Very Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "AELDARI"
+    ],
+    "source": "apocrypha",
+    "page": 498
+  },
+  {
+    "id": "infernal_bombs_aoa",
+    "name": "Infernal Bombs (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Chaos",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -1,
+    "range": {
+      "short": 0,
+      "medium": 0,
+      "long": 0
+    },
+    "salvo": "-",
+    "traits": [
+      "Agonising",
+      "Blast (10)",
+      "Bomb",
+      "Inflict (On Fire)"
+    ],
+    "value": 8,
+    "rarity": "Rare",
+    "keywords": [
+      "FIRE",
+      "CHAOS"
+    ],
+    "source": "apocrypha",
+    "page": 500
+  },
+  {
+    "id": "dark_scythe_aoa",
+    "name": "Dark Scythe (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Drukhari",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -4,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 3,
+    "traits": [
+      "Brutal",
+      "Mounted (Huge)"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "DARKLIGHT",
+      "DRUKHARI"
+    ],
+    "source": "apocrypha",
+    "page": 502
+  },
+  {
+    "id": "implosion_missile_aoa",
+    "name": "Implosion Missile (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Drukhari",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -3,
+    "range": {
+      "short": 24,
+      "medium": 48,
+      "long": 72
+    },
+    "salvo": "-",
+    "traits": [
+      "Blast (4)",
+      "Brutal",
+      "Mortal (d3)",
+      "Mounted (Huge)"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "EXOTIC",
+      "DRUKHARI"
+    ],
+    "source": "apocrypha",
+    "page": 502,
+    "special": "Vehicles are unaffected by Implosion Missiles."
+  },
+  {
+    "id": "monoscythe_missile_aoa",
+    "name": "Monoscythe Missile (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Drukhari",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 5,
+    "ap": 0,
+    "range": {
+      "short": 24,
+      "medium": 48,
+      "long": 72
+    },
+    "salvo": "-",
+    "traits": [
+      "Blast (10)",
+      "Mounted (Huge)"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "EXOTIC",
+      "DRUKHARI"
+    ],
+    "source": "apocrypha",
+    "page": 502,
+    "special": "Even though they are blast weapons, an attacker may make called shots with a Monoscythe missile, adding +1 ED for each +1 the firer adds to the DN, to a maximum of +3ED for +3 DN."
+  },
+  {
+    "id": "necrotoxin_missile_aoa",
+    "name": "Necrotoxin Missile (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Drukhari",
+    "damage": {
+      "base": 5,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 8,
+    "ap": 0,
+    "range": {
+      "short": 24,
+      "medium": 48,
+      "long": 72
+    },
+    "salvo": "-",
+    "traits": [
+      "Blast (12)",
+      "Fleshbane",
+      "Inflict (Pinning)",
+      "Mounted (Huge)"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "EXOTIC",
+      "DRUKHARI"
+    ],
+    "source": "apocrypha",
+    "page": 502
+  },
+  {
+    "id": "shatterfield_missile_aoa",
+    "name": "Shatterfield Missile (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Drukhari",
+    "damage": {
+      "base": 15,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -2,
+    "range": {
+      "short": 24,
+      "medium": 48,
+      "long": 72
+    },
+    "salvo": "-",
+    "traits": [
+      "Blast (6)",
+      "Inflict (Staggered)",
+      "Mounted (Huge)",
+      "Tearing"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "EXOTIC",
+      "DRUKHARI"
+    ],
+    "source": "apocrypha",
+    "page": 502
+  },
+  {
+    "id": "void_lance_aoa",
+    "name": "Void Lance (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Drukhari",
+    "damage": {
+      "base": 18,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 5,
+    "ap": -4,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 1,
+    "traits": [
+      "Brutal",
+      "Lance",
+      "Mounted (Huge)"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "DARKLIGHT",
+      "DRUKHARI"
+    ],
+    "source": "apocrypha",
+    "page": 502
+  },
+  {
+    "id": "void_mine_aoa",
+    "name": "Void Mine (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Drukhari",
+    "damage": {
+      "base": 18,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -4,
+    "range": {
+      "short": 0,
+      "medium": 0,
+      "long": 0
+    },
+    "salvo": "-",
+    "traits": [
+      "Blast (10)",
+      "Brutal",
+      "Bomb",
+      "Lance",
+      "Mounted (Huge)"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "DARKLIGHT",
+      "DRUKHARI"
+    ],
+    "source": "apocrypha",
+    "page": 502
+  },
+  {
+    "id": "ancestors_vengeance_warhead_aoa",
+    "name": "Ancestor's Vengeance Warhead (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Votann",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -2,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": "-",
+    "traits": [
+      "Arc (4)",
+      "Blast (6)",
+      "Indirect",
+      "Mounted (Gtn)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "EXPLOSIVE",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 504
+  },
+  {
+    "id": "cyclic_ion_cannon_aoa",
+    "name": "Cyclic Ion Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Votann",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 4,
+    "traits": [
+      "Barrage",
+      "Blast (4)",
+      "Mounted (Gtn)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "ION",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 504
+  },
+  {
+    "id": "heavy_magna_rail_cannon_aoa",
+    "name": "Heavy Magna-rail Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Votann",
+    "damage": {
+      "base": 28,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -4,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 1,
+    "traits": [
+      "Mortal (d3)",
+      "Mounted (Gtn)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "MAGNA-RAIL",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 504
+  },
+  {
+    "id": "kins_wrath_warhead_aoa",
+    "name": "Kin's Wrath Warhead (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Votann",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -2,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": "-",
+    "traits": [
+      "Blast (12)",
+      "Indirect",
+      "Mounted (Gtn)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "EXPLOSIVE",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 504
+  },
+  {
+    "id": "mountain_breaker_warhead_aoa",
+    "name": "Mountain Breaker Warhead (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Votann",
+    "damage": {
+      "base": 20,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -3,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": "-",
+    "traits": [
+      "Blast (2)",
+      "Indirect",
+      "Mounted (Gtn)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "EXPLOSIVE",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 504
+  },
+  {
+    "id": "sp_heavy_conversion_beamer_aoa",
+    "name": "SP Heavy Conversion Beamer (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - Votann",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -3,
+    "range": {
+      "short": 15,
+      "medium": 30,
+      "long": 45
+    },
+    "salvo": 2,
+    "traits": [
+      "Beam",
+      "HunTR",
+      "Mounted (Gtn)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "CONVERSION",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 504,
+    "special": "This weapon increases its damage by +2 ED at Medium range, and by +4 ED at Long range."
+  },
+  {
+    "id": "accelerator_burst_cannon_aoa",
+    "name": "Accelerator Burst Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - T'au",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 8,
+    "traits": [
+      "Assault",
+      "Rapid Fire (4)",
+      "Mounted (Large)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "PULSE",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 508
+  },
+  {
+    "id": "heavy_burst_cannon_aoa",
+    "name": "Heavy Burst Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - T'au",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 12,
+    "traits": [
+      "Rapid Fire (6)",
+      "Mounted (Gargantuan)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "PULSE",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 508
+  },
+  {
+    "id": "ion_cannon_aoa",
+    "name": "Ion Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - T'au",
+    "damage": {
+      "base": 15,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 30,
+      "medium": 60,
+      "long": 90
+    },
+    "salvo": 4,
+    "traits": [
+      "Barrage",
+      "Blast (6)",
+      "Mounted (Gargantuan)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "ION",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 508
+  },
+  {
+    "id": "long_barrelled_burst_cannon_aoa",
+    "name": "Long-Barrelled Burst Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - T'au",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 4,
+    "traits": [
+      "Rapid Fire (2)",
+      "Mounted (Large)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "PULSE",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 508
+  },
+  {
+    "id": "piranha_burst_cannon_aoa",
+    "name": "Piranha Burst Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - T'au",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 6,
+    "traits": [
+      "Rapid Fire (3)",
+      "Mounted (Large)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "PULSE",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 508
+  },
+  {
+    "id": "piranha_fusion_blaster_aoa",
+    "name": "Piranha Fusion Blaster (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - T'au",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -4,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 1,
+    "traits": [
+      "Assault",
+      "Melta",
+      "Mounted (Large)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "FUSION",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 508
+  },
+  {
+    "id": "quad_ion_turret_aoa",
+    "name": "Quad Ion Turret (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - T'au",
+    "damage": {
+      "base": 15,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -2,
+    "range": {
+      "short": 15,
+      "medium": 30,
+      "long": 45
+    },
+    "salvo": 8,
+    "traits": [
+      "Mounted (Gargantuan)",
+      "Supercharge"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "ION",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 508
+  },
+  {
+    "id": "railgun_aoa",
+    "name": "Railgun (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - T'au",
+    "damage": {
+      "base": 28,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -6,
+    "range": {
+      "short": 36,
+      "medium": 72,
+      "long": 108
+    },
+    "salvo": 0,
+    "traits": [
+      "Mounted (Gargantuan)",
+      "Mortal (3)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "PROJECTILE",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 508
+  },
+  {
+    "id": "seeker_missile_aoa",
+    "name": "Seeker Missile (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - T'au",
+    "damage": {
+      "base": 18,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -3,
+    "range": {
+      "short": 36,
+      "medium": 72,
+      "long": 108
+    },
+    "salvo": "-",
+    "traits": [
+      "Guided",
+      "Indirect",
+      "Mounted (Large)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "EXPLOSIVE",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 508
+  },
+  {
+    "id": "seeker_missile_rack_aoa",
+    "name": "Seeker Missile Rack (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - T'au",
+    "damage": {
+      "base": 18,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -3,
+    "range": {
+      "short": 36,
+      "medium": 72,
+      "long": 108
+    },
+    "salvo": 3,
+    "traits": [
+      "Guided",
+      "Indirect",
+      "Mounted (Huge)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "EXPLOSIVE",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 508
+  },
+  {
+    "id": "swiftstrike_burst_cannon_aoa",
+    "name": "Swiftstrike Burst Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - T'au",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 12,
+    "traits": [
+      "Rapid Fire (6)",
+      "Mounted (Huge)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "PULSE",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 508
+  },
+  {
+    "id": "swiftstrike_railgun_aoa",
+    "name": "Swiftstrike Railgun (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Vehicle - T'au",
+    "damage": {
+      "base": 20,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 5,
+    "ap": -4,
+    "range": {
+      "short": 24,
+      "medium": 48,
+      "long": 72
+    },
+    "salvo": 2,
+    "traits": [
+      "Mortal (1)",
+      "Mounted (Huge)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "PROJECTILE",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 508
   }
 ]

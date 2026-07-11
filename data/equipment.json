@@ -5188,5 +5188,155 @@
     ],
     "source": "voa",
     "page": 75
+  },
+  {
+    "id": "crystal_targeting_matrix_aoa",
+    "name": "Crystal Targeting Matrix (Abundance of Apocrypha)",
+    "category": "vehicle wargear",
+    "description": "A complex array of psychoreactive crystals and wraithbone rune-forms that allow a gunner to focus their aim upon the enemy more effectively, taking shots which might be considered impossible.",
+    "effect": "Asuryani Crew aboard the vehicle may add half of their Psychic Mastery rating as bonus to ranged attacks made with the vehicle's weapons, or 1 if they lack Psychic Mastery. This expands upon the Wraithbone rule on p. 30 of Church of Steel.",
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "FLYER"
+    ],
+    "source": "apocrypha",
+    "page": 499
+  },
+  {
+    "id": "psycho_sonic_screamers_aoa",
+    "name": "Psycho-Sonic Screamers (Abundance of Apocrypha)",
+    "category": "vehicle wargear",
+    "description": "The vehicle is fitted with resonating vanes which generate a haunting wail as air passes over them during the vehicle's flight. This sound is processed by psycho-sonic amplifiers similar to those found in Howling Banshees' masks, creating a psychic scream that breaks the will of enemies nearby.",
+    "effect": "Once per scene, the Pilot of a Hover vehicle may activate this upgrade as a Combat Action. When they do so, all enemies within 8m of the vehicle as it moves during the turn must pass a DN 5 Terror test.",
+    "value": 9,
+    "rarity": "Very Rare",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "FLYER"
+    ],
+    "source": "apocrypha",
+    "page": 499
+  },
+  {
+    "id": "spectral_shield_aoa",
+    "name": "Spectral Shield (Abundance of Apocrypha)",
+    "category": "vehicle wargear",
+    "description": "The Eldar understand laser technology better than most, and that includes defeating it. The hull of the vehicle exudes a glittering, refractive mist which disrupts the coherence of las-bolts.",
+    "effect": "This vehicle counts the AP value of any LAS weapon which attacks it as 0.",
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI"
+    ],
+    "source": "apocrypha",
+    "page": 499
+  },
+  {
+    "id": "star_engines_aoa",
+    "name": "Star Engines (Abundance of Apocrypha)",
+    "category": "vehicle wargear",
+    "description": "Star Engines are an Eldar vehicle upgrade and are simply a few backup and extra engines used on grav-vehicles to provide extra thrust when necessary. They allow them to move great distances at high speeds although this does limit any passengers to staying onboard the vehicle as they would be killed if they tried to disembark at such high speeds.",
+    "effect": "A Hover vehicle fitted with Vectored Engines may increase the rating of the Turbo-Boost trait by +2. However, if it uses its Star Engines, it cannot make attacks during that turn.",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "FLYER"
+    ],
+    "source": "apocrypha",
+    "page": 499
+  },
+  {
+    "id": "talons_aoa",
+    "name": "Talons (Abundance of Apocrypha)",
+    "category": "vehicle wargear",
+    "description": "Some Aeldari vehicles can find themselves exposed to enemy close assault, particularly Falcons and Wave Serpents which need to close on the enemy to deliver their passengers. Talons are the countermeasure to this: a series of pods which unleash vicious hails of crystalline needles at those who stray nearby.",
+    "effect": "Whenever an enemy Charges the vehicle, the Pilot may use their Reflexive Action to fire the Talons at the attacker. This requires a Ballistic Skill test against the charging foe, and a hit inflicts 10 +4ED damage with an AP of -1 and the Spread quality. The Talons attack is resolved before the enemy melee attack. Walkers may be fitted with this upgrade, but the rarity increases to Very Rare.",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI"
+    ],
+    "source": "apocrypha",
+    "page": 499
+  },
+  {
+    "id": "vectored_engines_aoa",
+    "name": "Vectored Engines (Abundance of Apocrypha)",
+    "category": "vehicle wargear",
+    "description": "The Vectored Engine is an Eldar designed device that allows their grav-vehicles to make sharp turns and corners, manoeuvrability which other races can only dream about. This also makes it easy to steer around dangerous obstacles.",
+    "effect": "A Hover vehicle fitted with Vectored Engines gains the All-Terrain trait.",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "FLYER"
+    ],
+    "source": "apocrypha",
+    "page": 499
+  },
+  {
+    "id": "dispersion_field_aoa",
+    "name": "Dispersion Field (Abundance of Apocrypha)",
+    "category": "vehicle wargear",
+    "description": "The vehicle is fitted with a system of projectors that cast holographic and electromagnetic decoys over an area around the vehicle, interfering with enemy attacks.",
+    "effect": "The vehicle adds +2 to its Defence.",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "T'AU EMPIRE",
+      "FLYER"
+    ],
+    "source": "apocrypha",
+    "page": 509
+  },
+  {
+    "id": "drone_dock_aoa",
+    "name": "Drone Dock (Abundance of Apocrypha)",
+    "category": "vehicle wargear",
+    "effect": "The vehicle has spaces to allow up to two DRONE threats to mount themselves on the vehicle. For FIRE CASTE vehicles, these may only be MV-1 Tactical Drones. For AIR CASTE vehicles, these are Interceptor Drones. These drones are mounted in the drone dock by default. The Drones are considered to be passengers, and they can take their own actions and be targeted as if the vehicle was Open-Topped. They increase their skill ratings by the game's Tier and ignore the Threat Identification Protocol rule while docked. If the vehicle is destroyed, all docked drones are destroyed too.",
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "T'AU EMPIRE",
+      "DRONE"
+    ],
+    "source": "apocrypha",
+    "page": 509
+  },
+  {
+    "id": "pulse_bomb_generator_aoa",
+    "name": "Pulse Bomb Generator (Abundance of Apocrypha)",
+    "category": "vehicle wargear",
+    "description": "A Pulse Bomb Generator is a form of T'au Pulse Weapon that utilises pulsed induction fields to generate lethal bombs of plasma and drop them over enemy targets. A Pulse Bomb Generator is a primary weapon system for a Sun Shark bomber and is mounted underneath the aircraft's rear hull.",
+    "effect": "After completing its Movement, as a Combat Action, a flying vehicle equipped with a Pulse Bomb Generator may drop a single bomb at any point beneath the vehicle's flight path. This inflicts 12 +4ED damage with AP -1 and affects a Blast (12).",
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "T'AU EMPIRE",
+      "PULSE"
+    ],
+    "source": "apocrypha",
+    "page": 509
+  },
+  {
+    "id": "sensor_suite_aoa",
+    "name": "Sensor Suite (Abundance of Apocrypha)",
+    "category": "vehicle wargear",
+    "description": "The vehicle is fitted with an active sensor net, which is linked into the wider sensor and intelligence network of the Hunter Cadre. With this, the vehicle's crew can pass information to nearby allies to highlight enemy targets for elimination.",
+    "effect": "As a Simple Action, a PILOT or CREW of the vehicle may spend 1 Ruin and target all the enemies in a Blast (6) it can see within 24m. Any allied [SEPT] FIRE CASTE Threats within 6m of the vehicle may re-roll rolls of 1 on attacks against the targeted enemies until the end of their next turn.",
+    "value": "-",
+    "rarity": "-",
+    "keywords": [],
+    "source": "apocrypha",
+    "page": 509
   }
 ]

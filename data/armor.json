@@ -2368,5 +2368,118 @@
     ],
     "source": "core",
     "page": 234
+  },
+  {
+    "id": "mk_iv_imperial_maximus",
+    "name": "Mk IV Imperial Maximus",
+    "type": "power",
+    "description": "One of the earliest mass-produced power armour systems issued to the Astartes, the Chapter maintains only a handful of these venerable suits. During this period, many divergences in the developing nature of power armour began to emerge, as such some Mk IV suits come with particularly distinctive and striking helmets. Mark IV armour was historically used for mainly ceremonial purposes, and rarely issued for field use. However the desperate circumstances of the Gilead System have seen them return to war once more.",
+    "ar": 5,
+    "traits": [
+      "Powered (2)"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "voa",
+    "page": 69
+  },
+  {
+    "id": "mk_v_heresy_armour",
+    "name": "Mk V Heresy Armour",
+    "type": "power",
+    "description": "Despite their provenance as grim relics of the darkest time in the history of the Imperium, the Absolvers regard these ancient armours as sacred relics of a distant age. Though broadly recognisable, the Mk V does not describe a distinctive mark of armour but rather a category of armour styles from a time when supplies were desperately short. Such power armour had to be thrown together from whatever was available. Those examples of Mk V power armour that remain are now thousands of years old. Thought to be witness to the Great Angel himself and present at some of the Chapter's most glorious battles, Heresy Armour is revered among the ranks of the Absolvers. To be shielded in battle by one of these most ancient suits is seen as a great honour and seldom awarded to anyone outside the revered veterans of the First Company.",
+    "ar": 5,
+    "traits": [
+      "Bulky (1)",
+      "Powered (2)"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "voa",
+    "page": 69
+  },
+  {
+    "id": "mk_vi_corvus_armour",
+    "name": "Mk VI Corvus Armour",
+    "type": "power",
+    "description": "Instantly recognisable due to its distinctive helmet, Mk VI Corvus Armour was produced at the height of the Horus Heresy, becoming a common mark used by almost all Legions by the end of the war and a time after that. Relatively light and efficient, it drew on many of the lessons of earlier marks and proved extremely reliable. Within the Absolvers, the Chapter's suits are often used for training newly-graduated Marines in the use of their Black Carapace. All such suits are inscribed with the names and deeds of the notable battle-brothers that they have trained. Sometimes the Corvus suits are affectionately referred to as the \"Mothers of the Chapter,\" though the precise origin of this name has been forgotten.",
+    "ar": 5,
+    "traits": [
+      "Powered (2)"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "voa",
+    "page": 70
+  },
+  {
+    "id": "mk_viii_errant_armour",
+    "name": "Mk VIII Errant Armour",
+    "type": "power",
+    "description": "Designed as the next great advance in Astartes armour, Mk VIII armour is an adaption to the Mark VII with a distinct gorget that had only just begun to ship from Mars when the Great Rift split the galaxy asunder. The few suits the Absolvers received were mainly issued to high-ranking officers and Chaplains, and one rarely becomes free. The most visually arresting aspect of this armour is the raised gorget which offers greatly increased neck protection. It also has considerably expanded armour plating, covering up joints and cabling that were vulnerable on earlier models. Although largely based on the Mk VII chassis, there are serious issues with backwards compatibility, meaning that a damaged suit must be fully withdrawn from battle for repairs.",
+    "ar": 6,
+    "traits": [
+      "Powered (3)"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "voa",
+    "page": 71
+  },
+  {
+    "id": "mk_x_gravis_armour",
+    "name": "Mk X Gravis Armour",
+    "type": "power",
+    "description": "The ultimate expression of the Mk X suit, the Gravis armour variant is only issued to Primaris officers and battle-brothers whose role leads them to expect to take heavy enemy fire. With extra layers of ceramite cladding, Gravis armour provides nearly unmatched protection while still remaining light enough for the wearer to use a Jump Pack if necessary. Typically issued to Eradicator and Aggressor Squads, this armour allows them to weather brutal punishment until they are close enough to employ their own particularly deadly weapons. The Gravis pattern has been most likened to Terminator armour, and is arguably more efficient, but lacks the unparalleled durability of Tactical Dreadnaught Armour.",
+    "ar": 6,
+    "traits": [
+      "Powered (4)"
+    ],
+    "value": 12,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS"
+    ],
+    "source": "voa",
+    "page": 72
+  },
+  {
+    "id": "mk_x_omnis_armour",
+    "name": "Mk X Omnis Armour",
+    "type": "power",
+    "description": "A lighter version of the Mk X armour, this variant is capable of flight, allowing Primaris Marines to soar above the battlefield or quickly manoeuvre around enemy forces. In terms of three-dimensional mobility, it gives an incredible edge, allowing Vanguard Suppressor Squads to pick their battles. The demands of the flight system mean that this armour must by necessity be much lighter than standard Tacticus armour, sacrificing protection in order to lessen weight. As well as a Jump Pack, the armour also incorporates a Grav-Chute, potentially allowing the Marine to be dropped safely from almost any altitude. So powerful are the flight systems of this armour that the wielder can bear heavy weaponry such as an Accelerator Autocannon into battle without sacrificing speed or accuracy.",
+    "ar": 5,
+    "traits": [
+      "Grav-Chute",
+      "Jump Pack",
+      "Powered (3)"
+    ],
+    "value": 10,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS"
+    ],
+    "source": "voa",
+    "page": 72
   }
 ]

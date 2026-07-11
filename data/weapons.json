@@ -17501,5 +17501,154 @@
     ],
     "source": "core",
     "page": 225
+  },
+  {
+    "id": "fames_sanguinius",
+    "name": "Fames Sanguinius",
+    "type": "melee",
+    "category": "Power",
+    "description": "Only two of these blessed weapons currently grace the Absolvers' armoury. They are a matching pair of power swords rumoured to have been wielded by Tygranas Dalir himself. Gladius Revelationis is said to be the more noble blade, while Fames Sanguinius is said to have a more bloodthirsty and destructive aspect. Fames Sanguinius has remained encased in a stasis locked repository deep within the vaults of the Absolvers' archives, its very existence known to only a select few of the most veteran among the Chapter since the disastrous events at Yellem. By tradition, neither blade can be resheathed before tasting blood.",
+    "damage": {
+      "base": 12,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -3,
+    "traits": [
+      "Brutal",
+      "Rending (2)",
+      "Unwieldy (2)"
+    ],
+    "value": "-",
+    "rarity": "Unique",
+    "keywords": [
+      "2-HANDED",
+      "POWER FIELD",
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "voa",
+    "page": 61
+  },
+  {
+    "id": "gladius_revelationis",
+    "name": "Gladius Revelationis",
+    "type": "melee",
+    "category": "Power",
+    "description": "Only two of these blessed weapons currently grace the Absolvers' armoury. They are a matching pair of power swords rumoured to have been wielded by Tygranas Dalir himself. Gladius Revelationis is said to be the more noble blade, while Fames Sanguinius is said to have a more bloodthirsty and destructive aspect. Gladius Revelationis is carried by the current Chapter Master, used as an executioner's blade when an Absolver breaks their vows or is bestowed upon a champion of the Chapter when a task of unsurpassed butchery must be enacted. By tradition, neither blade can be resheathed before tasting blood.",
+    "damage": {
+      "base": 10,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -3,
+    "traits": [
+      "Brutal",
+      "Rending (2)",
+      "Unwieldy (2)"
+    ],
+    "value": "-",
+    "rarity": "Unique",
+    "keywords": [
+      "2-HANDED",
+      "POWER FIELD",
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "voa",
+    "page": 61
+  },
+  {
+    "id": "siege_drills",
+    "name": "Siege Drills",
+    "type": "melee",
+    "category": "Exotic",
+    "description": "Based on STC patterns recovered from ancient mining colonies, these outsized Assault Drills are so heavy that only vehicles or powered war suits such as Centurions or Dreadnoughts could wield them. Designed to punch through the most durable fortifications imaginable, they are also helpful in clearing enemy strongholds — the centre of each Siege Drill holds a Heavy Flamer capable of spewing gouts of burning promethium through the holes punched by the drills. Assault Centurions can swing these enormous weapons with surprising accuracy, having trained relentlessly under unforgiving conditions. Their use in melee is seldom necessary but horrifically effective. The drill heads are composed of three orbs of saw-toothed adamantium, capable of reducing Astartes power armour or vehicle plating to ragged shreds. They can even be used to create tunnels in a pinch, although this is seldom a practical use of the Centurion's power.",
+    "damage": {
+      "base": 10,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 8,
+    "ap": -3,
+    "traits": [
+      "Brutal",
+      "Unwieldy (4)",
+      "Heavy (6)"
+    ],
+    "value": 10,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "voa",
+    "page": 60
+  },
+  {
+    "id": "astartes_grenade_launcher",
+    "name": "Astartes Grenade Launcher",
+    "type": "ranged",
+    "category": "Grenade",
+    "description": "These powerful launchers can be fitted to any standard Astartes Bolt Rifle (or their Auto Bolt-Rifle or Stalker Bolt-Rifle variants), and on occasion can also be fitted to Scout Bikes in place of their twin bolters. Intercessor fire teams often include one of these to provide some extra punch. This lends a great deal of tactical flexibility to squads, meaning they can quickly devastate infantry formations, take out bunkers by shooting through firing slots, and even \"mouse-hole\" their way through buildings by blowing out intervening walls to surprise and outflank enemy defenders, while Scout Bike Squads use them to sow panic and confusion during hit-and-run attacks. As standard, the Astartes Grenade Launcher can be loaded with Frag or Krak rounds.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 0,
+    "traits": [
+      "Assault"
+    ],
+    "value": 6,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "special": "Damage: Use the profile of the Greanade fired.",
+    "source": "voa",
+    "page": 64
+  },
+  {
+    "id": "centurion_missile_launcher",
+    "name": "Centurion Missile Launcher",
+    "type": "ranged",
+    "category": "Missile",
+    "description": "Solely employed by Centurion Devastator Squads, these chest-mounted weapons can spew forth Krak missiles capable of smashing vehicles to shrapnel or fortifications to rubble. Although they carry few reloads, and their range is significantly shorter than a true missile launcher, their rapid rate of fire makes them virtually impossible to avoid or survive when unleashed.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 0,
+    "traits": [
+      "Heavy (6)"
+    ],
+    "value": 6,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "special": "Damage: Use the profile of the Missile fired.",
+    "source": "voa",
+    "page": 64
   }
 ]

@@ -5068,5 +5068,125 @@
     ],
     "source": "core",
     "page": 236
+  },
+  {
+    "id": "adamantine_cuirass",
+    "name": "Adamantine Cuirass",
+    "category": "wargear",
+    "description": "This reinforced chest plate bears a large Aquila symbol crafted out of solid adamantine. It replaces the chest piece of a standard suit of power armour, providing additional protection capable of deflecting even the most powerful enemy attacks. Such enhanced armour is generally issued to Marines who are expected to engage in the most dangerous of combat conditions. The Cuirass is cumbersome, and long-term use can drain power armour of energy far more quickly than normal. Given their incredible durability, they almost always outlive their wearers. There are records of cuirasses being recovered from devastated battlefields where all other wargear was obliterated before being beaten back into shape by the Techmarines and returning to service once more.",
+    "effect": "+1 AR and Bulky (1) to any armour with both the POWERED and ADEPTUS ASTARTES Keywords. Reduce any Flight Speed by -2.",
+    "value": 6,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "voa",
+    "page": 73
+  },
+  {
+    "id": "battle_standard",
+    "name": "Battle Standard",
+    "category": "wargear",
+    "description": "The Chapter maintains several Battle Standards, which are almost always displayed openly — usually wherever the largest concentration of Absolvers happen to be fighting. Although finely decorated, the Standards can accrue battle damage until it reaches the point where it must be repaired or replaced. A battle-brother can wear his scars with pride, and so should the Standards proclaiming the Chapter's honour. Older Standards that have become too worn or ragged for battlefield use are stored and then used to wrap fallen heroes' bodies when interred. The Battle Standard provides a rallying point for Marines, who will often exhibit great acts of daring to keep the Standard safe or to be the one to hoist it over an enemy stronghold.",
+    "effect": "All Astartes within 500 meters who share a [CHAPTER] Keyword with the banner receive +2 dice to Resolve Tests and Conviction Tests.",
+    "value": 8,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "voa",
+    "page": 74
+  },
+  {
+    "id": "halo_indomitus",
+    "name": "Halo Indomitus",
+    "category": "wargear",
+    "description": "These spiked iron halos are used as both a mark of honour and as housing for a potent force field generator designed to enhance the protection of the wearer's armour. Such a device is only awarded to those who have repeatedly proved themselves in combat, typically worn by senior officers and noteworthy heroes. The Halo can be installed as a shoulder mount or arrayed over or behind the wielder's head as an arch of spiked metal. Any Astartes looking upon the bearer of such an honour will know that they enjoy the absolute trust of their Chapter. In battle, the wielder is surrounded by flashes of energy as incoming attacks are converted to harmless photon bursts.",
+    "effect": "This functions as an AR 3 Invulnerable force field and gives +1 to all Leadership (Wil) and Intimidation (Wil) Tests against creatures with the ADEPTUS ASTARTES Keyword.",
+    "value": 6,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "voa",
+    "page": 74
+  },
+  {
+    "id": "molecular_bonding_studs",
+    "name": "Molecular Bonding Studs",
+    "category": "wargear",
+    "description": "A holdover from the earliest days of the Adeptus Astartes, Molecular Bonding Studs were once a mainstay of power armour designs. Typically, though not exclusively, fitted to one or both shoulder pauldrons, they allowed additional layers of armour to reinforce critical or vulnerable areas. When faced with shortages, armourers could employ bonding studs to reinforce plates which had been compromised in combat or manufactured with substandard materials. The studs were designed to bond to ceramite plates that could be easily replaced if damaged, granting a Space Marine a moderate amount of additional protection in the terrible internecine wars that marred the earliest years of the Imperium.",
+    "effect": "Power armour fitted with Molecular Bonding Studs can equip additional armour plates. These grant +2 AR but are destroyed if the wearer is struck by a weapon with an AP better than -3. This is done after the attack has been resolved. Shattered plates can be replaced by a suitable skilled Tech-Priest or, more typically, a Chapter's Techmarine.",
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "voa",
+    "page": 74
+  },
+  {
+    "id": "transpectral_combat_visor",
+    "name": "Transpectral Combat Visor",
+    "category": "wargear",
+    "description": "Capable of analysing and relaying vast quantities of battlefield data to the wearer, the Transpectral Combat Visor employed by Incursor's multi-spectrum targeting arrays works in tandem with the Divinator-Class Auspex to grant them pinpoint accuracy in any battlefield conditions.",
+    "effect": "When used in combination with a Divinator-Class Auspex, the user may ignore any cover-based bonuses when making a ranged attack once per combat.",
+    "value": 8,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS"
+    ],
+    "source": "voa",
+    "page": 74
+  },
+  {
+    "id": "omni_scrambler",
+    "name": "Omni-Scrambler",
+    "category": "tool",
+    "description": "These sophisticated units are employed by Infiltrator Squads to disrupt enemy communications. They can blanket an entire battlefield in impenetrable static, causing painful feedback in vox systems or broadcasting propaganda to destroy enemy morale. They can also intercept general transmissions, break enemy encryptions, and replicate the vox signals of specific commanders. They can even be used to duplicate beacon signals, causing enemy airstrikes or artillery support to go off target. Within the bounds of a highly technical area such as a hive city, Forge World or starship, the Omni-Scrambler can cause absolute mayhem, tearing the local comms system apart.",
+    "effect": "Adds +3 bonus dice to any Tech (Int) or Intimidate (Wil) Tests to disrupt enemy communications within 500 metres.",
+    "value": 7,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "voa",
+    "page": 75
+  },
+  {
+    "id": "sanguine_flask",
+    "name": "Sanguine Flask",
+    "category": "misc",
+    "description": "To assuage the Red Thirst and ensure that it doesn't overcome them, some veteran Absolvers have been known to turn to the blessed contents of the Sanguine Flask. Each flask is filled with blood drawn from those within the Chapter judged pure of deed and mind. The blood is kept viable by a miniaturised life-sustainer system in the base. Each flask can hold up to a litre of human blood, which they can keep fresh and viable for several days. Absolvers are forbidden by vow from drinking blood in front of Humans and will usually seek somewhere private to do this. The blood within a Sanguine Flask is fresh but would kill a normal Human if transfused; the potent anticoagulants mixed in would cause uncontrollable bleeding.",
+    "effect": "Consuming the contents of a Sanguine Flask allows an Astartes to recover 1d3 Shock and staves off the Red Thirst for 24 hours.",
+    "value": 4,
+    "rarity": "Common",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "voa",
+    "page": 75
+  },
+  {
+    "id": "teleport_homer",
+    "name": "Teleport Homer",
+    "category": "tool",
+    "description": "Each one of these arcane devices is a true relic of the Dark Age of Technology. Teleportation is a precarious business, especially as this technology is poorly understood in the current era. Surging energies blast physical objects or people through the Warp itself, re-materialising at a point up to thousands of kilometres distant. Without a beacon for the teleporter to lock onto, accidents are frequent and occasionally disastrous. There are tales of whole squads arriving dispersed across vast distances, sometimes deposited on other continents entirely, and in the most extremes of circumstances fused into the decks of enemy spacecraft as a tormented mass of flesh. A Teleport Homer provides a stable targeting focus for a teleportation chamber to lock onto, allowing for the safe teleportation of troops to its location. These are frequently employed by Astartes Terminators, with Scouts moving ahead to place the backpack-sized homer in a suitable location to achieve a surprise teleport assault.",
+    "value": 9,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "voa",
+    "page": 75
   }
 ]

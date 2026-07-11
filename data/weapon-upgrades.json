@@ -1733,5 +1733,48 @@
     "bonusAP": -1,
     "source": "core",
     "page": 231
+  },
+  {
+    "id": "m40_targeting_system",
+    "name": "M40 Targeting System",
+    "type": "scope",
+    "description": "This assemblage can be fitted to a standard Astartes Bolt weapon instead of a normal scope. The interior is filled with powerful lenses, gyroscopes, and cogitators linked to the weapon's firing system. The M40 unit enhances visual imagery, calculates distance and environmental factors that might interfere with a shot, and provides an assessment of likely weak spots in a target's armour. All of this turns the Boltgun from a general assault weapon into a lethally accurate long-range sniper rifle.",
+    "effect": "Can be fitted to any weapon with the BOLT and ADEPTUS ASTARTES Keywords. Weapon gains Sniper (2), +1 bonus dice to ranged attacks, and reduces Range penalties by -2. Weapon reduces any Salvo and Rapid Fire ratings it has by -1.",
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "BOLT",
+        "ADEPTUS ASTARTES"
+      ],
+      "weaponType": "ranged"
+    },
+    "source": "voa",
+    "page": 68
+  },
+  {
+    "id": "vortex_bolts",
+    "name": "Vortex Bolts",
+    "type": "ammo",
+    "description": "A Vortex Bolt is one of the most dangerous and arcane of ancient technologies utilised by the Absolvers, a lethal round that rips open a small, uncontrolled portal to the Warp when it detonates. Apart from the horrifying consequences to anything in the vicinity, it completely overwhelms any living psychic entities with maddening energy, burning out their souls and breaking their minds.",
+    "effect": "Blast (1), Targets with the PSYKER Keywords take double damage and treat the attack as Agonising,A DN 9 Corruption Test is required by anyone caught in the blast. Single round only - no Salvo or Rapid Fire possible.",
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "BOLT"
+      ],
+      "weaponType": "ranged"
+    },
+    "source": "voa",
+    "page": 68
   }
 ]

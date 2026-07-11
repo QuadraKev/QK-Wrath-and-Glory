@@ -21107,5 +21107,2571 @@
     "special": "Toxin Grenades do not inflict damage normally. Rather, anyone in the area must pass a DN 7 Toughness test or suffer the Poisoned 7 condition. A creature Poisoned by a Toxin Grenade suffers 2d3 Mortal Wounds at the start of each of their turns.",
     "source": "apocrypha",
     "page": 361
+  },
+  {
+    "id": "blastmaster_single_frequency_aoa",
+    "name": "Blastmaster (Single Frequency) (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Chaos",
+    "description": "The Blastmaster is a heavy Sonic Weapon that when fired focuses a throbbing bass note into an explosive sonic crescendo that can burst eyeballs and rupture internal organs. By varying the frequency of the blast, the effect of the weapon can be altered to produce different effects. The Blastmaster is used alongside the smaller Sonic Blaster weapon.",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 24,
+      "medium": 48,
+      "long": 72
+    },
+    "salvo": 1,
+    "traits": [
+      "Blast (6)",
+      "Cacophony",
+      "Heavy (6)"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "SONIC",
+      "CHAOS",
+      "SLAANESH"
+    ],
+    "special": "When firing a Blastmaster, choose which profile you wish to use before resolving the attack.",
+    "source": "apocrypha",
+    "page": 367
+  },
+  {
+    "id": "blastmaster_varied_frequency_aoa",
+    "name": "Blastmaster (Varied Frequency) (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Chaos",
+    "description": "The Blastmaster is a heavy Sonic Weapon that when fired focuses a throbbing bass note into an explosive sonic crescendo that can burst eyeballs and rupture internal organs. By varying the frequency of the blast, the effect of the weapon can be altered to produce different effects. The Blastmaster is used alongside the smaller Sonic Blaster weapon.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 1,
+    "traits": [
+      "Blast (10)",
+      "Cacophony",
+      "Heavy (6)"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "SONIC",
+      "CHAOS",
+      "SLAANESH"
+    ],
+    "special": "When firing a Blastmaster, choose which profile you wish to use before resolving the attack.",
+    "source": "apocrypha",
+    "page": 367
+  },
+  {
+    "id": "blight_grenade_aoa",
+    "name": "Blight Grenade (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Chaos",
+    "description": "Also known as a Death's-Head of Nurgle, Blight Grenades are explosive devices bloated and swollen with pathogens used by Plague Marines. When they explode the resulting shrapnel carries deadly toxins and contagions that can penetrate cracks in armour, cause flesh to boil and slough away, and fill the air with blinding spores, all the while keeping the victim alive until the very end. Some versions of Blight Grenades resemble maggot-filled shrunken heads, while others are made from the actual heads of slain enemies.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": 0,
+    "range": "(S) x4m or as Launcher",
+    "salvo": 0,
+    "traits": [
+      "Blast (6)",
+      "Inflict (Poisoned 4)"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "EXPLOSIVE",
+      "CHAOS",
+      "NURGLE"
+    ],
+    "source": "apocrypha",
+    "page": 367
+  },
+  {
+    "id": "blight_launcher_aoa",
+    "name": "Blight Launcher (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Chaos",
+    "description": "Blight Launchers are heavy grenade launchers, bombarding the enemy with toxin-filled grenades. Little can withstand the virulence of the diseases that infest these grenades.",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -2,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 2,
+    "traits": [
+      "Assault",
+      "Barrage",
+      "Blast (6)",
+      "Inflict (Poisoned 4)"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "CHAOS",
+      "NURGLE"
+    ],
+    "source": "apocrypha",
+    "page": 367
+  },
+  {
+    "id": "daemonic_fire_aoa",
+    "name": "Daemonic Fire (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Chaos",
+    "description": "A gift granted to some servants of the Dark Gods is the ability to conjure warp-flame from thin air and hurl it at their enemies. Daemonic fire has the added advantage that it does not take the form of a weapon, and the bearer cannot be disarmed.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": 0,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 2,
+    "traits": [
+      "Assault",
+      "Inflict (On Fire)"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "FIRE",
+      "CHAOS",
+      "DAEMON"
+    ],
+    "special": "When you make a Salvo attack with Daemonic Fire, suffer 1d3 Shock instead of spending Ammo. When you first obtain Daemonic Fire, it becomes a permanent part of you, and you gain 1d3+1 Corruption points.",
+    "source": "apocrypha",
+    "page": 367
+  },
+  {
+    "id": "doom_siren_aoa",
+    "name": "Doom Siren (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Chaos",
+    "description": "A doom siren is a close-quarters sonic weapon that is used by noise marines, along with vehicles and daemon engines that are dedicated to the service of Slaanesh, the chaos god of pleasure and excess. The doom siren is fitted to the chaos space marine's power armour with a complex arrangement of pipes and tubes around their helmets which can project short-ranged sonic attacks. These assaults are launched against opponents as they close with the noise marine during melee combat and are usually powerful enough to kill or at least temporarily stun their target, allowing the attacker to quickly finish the foe off while they are stunned.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -2,
+    "range": {
+      "short": 4,
+      "medium": 8,
+      "long": 12
+    },
+    "salvo": 1,
+    "traits": [
+      "Assault",
+      "Blast (6)",
+      "Cacophony"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "SONIC",
+      "CHAOS",
+      "SLAANESH"
+    ],
+    "source": "apocrypha",
+    "page": 367
+  },
+  {
+    "id": "havoc_autocannon_aoa",
+    "name": "Havoc Autocannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Chaos",
+    "description": "A modified version of the common autocannon, developed for Astartes use during the Great Crusade and remaining in use by Heretic Astartes heavy weapons specialists. Their high-velocity, armour-piercing shells are effective against a variety of targets.",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 24,
+      "medium": 48,
+      "long": 72
+    },
+    "salvo": 3,
+    "traits": [
+      "Heavy (6)"
+    ],
+    "value": 7,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PROJECTILE",
+      "CHAOS",
+      "HERETIC ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 367
+  },
+  {
+    "id": "heavy_warpflamer_aoa",
+    "name": "Heavy Warpflamer (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Chaos",
+    "description": "Used by the servants of Tzeentch, warpflamers unleash the corrosive power of the warp, burning not only the body, but the soul as well. The Heavy Warpflamer is a more potent and powerful version of the Warpflamer, like a standard Imperial Heavy Flamer but with the ability to project the mutagenic Warpflame provided by the blessings of the Lord of Change.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 4,
+      "medium": 8,
+      "long": 12
+    },
+    "salvo": 2,
+    "traits": [
+      "Corrupting",
+      "Flamer",
+      "Heavy (6)"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "FIRE",
+      "CHAOS",
+      "TZEENTCH"
+    ],
+    "source": "apocrypha",
+    "page": 367
+  },
+  {
+    "id": "hellfyre_missile_rack_aoa",
+    "name": "Hellfyre Missile Rack (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Chaos",
+    "description": "The Hellfyre Missile Rack is a missile launcher system used by the elite Scarab Occult Terminators of the Thousand Sons Traitor Legion. Hellfyre Missiles have compact but deadly warheads that explode with the power of the Warp, unleashing detonations of aetheric light.",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -2,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 2,
+    "traits": [
+      "Inflict (Blind)"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "CHAOS",
+      "HERETIC ASTARTES",
+      "TZEENTCH"
+    ],
+    "source": "apocrypha",
+    "page": 367
+  },
+  {
+    "id": "plague_belcher_aoa",
+    "name": "Plague Belcher (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Chaos",
+    "description": "Plague Belchers spray a vile stream of pestilential fluids, and a cloud of disease-riddled fog. Any who touch this miasma will fall victim to some the foulest plagues Nurgle's servants can concoct.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 4,
+      "medium": 8,
+      "long": 12
+    },
+    "salvo": 1,
+    "traits": [
+      "Assault",
+      "Flamer",
+      "Inflict (Poisoned 4)",
+      "Spread"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "PESTILENT",
+      "CHAOS",
+      "NURGLE"
+    ],
+    "source": "apocrypha",
+    "page": 367
+  },
+  {
+    "id": "plague_spewer_aoa",
+    "name": "Plague Spewer (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Chaos",
+    "description": "Plague Spewers are larger counterparts to Plague Belchers, which hurl forth great streams of vileness and clouds of filth. Few can survive contact with this weapon's unholy emissions.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": {
+      "short": 4,
+      "medium": 8,
+      "long": 12
+    },
+    "salvo": 2,
+    "traits": [
+      "Flamer",
+      "Heavy (6)",
+      "Inflict (Poisoned 4)"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "PESTILENT",
+      "CHAOS",
+      "NURGLE"
+    ],
+    "source": "apocrypha",
+    "page": 367
+  },
+  {
+    "id": "reaper_autocannon_aoa",
+    "name": "Reaper Autocannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Chaos",
+    "description": "The Reaper Autocannon is a double-barrelled variant of the common Autocannon. Originally designed during the Great Crusade for use as a heavy support weapon for Legiones Astartes Terminators, the weapon features two barrels and is capable of a high rate of fire, but it requires the incredible strength to be carried as an infantry-portable weapon. The recoil of this weapon is too great for any but a warrior in Terminator armour to unleash it effectively. The weapon fell out of favour amongst Loyalist forces, who replaced it with the Assault Cannon, but Traitor Legionaries still employ Reaper Autocannons for fire support.\n\nA Reaper Autocannon incorporates a bayonet.",
+    "damage": {
+      "base": 14,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -2,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 4,
+    "traits": [
+      "Heavy (8)",
+      "Rapid Fire (2)"
+    ],
+    "value": 8,
+    "rarity": "Rare",
+    "keywords": [
+      "PROJECTILE",
+      "CHAOS",
+      "HERETIC ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 368
+  },
+  {
+    "id": "reaper_chaincannon_aoa",
+    "name": "Reaper Chaincannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Chaos",
+    "description": "These brutal antipersonnel weapons are a Chaos-tainted evolution of the rotor cannons employed by Legiones Astartes forces during the Great Crusade and the Horus Heresy. With a few seconds of fire, scores of foes can be massacred.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 8,
+    "traits": [
+      "Heavy (6)",
+      "Rapid Fire (3)",
+      "Sustained"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "PROJECTILE",
+      "CHAOS",
+      "HERETIC ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 368
+  },
+  {
+    "id": "sonic_blaster_aoa",
+    "name": "Sonic Blaster (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Chaos",
+    "description": "The Sonic Blaster is sonic weapon used by Noise Marines. It produces waves of devastating sound which can rip targets apart. It can be used to produce either a continuous sound or many shorter pulses. A Sonic Blaster can flay the flesh off of bone and pulverize organs on its own, but when multiple Blasters overlap their attack, they can shatter the remaining skeletons into thousands of pieces.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 3,
+    "traits": [
+      "Assault",
+      "Cacophony"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "SONIC",
+      "CHAOS",
+      "SLAANESH"
+    ],
+    "source": "apocrypha",
+    "page": 368
+  },
+  {
+    "id": "soulreaper_cannon_aoa",
+    "name": "Soulreaper Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Chaos",
+    "description": "The Soulreaper Cannon is a ballistic heavy weapon utilised by the Heretic Astartes of the Thousand Sons Traitor Legion and other Chaos Space Marine forces dedicated to the Chaos God Tzeentch. It is a heavy rotor cannon similar to the Chaincannon used by other Traitor Marines, or the Assault Cannons used by loyal Astartes. However, the Soulreaper Cannon's ammunition has been enhanced by sorcerous power to be able to melt through flesh and ceramite both.",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -3,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 5,
+    "traits": [
+      "Heavy (7)",
+      "Sustained"
+    ],
+    "value": 9,
+    "rarity": "Very Rare",
+    "keywords": [
+      "PROJECTILE",
+      "FIRE",
+      "CHAOS",
+      "TZEENTCH",
+      "HERETIC ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 368
+  },
+  {
+    "id": "warpflame_pistol_aoa",
+    "name": "Warpflame Pistol (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Chaos",
+    "description": "Used by the servants of Tzeentch, warpflamers unleash the corrosive power of the warp, burning not only the body, but the soul as well. The Warpflame Pistol is the most compact weapon, like a standard Imperial Hand Flamer but with the added mutagenic power of Tzeentch.",
+    "damage": {
+      "base": 7,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -2,
+    "range": {
+      "short": 3,
+      "medium": 6,
+      "long": 9
+    },
+    "salvo": 1,
+    "traits": [
+      "Corrupting",
+      "Flamer",
+      "Pistol"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "FIRE",
+      "CHAOS",
+      "TZEENTCH"
+    ],
+    "source": "apocrypha",
+    "page": 368
+  },
+  {
+    "id": "warpflamer_aoa",
+    "name": "Warpflamer (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Chaos",
+    "description": "Used by the servants of Tzeentch, warpflamers unleash the corrosive power of the warp, burning not only the body, but the soul as well. The Warpflamer is the standard Warpflame weapon, like a standard Imperial Flamer but with the added mutagenic power of Tzeentch.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -2,
+    "range": {
+      "short": 4,
+      "medium": 8,
+      "long": 12
+    },
+    "salvo": 1,
+    "traits": [
+      "Assault",
+      "Corrupting",
+      "Flamer"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "FIRE",
+      "CHAOS",
+      "TZEENTCH"
+    ],
+    "source": "apocrypha",
+    "page": 368
+  },
+  {
+    "id": "deathspinner_aoa",
+    "name": "Deathspinner (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Aeldari",
+    "description": "The Death Spinner is an Eldar Monofilament gun and the ritual weapon of the Warp Spider Aspect Warriors. Often just referred to as a 'Spinner', it uses the same basic technology as weapons such as the Harlequin's Kiss and the Shadow Weaver, projecting a long thread of single-molecule chain, or monofilament wire. The weapon uses a magnetic containment field to spool the wire together and discharge it as rapidly expanding mist-like mass called a \"spinner cloud\". Targets within the cloud are sliced apart as the wires' own tension causes it to writhe and lash, slicing through not only exposed flesh but also seeking out gaps in their armour, where it uncoils within and liquefies their innards.",
+    "damage": {
+      "base": 14,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -2,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Assault",
+      "Blast (6)",
+      "Brutal",
+      "Inflict (Restrained)"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "MONOFILAMENT",
+      "AELDARI",
+      "ASURYANI"
+    ],
+    "source": "apocrypha",
+    "page": 371
+  },
+  {
+    "id": "dragons_breath_flamer_aoa",
+    "name": "Dragon's Breath Flamer (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Aeldari",
+    "description": "A relic found in some temples of the Fire Dragon Aspect Warriors, Dragon's Breath flamers are lightweight but powerful weapons, turning their foes to ash.",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -1,
+    "range": {
+      "short": 10,
+      "medium": 20,
+      "long": 30
+    },
+    "salvo": 3,
+    "traits": [
+      "Assault",
+      "Flamer"
+    ],
+    "value": 7,
+    "rarity": "Unique",
+    "keywords": [
+      "FIRE",
+      "ANCIENT",
+      "AELDARI",
+      "ASURYANI"
+    ],
+    "source": "apocrypha",
+    "page": 371
+  },
+  {
+    "id": "laser_lance_aoa",
+    "name": "Laser Lance (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Aeldari",
+    "description": "The Laser Lance is an Eldar laser weapon, the signature weapon of the Shining Spears Aspect Warriors as well as the Exodite Dragon Knights. The laser lance fires a highly focused laser beam to deliver an intense blast of energy, discharged either at short range or upon physical contact with the enemy. This makes the weapon ideal for the devastating charges employed by Shining Spears and Dragon Knights, but the weapon is far less potent after the charge has concluded.",
+    "damage": {
+      "base": 14,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -4,
+    "range": {
+      "short": 3,
+      "medium": 6,
+      "long": 9
+    },
+    "salvo": 0,
+    "traits": [
+      "Assault",
+      "Lance"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "LAS",
+      "AELDARI",
+      "ASURYANI",
+      "EXODITE"
+    ],
+    "special": "Melee: A Laser Lance can be used as a melee weapon, using the following profile - Damage (S) +3, ED 3, AP -4, Range 2, Lance. When a character wielding a laser lance attacks while mounted (upon a moving vehicle or charging creature), the weapon's damage rating becomes 14, though it is not modified by the user's Strength.",
+    "source": "apocrypha",
+    "page": 372
+  },
+  {
+    "id": "pack_grenade_launcher_aoa",
+    "name": "Pack Grenade Launcher (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Aeldari",
+    "description": "Harlequin Shadowseers carry back-mounted grenade launchers known as creidann to hurl hallucinogen grenades into battle. These bombardments are always perfectly timed to accompany the ebb and flow of battle.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": "-",
+    "traits": [
+      "Assault"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "HARLEQUIN"
+    ],
+    "special": "Damage: Use the profile of the Grenade fired. A Pack Grenade Launcher can carry up to 6 grenades, and additional grenades cannot be loaded during battle.",
+    "source": "apocrypha",
+    "page": 372
+  },
+  {
+    "id": "spinneret_rifle_aoa",
+    "name": "Spinneret Rifle (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Aeldari",
+    "description": "The Spinneret Rifle is a monofilament weapon used by Exarchs of the Warp Spider Aspect Shrines. Compared to the normal Death Spinner which releases a mist-like cloud of monofilament to slice through enemies, the Spinneret Rifle fires a single, rigid strand of monomolecular wire which punches straight through armour and then recoils in a tight spiral.",
+    "damage": {
+      "base": 14,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -4,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 1,
+    "traits": [
+      "Rapid Fire (1)",
+      "Mortal (d3)"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "MONOFILAMENT",
+      "ANCIENT",
+      "AELDARI",
+      "ASURYANI"
+    ],
+    "source": "apocrypha",
+    "page": 372
+  },
+  {
+    "id": "casket_of_flensing_aoa",
+    "name": "Casket of Flensing (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Aeldari",
+    "description": "When this casket is opened and the activation words spoken, invisible spirits fly outwards towards the bearer's prey. Before long, the Haemonculus' foes find themselves covered in dozens of circular bites that manifest in flesh and armour alike. If enough of the bearer's ethereal imps find their mark, they will strip their prey's head clean of flesh, pull the skull free from the spine, and carry their grisly trophy back to their Haemonculus master whilst the brain inside writhes in abject horror.",
+    "damage": {
+      "base": 7,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -2,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": "-",
+    "traits": [
+      "Blast (10)",
+      "Inflict (Bleeding)"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "EXOTIC",
+      "DRUKHARI"
+    ],
+    "special": "Once a Casket of Flensing has been used, it cannot be used again until after your next Respite.",
+    "source": "apocrypha",
+    "page": 375
+  },
+  {
+    "id": "dark_gate_aoa",
+    "name": "Dark Gate (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Aeldari",
+    "description": "A dark gate is a rune-etched tetrahedron that opens a portal to one of the forbidden zones of the Webway. Many impossible entities make their lairs in these sealed-off fragments, and an open portal is an irresistible lure. Moments after the dark gate is cast into the fray, a grasping tentacle, flickering pseudopod, or tendril of purest shadow flicks out to grab anyone it can catch within its grasp.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": 0,
+    "range": "(S) x4m or as Launcher",
+    "salvo": 0,
+    "traits": [
+      "Blast (10)",
+      "Mortal (1)",
+      "Warp Weapon"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "EXOTIC",
+      "DRUKHARI"
+    ],
+    "special": "Once a Dark Gate has been used, it cannot be used again until after your next Respite.",
+    "source": "apocrypha",
+    "page": 375
+  },
+  {
+    "id": "orb_of_despair_aoa",
+    "name": "Orb of Despair (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Aeldari",
+    "description": "This heavy black sphere has sat within the oubliettes of the Haemonculi for millennia, absorbing the pain and horror of the damned souls trapped within. When hurled at the ground it sends out shockwaves of negative emotional energy that plunge those nearby into the deepest, darkest anguish.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": "(S) x4m or as Launcher",
+    "salvo": 0,
+    "traits": [
+      "Blast (10)"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "EXOTIC",
+      "DRUKHARI"
+    ],
+    "special": "Any creature caught in the blast of an Orb of Despair must pass a Terror test (TN 6). Any creature who fails additionally suffers 1d3+2 Shock.",
+    "source": "apocrypha",
+    "page": 376
+  },
+  {
+    "id": "phantasm_launcher_aoa",
+    "name": "Phantasm Launcher (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Aeldari",
+    "description": "The Phantasm Grenade Launcher is a deadly weapon utilized by wealthier Dark Eldar. Consisting of a specially modified backpack that can hurl disc-shaped grenades from twin tubes, the ammunition of Phantasm Grenade Launchers are canisters which contain a powerful nerve gas, capable of plunging the victim into a fit of horrific nightmares and delusions.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": "-",
+    "traits": [
+      "Assault",
+      "Blast (4)",
+      "Gas"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "DRUKHARI"
+    ],
+    "special": "Any creature caught in the blast of a Phantasm Grenade must pass a Terror test (TN 5). Further, if a creature suffers a complication on this test, then they also suffer 1d3 mortal wounds.",
+    "source": "apocrypha",
+    "page": 376
+  },
+  {
+    "id": "airbursting_fragmentation_projector_aoa",
+    "name": "Airbursting Fragmentation Projector (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "The Airbursting Fragmentation Projector was developed by the T'au Empire during the Third Sphere Expansion. The weapon operates by firing a proximity-fused explosive projectile on a trajectory computed by a simple on-board drone intelligence within the warhead itself.\n\nThis AI calculates the precise height and distance of each submunition it fires to provide optimum explosive damage across a wide area.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": 0,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 0,
+    "traits": [
+      "Blast (6)",
+      "Indirect",
+      "Heavy (6)"
+    ],
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 379
+  },
+  {
+    "id": "burst_cannon_aoa",
+    "name": "Burst Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "A Burst Cannon is a form of multi-barrelled T'au Pulse Weapon, and utilises the same plasma induction technologies found in a Pulse Rifle to fire micro-pulses of plasma accelerated to near-light speeds.\n\nWith four rotating barrels to mitigate thermal stress, Burst Cannons can sustain ferocious rates of fire, albeit at the expense of the long ranges that many other Pulse Weapons possess.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 6,
+    "traits": [
+      "Assault",
+      "Rapid Fire (3)",
+      "Heavy (4)"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PULSE",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 379
+  },
+  {
+    "id": "cyclic_ion_blaster_aoa",
+    "name": "Cyclic Ion Blaster (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "A Cyclic Ion Blaster is an experimental T'au XV8 Crisis Battlesuit Ion Weapon system developed during the T'au Empire's Third Sphere Expansion. The Cyclic Ion Blaster was developed using Ion Weapon technology acquired as part of a fruitful alliance between the Syrr'Tok Brotherhood of the Demiurg and the Water Caste of the Dal'yth Sept.\n\nCurrent T'au Ion Weapon designs also allow for the weapons to be overcharged by exposing the reactive Mor'tonium power source to the environment, though this also exposes the user to the dangerous ionising radiation emitted by the Mor'tonium. Overcharging a Cyclic Ion Blaster allows it to generate an explosive blast with increased damage compared to its normal fire mode.",
+    "damage": {
+      "base": 15,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -2,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 4,
+    "traits": [
+      "Assault",
+      "Heavy (6)",
+      "Supercharge"
+    ],
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "ION",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 379
+  },
+  {
+    "id": "fireblade_pulse_rifle_aoa",
+    "name": "Fireblade Pulse Rifle (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "A rare master-crafted version of a Pulse Rifle, manufactured to the highest standards for veteran Cadre Fireblades. Each weapon is calibrated for the highest performance, maximum stopping power and maximum penetration, and fine-tuned for their specific wielder as necessary.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 2,
+    "traits": [
+      "Rapid Fire (2)",
+      "Reliable"
+    ],
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "PULSE",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 379
+  },
+  {
+    "id": "fusion_blaster_aoa",
+    "name": "Fusion Blaster (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "A Fusion Blaster is a short-ranged T'au equivalent of a Melta Weapon that agitates the sub-atomic particles of the target, causing a massive build-up of heat.\n\nLiving targets are often completely vaporised and non-living targets, even the most heavily armoured vehicles and fortifications, can be reduced to slag in the blink of an eye with its nuclear fusion-powered blast.\n\nThe Fusion Blaster is common as a weapon system on battlesuits. The Fusion Blaster is similar both technologically and tactically to an Imperial Meltagun, albeit it possesses a longer range and is commonly employed by highly mobile units.",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -4,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 1,
+    "traits": [
+      "Assault",
+      "Melta"
+    ],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "FUSION",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 379
+  },
+  {
+    "id": "ion_rifle_aoa",
+    "name": "Ion Rifle (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "An Ion Rifle is an experimental T'au Ion Weapon designed for infantry use developed during the T'au Empire's Third Sphere Expansion. An Ion Rifle is similar in size to a T'au Rail Rifle, and it is a powerful weapon capable of engaging enemies at long ranges with high energy ion streams, vaporising flesh and metal with equal ease.\n\nThese high-energy particles are accelerated by an electromagnetic field and react explosively with the target because of direct transfer of energy at an atomic level.\n\nIon Rifles are normally issued to Pathfinders as special weapons, where their firepower boosts the team's combat capabilities by allowing them to vaporise heavy infantry and light vehicles alike. T'au Interceptor Drones are also armed with a set of twin-linked Ion Rifles as standard weapons, which they use in conjunction with their advanced targeting systems to blow incoming aircraft out of the sky.",
+    "damage": {
+      "base": 15,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -2,
+    "range": {
+      "short": 15,
+      "medium": 30,
+      "long": 45
+    },
+    "salvo": 3,
+    "traits": [
+      "Heavy (4)",
+      "Supercharge"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "ION",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 379
+  },
+  {
+    "id": "longshot_pulse_rifle_aoa",
+    "name": "Longshot Pulse Rifle (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "A Longshot Pulse Rifle is a variant of the T'au Pulse Rifle, modified specifically for a sniping role. As such, it has a far further range and fires more focused plasma pulses, whilst maintaining a similar rate of fire to its standard counterpart.\n\nThese rifles are commonly used by Sniper Drones as their primary weapon, directed by a specially equipped marksman guiding the Drones remotely.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -2,
+    "range": {
+      "short": 24,
+      "medium": 48,
+      "long": 72
+    },
+    "salvo": 1,
+    "traits": [
+      "Rapid Fire (1)",
+      "Sniper (2)"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PULSE",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 379
+  },
+  {
+    "id": "markerlight_aoa",
+    "name": "Markerlight (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "A Marker Light is an advanced T'au hand-held laser range finder that is used to \"paint\" targets for other T'au units to fire upon. When activated, a Marker Light projects a simple beam at the target which measures the exact distance between the Marker Light and the user.\n\nThis and a torrent of other targeting information then is fed into the Cadre tactical network and becomes available on the wider T'au electronic battle network, relaying ranges to the marked target, triangulating optimum firing trajectories and superimposing aiming vectors.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 0,
+    "traits": [
+      "Special"
+    ],
+    "value": 6,
+    "rarity": "Uncommon",
+    "keywords": [
+      "EXOTIC",
+      "T'AU EMPIRE"
+    ],
+    "special": "A successful attack with a Markerlight inflicts one instance of the Marked condition on the target. A character with a markerlight may fire the markerlight as part of a multi-action which includes another ranged attack with a different weapon. Marked: A ranged attack against a Marked character gains an additional +2 bonus dice. An instance of the Marked condition is removed when a ranged attack is made against the character. A character removes all instances of the Marked condition on them at the end of their turn.",
+    "source": "apocrypha",
+    "page": 380
+  },
+  {
+    "id": "missile_pod_aoa",
+    "name": "Missile Pod (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "A Missile Pod is a simple T'au multiple missile delivery system able to engage targets at long range. T'au missiles are guided by simple AI, and the pod is capable of rapid fire to shred infantry, transports, skimmers, and other light vehicles with ease.",
+    "damage": {
+      "base": 14,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 2,
+    "traits": [
+      "Barrage",
+      "Blast (2)",
+      "Heavy (6)"
+    ],
+    "value": 6,
+    "rarity": "Uncommon",
+    "keywords": [
+      "EXPLOSIVE",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 380
+  },
+  {
+    "id": "photon_grenade_aoa",
+    "name": "Photon Grenade (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "A Photon Grenade is a type of T'au defensive grenade that all Fire Warriors and Pathfinders are equipped with as standard wargear. Photon Grenades are designed to be used in a situation where enemy forces advance too close to a T'au firing line.\n\nA Photon Grenade can repel the attackers with an awesome pulse of multi-spectrum light and a deafening sonic burst to blind and disorient attackers, confusing them and slowing their charge so that the Tau infantry are able to respond with further volleys of lethal firepower.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": "(S) x4m or as Launcher",
+    "salvo": 0,
+    "traits": [
+      "Blast (6)",
+      "Special"
+    ],
+    "value": 3,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PHOTON",
+      "T'AU EMPIRE"
+    ],
+    "special": "Photon Grenades do not inflict damage. Rather, each enemy caught in the blast immediately suffers the Blinded and Staggered conditions until the end of their next turn.",
+    "source": "apocrypha",
+    "page": 380
+  },
+  {
+    "id": "fusion_grenade_aoa",
+    "name": "Fusion Grenade (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "These compact fusion charges are effective antimaterial weapons, for destroying enemy equipment, breaching obstacles, and damaging light vehicles. They're most often used by Pathfinder teams equipped with grenade launchers.",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -1,
+    "range": "(S) x4m or as Launcher",
+    "salvo": 0,
+    "traits": [
+      "Blast (2)"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "FUSION",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 380
+  },
+  {
+    "id": "emp_grenade_aoa",
+    "name": "EMP Grenade (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "These devices generate a disruptive energy pulse which hinders the technological workings of a wide range of technologies.",
+    "damage": {
+      "base": 7,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": 0,
+    "range": "(S) x4m or as Launcher",
+    "salvo": 0,
+    "traits": [
+      "Blast (2)",
+      "Special"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "EMP",
+      "T'AU EMPIRE"
+    ],
+    "special": "When a vehicle is hit by the blast from an EMP grenade, it immediately suffers the Hindered (2) and Restrained conditions, which last until the end of the vehicle's next turn.",
+    "source": "apocrypha",
+    "page": 380
+  },
+  {
+    "id": "plasma_rifle_aoa",
+    "name": "Plasma Rifle (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "A Plasma Rifle is a T'au Plasma Weapon that delivers pulses of searing energy and superheated matter that has been transmuted into a gaseous plasma state that carries an electrical charge.\n\nThe plasma \"bolts\" fired by these weapons generate the destructive heat of a small sun; impacting with the fury of a supernova and scything through steel, flesh, and bone as if they were nothing.\n\nT'au plasma weapons technology, at least on this scale, is far safer and less prone to overheat than that used by the Imperium.",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -3,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 1,
+    "traits": [
+      "Assault",
+      "Heavy (4)"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "PLASMA",
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 380
+  },
+  {
+    "id": "pulse_blaster_short_aoa",
+    "name": "Pulse Blaster (Short) (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "The Pulse Blaster, also known as a Pulse Shotgun, is a type of T'au Pulse Weapon. Commonly used by Fire Warrior Breacher Teams. Like the Human Shotgun in function, the Pulse Blaster is designed to deliver powerful close-range firepower. Though the T'au are historically disdainful of close-range warfare, the Pulse Blaster had to be developed due to T'au difficulties in urban combat on labyrinthine confined Imperial Hive Worlds.",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -2,
+    "range": {
+      "short": 8,
+      "medium": null,
+      "long": null
+    },
+    "salvo": 2,
+    "traits": [
+      "Assault",
+      "Spread"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PULSE",
+      "T'AU EMPIRE"
+    ],
+    "special": "Pulse Blasters have different Damage, ED, and AP values depending on whether the target is within Close range, Medium range, or Long range.",
+    "source": "apocrypha",
+    "page": 380
+  },
+  {
+    "id": "pulse_blaster_med_aoa",
+    "name": "Pulse Blaster (Med) (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "The Pulse Blaster, also known as a Pulse Shotgun, is a type of T'au Pulse Weapon. Commonly used by Fire Warrior Breacher Teams. Like the Human Shotgun in function, the Pulse Blaster is designed to deliver powerful close-range firepower. Though the T'au are historically disdainful of close-range warfare, the Pulse Blaster had to be developed due to T'au difficulties in urban combat on labyrinthine confined Imperial Hive Worlds.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": null,
+      "medium": 16,
+      "long": null
+    },
+    "salvo": 2,
+    "traits": [
+      "Assault",
+      "Spread"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PULSE",
+      "T'AU EMPIRE"
+    ],
+    "special": "Pulse Blasters have different Damage, ED, and AP values depending on whether the target is within Close range, Medium range, or Long range.",
+    "source": "apocrypha",
+    "page": 380
+  },
+  {
+    "id": "pulse_blaster_long_aoa",
+    "name": "Pulse Blaster (Long) (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "The Pulse Blaster, also known as a Pulse Shotgun, is a type of T'au Pulse Weapon. Commonly used by Fire Warrior Breacher Teams. Like the Human Shotgun in function, the Pulse Blaster is designed to deliver powerful close-range firepower. Though the T'au are historically disdainful of close-range warfare, the Pulse Blaster had to be developed due to T'au difficulties in urban combat on labyrinthine confined Imperial Hive Worlds.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": null,
+      "medium": null,
+      "long": 24
+    },
+    "salvo": 2,
+    "traits": [
+      "Assault",
+      "Spread"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PULSE",
+      "T'AU EMPIRE"
+    ],
+    "special": "Pulse Blasters have different Damage, ED, and AP values depending on whether the target is within Close range, Medium range, or Long range.",
+    "source": "apocrypha",
+    "page": 380
+  },
+  {
+    "id": "autoch_pattern_bolt_pistol_aoa",
+    "name": "Autoch-pattern Bolt Pistol (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "Autoch-pattern bolt pistols are a common sidearm for Kin warriors, providing similar stopping power to a full-sized Autoch-pattern bolter, but with lesser rate of fire and range.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Brutal",
+      "Pistol"
+    ],
+    "value": 4,
+    "rarity": "Rare",
+    "keywords": [
+      "BOLT",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 383
+  },
+  {
+    "id": "autoch_pattern_bolter_aoa",
+    "name": "Autoch-pattern Bolter (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "Derived from the same principles, and even the same STC designs as Imperial bolt weaponry, the Leagues of Votann have a distinct pattern of boltguns, bolt pistols, and combi-bolters. Autoch-pattern weapons are comparable to Imperial bolt weapons in most regards, but better made, constructed of superior materials, and have been refined over countless millennia of careful innovation. The greatest improvement is the fitting of a HunTR module, an advanced targeting system applied to most Leagues of Votann weaponry, providing haptic feedback and grav-pulse adjustments on every shot, ensuring that the weapon is stable and steady for every shot.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 2,
+    "traits": [
+      "Brutal",
+      "HunTR"
+    ],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "BOLT",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 383
+  },
+  {
+    "id": "autoch_pattern_combi_bolter_aoa",
+    "name": "Autoch-pattern Combi-Bolter (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "The Autoch Pattern Combi-bolter is used by Kin military forces, composed of two standard Autoch-pattern Bolters combined into a single weapon, similar to the way an Imperial storm bolter is essentially two boltguns fused together.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 4,
+    "traits": [
+      "Brutal",
+      "HunTR",
+      "Rapid Fire (2)"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "BOLT",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 383
+  },
+  {
+    "id": "bolt_cannon_aoa",
+    "name": "Bolt Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "These heavy weapons have significantly increased fire rate and stopping power compared to a standard bolter but are too cumbersome for an ordinary Kin to effectively wield without mechanical assistance. They're normally mounted on the exo-rigs worn by Brôkhyr Thunderkyn.",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 3,
+    "traits": [
+      "Brutal",
+      "Heavy (5)",
+      "HunTR"
+    ],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "BOLT",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 383
+  },
+  {
+    "id": "bolt_revolver_aoa",
+    "name": "Bolt Revolver (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "These weapons are similar to ordinary bolt pistols but chamber a larger shell with a heavier warhead. This increases their stopping power but reduces their effective range. They're favoured as a rugged, high-impact sidearm by Hernkyn pioneers.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 5,
+      "medium": 10,
+      "long": 15
+    },
+    "salvo": 1,
+    "traits": [
+      "Brutal",
+      "Pistol"
+    ],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "BOLT",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 383
+  },
+  {
+    "id": "bolt_shotgun_aoa",
+    "name": "Bolt Shotgun (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "An unusual variant of bolt weapon which fire clusters of micro-scaled bolt shells, making for a potent close-quarters weapon. Hernkyn pioneers often carry bolt shotguns to fend off foes who draw too near.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 2,
+    "traits": [
+      "Assault",
+      "Brutal",
+      "Spread"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "BOLT",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 384
+  },
+  {
+    "id": "eta_carn_plasma_beamer_aoa",
+    "name": "Eta-Carn Plasma Beamer (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "The plasma weapons of the Leagues of Votann are far superior to those used by the Imperium, lacking the volatile instability while maintaining a high plasma temperature. Plasma beamers are a potent mid-range weapon which projects a coherent beam of plasma which scythes through enemy formations.",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -3,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 1,
+    "traits": [
+      "Beam",
+      "HunTR"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "PLASMA",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 384
+  },
+  {
+    "id": "etacarn_plasma_gun_aoa",
+    "name": "EtaCarn Plasma Gun (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "EtaCarn plasma guns possess a slightly longer range and increased penetrative power over the plasma beamer, but fire in discrete blasts rather than a constant beam, making them less effective against massed foes.",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -4,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 1,
+    "traits": [
+      "HunTR"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "PLASMA",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 384
+  },
+  {
+    "id": "etacarn_plasma_pistol_aoa",
+    "name": "EtaCarn Plasma Pistol (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "These compact plasma pistols have an extremely short range, but extremely high stopping power, making them a common sidearm and weapon of last resort for close quarters fighting.",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -3,
+    "range": {
+      "short": 3,
+      "medium": 6,
+      "long": 9
+    },
+    "salvo": 1,
+    "traits": [
+      "Pistol"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "PLASMA",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 384
+  },
+  {
+    "id": "exo_armour_grenade_launcher_aoa",
+    "name": "Exo-Armour Grenade Launcher (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "Exo-Armour suits are often fitted with a shoulder-mounted grenade launcher to supplement the firepower of the wearer as they advance.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -1,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 1,
+    "traits": [
+      "Blast (4)",
+      "HunTR",
+      "Inflict (Staggered)"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "EXPLOSIVE",
+      "LEAGUES OF VOTANN"
+    ],
+    "special": "A character equipped with an Exo-Armour Grenade Launcher may fire the launcher as part of a multi-action, even if the character attacks with a different weapon as a different action in the multi-action. The DN penalty for the multi-action is reduced by 2.",
+    "source": "apocrypha",
+    "page": 384
+  },
+  {
+    "id": "gravitic_concussion_grenades_aoa",
+    "name": "Gravitic Concussion Grenades (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "A Gravitic Concussion Grenade—often just referred to as a Concussion Grenade—is the typical grenade used by Kin soldiers. When detonated, it unleashes a powerful concussive shockwave produced by manipulating gravity in the affected area.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -1,
+    "range": "(S) x4m or as Launcher",
+    "salvo": 0,
+    "traits": [
+      "Blast (4)",
+      "Inflict (Staggered)"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "EXPLOSIVE",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 384
+  },
+  {
+    "id": "graviton_blast_cannon_aoa",
+    "name": "Graviton Blast Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "Similar in function to Imperial grav-weaponry, the graviton blast cannon projects an area within which the force of gravity is greatly increased, crushing foes under their own mass. These weapons and their power supplies cannot easily be carried even by redoubtable Kin infantry, so they are normally mounted on the bulky exo-frames of Brôkhyr Thunderkyn.",
+    "damage": {
+      "base": 8,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -3,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 1,
+    "traits": [
+      "Blast (6)",
+      "Grav",
+      "Heavy (6)"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "GRAV",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 384
+  },
+  {
+    "id": "graviton_rifle_aoa",
+    "name": "Graviton Rifle (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "A favoured armament of Brôkhyr Iron-masters, graviton rifles are a potent, rapid-firing form of grav-gun, directing particle beams which dramatically increase the local gravity around the targets, crushing them under their own mass.",
+    "damage": {
+      "base": 8,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -3,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 3,
+    "traits": [
+      "Grav",
+      "HunTR"
+    ],
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "GRAV",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 384
+  },
+  {
+    "id": "hylas_auto_rifle_aoa",
+    "name": "HYLas Auto Rifle (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "Compared to the cheap, mass-produced laser weaponry of the Imperium, the Leagues of Votann manufacture what they call HYLas weapons, short for High Yield Laser. The HYLas Auto Rifle is the smallest of these, only slightly bigger than a conventional rifle, yet with a high rate of fire and considerable stopping power, used in support of Hearthkyn squads.",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -2,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 3,
+    "traits": [
+      "HunTR"
+    ],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "LAS",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 384
+  },
+  {
+    "id": "hylas_beam_cannon_aoa",
+    "name": "HYLas Beam Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "Notionally similar to an Imperial lascannon, a HYLas Beam Cannon is a formidable anti-tank weapon, which fires needle-thin coherent beams so powerful they can carve through the armour of battle tanks.",
+    "damage": {
+      "base": 18,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -3,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 2,
+    "traits": [
+      "Beam",
+      "Heavy (8)",
+      "HunTR"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "LAS",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 384
+  },
+  {
+    "id": "hylas_rotary_cannon_aoa",
+    "name": "HYLas Rotary Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "The HYLas rotary cannon is a powerful antipersonnel weapon, similar in power to the HYLas auto rifle but with a much greater rate of fire, owing to the revolving trio of barrels.",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -2,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 9,
+    "traits": [
+      "Heavy (6)",
+      "HunTR",
+      "Rapid Fire (3)",
+      "Sustained"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "LAS",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 384
+  },
+  {
+    "id": "ion_beamer_aoa",
+    "name": "Ion Beamer (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "An Ion Beamer is a large and powerful, long-range, vehicle-mounted directed energy Ion Weapon used by the military forces of the Leagues of Votann. Ion Weapons typically are capable of engaging enemies at long range with high-energy streams of ionised subatomic particles, vaporising flesh and metal with equal ease. These high-energy ions containing an electric charge are accelerated by an electromagnetic field and react explosively with the target as a result of the direct transfer of energy at an atomic level. These mid-range weapons fire a coherent beam of ionised particles, scything through enemy ranks with brutal efficiency.",
+    "damage": {
+      "base": 14,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 2,
+    "traits": [
+      "Beam",
+      "Heavy (6)",
+      "HunTR"
+    ],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "ION",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 384
+  },
+  {
+    "id": "ion_blaster_aoa",
+    "name": "Ion Blaster (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "Ion blasters are a compact, mid-range, high-powered infantry weapon used by Hearthkyn squads. They fire brief, intense bursts of ionised particles that explosively react with flesh and metal alike. The ubiquity of these weapons demonstrates the mastery the Kin have over Ion weapons, compared to the more limited and specialised ways the T'au Empire utilise the technology.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 1,
+    "traits": [
+      "HunTR"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "ION",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 384
+  },
+  {
+    "id": "ion_pistol_aoa",
+    "name": "Ion Pistol (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "A compact, close-quarters energy weapon, Ion pistols are a common sidearm used by Theyns and other Kin officers.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Pistol"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "ION",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 385
+  },
+  {
+    "id": "l7_missile_launcher_focused_aoa",
+    "name": "L7 Missile Launcher (Focused) (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "The L7 Missile Launcher is the primary missile launcher used by the military forces of the Leagues of Votann. It exists in both a man-portable form and as a main turret weapon for Kin vehicles. The man-portable version is carried as a specialist weapon in a squad of Hearthkyn Warriors. The L7 fires programmable clusters of missiles, either focussed on a single hard target, or dispersed over a wide area to spread the effect.",
+    "damage": {
+      "base": 18,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -2,
+    "range": {
+      "short": 15,
+      "medium": 30,
+      "long": 45
+    },
+    "salvo": "-",
+    "traits": [
+      "Heavy (6)",
+      "HunTR"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "LEAGUES OF VOTANN"
+    ],
+    "special": "The L7 fires programmable clusters of missiles in one of two modes, chosen when the weapon is fired: Focused (concentrated on a single hard target) or Blast (dispersed over a wide area).",
+    "source": "apocrypha",
+    "page": 385
+  },
+  {
+    "id": "l7_missile_launcher_blast_aoa",
+    "name": "L7 Missile Launcher (Blast) (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "The L7 Missile Launcher is the primary missile launcher used by the military forces of the Leagues of Votann. It exists in both a man-portable form and as a main turret weapon for Kin vehicles. The man-portable version is carried as a specialist weapon in a squad of Hearthkyn Warriors. The L7 fires programmable clusters of missiles, either focussed on a single hard target, or dispersed over a wide area to spread the effect.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -1,
+    "range": {
+      "short": 15,
+      "medium": 30,
+      "long": 45
+    },
+    "salvo": "-",
+    "traits": [
+      "Heavy (6)",
+      "HunTR",
+      "Blast (6)"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "LEAGUES OF VOTANN"
+    ],
+    "special": "The L7 fires programmable clusters of missiles in one of two modes, chosen when the weapon is fired: Focused (concentrated on a single hard target) or Blast (dispersed over a wide area).",
+    "source": "apocrypha",
+    "page": 385
+  },
+  {
+    "id": "magna_coil_autocannon_aoa",
+    "name": "Magna-coil Autocannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "Superficially similar to Imperial autocannons, the magna-coil autocannon uses a magnetic coil rather than explosive propellant to fire a hail of high-velocity solid shells. These weapons are commonly mounted on the light vehicles used by Leagues of Votann Kinhosts, such as on the grav bikes ridden by Hernkyn pioneers.",
+    "damage": {
+      "base": 14,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 3,
+    "traits": [
+      "Heavy (6)",
+      "HunTR"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PROJECTILE",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 385
+  },
+  {
+    "id": "magna_rail_rifle_aoa",
+    "name": "Magna-rail Rifle (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "Similar to the railguns used by the T'au Empire, the magna-rail weapons used by the Leagues of Votann are powerful, highly precise, hypervelocity projectile weapons which propel a tiny dart along magnetic accelerator rails. The speed of the projectiles is such that even a tiny object can deliver colossal impact forces, penetrating even the hardest armour and obliterating any other material it passes through.",
+    "damage": {
+      "base": 18,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -4,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 1,
+    "traits": [
+      "Heavy (4)",
+      "HunTR",
+      "Mortal (1)"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "MAGNA-RAIL",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 385
+  },
+  {
+    "id": "matr_autocannon_aoa",
+    "name": "MATR Autocannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "A MATR Autocannon is an automatic, self-loading, ballistic, three-barrelled, gatling autocannon deployed on Leagues of Votann vehicles like the Sagitaur to provide heavy fire support. The MATR Autocannon fires a high velocity hail of solid shells that is intensified by its triple, rotating barrels.",
+    "damage": {
+      "base": 14,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 6,
+    "traits": [
+      "Heavy (6)",
+      "HunTR",
+      "Sustained"
+    ],
+    "value": 7,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PROJECTILE",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 385
+  },
+  {
+    "id": "mole_grenade_launcher_aoa",
+    "name": "Mole Grenade Launcher (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "The Mole Launcher is a specialized grenade launcher utilized by the Cthonian mining guilds. The weapon fires burrowing warhead which tunnels beneath the ground towards its target, striking indirectly from below rather than arcing down from above.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -2,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": "-",
+    "traits": [
+      "Blast (6)",
+      "Heavy (6)",
+      "HunTR",
+      "Indirect"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "EXPLOSIVE",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 385
+  },
+  {
+    "id": "sp_conversion_beamer_aoa",
+    "name": "SP Conversion Beamer (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "A Conversion Beamer is an esoteric weapon that is both difficult to construct and highly complex to use, needing skilled calibration to operate as well as a dedicated and plentiful power source. The Imperium has used conversion beam weapons in a limited fashion since the Great Crusades, often mounted on dreadnoughts or titans, with infantry-portable versions being extremely rare and difficult to manufacture.",
+    "damage": {
+      "base": 14,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -2,
+    "range": {
+      "short": 15,
+      "medium": 30,
+      "long": 45
+    },
+    "salvo": 1,
+    "traits": [
+      "Beam",
+      "Heavy (6)"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "CONVERSION",
+      "LEAGUES OF VOTANN"
+    ],
+    "special": "This weapon increases its damage by +2 ED at Medium range, and by +4 ED at Long range.",
+    "source": "apocrypha",
+    "page": 385
+  },
+  {
+    "id": "volkanite_disintegrator_aoa",
+    "name": "Volkanite Disintegrator (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Votann",
+    "description": "The Volkanite Disintegrator is an advanced form of a man-portable Volkite weapon, a class of powerful thermal ray weapons whose technology is pre-Imperial in origin and dates back to the Age of Technology. These weapons possessed considerable killing power, surpassing most other man-portable armaments of their size.\n\nBlasts from Volkite Weapons were known to be able to burn through armour and turn flesh to ash. However, where the Imperium has almost lost the secrets of Volkite technology, the Leagues of Votann have maintained and refined the design over millennia.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 3,
+    "traits": [
+      "HunTR",
+      "Inflict (On Fire)"
+    ],
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "VOLKANITE",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 385
+  },
+  {
+    "id": "paragon_grenade_launcher_aoa",
+    "name": "Paragon Grenade Launcher (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Grenade",
+    "description": "These launchers propel a hail of implosive Krak grenades onto the enemy.",
+    "damage": {
+      "base": 14,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 5,
+    "ap": -2,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 2,
+    "traits": [
+      "Barrage",
+      "Blast (4)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "EXPLOSIVE",
+      "IMPERIUM",
+      "ADEPTA SORORITAS"
+    ],
+    "source": "apocrypha",
+    "page": 400
+  },
+  {
+    "id": "twin_storm_bolter_aoa",
+    "name": "Twin Storm Bolter (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Bolt",
+    "description": "A linked pair of Storm Bolters, well-suited to unleashing a torrent of antipersonnel fire.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 8,
+    "traits": [
+      "Brutal",
+      "Rapid Fire (3)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "BOLT",
+      "IMPERIUM",
+      "ADEPTA SORORITAS"
+    ],
+    "source": "apocrypha",
+    "page": 400
+  },
+  {
+    "id": "paragon_war_blade_aoa",
+    "name": "Paragon War Blade (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Power",
+    "description": "Huge power swords, the size of a person, able to tear through foes with ease.",
+    "damage": {
+      "base": 5,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 5,
+    "ap": -3,
+    "range": 2,
+    "traits": [
+      "Blessed (1)",
+      "Reaping"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "POWER FIELD",
+      "IMPERIUM",
+      "ADEPTA SORORITAS"
+    ],
+    "source": "apocrypha",
+    "page": 400
+  },
+  {
+    "id": "paragon_mace_aoa",
+    "name": "Paragon Mace (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Power",
+    "description": "Huge, powered maces, able to crush almost any resistance the wielder faces.",
+    "damage": {
+      "base": 8,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -2,
+    "range": 2,
+    "traits": [
+      "Blessed (1)",
+      "Brutal",
+      "Unwieldy (2)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "POWER FIELD",
+      "IMPERIUM",
+      "ADEPTA SORORITAS"
+    ],
+    "source": "apocrypha",
+    "page": 400
+  },
+  {
+    "id": "centurion_assault_launcher_aoa",
+    "name": "Centurion Assault Launcher (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Explosive",
+    "description": "These launchers unleash a punishing spray of shrapnel and concussive force at close range, forcing enemies to take the fire or cower as the Centurions charge.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": 0,
+    "range": "3m (on Charge)",
+    "salvo": "-",
+    "traits": [],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "EXPLOSIVE",
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "special": "When the wearer of this warsuit Charges, they may fire the assault launchers during the charge. The enemy charged, and any other enemies within 3m, must either choose to take a hit (Damage 10 +4ED) or suffer the Hindered and Vulnerable conditions.",
+    "source": "apocrypha",
+    "page": 405
+  },
+  {
+    "id": "high_output_burst_cannon_aoa",
+    "name": "High Output Burst Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "The more potent reactor and advanced recoil stabilisers of the Coldstar Battlesuit is often combined with an up-rated form of burst cannon, like those found on larger T'au vehicles.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 10,
+    "traits": [
+      "Assault",
+      "Rapid Fire (5)",
+      "Heavy (6)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "PULSE",
+      "T'AU EMPIRE",
+      "FIRE CASTE"
+    ],
+    "source": "apocrypha",
+    "page": 417
+  },
+  {
+    "id": "heavy_rail_rifle_aoa",
+    "name": "Heavy Rail Rifle (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "A Heavy Rail Rifle is a potent weapon that makes use of the same technologies as the larger Railgun. However, the Heavy Rail Rifle is intended for use on a slightly smaller scale so that it can be mounted on Tau Battlesuits. Whilst the weapon's range and damage is not as great as its larger cousin, it is still an impressive anti-tank weapon, renowned for its deadliness to enemy armour at extreme ranges. XV88 Broadside Battlesuits are the only Tau unit that are armed with Heavy Rail Rifles.",
+    "damage": {
+      "base": 18,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -4,
+    "range": {
+      "short": 30,
+      "medium": 60,
+      "long": 90
+    },
+    "salvo": 2,
+    "traits": [
+      "Mortal (1)",
+      "Mounted (Large)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "PROJECTILE",
+      "T'AU EMPIRE",
+      "FIRE CASTE"
+    ],
+    "source": "apocrypha",
+    "page": 418
+  },
+  {
+    "id": "twin_high_yield_missile_pods_aoa",
+    "name": "Twin High Yield Missile Pods (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "A High-yield Missile Pod is a simple T'au multiple missile delivery system able to engage targets at long range that is used exclusively by XV88 Broadside Battlesuits.\n\nThese missiles are extremely effective against both heavy infantry and light vehicles. XV88 Broadside Battlesuits wield twin-linked High-yield Missile Pods as alternative primary weapon systems to Heavy Rail Rifles.",
+    "damage": {
+      "base": 14,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 15,
+      "medium": 30,
+      "long": 45
+    },
+    "salvo": 8,
+    "traits": [
+      "Barrage",
+      "Blast (2)",
+      "Mounted (Large)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "EXPLOSIVE",
+      "T'AU EMPIRE",
+      "FIRE CASTE"
+    ],
+    "source": "apocrypha",
+    "page": 418
+  },
+  {
+    "id": "twin_plasma_rifles_aoa",
+    "name": "Twin Plasma Rifles (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "A paired set of plasma rifles with a linked targeting system, used to supplement the firepower of the XV88 at close range.",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 11,
+    "ap": -3,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 1,
+    "traits": [
+      "Assault"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "PLASMA",
+      "T'AU EMPIRE",
+      "FIRE CASTE"
+    ],
+    "source": "apocrypha",
+    "page": 418
+  },
+  {
+    "id": "twin_smart_missile_systems_aoa",
+    "name": "Twin Smart Missile Systems (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "T'au",
+    "description": "A pair of Smart Missile Launchers, used to bombard enemies attempting to get close to the XV88.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": 0,
+    "range": {
+      "short": 15,
+      "medium": 30,
+      "long": 45
+    },
+    "salvo": 8,
+    "traits": [
+      "Barrage",
+      "Blast (2)",
+      "Indirect"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [
+      "EXPLOSIVE",
+      "T'AU EMPIRE",
+      "FIRE CASTE"
+    ],
+    "source": "apocrypha",
+    "page": 418
   }
 ]

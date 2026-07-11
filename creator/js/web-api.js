@@ -17,7 +17,7 @@
     window.api = {
         // Load game data via fetch (cache-busted with version)
         loadGameData: async (filename) => {
-            const response = await fetch('../data/' + filename + '?v=33');
+            const response = await fetch('../data/' + filename + '?v=34');
             if (!response.ok) throw new Error(`Failed to load ${filename}`);
             return response.json();
         },

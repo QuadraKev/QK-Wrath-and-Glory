@@ -5052,5 +5052,21 @@
     ],
     "source": "redacted1",
     "page": 27
+  },
+  {
+    "id": "ballistic_appeasement_auto_reliquary",
+    "name": "Ballistic Appeasement Auto-Reliquary (Absolutis Pattern)",
+    "category": "tool",
+    "description": "Issued to the Primaris Space Marines, this device contains sophisticated machine-spirits that interface with and enact the Omnissiah's blessings upon a weapon. This auto-reliquary helps restore a jammed weapon to function and appeases the weapon's war-spirit.",
+    "effect": "Clear a jammed weapon as a Free Action.",
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS"
+    ],
+    "source": "core",
+    "page": 236
   }
 ]

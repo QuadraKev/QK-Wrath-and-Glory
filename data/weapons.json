@@ -17469,5 +17469,37 @@
     ],
     "source": "redacted1",
     "page": 27
+  },
+  {
+    "id": "voss_pattern_grenade_launcher",
+    "name": "Voss Pattern Grenade Launcher",
+    "type": "ranged",
+    "category": "Grenade",
+    "description": "Developed in aeons past or recovered from the hallowed recordings of Standard Template Constructs, weapon patterns are blueprints for building machines of war. Almost every Imperial weapon has several distinct patterns manufactured by the Adeptus Mechanicus, each changing core mechanisms to afford some advantage.\n\nFor example, the Voss Pattern Grenade Launcher has an identical profile to the Militarum Tempestus Pattern but has Range 12/24/36 and Value 5.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 0,
+    "traits": [
+      "Assault"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "EXPLOSIVE",
+      "IMPERIUM",
+      "ASTRA MILITARUM"
+    ],
+    "source": "core",
+    "page": 225
   }
 ]

@@ -2350,5 +2350,23 @@
     "invulnerable": true,
     "source": "redacted1",
     "page": 25
+  },
+  {
+    "id": "skitarii_auto_cuirass",
+    "name": "Skitarii Auto-Cuirass",
+    "type": "heavy",
+    "description": "Consisting of solid plates of radiation shielded armaplas, an Auto-Cuirass protects its wearer from both their foes and the flesh-degrading corruption of their own radioactive weapons.",
+    "ar": 4,
+    "traits": [],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "HEAVY",
+      "IMPERIUM",
+      "ADEPTUS MECHANICUS",
+      "SKITARII"
+    ],
+    "source": "core",
+    "page": 234
   }
 ]

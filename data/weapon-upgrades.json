@@ -1592,5 +1592,146 @@
     ],
     "source": "shotguns",
     "page": 13
+  },
+  {
+    "id": "dragonfire_bolt_rounds",
+    "name": "Dragonfire Bolt Rounds",
+    "type": "ammo",
+    "description": "Special issue Bolt rounds sporting hollow cores that explode in gouts of superheated gas. The results ignite flesh and make a mockery of cover and fortifications with engulfing flames.",
+    "effect": "The weapon gains the Spread Trait. The weapon ignores Defence bonuses from cover.",
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "BOLT"
+      ],
+      "weaponType": "ranged"
+    },
+    "addsTraits": [
+      "Spread"
+    ],
+    "source": "core",
+    "page": 230
+  },
+  {
+    "id": "hellfire_bolt_rounds",
+    "name": "Hellfire Bolt Rounds",
+    "type": "ammo",
+    "description": "Developed to combat Tyranids, a vial of mutagenic acid replaces the core and tip of these rounds. As the round strikes, thousands of tiny needles splinter and rip through the vial, injecting the accumulated acid directly into exposed flesh.",
+    "effect": "+3 ED against organic targets. +2 ED against inorganic targets.",
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "BOLT"
+      ],
+      "weaponType": "ranged"
+    },
+    "source": "core",
+    "page": 230
+  },
+  {
+    "id": "kraken_bolt_rounds",
+    "name": "Kraken Bolt Rounds",
+    "type": "ammo",
+    "description": "These powerful armour-piercing Bolt shells possess a solid adamantium core delivered by a powerful propellant. Upon impact, the outer casing peels away, allowing the high-velocity adamantium penetrator to accelerate further into the target before its payload detonates.",
+    "effect": "AP -2",
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "BOLT"
+      ],
+      "weaponType": "ranged"
+    },
+    "bonusAP": -2,
+    "source": "core",
+    "page": 231
+  },
+  {
+    "id": "bleeder_rounds",
+    "name": "Bleeder Rounds",
+    "type": "ammo",
+    "description": "Shattering into shrapnel on impact and coated with potent anti-coagulants, these bullets are disgustingly effective, if unimaginatively named.",
+    "effect": "You can Shift an Exalted Icon when you make an Attack Test with this weapon to inflict the Bleeding Condition.",
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "SCUM"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "PROJECTILE"
+      ],
+      "excludeTraits": [
+        "Heavy"
+      ],
+      "weaponType": "ranged"
+    },
+    "source": "core",
+    "page": 231
+  },
+  {
+    "id": "dumdum_bullets",
+    "name": "Dumdum Bullets",
+    "type": "ammo",
+    "description": "Compressed through complex but cheap technology, these bullets widen on impact to penetrate through armour and pummel flesh.",
+    "effect": "+1 ED",
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "SCUM"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "PROJECTILE"
+      ],
+      "excludeTraits": [
+        "Heavy"
+      ],
+      "weaponType": "ranged"
+    },
+    "bonusED": 1,
+    "source": "core",
+    "page": 231
+  },
+  {
+    "id": "manstopper_rounds",
+    "name": "Manstopper Rounds",
+    "type": "ammo",
+    "description": "Popular with bounty and big game hunters, these hefty rounds are overstuffed with propellant and tipped with dense bullets to grant a projectile weapon the maximum stopping power possible without increasing the calibre.",
+    "effect": "AP –1",
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "SCUM"
+    ],
+    "restrictions": {
+      "requireKeywords": [
+        "PROJECTILE"
+      ],
+      "excludeTraits": [
+        "Heavy"
+      ],
+      "weaponType": "ranged"
+    },
+    "bonusAP": -1,
+    "source": "core",
+    "page": 231
   }
 ]

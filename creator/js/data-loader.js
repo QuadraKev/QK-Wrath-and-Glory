@@ -43,7 +43,8 @@ const DataLoader = {
             'backgrounds.json',
             'weapon-upgrades.json',
             'injuries-corruption.json',
-            'keyword-categories.json'
+            'keyword-categories.json',
+            'holy-relics.json'
         ];
 
         const results = await Promise.all(files.map(f => this.loadFile(f)));
@@ -60,7 +61,8 @@ const DataLoader = {
             backgrounds: results[8] || {},
             weaponUpgrades: results[9] || [],
             injuriesCorruption: results[10] || {},
-            keywordCategories: results[11] || {}
+            keywordCategories: results[11] || {},
+            holyRelics: results[12] || null
         };
 
         console.log('[DataLoader] All data loaded. Summary:', {
@@ -123,6 +125,11 @@ const DataLoader = {
     // Get wargear item by ID (searches all wargear types)
     getWargearItem(id) {
         return this.getWeapon(id) || this.getArmor(id) || this.getEquipment(id);
+    },
+
+    // Get the Holy Relic creation tables (Redacted Records II)
+    getHolyRelics() {
+        return this.cache['holy-relics.json'] || null;
     },
 
     // Filter archetypes by species and tier

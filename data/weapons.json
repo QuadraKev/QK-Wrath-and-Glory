@@ -19748,5 +19748,1364 @@
     ],
     "source": "apocrypha",
     "page": 344
+  },
+  {
+    "id": "grav_gun_aoa",
+    "name": "Grav-gun (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Grav Weapons",
+    "description": "A rifle-sized Graviton weapon, this device is doom to heavy infantry and armoured vehicles that stray too close to the wielder. Each gun is a rare relic left over from the Dark Age of Technology and are now sacredly guarded by the Adeptus Mechanicus, and very rarely will they allow one to leave their armouries, but some Space Marine Chapters still field a handful of such weapons.",
+    "damage": {
+      "base": 8,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -3,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 1,
+    "traits": [
+      "Grav",
+      "Rapid Fire (1)"
+    ],
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "GRAV",
+      "ADEPTUS ASTARTES",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "apocrypha",
+    "page": 348
+  },
+  {
+    "id": "heavy_plasma_gun_mk_i_aoa",
+    "name": "Heavy Plasma Gun Mk I (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Plasma",
+    "description": "The Heavy Plasma Gun was the official designation for what is normally referred to as a Plasma Cannon. This was to distinguish the weapons from larger vehicle- or Titan-mounted versions. Troops using these weapons tended instead to know which weapon they were referring to by context.",
+    "damage": {
+      "base": 15,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -3,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 4,
+    "traits": [
+      "Barrage",
+      "Blast (2)",
+      "Supercharge",
+      "Volatile (1)"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "PLASMA",
+      "CHAOS",
+      "HERETIC ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 351
+  },
+  {
+    "id": "heavy_plasma_gun_mk_ii_aoa",
+    "name": "Heavy Plasma Gun, Mk II (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Plasma",
+    "description": "The Heavy Plasma Gun was the official designation for what is normally referred to as a Plasma Cannon. This was to distinguish the weapons from larger vehicle- or Titan-mounted versions. Troops using these weapons tended instead to know which weapon they were referring to by context.",
+    "damage": {
+      "base": 15,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -3,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 1,
+    "traits": [
+      "Blast (4)",
+      "Supercharge"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "PLASMA",
+      "IMPERIUM"
+    ],
+    "source": "apocrypha",
+    "page": 351
+  },
+  {
+    "id": "heavy_plasma_incinerator_aoa",
+    "name": "Heavy Plasma Incinerator (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Plasma",
+    "description": "This variant of the Plasma Incinerator requires a larger backpack power supply to operate but can deliver more potent blasts at longer ranges. A Heavy Plasma Incinerator comes with a backpack ammunition supply.",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -4,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 1,
+    "traits": [
+      "Heavy (4)",
+      "Supercharge"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "PLASMA",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS"
+    ],
+    "source": "apocrypha",
+    "page": 351
+  },
+  {
+    "id": "plasma_blaster_aoa",
+    "name": "Plasma Blaster (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Plasma",
+    "description": "A rare and experimental form of plasma combination weapon developed during the Great Crusade and carried by warriors wearing Tactical Dreadnought Armour. Each is essentially two plasma guns combined into a single double-barrelled weapon, much as a storm bolter is a combination of two boltguns. Few examples of these potent weapons still exist in the 41st Millennium.",
+    "damage": {
+      "base": 15,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -3,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 4,
+    "traits": [
+      "Heavy (3)",
+      "Rapid Fire (2)",
+      "Supercharge"
+    ],
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "PLASMA",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 351
+  },
+  {
+    "id": "plasma_caliver_aoa",
+    "name": "Plasma Caliver (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Plasma",
+    "description": "The volatility of plasma weaponry is of little concern to the Adeptus Mechanicus, at least when arming their Skitarii forces. A plasma caliver fires at a considerable rate, and Skitarii squads armed with them are illuminated by the firepower they unleash, but this fury comes at the cost of lives… a cost that the Adeptus Mechanicus are only too willing to pay.",
+    "damage": {
+      "base": 15,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -3,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 3,
+    "traits": [
+      "Assault",
+      "Supercharge"
+    ],
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "PLASMA",
+      "ADEPTUS MECHANICUS",
+      "SKITARII"
+    ],
+    "source": "apocrypha",
+    "page": 351
+  },
+  {
+    "id": "plasma_cannon_mk_iii_aoa",
+    "name": "Plasma Cannon, Mk III (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Plasma",
+    "damage": {
+      "base": 14,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -3,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 1,
+    "traits": [
+      "Blast (6)",
+      "Heavy (8)",
+      "Volatile (d3)"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "PLASMA",
+      "IMPERIUM"
+    ],
+    "source": "apocrypha",
+    "page": 351
+  },
+  {
+    "id": "plasma_exterminator_aoa",
+    "name": "Plasma Exterminator (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Plasma",
+    "description": "A bulky plasma weapon built to be used one-handed by Primaris Inceptors, a Plasma Exterminator is short ranged but extremely powerful.",
+    "damage": {
+      "base": 15,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -3,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 1,
+    "traits": [
+      "Blast (2)",
+      "Supercharge",
+      "Paired"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "PLASMA",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS"
+    ],
+    "source": "apocrypha",
+    "page": 351
+  },
+  {
+    "id": "plasma_gun_mk_i_aoa",
+    "name": "Plasma Gun, Mk I (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Plasma",
+    "description": "These archaic models of plasma weapon were in common use by the Legiones Astartes during the Great Crusade and the early Horus Heresy. One a number of experimental forms of plasma weapon, this design emphasised lethality and destructive power at the expense of the user's safety, with the weapon frequently overheating or losing magnetic containment during sustained use. As the Heresy wore on, these weapons fell out of use amongst the Loyalist forces, and the loyalist Mechanicum declared them Fabrus Excommunicata, and no longer blessed by the Machine God. However, the Traitor Legions continued to use these potent weapons, finding kinship with the savage and malevolent weapons' spirits. In the 41st Millennium, these weapons are no longer produced by the Imperium, but they can still be found in the hands of Traitor Legionaries.",
+    "damage": {
+      "base": 15,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -3,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 2,
+    "traits": [
+      "Rapid Fire (2)",
+      "Volatile (d6)"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "PLASMA",
+      "CHAOS",
+      "HERETIC ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 351
+  },
+  {
+    "id": "plasma_gun_mk_ii_aoa",
+    "name": "Plasma Gun, Mk II (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Plasma",
+    "description": "During the latter years of the Heresy, early plasma weapons issued to Loyalist forces often incorporated more cautious, patient machine spirits which would prevent the weapon firing if there was risk of overheat. This drastically reduced the weapon's effective fire rate, the weapons' firepower was still a valuable resource against Traitor forces, with users able to take cover or redeploy while the weapon was locked in a cooling cycle.",
+    "damage": {
+      "base": 15,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -3,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 2,
+    "traits": [
+      "Rapid Fire (2)",
+      "Recharge"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "PLASMA",
+      "IMPERIUM"
+    ],
+    "source": "apocrypha",
+    "page": 351
+  },
+  {
+    "id": "plasma_gun_mk_iii_aoa",
+    "name": "Plasma Gun, Mk III (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Plasma",
+    "damage": {
+      "base": 14,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -3,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 2,
+    "traits": [
+      "Rapid Fire (1)",
+      "Volatile (d3)"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "PLASMA",
+      "IMPERIUM"
+    ],
+    "source": "apocrypha",
+    "page": 351
+  },
+  {
+    "id": "plasma_pistol_mk_i_aoa",
+    "name": "Plasma Pistol, Mk I (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Plasma",
+    "description": "These archaic models of plasma weapon were in common use by the Legiones Astartes during the Great Crusade and the early Horus Heresy. One a number of experimental forms of plasma weapon, this design emphasised lethality and destructive power at the expense of the user's safety, with the weapon frequently overheating or losing magnetic containment during sustained use. As the Heresy wore on, these weapons fell out of use amongst the Loyalist forces, and the loyalist Mechanicum declared them Fabrus Excommunicata, and no longer blessed by the Machine God. However, the Traitor Legions continued to use these potent weapons, finding kinship with the savage and malevolent weapons' spirits. In the 41st Millennium, these weapons are no longer produced by the Imperium, but they can still be found in the hands of Traitor Legionaries.",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -2,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 2,
+    "traits": [
+      "Rapid Fire (1)",
+      "Pistol",
+      "Volatile (d3)"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "PLASMA",
+      "CHAOS",
+      "HERETIC ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 351
+  },
+  {
+    "id": "plasma_pistol_mk_ii_aoa",
+    "name": "Plasma Pistol, Mk II (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Plasma",
+    "description": "During the latter years of the Heresy, early plasma weapons issued to Loyalist forces often incorporated more cautious, patient machine spirits which would prevent the weapon firing if there was risk of overheat. This drastically reduced the weapon's effective fire rate, the weapons' firepower was still a valuable resource against Traitor forces, with users able to take cover or redeploy while the weapon was locked in a cooling cycle.",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -2,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 2,
+    "traits": [
+      "Rapid Fire (1)",
+      "Pistol",
+      "Recharge"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "PLASMA",
+      "IMPERIUM"
+    ],
+    "source": "apocrypha",
+    "page": 351
+  },
+  {
+    "id": "plasma_pistol_mk_iii_aoa",
+    "name": "Plasma Pistol, Mk III (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Plasma",
+    "damage": {
+      "base": 14,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -3,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Pistol",
+      "Volatile (d3)"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "PLASMA",
+      "IMPERIUM"
+    ],
+    "source": "apocrypha",
+    "page": 351
+  },
+  {
+    "id": "flamestorm_gauntlet_aoa",
+    "name": "Flamestorm Gauntlet (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Flame",
+    "description": "Like the Boltstorm Gauntlet, these weapons are a flamer mounted upon a power fist, used to gain supremacy at close quarters. Flamestorm Gauntlets are normally wielded in pairs by Primaris Aggressors.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Assault",
+      "Flamer",
+      "Paired"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "FIRE",
+      "POWER FIELD",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS"
+    ],
+    "special": "Melee: A Flamestorm Gauntlet can be used as a melee weapon, using the following profile: (S) +5, ED 5, AP -3, Brutal, Unwieldy (2), Paired.",
+    "source": "apocrypha",
+    "page": 353
+  },
+  {
+    "id": "incinerator_aoa",
+    "name": "Incinerator (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Flame",
+    "description": "Loaded with prometheum blended with blessed oils, an incinerator is a specialised weapon used by the Grey Knights. Incinerators unleash radiant blue-white flames that burn the substance of daemons as effectively as mortal flesh.",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -1,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 2,
+    "traits": [
+      "Blessed (3)",
+      "Flamer",
+      "Heavy (6)"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "FIRE",
+      "ADEPTUS ASTARTES",
+      "GREY KNIGHTS"
+    ],
+    "source": "apocrypha",
+    "page": 353
+  },
+  {
+    "id": "pyreblaster_aoa",
+    "name": "Pyreblaster (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Flame",
+    "description": "A refined version of flamer employed mainly by Adeptus Astartes Infernus squads. Their design allows them to unleash a more focussed, more devastating gout of flame than conventional flamers.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 8,
+      "medium": 16,
+      "long": 24
+    },
+    "salvo": 2,
+    "traits": [
+      "Assault",
+      "Flamer",
+      "Reliable"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "FIRE",
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 353
+  },
+  {
+    "id": "pyre_pistol_aoa",
+    "name": "Pyre Pistol (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Flame",
+    "description": "A compact form of Pyreblaster, similar to an improved Hand Flamer. These weapons have similar range and potency to a conventional flamer in a much smaller, more portable form.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Flamer",
+      "Pistol",
+      "Reliable"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "FIRE",
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "apocrypha",
+    "page": 353
+  },
+  {
+    "id": "witchseeker_flamer_aoa",
+    "name": "Witchseeker Flamer (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Flame",
+    "description": "A sophisticated model of flamer used exclusively by the Sisters of Silence. The delivery method and the formulation of fuel it uses is especially good at working its way past intervening obstacles and protective gear.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Assault",
+      "Flamer"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "FIRE",
+      "ANATHEMA PSYKANA"
+    ],
+    "source": "apocrypha",
+    "page": 353
+  },
+  {
+    "id": "arbites_combat_shotgun_aoa",
+    "name": "Arbites Combat Shotgun (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Solid Projectile",
+    "description": "There are numerous patterns of combat shotgun employed by Arbites precincts across the Imperium, but the fearsome roar of the Vox Legi pattern—High Gothic for “Voice of the Law”—is favoured by many. These potent and versatile weapons are a staple of Arbites combat formations.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 2,
+    "traits": [
+      "Assault",
+      "Rapid Fire (1)",
+      "Spread"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PROJECTILE",
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "source": "apocrypha",
+    "page": 354
+  },
+  {
+    "id": "arbites_shotpistol_aoa",
+    "name": "Arbites Shotpistol (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Solid Projectile",
+    "description": "A common sidearm for Adeptus Arbites personnel, these compact shotguns can be used single-handed and are highly effective in close quarters, especially when outnumbered.",
+    "damage": {
+      "base": 9,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Pistol",
+      "Spread"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PROJECTILE",
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "source": "apocrypha",
+    "page": 354
+  },
+  {
+    "id": "duelling_pistol_aoa",
+    "name": "Duelling Pistol (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Solid Projectile",
+    "description": "Precision-manufactured handguns are commonly found in the hands of nobles and hired guns alike, and traditionally used by those comfortable settling their disputes with pistols at ten paces.",
+    "damage": {
+      "base": 7,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 1,
+    "traits": [
+      "Pistol",
+      "Sniper (1)"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PROJECTILE",
+      "IMPERIUM",
+      "SCUM"
+    ],
+    "source": "apocrypha",
+    "page": 354
+  },
+  {
+    "id": "executioner_shotgun_aoa",
+    "name": "Executioner Shotgun (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Solid Projectile",
+    "description": "These heavy-duty weapons are designed to be used with the Arbites' specialised Executioner shells and fitted with a targeting scope to function as a marksman's weapon, allowing Arbitrator squads to operate with long-range fire support.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": -2,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 0,
+    "traits": [
+      "Spread"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "PROJECTILE",
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "special": "An Executioner Shotgun gains the Sniper (1) trait when equipped with Executioner Shells (p. 389).",
+    "source": "apocrypha",
+    "page": 354
+  },
+  {
+    "id": "hunting_rifle_aoa",
+    "name": "Hunting Rifle (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Solid Projectile",
+    "description": "Common on agri-worlds and the more technologically-advanced death worlds, hunting rifles are normally used for game hunting, but can as easily be used for combat.",
+    "damage": {
+      "base": 9,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 0,
+    "traits": [
+      "Brutal",
+      "Sniper (1)"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PROJECTILE",
+      "IMPERIUM",
+      "SCUM"
+    ],
+    "source": "apocrypha",
+    "page": 354
+  },
+  {
+    "id": "naval_pistol_aoa",
+    "name": "Naval Pistol (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Solid Projectile",
+    "description": "A common sidearm in use in the Imperial Navy. Bulky, heavy, and short-ranged, they're also an effective cudgel when out of ammunition.",
+    "damage": {
+      "base": 9,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 4,
+      "medium": 8,
+      "long": 12
+    },
+    "salvo": 1,
+    "traits": [
+      "Brutal",
+      "Pistol",
+      "Reliable"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PROJECTILE",
+      "IMPERIUM",
+      "NAVIS IMPERIALIS"
+    ],
+    "special": "Melee: A Naval Pistol can be used as a melee weapon, using the following profile: (S) +3, ED 2, AP -, no traits.",
+    "source": "apocrypha",
+    "page": 354
+  },
+  {
+    "id": "navis_heavy_shotgun_aoa",
+    "name": "Navis Heavy Shotgun (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Solid Projectile",
+    "description": "A heavier version of the Navis Shotgun, these heavy shotguns have two barrels, allowing them to unleash much greater firepower, and they share the same heavy construction as their smaller counterparts.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 4,
+    "traits": [
+      "Assault",
+      "Rapid Fire (2)",
+      "Spread"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PROJECTILE",
+      "IMPERIUM",
+      "NAVIS IMPERIALIS"
+    ],
+    "special": "Melee: A Navis Heavy Shotgun can be used as a melee weapon, using the following profile: (S) +3, ED 2, AP -, Brutal.",
+    "source": "apocrypha",
+    "page": 354
+  },
+  {
+    "id": "navis_shotgun_aoa",
+    "name": "Navis Shotgun (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Solid Projectile",
+    "description": "These sturdy, potent weapons are a mainstay of Imperial Navy boarding parties and Breacher teams. Their heavy construction makes them a solid improvised weapon in close-quarters fighting.",
+    "damage": {
+      "base": 9,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 9,
+      "medium": 18,
+      "long": 27
+    },
+    "salvo": 2,
+    "traits": [
+      "Assault",
+      "Spread",
+      "Reliable"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PROJECTILE",
+      "IMPERIUM",
+      "NAVIS IMPERIALIS"
+    ],
+    "special": "Melee: A Navis Shotgun can be used as a melee weapon, using the following profile: (S) +3, ED 2, AP -, Brutal.",
+    "source": "apocrypha",
+    "page": 354
+  },
+  {
+    "id": "primitive_pistol_aoa",
+    "name": "Primitive Pistol (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Solid Projectile",
+    "description": "These simple black powder weapons can take many forms, from finely crafted pistols constructed for the nobles of low-tech worlds to simple pipe and powder affairs used by underhive scum.",
+    "damage": {
+      "base": 8,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": 0,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 0,
+    "traits": [
+      "Pistol",
+      "Volatile (1)"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PROJECTILE",
+      "SCUM"
+    ],
+    "source": "apocrypha",
+    "page": 354
+  },
+  {
+    "id": "rotor_cannon_aoa",
+    "name": "Rotor Cannon (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Solid Projectile",
+    "description": "Multi-barrelled rotary weapons of this sort have been in use across the Imperium since the Great Crusade, by various different forces and groups. They're designed to lay down a near-constant torrent of fire, tearing through scores of foes or wearing down single targets with focussed fire. This version is relatively lightweight, and usable by mortals.",
+    "damage": {
+      "base": 12,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": -1,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": 4,
+    "traits": [
+      "Heavy (5)",
+      "Sustained"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "PROJECTILE",
+      "IMPERIUM"
+    ],
+    "source": "apocrypha",
+    "page": 354
+  },
+  {
+    "id": "arc_grenade_aoa",
+    "name": "Arc Grenade (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Grenade",
+    "description": "Commonly carried by Pteraxii airborne Skitarii, Arc grenades detonate in a burst of arcing electricity and intense radiation that is especially destructive to enemy vehicles.",
+    "damage": {
+      "base": 13,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 5,
+    "ap": -1,
+    "range": "(S) x4m",
+    "salvo": 0,
+    "traits": [
+      "Arc (3)",
+      "Blast (6)",
+      "Rad (2)"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "ARC",
+      "ADEPTUS MECHANICUS"
+    ],
+    "source": "apocrypha",
+    "page": 361
+  },
+  {
+    "id": "choke_grenade_aoa",
+    "name": "Choke Grenade (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Grenade",
+    "description": "Used by the Adeptus Arbites and local enforcers alike for crowd control and riot suppression, choke grenades expel a gas which causes those who inhale it to begin gasping and choking.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": "(S) x4m or as Launcher",
+    "salvo": 0,
+    "traits": [
+      "Blast (10)",
+      "Gas",
+      "Inflict (Poisoned 3)"
+    ],
+    "value": 4,
+    "rarity": "Common",
+    "keywords": [
+      "GAS",
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "special": "Choke Grenades do not inflict damage. Rather, anyone in the area must pass a DN 3 Toughness test or fall prone and suffer the Poisoned 3 condition. Characters Poisoned by a Choke grenade begin to suffocate (p. 201 of the Wrath & Glory core rulebook).",
+    "source": "apocrypha",
+    "page": 361
+  },
+  {
+    "id": "demolition_charge_aoa",
+    "name": "Demolition Charge (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Grenade",
+    "description": "These heavy, often improvised, explosive charges are a common way to inflict a lot of damage very quickly. The deadly radius of these charges is large enough that they should ideally be placed and detonated by timer or remote charge, as few warriors can hurl them far enough to avoid the blast entirely.",
+    "damage": {
+      "base": 16,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -3,
+    "range": "(S) x2m",
+    "salvo": 0,
+    "traits": [
+      "Blast (10)"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "EXPLOSIVE",
+      "IMPERIUM"
+    ],
+    "special": "A demolition charge cannot be used in a grenade launcher. In addition, they may be placed onto a vehicle or structure within 1m rather than thrown, requiring a Tech test with a DN equal to the vehicle's Defence. Placed melta bombs do not detonate immediately and can be detonated as a simple action on any of the character's subsequent turns.",
+    "source": "apocrypha",
+    "page": 361
+  },
+  {
+    "id": "poison_globes_aoa",
+    "name": "Poison Globes (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Grenade",
+    "description": "Poison Globes are weapons that have been wielded by the Venenum Assassins of the Officio Assassinorum since the Great Crusade. Each is a sphere of crystalline explosive, which hurls a shower of crystal shards imbued with a potent and debilitating neuro-toxin within a small area when thrown.",
+    "damage": {
+      "base": 6,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -1,
+    "range": "(S) x4m",
+    "salvo": 0,
+    "traits": [
+      "Blast (4)",
+      "Fleshbane",
+      "Inflict (Poisoned 5)"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "EXOTIC",
+      "TEMPLUM VENENUM"
+    ],
+    "source": "apocrypha",
+    "page": 361
+  },
+  {
+    "id": "psyk_out_grenades_aoa",
+    "name": "Psyk-Out Grenades (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Grenade",
+    "description": "Psyk-out grenades are anti-psyker weapons. When they detonate, they release fine dust particles which are heavily impregnated with negative psychic energy. This dust is extremely rare; in all human space it can be obtained only as a by-product of the Emperor's metabolism, or from certain arcane processes rendering the corpses of Nulls. Using the material to create anti-psyker weapons is considered by many to be a great waste, and their issue is strictly controlled. Psyk-out weapons are nigh-useless against non-psychic targets. Against psychic creatures such as daemons and psykers, however, their effects are devastating.",
+    "damage": {
+      "base": 9,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": 0,
+    "range": "(S) x4m or as Launcher",
+    "salvo": 0,
+    "traits": [
+      "Blast (6)",
+      "Blessed (2)"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "EXOTIC",
+      "ANATHEMA PSYKANA",
+      "GREY KNIGHTS",
+      "TEMPLUM CULEXUS"
+    ],
+    "special": "PSYKERS and DAEMONS suffer 1 Mortal Wound for each Exalted Icon rolled on the grenades ED. Further, any psychic powers or effects in the blast radius are immediately ended, and any PSYKER within the blast will automatically fail any Psychic Mastery test attempted until the end of their next turn.",
+    "source": "apocrypha",
+    "page": 361
+  },
+  {
+    "id": "rad_grenades_aoa",
+    "name": "Rad Grenades (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Grenade",
+    "description": "An extremely dangerous form of grenade, which inflict harm silently and invisibly: aside from the grenade itself, there is no sign of the lethal radiation. Rad weapons are rare in the Imperium, for they are often as lethal to their users as to their enemies. The Adeptus Mechanicus, whose augmented bodies are more resistant to the deadly effects, are amongst the few regular users.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 10,
+    "ap": -2,
+    "range": "(S) x4m or as Launcher",
+    "salvo": 0,
+    "traits": [
+      "Agonising",
+      "Blast (3d3)",
+      "Inflict (Poisoned 5)",
+      "Rad (2)",
+      "Mortal (1)",
+      "Silent"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "EXOTIC",
+      "ADEPTUS MECHANICUS"
+    ],
+    "special": "Roll 3d3 to determine the size of the grenade's blast after the attack is made. A character Poisoned by radiation suffers 1d3 Mortal Wounds at the start of each of their turns, as the radiation lingers in their body.",
+    "source": "apocrypha",
+    "page": 361
+  },
+  {
+    "id": "scare_grenade_aoa",
+    "name": "Scare Grenade (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Grenade",
+    "description": "Scare is a form of neuro-reactive gas which produces feelings of deep anxiety and apprehension in those exposed to it. It is often used as a nonlethal deterrent for riots, insurrections, and other disturbances where culling the population is undesirable.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": "(S) x4m or as Launcher",
+    "salvo": 0,
+    "traits": [
+      "Blast (10)",
+      "Gas",
+      "Inflict (Fear)"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "GAS",
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "special": "Scare Grenades do not inflict damage. Rather, anyone in the area must pass a DN 3 Fear test.",
+    "source": "apocrypha",
+    "page": 361
+  },
+  {
+    "id": "smoke_grenades_aoa",
+    "name": "Smoke Grenades (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Grenade",
+    "description": "Smoke grenades are not deadly; rather, they are canisters of chemicals which produce plumes of thick smoke which can be used to obscure line of sight or signal to distant allies. Most forms of smoke grenade contain nano-chaff particles which interfere with Preysense, thermoptics, and other forms of seeing through concealment, making them effective even against foes who might ignore ordinary smoke.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": "(S) x4m or as Launcher",
+    "salvo": 0,
+    "traits": [
+      "Blast (10)",
+      "Gas"
+    ],
+    "value": 4,
+    "rarity": "Common",
+    "keywords": [
+      "EXPLOSIVE",
+      "[ANY]"
+    ],
+    "special": "Smoke Grenades do not inflict damage. Rather, attempts to see, or make ranged attacks, through the smoke suffer +4 DN.",
+    "source": "apocrypha",
+    "page": 361
+  },
+  {
+    "id": "stasis_grenades_aoa",
+    "name": "Stasis Grenades (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Grenade",
+    "description": "The stasis grenade is an unusual and rare weapon developed by the Adeptus Mechanicus for use by special agents of the Imperium. At the heart of each grenade lies a small time-warp generator that creates a self-replicating temporal distortion centred upon itself. Everything near the grenade is frozen in time, trapped within a single instant of time. The effect of the field weakens the further from the centre, slowing rather than freezing time. The field lasts only a brief time.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": "(S) x4m",
+    "salvo": 0,
+    "traits": [
+      "Blast (4/8)"
+    ],
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "EXOTIC",
+      "ADEPTUS MECHANICUS",
+      "INQUISITION"
+    ],
+    "special": "Stasis Grenades do not inflict damage. Creatures and objects caught within Blast (4) are frozen in time, and unable to take actions of any kind while the grenade effect remains but cannot be acted against in turn. Creatures and objects outside Blast (4), but within Blast (8) are Hindered (3) and Staggered as they are slowed in time, until the grenade effect remains or they manage to start their turn outside of the Blast. The GM should secretly roll 1d3+1 when the grenade is used: this is the number of rounds the grenade's effect remains active for.",
+    "source": "apocrypha",
+    "page": 361
+  },
+  {
+    "id": "stun_grenades_aoa",
+    "name": "Stun Grenades (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Grenade",
+    "description": "Stun grenades, sometimes also known as photon flash grenades, or flash-bang grenades, do not inflict harm directly, but instead produce a bright flash and a loud noise to disorient enemies.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": "(S) x4m or as Launcher",
+    "salvo": 0,
+    "traits": [
+      "Blast (6)"
+    ],
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "EXPLOSIVE",
+      "IMPERIUM",
+      "ADEPTUS ARBITES",
+      "NAVIS IMPERIALIS"
+    ],
+    "special": "Photon Grenades do not inflict damage. Rather, each enemy caught in the blast immediately suffers the Blinded and Vulnerable (2) conditions until the end of their next turn.",
+    "source": "apocrypha",
+    "page": 361
+  },
+  {
+    "id": "stumm_grenades_aoa",
+    "name": "Stumm Grenades (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Grenade",
+    "description": "Used widely by the Arbites and local enforcers, these grenades disperse a cloud of “stumm” gas which leaves victims dazed and confused.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": "(S) x4m or as Launcher",
+    "salvo": 0,
+    "traits": [
+      "Blast (10)",
+      "Gas",
+      "Inflict (Hindered 2)",
+      "Inflict (Staggered)"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "GAS",
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "special": "Stumm Grenades do not inflict damage. Rather, anyone in the area must pass a DN 3 Toughness test or become Hindered (2) and Staggered until the start of their next turn.",
+    "source": "apocrypha",
+    "page": 361
+  },
+  {
+    "id": "tanglefoot_grenades_aoa",
+    "name": "Tanglefoot Grenades (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Grenade",
+    "description": "Another form of grenade developed by the Adeptus Mechanicus for use by elite Imperial forces—the Adeptus Custodes are the only forces who use them regularly—though there are rumours that the Aeldari Harlequins make use of similar devices to hinder and humiliate their foes. Each grenade contains a potent gravitic generator, like that found in anti-grav vehicles such as jetbikes. The grenade generates a short-lived, fluctuating field at just above ground level which seriously impairs movement.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": "(S) x4m",
+    "salvo": 0,
+    "traits": [
+      "Blast (10)"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "EXOTIC",
+      "ADEPTUS MECHANICUS",
+      "ADEPTUS CUSTODES",
+      "HARLEQUINS"
+    ],
+    "special": "Tanglefoot Grenades do not inflict damage. Rather, any creature caught in the blast must pass a DN 5 Athletics test or fall Prone and suffer the Staggered condition. The pilot of a vehicle (other than one with the HOVER or FLYER keywords) affected must pass a DN 5 Pilot test or become Restrained. These conditions remain until the end of the affected target's next turn.",
+    "source": "apocrypha",
+    "page": 361
+  },
+  {
+    "id": "toxin_grenades_aoa",
+    "name": "Toxin Grenades (Abundance of Apocrypha)",
+    "type": "ranged",
+    "category": "Grenade",
+    "description": "A broad category of high-potency chemical weapons, toxin grenades are loaded with a frighteningly deadly cocktail of synthetic toxins and those harvested from Deathworld creatures such as the Catachan Devil and the Scarlet Lasher of Luther McIntyre IX. The resulting toxin is concentrated, aerosolised, and adapted to be absorbed into the body as quickly as possible. The result is a toxic cloud which kills extremely quickly and is lethal to almost everything. The Drukhari, who consider poisoning an art-form, are known to use similar devices called Brathu-Shaimesh (Kiss of the Poisoner), filled with the deadliest toxins their artisans can distill.",
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": "(S) x4m",
+    "salvo": 0,
+    "traits": [
+      "Blast (7)",
+      "Gas",
+      "Inflict (Poisoned 7)"
+    ],
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "EXOTIC",
+      "GAS",
+      "ADEPTUS MECHANICUS",
+      "INQUISITION",
+      "DRUKHARI"
+    ],
+    "special": "Toxin Grenades do not inflict damage normally. Rather, anyone in the area must pass a DN 7 Toughness test or suffer the Poisoned 7 condition. A creature Poisoned by a Toxin Grenade suffers 2d3 Mortal Wounds at the start of each of their turns.",
+    "source": "apocrypha",
+    "page": 361
   }
 ]

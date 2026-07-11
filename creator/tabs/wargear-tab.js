@@ -207,13 +207,13 @@ const WargearTab = {
         if (!relic) return null;
 
         const parts = this.getRelicDisplayParts(relic);
-        const choiceText = relic.powerChoice ? ` (${relic.powerChoice})` : '';
-        const oddityText = parts.oddityNames.length ? ` • Oddities: ${parts.oddityNames.join(', ')}` : '';
+        const choiceText = relic.powerChoice ? ` (${this.escapeHtml(relic.powerChoice)})` : '';
+        const oddityText = parts.oddityNames.length ? ` • Oddities: ${this.escapeHtml(parts.oddityNames.join(', '))}` : '';
 
         return {
             nameLine: `${this.escapeHtml(relic.name)} <span class="badge-relic">Holy Relic</span>`,
-            typeLine: `Holy Relic (${parts.formName}) • ${baseItemName}`,
-            detailLine: `<div class="wargear-relic-detail text-muted">Origin: ${parts.ownerName}, ${parts.anointmentName} • Power: ${parts.powerName}${choiceText}${oddityText}</div>`
+            typeLine: `Holy Relic (${this.escapeHtml(parts.formName)}) • ${this.escapeHtml(baseItemName)}`,
+            detailLine: `<div class="wargear-relic-detail text-muted">Origin: ${this.escapeHtml(parts.ownerName)}, ${this.escapeHtml(parts.anointmentName)} • Power: ${this.escapeHtml(parts.powerName)}${choiceText}${oddityText}</div>`
         };
     },
 

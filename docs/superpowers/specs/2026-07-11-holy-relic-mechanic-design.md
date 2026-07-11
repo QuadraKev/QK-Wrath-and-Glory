@@ -87,25 +87,25 @@ should" typo in Blessed Efficiency). Structure:
 {
   "source": "redacted2",
   "page": 12,
-  "formTable": [ /* 6 rows × 6 cols of form ids; formTable[row-1][col-1] */ ],
+  "formTable": { "page": 13, "rows": [ /* 6 rows × 6 cols of form ids; rows[row-1][col-1] */ ] },
   "forms": { /* 19 entries: id → { name, powersTable } */ },
   "origins": {
-    "originalOwner": [ /* 6 × { id, roll, name, description } */ ],
-    "anointment":    [ /* 6 × { id, roll, name, description } */ ]
+    "originalOwner": { "name": "Original Owner", "page": 14,
+                       "entries": [ /* 6 × { id, roll, name, description } */ ] },
+    "anointment":    { "name": "Anointment", "page": 15, "entries": [ /* 6 × … */ ] }
   },
   "powers": {
-    "melee":      [ /* 6 × { id, roll, name, description, choice? } */ ],
-    "ranged":     [ /* … */ ],
-    "ammunition": [ /* … */ ],
-    "armour":     [ /* … */ ],
-    "augmetic":   [ /* … */ ],
-    "tool":       [ /* … */ ]
+    /* six tables keyed melee / ranged / ammunition / armour / augmetic / tool,
+       each { name, page, entries: [ 6 × { id, roll, name, description, choice? } ] } */
   },
-  "enemyKeywords": [ /* 21 × { roll, keyword } — 4d6 values 4–24 */ ],
-  "oddities": [ /* 6 × { id, roll, name, description } */ ],
+  "enemyKeywords": { "page": 18, "entries": [ /* 21 × { roll, keyword } — 4d6 values 4–24 */ ] },
+  "oddities": { "name": "Relic Oddities", "page": 19, "entries": [ /* 6 × { id, roll, name, description } */ ] },
   "sacredShells": "…sidebar text verbatim…"
 }
 ```
+
+The complete verbatim content is embedded in the implementation plan
+(`docs/superpowers/plans/2026-07-11-holy-relic-mechanic.md`, Task 1).
 
 Loaded via `DataLoader.loadFile('holy-relics.json')` (added to `loadAll`), getter
 `DataLoader.getHolyRelics()`.

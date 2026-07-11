@@ -74,6 +74,7 @@ const CharacterSheetTab = {
                     ${this.renderArmor(character)}
                     ${this.renderAugmetics(character)}
                     ${this.renderEquipment(character)}
+                    ${this.renderHolyRelics(character)}
                 </div>
             </div>
         `;
@@ -673,7 +674,8 @@ const CharacterSheetTab = {
                     isEquipped: isEquipped,
                     calculatedDamage: damageInfo,
                     upgradeDetails: upgradeDetails,
-                    attackDice: attackDice
+                    attackDice: attackDice,
+                    relic: item.relic
                 });
             }
         }
@@ -749,6 +751,11 @@ const CharacterSheetTab = {
                 ? `<span class="sheet-item-rarity ${rarityClass}">${weapon.rarity}</span>`
                 : '';
 
+            // Relic weapons display under their custom name with the base weapon in parentheses
+            const displayName = weapon.relic
+                ? `${this.escapeHtml(weapon.relic.name)} (${weapon.name})`
+                : weapon.name;
+
             const descRow = hasDescOrKeywords ? `
                 <tr class="sheet-weapon-desc-row">
                     <td colspan="${colSpan}">
@@ -764,7 +771,7 @@ const CharacterSheetTab = {
                 <tbody class="sheet-weapon-group">
                     <tr>
                         ${equipCell}
-                        <td class="sheet-weapon-name" rowspan="2">${weapon.name}${rarityDisplay}${upgradesDisplay}<div class="source-ref">${DataLoader.formatSourcePage(weapon)}</div></td>
+                        <td class="sheet-weapon-name" rowspan="2">${displayName}${rarityDisplay}${upgradesDisplay}<div class="source-ref">${DataLoader.formatSourcePage(weapon)}</div></td>
                         <td class="sheet-weapon-dice" rowspan="2"${diceTooltip}>${weapon.attackDice.display}</td>
                         <td class="sheet-weapon-damage" colspan="2"${damageTooltip}>${weapon.calculatedDamage.display}</td>
                         <td class="sheet-weapon-range" rowspan="2">${range}</td>
@@ -856,7 +863,7 @@ const CharacterSheetTab = {
         for (const item of character.wargear || []) {
             const armor = DataLoader.getArmor(item.id);
             if (armor) {
-                armors.push({ ...armor });
+                armors.push({ ...armor, relic: item.relic });
             }
         }
 
@@ -880,6 +887,11 @@ const CharacterSheetTab = {
                 ? `<span class="sheet-item-rarity ${rarityClass}">${armor.rarity}</span>`
                 : '';
 
+            // Relic armour displays under its custom name with the base item in parentheses
+            const displayName = armor.relic
+                ? `${this.escapeHtml(armor.relic.name)} (${armor.name})`
+                : armor.name;
+
             // Build description and keywords row
             const description = armor.description || '';
             const keywords = armor.keywords?.length > 0
@@ -901,7 +913,7 @@ const CharacterSheetTab = {
             return `
                 <tbody class="sheet-armor-group">
                     <tr>
-                        <td class="sheet-armor-name">${armor.name}${rarityDisplay}<div class="source-ref">${DataLoader.formatSourcePage(armor)}</div></td>
+                        <td class="sheet-armor-name">${displayName}${rarityDisplay}<div class="source-ref">${DataLoader.formatSourcePage(armor)}</div></td>
                         <td class="sheet-armor-ar">${armor.ar || 0}</td>
                         <td class="sheet-armor-traits">${traits}</td>
                     </tr>
@@ -935,7 +947,7 @@ const CharacterSheetTab = {
             if (DataLoader.getWeapon(item.id) || DataLoader.getArmor(item.id)) continue;
             const equip = DataLoader.getEquipment(item.id);
             if (equip && equip.category === 'augmetic') {
-                augmetics.push({ ...equip });
+                augmetics.push({ ...equip, relic: item.relic });
             }
         }
 
@@ -957,6 +969,11 @@ const CharacterSheetTab = {
             }
             const bonusText = bonusParts.length > 0 ? bonusParts.join(', ') : '';
 
+            // Relic augmetics display under their custom name with the base item in parentheses
+            const displayName = aug.relic
+                ? `${this.escapeHtml(aug.relic.name)} (${aug.name})`
+                : aug.name;
+
             const description = aug.description || '';
             const keywords = aug.keywords?.length > 0
                 ? aug.keywords.map(k => `<span class="sheet-mini-keyword">${k}</span>`).join(' ')
@@ -977,7 +994,7 @@ const CharacterSheetTab = {
             return `
                 <tbody class="sheet-equip-group">
                     <tr>
-                        <td class="sheet-equip-name">${aug.name}${rarityDisplay}<div class="source-ref">${DataLoader.formatSourcePage(aug)}</div></td>
+                        <td class="sheet-equip-name">${displayName}${rarityDisplay}<div class="source-ref">${DataLoader.formatSourcePage(aug)}</div></td>
                         <td class="sheet-equip-effect">${aug.effect || '-'}</td>
                         <td class="sheet-equip-bonuses">${bonusText}</td>
                     </tr>
@@ -1014,7 +1031,7 @@ const CharacterSheetTab = {
             }
             const equip = DataLoader.getEquipment(item.id);
             if (equip && equip.category !== 'augmetic') {
-                equipment.push({ ...equip });
+                equipment.push({ ...equip, relic: item.relic });
             }
         }
 
@@ -1028,6 +1045,11 @@ const CharacterSheetTab = {
             const rarityDisplay = equip.rarity && equip.rarity !== 'Common'
                 ? `<span class="sheet-item-rarity ${rarityClass}">${equip.rarity}</span>`
                 : '';
+
+            // Relic equipment displays under its custom name with the base item in parentheses
+            const displayName = equip.relic
+                ? `${this.escapeHtml(equip.relic.name)} (${equip.name})`
+                : equip.name;
 
             // Build description and keywords row
             const description = equip.description || '';
@@ -1050,7 +1072,7 @@ const CharacterSheetTab = {
             return `
                 <tbody class="sheet-equip-group">
                     <tr>
-                        <td class="sheet-equip-name">${equip.name}${rarityDisplay}<div class="source-ref">${DataLoader.formatSourcePage(equip)}</div></td>
+                        <td class="sheet-equip-name">${displayName}${rarityDisplay}<div class="source-ref">${DataLoader.formatSourcePage(equip)}</div></td>
                         <td class="sheet-equip-effect">${equip.effect || '-'}</td>
                     </tr>
                     ${descRow}
@@ -1072,6 +1094,92 @@ const CharacterSheetTab = {
                 </table>
             </div>
         `;
+    },
+
+    // Render the Holy Relics detail block (only when the character owns relic wargear)
+    renderHolyRelics(character) {
+        const relicItems = (character.wargear || []).filter(item => item.relic);
+        if (relicItems.length === 0) return '';
+
+        const relicData = DataLoader.getHolyRelics();
+        const sacredShells = relicData ? relicData.sacredShells : '';
+
+        const relicsHtml = relicItems.map(item => {
+            const relic = item.relic;
+            const base = DataLoader.getWargearItem(item.id);
+            const baseName = base ? base.name : item.id;
+            const parts = this.getRelicDisplayParts(relic);
+            const choiceText = relic.powerChoice ? ` (${this.escapeHtml(relic.powerChoice)})` : '';
+
+            const oddityLines = parts.oddities.map(o =>
+                `<div class="sheet-talent-effect"><strong>${this.escapeHtml(o.name)}:</strong> ${o.description}</div>`
+            ).join('');
+
+            const sacredShellsLine = (relic.form === 'grenade_or_missile_weapon' && sacredShells)
+                ? `<div class="sheet-talent-effect"><strong>Sacred Shells:</strong> ${sacredShells}</div>`
+                : '';
+
+            return `
+                <div class="sheet-talent">
+                    <div class="sheet-talent-header">
+                        <span class="sheet-talent-name">${this.escapeHtml(relic.name)} &mdash; Relic ${this.escapeHtml(parts.formName)} (${baseName})</span>
+                    </div>
+                    <div class="sheet-talent-content">
+                        <div class="text-muted">Original Owner: ${this.escapeHtml(parts.ownerName)} &bull; Anointment: ${this.escapeHtml(parts.anointmentName)}</div>
+                        <div class="sheet-talent-effect"><strong>${this.escapeHtml(parts.powerName)}${choiceText}:</strong> ${parts.powerDescription}</div>
+                        ${oddityLines}
+                        ${sacredShellsLine}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        return `
+            <div class="sheet-section">
+                <h2 class="sheet-section-title">Holy Relics</h2>
+                ${relicsHtml}
+            </div>
+        `;
+    },
+
+    // Resolve a relic's id fields to display names and verbatim descriptions via
+    // DataLoader.getHolyRelics(), falling back to raw ids if the lookup misses.
+    getRelicDisplayParts(relic) {
+        const relics = DataLoader.getHolyRelics();
+        if (!relics) {
+            return {
+                formName: relic.form,
+                ownerName: relic.originalOwner,
+                anointmentName: relic.anointment,
+                powerName: relic.power,
+                powerDescription: '',
+                oddities: (relic.oddities || []).map(id => ({ name: id, description: '' }))
+            };
+        }
+
+        const form = relics.forms[relic.form];
+        const owner = relics.origins.originalOwner.entries.find(e => e.id === relic.originalOwner);
+        const anointment = relics.origins.anointment.entries.find(e => e.id === relic.anointment);
+
+        let power = null;
+        for (const table of Object.values(relics.powers)) {
+            power = table.entries.find(e => e.id === relic.power);
+            if (power) break;
+        }
+
+        const oddities = (relic.oddities || []).map(id => {
+            const oddity = relics.oddities.entries.find(e => e.id === id);
+            return oddity ? { name: oddity.name, description: oddity.description } : { name: id, description: '' };
+        });
+
+        return {
+            formName: form ? form.name : relic.form,
+            ownerName: owner ? owner.name : relic.originalOwner,
+            anointmentName: anointment ? anointment.name : relic.anointment,
+            powerName: power ? power.name : relic.power,
+            powerDescription: power ? power.description : '',
+            oddities
+        };
     },
 
     // Render species abilities including sub-option abilities (chapter, path, mutations)
@@ -1723,7 +1831,17 @@ const CharacterSheetTab = {
             lines.push('WARGEAR');
             for (const item of character.wargear) {
                 const wargear = DataLoader.getWargearItem(item.id);
-                if (wargear) lines.push(`  ${wargear.name}`);
+                if (!wargear) continue;
+                if (item.relic) {
+                    const parts = this.getRelicDisplayParts(item.relic);
+                    const choiceText = item.relic.powerChoice ? ` (${item.relic.powerChoice})` : '';
+                    const oddityNames = parts.oddities.map(o => o.name);
+                    const oddityText = oddityNames.length ? oddityNames.join(', ') : 'none';
+                    lines.push(`- ${item.relic.name} (Holy Relic — ${wargear.name})`);
+                    lines.push(`    Power: ${parts.powerName}${choiceText}; Oddities: ${oddityText}`);
+                } else {
+                    lines.push(`  ${wargear.name}`);
+                }
             }
             lines.push('');
         }

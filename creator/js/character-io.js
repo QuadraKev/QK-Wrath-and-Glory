@@ -232,7 +232,16 @@ const CharacterIO = {
             sheet += `\n## Wargear\n`;
             for (const item of character.wargear) {
                 const wargear = DataLoader.getWargearItem(item.id);
-                sheet += `- ${wargear?.name || item.id}\n`;
+                const baseName = wargear?.name || item.id;
+                if (item.relic) {
+                    const parts = this._getRelicDisplayParts(item.relic);
+                    const choiceText = item.relic.powerChoice ? ` (${item.relic.powerChoice})` : '';
+                    const oddityText = parts.oddityNames.length ? parts.oddityNames.join(', ') : 'none';
+                    sheet += `- ${item.relic.name} (Holy Relic — ${baseName})\n`;
+                    sheet += `    Power: ${parts.powerName}${choiceText}; Oddities: ${oddityText}\n`;
+                } else {
+                    sheet += `- ${baseName}\n`;
+                }
             }
         }
 
@@ -245,5 +254,33 @@ const CharacterIO = {
         }
 
         return sheet;
+    },
+
+    // Resolve a relic's id fields to display names via DataLoader.getHolyRelics(),
+    // falling back to raw ids if the lookup misses (e.g. data not loaded).
+    _getRelicDisplayParts(relic) {
+        const relics = DataLoader.getHolyRelics();
+        if (!relics) {
+            return {
+                powerName: relic.power,
+                oddityNames: relic.oddities || []
+            };
+        }
+
+        let power = null;
+        for (const table of Object.values(relics.powers)) {
+            power = table.entries.find(e => e.id === relic.power);
+            if (power) break;
+        }
+
+        const oddityNames = (relic.oddities || []).map(id => {
+            const oddity = relics.oddities.entries.find(e => e.id === id);
+            return oddity ? oddity.name : id;
+        });
+
+        return {
+            powerName: power ? power.name : relic.power,
+            oddityNames
+        };
     }
 };

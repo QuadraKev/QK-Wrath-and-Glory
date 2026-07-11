@@ -1995,7 +1995,7 @@
     "description": "An additional dose of adrenaline—supplementing that which the body produces naturally—can help hardened soldiers push past their limits and keep fighting when hurt or tired.",
     "effect": "When you take an Adrenaline Shot, you immediately regain 1d3+2 Shock, and ignore the penalties for being Wounded until the end of your next turn. Once you have taken an Adrenaline Shot, you cannot benefit from another until your next Regroup.",
     "value": 4,
-    "rarity": "Uncommon",
+    "rarity": "Rare",
     "keywords": [
       "IMPERIUM",
       "SCUM",
@@ -4516,7 +4516,7 @@
     "category": "augmetic",
     "description": "This implant allows a dose of a drug or stimulant to be auto-injected into the recipient's body.",
     "effect": "The injector is loaded with a single drug, either Stimm or a drug with the COMBAT DRUG keyword, and a character may have multiple chem injector implants to deliver multiple drugs. The character can administer that drug as a simple action. Some characters with this implant do not have control over them; their injectors are controlled by another character over a vox link.",
-    "value": 5,
+    "value": 4,
     "rarity": "Rare",
     "keywords": [
       "IMPERIUM",
@@ -4547,7 +4547,7 @@
     "category": "augmetic",
     "description": "An electoo is a sophisticated subcutaneous tattoo that utilises crystalline circuit technology to allow its user to store digital information within their own body. More advanced forms have other, powerful uses, such as conducting vast amounts of bioelectric energy, but these are reserved only for the chosen amongst the Cult Mechanicus.",
     "effect": "An Electoo can be used to store information electronically and can even adjust this information under pre-programmed conditions or when instructed by an outside source. The user has no direct control over the electoo or its contents and may not even be aware of it, unless they have the ADEPTUS MECHANICUS keyword.",
-    "value": 3,
+    "value": 2,
     "rarity": "Common",
     "keywords": [
       "IMPERIUM",
@@ -4767,7 +4767,7 @@
     "description": "A simple skinplant with many unsavoury uses, the thief's light is a simple luminescent patch on the palm of the hand, which is nearly imperceptible until activated. When triggered—usually by squeezing the hand shut for a few seconds—the patch glows with a soft yellow light, enough to illuminate objects within a few centimetres clearly enough to perform intricate tasks without producing large amounts of light that would give the user's presence away.",
     "effect": "At will, the user can generate a small amount of light from the palm of one hand.",
     "value": 2,
-    "rarity": "Uncommon",
+    "rarity": "Common",
     "keywords": [
       "IMPERIUM",
       "SCUM"

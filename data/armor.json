@@ -932,7 +932,7 @@
     "traits": [
       "Agile"
     ],
-    "value": 9,
+    "value": 8,
     "rarity": "Very Rare",
     "keywords": [
       "IMPERIUM",
@@ -988,7 +988,7 @@
       "Void"
     ],
     "value": 6,
-    "rarity": "Uncommon",
+    "rarity": "Very Rare",
     "keywords": [
       "IMPERIUM",
       "NAVIS IMPERIALIS"
@@ -1003,7 +1003,7 @@
     "description": "These armoured suits straddle the line between armour and vehicle, encasing an armoured Sister of Battle in an additional shell which mimics her motions in battle. Only the most skilled and trusted Celestians are entrusted with these suits, for their machine spirits are not easily tamed, but they can weather the heaviest firepower and do battle with the most fearsome of enemies.",
     "ar": 7,
     "traits": [
-      "Powered (6)"
+      "Powered (5)"
     ],
     "value": 10,
     "rarity": "Unique",
@@ -1820,7 +1820,7 @@
       "Agile"
     ],
     "value": 3,
-    "rarity": "Common",
+    "rarity": "Uncommon",
     "keywords": [
       "AELDARI",
       "DRUKHARI"
@@ -1870,7 +1870,7 @@
     "traits": [
       "Power Field"
     ],
-    "value": 9,
+    "value": 8,
     "rarity": "Unique",
     "keywords": [
       "LEAGUES OF VOTANN"
@@ -1982,8 +1982,8 @@
     "traits": [
       "Power Field"
     ],
-    "value": 7,
-    "rarity": "Very Rare",
+    "value": 8,
+    "rarity": "Unique",
     "keywords": [
       "LEAGUES OF VOTANN"
     ],

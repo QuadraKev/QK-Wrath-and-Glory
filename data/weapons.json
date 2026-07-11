@@ -3905,9 +3905,9 @@
     "category": "Low-Tech",
     "description": "A hafted melee weapon with a wedge- or crescent-shaped blade, intended to apply maximum cutting power to a small cross-section. They're used as tools for woodcutting and similar activities across the galaxy, but they are as effective at felling foes as they are at felling trees.",
     "damage": {
-      "base": 0,
+      "base": 3,
       "attribute": "strength",
-      "bonus": 3
+      "bonus": 0
     },
     "ed": 4,
     "ap": 0,
@@ -3929,9 +3929,9 @@
     "category": "Low-Tech",
     "description": "A hafted melee weapon, with one or more chains attached to weighted or spiked heads, able to batter through a foe's defences and inflict considerable damage.",
     "damage": {
-      "base": 0,
+      "base": 3,
       "attribute": "strength",
-      "bonus": 3
+      "bonus": 0
     },
     "ed": 3,
     "ap": 0,
@@ -3952,9 +3952,9 @@
     "category": "Low-Tech",
     "description": "Large, two-handed axes used both as heavy-duty cutting tools in primitive cultures, and as deadly weapons by mighty warriors. Few have the skill to wield them in battle effectively, but they are deadly in the right hands.",
     "damage": {
-      "base": 0,
+      "base": 4,
       "attribute": "strength",
-      "bonus": 4
+      "bonus": 0
     },
     "ed": 4,
     "ap": 0,
@@ -3979,9 +3979,9 @@
     "category": "Low-Tech",
     "description": "Coming in a variety of forms and styles, these long blades require two hands to wield effectively, but the two-handed grip allows the wielder greater leverage, which translates into swift strikes and deadly force.",
     "damage": {
-      "base": 0,
+      "base": 4,
       "attribute": "strength",
-      "bonus": 4
+      "bonus": 0
     },
     "ed": 3,
     "ap": -1,
@@ -4005,9 +4005,9 @@
     "category": "Low-Tech",
     "description": "These heavy, mono-edged hatchets are a convenient tool for clearing light obstacles and enemies alike at close quarters. They're a favoured hand weapon of the Imperial Navy's elite breacher teams, giving them considerable impact when the foe is too close even for shotguns.",
     "damage": {
-      "base": 0,
+      "base": 4,
       "attribute": "strength",
-      "bonus": 4
+      "bonus": 0
     },
     "ed": 4,
     "ap": -1,
@@ -4032,9 +4032,9 @@
     "category": "Low-Tech",
     "description": "These simple, sturdy plasteel batons are the customary melee weapon of Arbitrators, used to bludgeon malcontents and 'persuade' dissidents to comply with the law.",
     "damage": {
-      "base": 0,
+      "base": 3,
       "attribute": "strength",
-      "bonus": 3
+      "bonus": 0
     },
     "ed": 2,
     "ap": 0,
@@ -4057,9 +4057,9 @@
     "category": "Low-Tech",
     "description": "The most common form of weapon ever devised. A pointed head on a long haft makes for a simple weapon, but one which is nevertheless effective, able to hold opponents at a distance and extend the killing reach of their wielder.",
     "damage": {
-      "base": 0,
+      "base": 3,
       "attribute": "strength",
-      "bonus": 3
+      "bonus": 0
     },
     "ed": 3,
     "ap": 0,
@@ -4078,9 +4078,9 @@
     "category": "Force",
     "description": "These stout crystalline rods are usable as weapons to a limited degree, but they are more useful as a way to store psychic energy for later use.",
     "damage": {
-      "base": 0,
+      "base": 3,
       "attribute": "strength",
-      "bonus": 3
+      "bonus": 0
     },
     "ed": 1,
     "ap": -1,
@@ -4105,9 +4105,9 @@
     "category": "Force",
     "description": "Wielded in a pair, Nemesis Falchions are smaller variants of the Nemesis Force Sword. By triggering the circuitry within each Falchion, a Grey Knight can swing the Force Weapon with incredible speed, striking several blows with pinpoint accuracy.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 4,
     "ap": -2,
@@ -4133,9 +4133,9 @@
     "category": "Force",
     "description": "A Nemesis Halberd is a two-handed weapon that consists of a long adamantium haft with an iron and silver blade set upon the top. This extra reach often allows a Grey Knight to land a fatal blow, killing the enemy before coming within reach of its weapons.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 5,
     "ap": -2,
@@ -4160,9 +4160,9 @@
     "category": "Force",
     "description": "The most common type of weapon wielded by the Grey Knights is the Nemesis Force Sword. It exemplifies the mixture of magick and science utilized by the Grey Knights. The blade is tempered iron, flecked with shards of silver and inset with ancient runes of daemon slaying. Advanced power field generators are also contained within.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 4,
     "ap": -3,
@@ -4187,9 +4187,9 @@
     "category": "Force",
     "description": "Unlike most of the Nemesis Force Weapons used by the Grey Knights, the Nemesis Warding Stave has abilities used in defensive situations. The wielder of the stave can channel his psychic might into the haft to activate the refractor fields within. The refractor fields, once activated, then project a force field around the wielder, softening any blows and thus increasing the chance for retaliation.",
     "damage": {
-      "base": 0,
+      "base": 4,
       "attribute": "strength",
-      "bonus": 4
+      "bonus": 0
     },
     "ed": 2,
     "ap": -1,
@@ -4215,9 +4215,9 @@
     "category": "Power",
     "description": "These blessed weapons of the Adepta Sororitas are entrusted to the hands of elite Celestians, who use them to hold back the legions of the unholy.",
     "damage": {
-      "base": 0,
+      "base": 6,
       "attribute": "strength",
-      "bonus": 6
+      "bonus": 0
     },
     "ed": 4,
     "ap": -3,
@@ -4241,9 +4241,9 @@
     "category": "Chain",
     "description": "A larger, heavier form of chainsword, constructed to withstand the force of Astartes strength and the ferocity of a Space Marine's strikes. Made using higher-quality components, it is more effective at tearing through light armour as well.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 4,
     "ap": -1,
@@ -4268,9 +4268,9 @@
     "category": "Chain",
     "description": "More commonly found in underhive gangs and carried on some jungle death worlds, chain knives are shorter forms of chainsword, commonly taking the forms of cleavers or machetes.",
     "damage": {
-      "base": 0,
+      "base": 4,
       "attribute": "strength",
-      "bonus": 4
+      "bonus": 0
     },
     "ed": 3,
     "ap": 0,
@@ -4295,9 +4295,9 @@
     "category": "Power",
     "description": "A Crozius Arcanum is a mace or staff surrounded by a power field that is used as both a melee weapon and the primary badge of office of Space Marine Chaplains. This duality of purpose presents no philosophical conundrum for the Chaplains, as for them battle itself represents the most valuable form of worship of the Emperor of Mankind.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 5,
     "ap": -1,
@@ -4321,9 +4321,9 @@
     "category": "Power",
     "description": "Large, expertly crafted two-handed power swords, used by the Silent Sisterhood. Each Greatblade was perfectly weighted for the martial style of its wielder and once the Sisters were schooled in their use, they could strike with the speed of a duellist combined with the killing might of a veteran executioner.",
     "damage": {
-      "base": 0,
+      "base": 6,
       "attribute": "strength",
-      "bonus": 6
+      "bonus": 0
     },
     "ed": 5,
     "ap": -3,
@@ -4349,9 +4349,9 @@
     "category": "Chain",
     "description": "Unique to the frozen death world of Fenris, home of the Space Wolves Space Marines Chapter, Frost Blades are exceptional forms of chain weapon, incorporating the diamond-hard fangs of ice kraken, or hyperdense ice from the heart of a Fenrisian glacier. In the hands of a skilled wielder, they are deadlier than any conventional power weapon. They take the form of ornate chainswords and chain axes.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 5,
     "ap": -3,
@@ -4375,9 +4375,9 @@
     "category": "Chain",
     "description": "Unique to the frozen death world of Fenris, home of the Space Wolves Space Marines Chapter, Frost Blades are exceptional forms of chain weapon, incorporating the diamond-hard fangs of ice kraken, or hyperdense ice from the heart of a Fenrisian glacier. In the hands of a skilled wielder, they are deadlier than any conventional power weapon. They take the form of ornate chainswords and chain axes.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 4,
     "ap": -3,
@@ -4401,9 +4401,9 @@
     "category": "Power",
     "description": "The Guardian Spear has been the signature weapon of the Adeptus Custodes since the time of the Unification Wars in the 30th Millennium. Elegant and deadly, it is a potent and unique design incorporating a Power Blade and a highly advanced integrated Bolter weapon.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 5,
     "ap": -3,
@@ -4426,9 +4426,9 @@
     "category": "Power",
     "description": "These sacred weapons are entrusted to only the most devout and skilled of Celestian Sisters, who use them to crush the bodies and spirits of the faithless.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 5,
     "ap": -1,
@@ -4452,9 +4452,9 @@
     "category": "Power",
     "description": "Lightning claws consist of a power gauntlet and three or four blades that crackle with matter-disruptive energy.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 4,
     "ap": -2,
@@ -4478,9 +4478,9 @@
     "category": "Power",
     "description": "The Misericordia is a long dagger or short sword carried by the Custodians of the Adeptus Custodes, symbolic of their place as the Emperor's executioners. The Misericordia was designed to deliver a single, mortal blow, and are used to deliver mercy or vengeance.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 4,
     "ap": -2,
@@ -4503,9 +4503,9 @@
     "category": "Power",
     "description": "A Power Lance, also known as a Power Spear or Power Glaive, is a special type of power weapon, a power blade mounted on the end of a long shaft. Like most power weapons, it can tear through all manners of material with ease thanks to its disruptive energy field generated around the blade. They're commonly used as ceremonial weapons by honour guards, or by lancers mounted on bikes or war-beasts.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 4,
     "ap": -1,
@@ -4528,9 +4528,9 @@
     "category": "Power",
     "description": "A Relic Blade is an ancient and incredibly powerful two-handed melee weapon used by the superhuman warriors of the Adeptus Astartes that often takes the form of a master-crafted sword or axe. Only a precious handful have survived the passage of time and these are reserved for Astartes of long and faultless service who have earned the right to wield a Relic Blade.",
     "damage": {
-      "base": 0,
+      "base": 6,
       "attribute": "strength",
-      "bonus": 6
+      "bonus": 0
     },
     "ed": 5,
     "ap": -3,
@@ -4553,9 +4553,9 @@
     "category": "Power",
     "description": "The Sentinel Blade is a Power Weapon shaped as a broadsword of daunting size, so large its hilt is flanked with the double barrels of a Bolt Caster that can lay down a hail of short-range fire. It is a common melee weapon used by the Custodians of the Adeptus Custodes, the praetorians of the Emperor of Mankind. It is a testament to the strength of the Custodians that they can wield these powered blades one-handed.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 4,
     "ap": -3,
@@ -4578,9 +4578,9 @@
     "category": "Power",
     "description": "These weapons are entrusted only to Celestian Sisters Superior. The blood or ichor of the unholy cannot mar the shining blade of these spears.",
     "damage": {
-      "base": 0,
+      "base": 6,
       "attribute": "strength",
-      "bonus": 6
+      "bonus": 0
     },
     "ed": 5,
     "ap": -3,
@@ -4604,9 +4604,9 @@
     "category": "Exotic",
     "description": "A deadly, needle-fingered gauntlet, where each blade can be set to vibrate at the resonant frequency of anything they strike, quickly tuning themselves upon impact, tearing through flesh, bone, and armour as they destructively vibrate. A single strike can obliterate large parts of an enemy.",
     "damage": {
-      "base": 0,
+      "base": 4,
       "attribute": "strength",
-      "bonus": 4
+      "bonus": 0
     },
     "ed": 3,
     "ap": 0,
@@ -4631,9 +4631,9 @@
     "category": "Exotic",
     "description": "Electroleech Staves are used by some Electro-Priests. The powerful capacitors built into the length of each electroleech staff allow them to drink every iota of electric force from those they strike. This bioelectric energy is siphoned into the user's Luminen capacitor, where it can charge their implants further.",
     "damage": {
-      "base": 0,
+      "base": 6,
       "attribute": "strength",
-      "bonus": 6
+      "bonus": 0
     },
     "ed": 5,
     "ap": -2,
@@ -4659,9 +4659,9 @@
     "category": "Exotic",
     "description": "Some Electro-Priests wield a set of metal apparatus around their wrists that channel tremendous electrostatic potential from their capacitors. This can be discharged in a cascade of deadly lightning.",
     "damage": {
-      "base": 0,
+      "base": 6,
       "attribute": "strength",
-      "bonus": 6
+      "bonus": 0
     },
     "ed": 3,
     "ap": 0,
@@ -4685,9 +4685,9 @@
     "category": "Exotic",
     "description": "These heavy-duty weapons are potent, high-powered versions of shock mauls, employed by the Adeptus Arbites. Their powerful shock fields and heavy impacts can deliver debilitating strikes even to resilient or armoured foes.",
     "damage": {
-      "base": 0,
+      "base": 6,
       "attribute": "strength",
-      "bonus": 6
+      "bonus": 0
     },
     "ed": 4,
     "ap": -2,
@@ -4711,9 +4711,9 @@
     "category": "Exotic",
     "description": "The Honour Staff borne by T'au Ethereals is used as a symbol of office, as ceremonial weapons, and in self-defence. While each weapon is custom-made, they all feature a broad blade fitted to a long, lightweight metallic staff.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 4,
     "ap": -1,
@@ -4735,9 +4735,9 @@
     "category": "Exotic",
     "description": "The Hookfang is a type of poisoned blade used by Venenum Assassins of the Officio Assassinorum. These daggers were designed after a now-extinct apex predator of the Age of Strife and contained a neural-degenerative toxin engineered by the Grandmaster of the Clade. Even the smallest scratch is deadly, and it is said that only three individuals were able to survive the toxin during the reign of the Grandmaster during the Horus Heresy, including herself.",
     "damage": {
-      "base": 0,
+      "base": 4,
       "attribute": "strength",
-      "bonus": 4
+      "bonus": 0
     },
     "ed": 3,
     "ap": -1,
@@ -4762,9 +4762,9 @@
     "category": "Exotic",
     "description": "Forged by the indentured tech-wrights of the Adamus Temple, each Nemesii blade is alleged to be patterned after an Ancient Terran artefact, held in stasis within the core vaults of Temple Adamus itself. Despite having no obvious force-projectors or augmentations, these weapons are possessed with an unnaturally sharp edge, able to cut through flesh and armour with impunity.",
     "damage": {
-      "base": 0,
+      "base": 6,
       "attribute": "strength",
-      "bonus": 6
+      "bonus": 0
     },
     "ed": 5,
     "ap": -3,
@@ -4789,9 +4789,9 @@
     "category": "Exotic",
     "description": "The Neuro Gauntlet is a specialised weapon only used by the Eversor Assassins of the Imperium of Man's Officio Assassinorum. The weapon is a glove or gauntlet comprised of a hyper-alloy glove whose fingers end in sharp hypodermic needles that inject a potent neurotoxin into the Assassin's victim. When the glove strikes an opponent, the needles immediately inject their toxin into the person's bloodstream. The lethal effect is almost instantaneous and causes a horrifically painful death as the victim is completely paralyzed while his organ systems shut down one by one.",
     "damage": {
-      "base": 0,
+      "base": 6,
       "attribute": "strength",
-      "bonus": 6
+      "bonus": 0
     },
     "ed": 4,
     "ap": -1,
@@ -4814,9 +4814,9 @@
     "category": "Exotic",
     "description": "This obsidian rod perpetually crackles with psi-null energy, negating the Warp-spawned powers of psykers. Even a glancing blow from such a weapon can provoke a cataclysmic neuron failure in a sorcerer or mystic. At the end of each battle, the null rod must be drained of the energy it has absorbed, lest its captured power open a Warp rift.",
     "damage": {
-      "base": 0,
+      "base": 4,
       "attribute": "strength",
-      "bonus": 4
+      "bonus": 0
     },
     "ed": 2,
     "ap": -1,
@@ -4842,9 +4842,9 @@
     "category": "Exotic",
     "description": "A Phase Sword—often referred to as a C’Tan Phase Sword—is a metal blade of unknown composition that, using seemingly impossible physics, is capable of phasing through any object irrespective of its physical properties. Energy shields, armour and even daemonic bodies are of no defence against a Phase Sword.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 4,
     "ap": -3,
@@ -4868,9 +4868,9 @@
     "category": "Exotic",
     "description": "In sealed pockets across their synskin bodygloves, many Callidus Operatives keep an array of envenomed needles, each several inches long and wickedly sharp. A Callidus is an expert at slamming them point-first through eye-slits, armour joints and other weak spots to ensure their victim's swift demise.",
     "damage": {
-      "base": 0,
+      "base": 3,
       "attribute": "strength",
-      "bonus": 3
+      "bonus": 0
     },
     "ed": 2,
     "ap": -1,
@@ -4896,9 +4896,9 @@
     "category": "Exotic",
     "description": "Taking the form of a pair of wrist-mounted retractable spikes, these tools are primarily intended to facilitate universal access to the data coils of cogitator banks, allowing the Infocyte to surreptitiously syphon information or to interject damaging scrap-code into enemy systems. Secondarily, their shape allows them to be driven between armour plates and through the eye-slots of even heavily-armoured foes.",
     "damage": {
-      "base": 0,
+      "base": 4,
       "attribute": "strength",
-      "bonus": 4
+      "bonus": 0
     },
     "ed": 4,
     "ap": -2,
@@ -4924,9 +4924,9 @@
     "category": "Exotic",
     "description": "Taser Goads are a type of esoteric close combat weapon utilised by the warriors of the Skitarii Legions of the Adeptus Mechanicus. Powered by hyperdynamo capacitors, a Taser Goad stores an incredible amount of potential energy. A solid impact will cause this energy to be discharged in a scorching blast.",
     "damage": {
-      "base": 0,
+      "base": 7,
       "attribute": "strength",
-      "bonus": 7
+      "bonus": 0
     },
     "ed": 3,
     "ap": 0,
@@ -4951,9 +4951,9 @@
     "category": "Exotic",
     "description": "Used by Sicarian Ruststalkers, these long, slender blades tune themselves to destructively resonate through anything they strike. Wielded in pairs, these weapons allow a Ruststalker to scythe through foe after foe.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 3,
     "ap": 0,
@@ -4978,9 +4978,9 @@
     "category": "Exotic",
     "description": "Slender, elegant dagger-like blades, which are often used by some Sicarian Ruststalkers as a secondary weapon. Like larger transonic weapons, they can rip through flesh, bone, and armour with terrifying ease.",
     "damage": {
-      "base": 0,
+      "base": 4,
       "attribute": "strength",
-      "bonus": 4
+      "bonus": 0
     },
     "ed": 3,
     "ap": 0,
@@ -5381,9 +5381,9 @@
     "category": "Chaos",
     "description": "An Accursed Crozius is a special form of Daemon Weapon and serves as the mark of office and primary melee weapon of a Dark Apostle. Twisted and warped from the pure Crozius Arcanum of Loyalist Astartes Chaplains into something hideously blasphemous, the Accused Crozius mocks the Imperium of Man with its mere existence.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 5,
     "ap": -1,
@@ -5408,9 +5408,9 @@
     "category": "Chaos",
     "description": "The ancient, bloodstained axes are saturated with Khorne's insatiable, endless bloodlust. They are heavy blades of dark iron, bound by brass to a haft of living bone, and they continually urge their wielder to greater and greater feats of bloodshed.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 5,
     "ap": -2,
@@ -5437,9 +5437,9 @@
     "category": "Chaos",
     "description": "Twisted relics of the Horus Heresy, these staves were once the proud armaments of the Sorcerers of the Thousand Sons. Millennia later, these weapons have become steeped in the writhing madness of the Warp, and a single strike can drive all conscious thought from a victim's mind.",
     "damage": {
-      "base": 0,
+      "base": 4,
       "attribute": "strength",
-      "bonus": 4
+      "bonus": 0
     },
     "ed": 2,
     "ap": -1,
@@ -5468,9 +5468,9 @@
     "category": "Chaos",
     "description": "A favoured weapon of some melee specialists amongst the servants of Nurgle, the Bubotic Axe is a cruel, vile weapon that inflicts horrendous wounds.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 5,
     "ap": -2,
@@ -5495,9 +5495,9 @@
     "category": "Chaos",
     "description": "A cruel sword containing the bound spirit of a minor Daemon of Chaos. These weapons are often gifts to Champions of the Dark Gods and contain daemons who have displeased their masters in some way. While many daemon weapons are weapons of terrifying power with reputations as dread as their owners, this represents the least examples of such weapons.",
     "damage": {
-      "base": 0,
+      "base": 4,
       "attribute": "strength",
-      "bonus": 4
+      "bonus": 0
     },
     "ed": 5,
     "ap": -2,
@@ -5522,9 +5522,9 @@
     "category": "Chaos",
     "description": "This massive flail is heavy with rusted chains and filth-encrusted spikes, weights, and barbs. Impact from the flail is dangerous enough, but the virulent diseases living upon the weapon's surfaces kill any who aren't slain by the weapon itself.",
     "damage": {
-      "base": 0,
+      "base": 6,
       "attribute": "strength",
-      "bonus": 6
+      "bonus": 0
     },
     "ed": 4,
     "ap": -2,
@@ -5550,9 +5550,9 @@
     "category": "Chaos",
     "description": "A massive, heavy axe that can cleave a man in two, coated in the deadliest plagues and vilest toxins imaginable.",
     "damage": {
-      "base": 0,
+      "base": 8,
       "attribute": "strength",
-      "bonus": 8
+      "bonus": 0
     },
     "ed": 6,
     "ap": -3,
@@ -5580,9 +5580,9 @@
     "category": "Chaos",
     "description": "A massive version of the Chainaxe common to many Traitor Legion and Renegade Astartes forces, these weapons are utterly brutal and entirely unsubtle, and favoured by those who seek the purity of slaughter.",
     "damage": {
-      "base": 0,
+      "base": 8,
       "attribute": "strength",
-      "bonus": 8
+      "bonus": 0
     },
     "ed": 6,
     "ap": -4,
@@ -5609,9 +5609,9 @@
     "category": "Chaos",
     "description": "Long tendrils of fleshy daemonflesh, this living whip is wrought from the sinuous tongues of Steeds of Slaanesh and gifted to the Dark Prince's most beloved Champions. With every strike, the lash drinks deep of the courage and certainty of its victims, leaving only dread and despair.",
     "damage": {
-      "base": 0,
+      "base": 4,
       "attribute": "strength",
-      "bonus": 4
+      "bonus": 0
     },
     "ed": 2,
     "ap": 0,
@@ -5637,9 +5637,9 @@
     "category": "Chaos",
     "description": "These cumbersome censer-maces emit a sickly miasma of disease. A Mace of Contagion combines heavy blows with a sickly fog that turns blood rancid and flesh necrotic.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 5,
     "ap": -1,
@@ -5664,9 +5664,9 @@
     "category": "Chaos",
     "description": "An iconic weapon of the Death Guard Legion, even during the days of the Great Crusade. Where once these grand power scythes were deadly weapons wielded in the Emperor's Name, now they are filth-encrusted reapers of souls, slaying in the name of the Lord of Plagues.",
     "damage": {
-      "base": 0,
+      "base": 7,
       "attribute": "strength",
-      "bonus": 7
+      "bonus": 0
     },
     "ed": 4,
     "ap": -3,
@@ -5695,9 +5695,9 @@
     "category": "Chaos",
     "description": "Lovingly crafted from the wood of one of the Gnarlmaw trees in Nurgle's garden, this staff has soaked in pestilential waters and the blood of the infected for aeons uncounted in the Warp. At a moment's notice, it can unleash a great cloud of contagion.",
     "damage": {
-      "base": 0,
+      "base": 4,
       "attribute": "strength",
-      "bonus": 4
+      "bonus": 0
     },
     "ed": 2,
     "ap": -1,
@@ -5726,9 +5726,9 @@
     "category": "Chaos",
     "description": "A Plague Knife is a long-bladed, dagger-like weapon wielded by Plague Marines and other devotees of the Chaos God Nurgle. It possesses the capability of \"blessing\" anyone it touches with the daemonic infection known as Nurgle's Rot. These long, pitted knives are encrusted and dripping with the most virulent of toxins, viruses, and other pathogens. Their wielders believe that they have been directly blessed by the Plague God himself, for the rot the weapons spread is so powerful that it can lay low even the most monstrous or powerful of enemies in seconds.",
     "damage": {
-      "base": 0,
+      "base": 3,
       "attribute": "strength",
-      "bonus": 3
+      "bonus": 0
     },
     "ed": 2,
     "ap": 0,
@@ -5752,9 +5752,9 @@
     "category": "Chaos",
     "description": "Plague Swords are a type of Daemonic weapon used by followers of Nurgle such as Plague Bearers and Plague Marines. These weapons are infused with foul infections and toxins that can make the merest scratch fatal.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 4,
     "ap": 0,
@@ -5780,9 +5780,9 @@
     "category": "Chaos",
     "description": "Ancient power weapons, once favoured by the elite honour guard of the Thousand Sons' Primarch, Magnus the Red. These weapons are still borne by the Scarab Occult Terminators and high-ranking sorcerers amongst the Thousand Sons.",
     "damage": {
-      "base": 0,
+      "base": 6,
       "attribute": "strength",
-      "bonus": 6
+      "bonus": 0
     },
     "ed": 5,
     "ap": -3,
@@ -5807,9 +5807,9 @@
     "category": "Aeldari",
     "description": "Biting Blades are two-handed, long-bladed Chainswords wielded by Exarchs of the Striking Scorpions shrine. Biting Blades are slender and quiet, able to slice through the primitive hordes of the enemy.",
     "damage": {
-      "base": 0,
+      "base": 6,
       "attribute": "strength",
-      "bonus": 6
+      "bonus": 0
     },
     "ed": 4,
     "ap": -1,
@@ -5839,9 +5839,9 @@
     "category": "Aeldari",
     "description": "These carefully-balanced pairs of chainswords are matched with gauntlets mounting paired Shuriken Pistols. The ritual martial forms associated with these weapons allow the wielder to deliver a punishing and unceasing storm of attacks.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 3,
     "ap": -1,
@@ -5871,9 +5871,9 @@
     "category": "Aeldari",
     "description": "A Diresword is an Aeldari Power Weapon only wielded by Exarchs of the Dire Avengers Aspect. These one-handed, single-edged Power Swords are crafted in the graceful Aeldari style, into which a potent Aeldari spirit has been placed through the incorporation of a Spirit Stone into the blade. When a blow is struck, the spirit within the sword will attempt to destroy the enemy's mind.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 3,
     "ap": -3,
@@ -5901,9 +5901,9 @@
     "category": "Aeldari",
     "description": "These perfectly balanced swords are so light as to be almost weightless, and so sharp that those who are cut may not realise it for several seconds. They seem to sing as they pass through the air, their tune an accompaniment to the Harlequins' deadly dance.",
     "damage": {
-      "base": 0,
+      "base": 4,
       "attribute": "strength",
-      "bonus": 4
+      "bonus": 0
     },
     "ed": 3,
     "ap": 0,
@@ -5927,9 +5927,9 @@
     "category": "Aeldari",
     "description": "A Mirrorsword is a type of Aeldari Power Sword commonly employed by a Howling Banshee Exarch. Two Mirrorswords are commonly employed by those Howling Banshee Exarchs who have mastered a deadly ambidextrous style of combat that uses the paired blades to unleash a dazzling flurry of swift strikes and parries.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 4,
     "ap": -3,
@@ -5956,9 +5956,9 @@
     "category": "Aeldari",
     "description": "These ancient masterwork blades are perfectly balanced for striking from the saddle of a jetbike. At such speeds, a single precise cut can be devastating.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 4,
     "ap": -4,
@@ -5984,9 +5984,9 @@
     "category": "Ork",
     "description": "These massive weapons can only be wielded by the largest of Orks, and are only seen in the hands of Warbosses and Warlords",
     "damage": {
-      "base": 0,
+      "base": 8,
       "attribute": "strength",
-      "bonus": 8
+      "bonus": 0
     },
     "ed": 4,
     "ap": -3,
@@ -6012,9 +6012,9 @@
     "category": "Ork",
     "description": "This massive metal syringe superficially resembles a tool of the chirurgeon's craft and tend to be filled with whatever toxic sludge the Painboy can find or create.",
     "damage": {
-      "base": 0,
+      "base": 4,
       "attribute": "strength",
-      "bonus": 4
+      "bonus": 0
     },
     "ed": 4,
     "ap": 0,
@@ -6039,9 +6039,9 @@
     "category": "Ork",
     "description": "Grabba Stikks are the traditional tool of Runtherdz, used for throttling anything in arm's reach. Consisting of a sturdy metal pole, a deceptively simple pulley system, and an articulated barbed claw, grabba stikks are used to capture and restrain potential slaves. In battle, Runtherdz often use them to throttle enemies within the weapon's reach.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 3,
     "ap": 0,
@@ -6066,9 +6066,9 @@
     "category": "Ork",
     "description": "The more progressive Runtherdz use a simple Mek invention known as Grot-Prod to deliver a short, sharp shock to an errant Grot's vulnerable parts. It is like a cattle-prod and works by delivering jolts of electricity into a Grots body. These electric prods can also be made into a formidable close combat weapons by increasing the voltage to lethal levels.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 5,
     "ap": -1,
@@ -6092,9 +6092,9 @@
     "category": "Ork",
     "description": "Killsaws are powerful Ork melee weapons, normally employed by larger Mekboyz seeking to tear something apart for salvage or mounted onto the arm of a suit of Mega-Armour, allowing the wearer to cut through bulkheads, enemy armour, and everything else.",
     "damage": {
-      "base": 0,
+      "base": 7,
       "attribute": "strength",
-      "bonus": 7
+      "bonus": 0
     },
     "ed": 6,
     "ap": -4,
@@ -6119,9 +6119,9 @@
     "category": "Ork",
     "description": "Resembling a smaller, light-weight version of a Power Klaw, a Power Snappa is a pair of scissoring blades wreathed in a disruptive field, used to rip enemies apart without the bulk and awkwardness of a full-sized Klaw.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 5,
     "ap": -2,
@@ -6145,9 +6145,9 @@
     "category": "Ork",
     "description": "A Power Stabba is an Ork Choppa, equipped with additional \"sparky bitz\" that generate a disruptive energy field.",
     "damage": {
-      "base": 0,
+      "base": 5,
       "attribute": "strength",
-      "bonus": 5
+      "bonus": 0
     },
     "ed": 4,
     "ap": -2,
@@ -6170,9 +6170,9 @@
     "category": "Ork",
     "description": "The least subtle of Ork melee weapons is the Tankhammer. A rokkit on a pole, the Tankhammer is swung directly into a target with devastating effects. The main drawback, of course, is that the wielder will always be in the weapon's blast when the rokkit detonates.",
     "damage": {
-      "base": 0,
+      "base": 10,
       "attribute": "strength",
-      "bonus": 10
+      "bonus": 0
     },
     "ed": 5,
     "ap": -2,

@@ -2998,6 +2998,24 @@
       "page": 208,
       "description": "Optimised for firing whilst rushing righteously towards the enemy. You can fire an Assault weapon as part of a Sprint, but take a +2 DN penalty to the attack."
     },
+    "bane": {
+      "name": "Bane",
+      "source": "apocrypha",
+      "page": 326,
+      "description": "This weapon is especially effective against a specific type of target. A Bane weapon replaces X with a single Keyword or Species. For these purposes, VEHICLE is counted as a Keyword. When used to make an attack against targets of that species or with that Keyword, the weapon inflicts +2 ED."
+    },
+    "barrage": {
+      "name": "Barrage",
+      "source": "apocrypha",
+      "page": 326,
+      "description": "The weapon fires salvoes of explosive ammunition that scatter over a wide area. When this weapon makes a Salvo attack, increase the weapon's Blast rating by the weapon's Salvo value."
+    },
+    "beam": {
+      "name": "Beam",
+      "source": "apocrypha",
+      "page": 326,
+      "description": "The weapon fires a focused beam of energy that bores through everything in your path. Each time an attack is made with this weapon, draw a line back from the target of the attack back to the weapon. The Multi-Attack DN penalty for attacks with this weapon is reduced by twice the weapon's Salvo, in addition to effects from a Salvo attack. Against a Mob, an attack with the weapon scores a number of additional icons equal to the weapon's Salvo."
+    },
     "blessed": {
       "name": "Blessed",
       "source": "shotguns",
@@ -3009,6 +3027,12 @@
       "source": "core",
       "page": 208,
       "description": "Explosive weapons can devastate multiple enemies with a single attack. When you fire or throw a Blast weapon, choose any point in range (including another character!), then make a DN 3 Ballistic Skill (A) Test. Apply Range effects as normal unless you are using a thrown weapon like a grenade. If you fail the Test, the attack misses and Scatters. If you succeed, the explosion is centered on your target. If you are measuring distance, the Blast rating determines the radius of the explosion in metres. Anyone inside this radius is hit by the attack. If you are targeting a Mob or using a simplified theater of the mind approach, the number of nearby individuals hit by the explosive is equal to half the Blast rating. You cannot Shift to increase the damage of a Blast weapon. If you inflict a Critical Hit with a Blast weapon, the effects apply to all targets hit by the attack."
+    },
+    "bomb": {
+      "name": "Bomb",
+      "source": "apocrypha",
+      "page": 326,
+      "description": "This weapon is designed to be dropped from above. After moving, as an attack, a flying character or the gunner of a FLYER vehicle, equipped with a bomb can drop it at any point they passed above during their movement. All attacks are made as though at short range."
     },
     "brutal": {
       "name": "Brutal",
@@ -3028,6 +3052,12 @@
       "page": 209,
       "description": "Flamers spew a stream of burning chemical liquid. The flowing torrent of flame can be guided by the wielder of a Flamer to set multiple foes ablaze. Attacks made with a Flamer ignore cover. If you hit a target with a Flamer, blazing liquid fills the space between you and your target in a straight line. Anything in that line is also hit by the attack. You can Shift when you make a ranged attack Test with a Flamer to arc the stream of burning chemicals a number of metres equal to your Ballistic Skill Rating. Anything in this arc is hit by the attack. Whenever you hit multiple targets, roll damage once and apply that damage to all targets. Any target may attempt to reduce the damage using the rules for Dodging Area Effect Attacks. A weapon with the Flamer Trait is considered to have the Inflict (On Fire) Trait."
     },
+    "fleshbane": {
+      "name": "Fleshbane",
+      "source": "apocrypha",
+      "page": 326,
+      "description": "The weapon is deadly to flesh and blood with even the slightest scratch. The weapon's base damage is increased by the target's Toughness. This has no effect against Vehicles."
+    },
     "force": {
       "name": "Force",
       "source": "core",
@@ -3045,6 +3075,18 @@
       "source": "core",
       "page": 209,
       "description": "Large and cumbersome weapons are difficult to wield accurately and effectively. You must have a Strength equal to the Heavy weapon's rating to fire it normally. All attacks with a Heavy weapon are made with a +2 DN penalty if you do not meet the minimum Strength, and rolling a Complication as part of an attack knocks you Prone in addition to any other effects. Taking the Brace Action or securing a Heavy weapon to something like a tripod negates the Heavy Trait."
+    },
+    "huntr": {
+      "name": "HunTR",
+      "source": "apocrypha",
+      "page": 327,
+      "description": "HunTR weapons contain auto-calibration and grav-stabilisation systems which make them precise at any range. HunTR weapons do not suffer any penalty for being fired at Long Range."
+    },
+    "indirect": {
+      "name": "Indirect",
+      "source": "apocrypha",
+      "page": 327,
+      "description": "The weapon can be fired at enemies which are not visible to the bearer, adding +2 to the DN. Enemies attacked indirectly do not receive any bonus to Defence for being in cover."
     },
     "inflict": {
       "name": "Inflict",
@@ -3069,6 +3111,12 @@
       "source": "core",
       "page": 209,
       "description": "The sub-atomic bursts that spew from these weapons melt flesh and reduce armour to slag. When you roll Extra Damage Dice for a Melta weapon fired at Short Range: Results of 1 and 2 inflict 0 Damage. Results of 3 and 4 inflict 1 Damage. Results of 5 and 6 inflict 2 Damage. When you roll Extra Damage Dice for a Melta weapon fired against a vehicle or fortification at Short range: Results of 1, 2 and 3 inflict 1 Damage. Results of 4, 5 and 6 inflict 2 Damage."
+    },
+    "mortal": {
+      "name": "Mortal",
+      "source": "apocrypha",
+      "page": 327,
+      "description": "The weapon deals horrific, deadly wounds that are nigh-impossible to withstand. For each Exalted Icon you roll on the weapon's ED, you inflict X Mortal Wounds, in addition to any damage the attack inflicts."
     },
     "mounted": {
       "name": "Mounted",
@@ -3099,6 +3147,12 @@
       "source": "core",
       "page": 210,
       "description": "These weapons are capable of quickly unleashing a hail of death at close range. If you hit with a Rapid Fire weapon at Short Range, you gain Extra Damage Dice equal to the weapon's Rapid Fire rating."
+    },
+    "reaping": {
+      "name": "Reaping",
+      "source": "apocrypha",
+      "page": 327,
+      "description": "The weapon is intended to scythe through groups of foes. When you make a Multi-Attack with this weapon, the DN increases by +1 per additional target, rather than +2."
     },
     "reliable": {
       "name": "Reliable",
@@ -3141,6 +3195,18 @@
       "source": "core",
       "page": 210,
       "description": "The super-heated matter plasma weapons fire can be overcharged with undeniably deadly results for the target and, occasionally, the wielder. You can choose to fire a weapon with this Trait in Supercharge mode. If you roll a Complication, you take 1d6 Mortal Wounds. If you hit, the weapon deals an additional +3 ED."
+    },
+    "sustained": {
+      "name": "Sustained",
+      "source": "apocrypha",
+      "page": 327,
+      "description": "The weapon is well-suited for delivering attack after attack. For each Exalted Icon rolled when you make an attack with this weapon, you may roll one additional attack die. These additional dice cannot themselves generate additional dice."
+    },
+    "tearing": {
+      "name": "Tearing",
+      "source": "apocrypha",
+      "page": 327,
+      "description": "The weapon rips and tears at their enemies, inflicting horrific wounds. When you roll for damage with this weapon, you may re-roll any number of ED."
     },
     "two_handed": {
       "name": "Two-Handed",

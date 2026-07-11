@@ -16,6 +16,7 @@ const ReferencesTab = {
         { key: 'talents', name: 'Talent', pluralName: 'Talents' },
         { key: 'weapons', name: 'Weapon', pluralName: 'Weapons' },
         { key: 'grenades', name: 'Grenade/Missile', pluralName: 'Grenades & Missiles' },
+        { key: 'vehicleWargear', name: 'Vehicle Wargear', pluralName: 'Vehicle Wargear' },
         { key: 'armor', name: 'Armor', pluralName: 'Armor' },
         { key: 'augmetics', name: 'Augmetic', pluralName: 'Augmetics' },
         { key: 'equipment', name: 'Equipment', pluralName: 'Equipment' },
@@ -81,17 +82,18 @@ const ReferencesTab = {
             });
         }
 
-        // Weapons (separate grenades & missiles into their own category)
+        // Weapons (separate grenades & missiles and vehicle wargear into their own categories)
         const grenadeCategories = ['Grenade', 'Missile', 'Explosive'];
         for (const w of DataLoader.getAllWeapons()) {
             const typeLabel = w.type === 'melee' ? 'Melee' : 'Ranged';
             const kws = (w.keywords || []).map(k => k.toUpperCase());
-            const isGrenade = (w.category && grenadeCategories.includes(w.category)) || kws.includes('GRENADE') || kws.includes('MISSILE');
+            const isVehicle = w.category && w.category.startsWith('Vehicle');
+            const isGrenade = !isVehicle && ((w.category && grenadeCategories.includes(w.category)) || kws.includes('GRENADE') || kws.includes('MISSILE'));
             this.allEntries.push({
                 ...w,
-                category: isGrenade ? 'grenades' : 'weapons',
-                categoryName: isGrenade ? 'Grenade/Missile' : 'Weapon',
-                categoryPluralName: isGrenade ? 'Grenades & Missiles' : 'Weapons',
+                category: isVehicle ? 'vehicleWargear' : (isGrenade ? 'grenades' : 'weapons'),
+                categoryName: isVehicle ? 'Vehicle Wargear' : (isGrenade ? 'Grenade/Missile' : 'Weapon'),
+                categoryPluralName: isVehicle ? 'Vehicle Wargear' : (isGrenade ? 'Grenades & Missiles' : 'Weapons'),
                 briefInfo: typeLabel,
                 searchText: `${w.name} ${w.description || ''} ${(w.traits || []).join(' ')} ${(w.keywords || []).join(' ')}`.toLowerCase()
             });
@@ -112,6 +114,12 @@ const ReferencesTab = {
                 this.allEntries.push({
                     ...e, category: 'augmetics', categoryName: 'Augmetic', categoryPluralName: 'Augmetics',
                     briefInfo: 'Augmetic',
+                    searchText: `${e.name} ${e.description || ''} ${e.effect || ''}`.toLowerCase()
+                });
+            } else if (e.category === 'vehicle wargear') {
+                this.allEntries.push({
+                    ...e, category: 'vehicleWargear', categoryName: 'Vehicle Wargear', categoryPluralName: 'Vehicle Wargear',
+                    briefInfo: 'Vehicle Wargear',
                     searchText: `${e.name} ${e.description || ''} ${e.effect || ''}`.toLowerCase()
                 });
             } else {

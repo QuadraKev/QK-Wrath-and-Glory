@@ -5021,5 +5021,20 @@
     "keywords": [],
     "source": "redacted2",
     "page": 26
+  },
+  {
+    "id": "excrutiator",
+    "name": "Excrutiator",
+    "category": "misc",
+    "description": "Hundreds of wires labelled with the inscrutable hexagrammic symbols of the Inquisition protrude from this compact black cube. Each wire, when correctly applied to the flesh of an individual, infiltrates their nervous system and manipulates their synaptic responses, triggering emotions, mood, and crucially, pain. The Inquisition and Confessors of the Ecclesiarchy use these portable torture devices when they are away from their more well-equipped facilities.",
+    "effect": "You may apply an Excrutiator to a target as a Combat Action. If the target is capable of resisting and chooses to do so, you must succeed on an Opposed Test (typically Strength, Agility or Initiative) to inflict the Excrutiator on them. The Excrutiator deals 1 Shock Damage and Hindered 1 when applied to a target. The Excrutiator may be applied repeatedly, dealing an additional 1 Shock Damage and increasing the Hindered Condition by +1 every time it is used. At the GM's discretion, it may also alter the target's emotions.",
+    "value": 3,
+    "rarity": "Uncommon",
+    "keywords": [
+      "ADEPTUS MINISTORUM",
+      "INQUISITION"
+    ],
+    "source": "fspg",
+    "page": 126
   }
 ]

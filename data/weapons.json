@@ -3146,7 +3146,7 @@
     ],
     "source": "fspg",
     "page": 120,
-    "notes": "Functions as a Symbol of Authority and includes a Laud-Hailer."
+    "special": "Functions as a Symbol of Authority and includes a Laud-Hailer."
   },
   {
     "id": "ripper_gun",
@@ -3269,7 +3269,7 @@
     ],
     "source": "fspg",
     "page": 122,
-    "notes": "Can also be used as a melee weapon (S+4, 5 ED, 0 AP). Keywords: 2-HANDED, BLADE, KROOT, PRIMITIVE."
+    "special": "Melee: A Kroot Rifle can be used as a melee weapon, using the following profile: Damage (S) +4, ED 5. Keywords: 2-HANDED, BLADE, KROOT, PRIMITIVE."
   },
   {
     "id": "blessed_blade",
@@ -3749,7 +3749,7 @@
     ],
     "source": "fspg",
     "page": 124,
-    "notes": "Deals Shock Damage instead of Wounds. Targets that suffer any Shock Damage also suffer the Blinded and Vulnerable Conditions."
+    "special": "Deals Shock Damage instead of Wounds. Targets that suffer any Shock Damage also suffer the Blinded and Vulnerable Conditions."
   },
   {
     "id": "master_crafted_power_sword",
@@ -3864,7 +3864,7 @@
     ],
     "source": "aeldari",
     "page": 84,
-    "notes": "Mounted on skyboards."
+    "special": "Mounted on skyboards."
   },
   {
     "id": "plasma_pistol",

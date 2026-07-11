@@ -783,9 +783,11 @@
     "name": "Mark X Phobos Armour",
     "type": "heavy",
     "description": "This variant of the Mk X armour is designed for mobility and stealth, and is commonly employed by Reiver and Infiltrator Squads. It doesn't offer quite the same level of protection as the standard Tacticus suit, as much of the ceramite plating has been removed, but it is built to operate near-silently. Witnessing a gigantic Primaris Marine moving noiselessly into position for the perfect kill is quite a remarkable sight in itself. Phobos, meaning “Fear”, is an appropriate name for this armour as it is often deployed with a skull-shaped helmet to inspire terror in the Emperor's foes. Reiver Squads in particular learn to use this armour to maximum effect, appearing suddenly to sow death and panic before melting away to strike again later.",
-    "ar": 5,
+    "ar": 4,
     "traits": [
-      "Powered (3)"
+      "Powered (3)",
+      "+1 Movement",
+      "+2 bonus dice to Stealth (A) Tests"
     ],
     "value": 9,
     "rarity": "Very Rare",

@@ -295,6 +295,15 @@ const ReferencesTab = {
         // Sort alphabetically
         this.allEntries.sort((a, b) => a.name.localeCompare(b.name));
 
+        // A few ids repeat across data files (a weapon and an equipment item
+        // can share one); expansion state and URL anchors key on entry id, so
+        // suffix the in-memory duplicates to keep them distinct
+        const seenIds = new Set();
+        for (const entry of this.allEntries) {
+            if (seenIds.has(entry.id)) entry.id = `${entry.id}--${entry.category}`;
+            seenIds.add(entry.id);
+        }
+
         this.renderEntries();
     },
 

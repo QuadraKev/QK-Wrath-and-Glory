@@ -5036,5 +5036,21 @@
     ],
     "source": "fspg",
     "page": 126
+  },
+  {
+    "id": "the_vestments_of_albius_strang",
+    "name": "The Vestments of Albius Strang",
+    "category": "clothing",
+    "description": "Still on the body of the dead Preceptor, these splendid vestments are dusty and bloodstained, but the splendour of the gilt decoration and blood-red silk intricate needlework is still visible. If appropriately restored, these robes would make a remarkable display when worn by a member of the Ecclesiarchy. If sold, add +2 to the agent's Wealth.",
+    "effect": "Adds 1+ dice to all interactions with the Adeptus Ministorum or when preaching to the faithful.",
+    "value": 6,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS MINISTORUM",
+      "HUMAN"
+    ],
+    "source": "redacted1",
+    "page": 27
   }
 ]

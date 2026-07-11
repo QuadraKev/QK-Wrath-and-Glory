@@ -17416,5 +17416,58 @@
     ],
     "source": "redacted2",
     "page": 62
+  },
+  {
+    "id": "sinister",
+    "name": "Sinister",
+    "type": "melee",
+    "category": "Power",
+    "description": "The hilt of this astonishingly keen powerblade, called Sinister, appears to have been carved out of jade, with an ornate hilt designed to be held in the left hand. Any member of the Yun dynasty would recognise it on sight, and almost certainly attempt to take it back. Legend has it that it was once part of a pair wielded by the famous Lord Captain herself, but the location of Dexter, its fabled partner, is lost to time.",
+    "damage": {
+      "base": 5,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -4,
+    "traits": [
+      "Parry"
+    ],
+    "value": 6,
+    "rarity": "Unique",
+    "keywords": [
+      "POWER FIELD",
+      "IMPERIUM",
+      "ROGUE TRADER"
+    ],
+    "source": "redacted1",
+    "page": 25
+  },
+  {
+    "id": "penitents_lash",
+    "name": "Penitent's Lash",
+    "type": "melee",
+    "category": "Exotic",
+    "description": "These vicious variations on a neural lash appear to have been used by Ministorum guards to keep the pilgrims corralled. Most have succumbed to the years, but a few remain functional.",
+    "damage": {
+      "base": 4,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": 0,
+    "range": 3,
+    "traits": [
+      "Agonising",
+      "Rending"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "EXOTIC",
+      "ADEPTUS MINISTORUM"
+    ],
+    "source": "redacted1",
+    "page": 27
   }
 ]

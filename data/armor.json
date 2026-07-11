@@ -2331,5 +2331,24 @@
     "invulnerable": true,
     "source": "redacted2",
     "page": 45
+  },
+  {
+    "id": "the_gilead_rosarius",
+    "name": "The Gilead Rosarius",
+    "type": "field",
+    "description": "A Rosarius of truly ancient manufacture, this relic of the faith is an ornate adamantium medal bearing crossed swords the size of a mailed gauntlet, designed to be fitted snugly into the front of a suit of Sororitas power armour.",
+    "ar": 5,
+    "traits": [
+      "Power Field"
+    ],
+    "value": 9,
+    "rarity": "Unique",
+    "keywords": [
+      "FORCE FIELD",
+      "ADEPTUS MINISTORUM"
+    ],
+    "invulnerable": true,
+    "source": "redacted1",
+    "page": 25
   }
 ]

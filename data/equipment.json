@@ -5338,5 +5338,794 @@
     "keywords": [],
     "source": "apocrypha",
     "page": 509
+  },
+  {
+    "id": "alcohol_aoa",
+    "name": "Alcohol (Abundance of Apocrypha)",
+    "category": "drugs",
+    "description": "Most intelligent species have developed some form or other of alcoholic drink, and most cultures have devised countless methods of creating beverages that include alcohol in some form, from crude rotgut distilled in engine machinery (itself an offence to the Machine Spirit), to carefully aged and precisely flavoured concoctions reserved for only the most powerful and most deserving. Consuming alcohol tends to loosen inhibitions and provide \"liquid courage\", but overconsumption can lead to other problems. From human amasec, to Aeldari dreamwine, to Ork fungus brew, and the Bru of the Leagues of Votann, alcoholic beverages are found across the galaxy.",
+    "effect": "A single purchase contains 6 doses. A character gains +1 Resolve for the next hour after drinking. A character who takes a number of doses exceeding their Toughness within one day gains +2 Resolve instead, but also suffers +1DN on all other activities, and will suffer 1d3 Shock when they awaken after their next sleep. Excessive drinking may lead to other side-effects, such as nausea, poor decision-making, and\/or unconsciousness.",
+    "value": 2,
+    "rarity": "Common",
+    "keywords": [
+      "[ANY]"
+    ],
+    "source": "apocrypha",
+    "page": 425
+  },
+  {
+    "id": "lho_sticks_aoa",
+    "name": "Lho-Sticks (Abundance of Apocrypha)",
+    "category": "drugs",
+    "description": "Lho-sticks are common with Imperial Guard troopers, menial workers, and others with tiring, stressful work. Each stick is a rolled paper tube filled with a scented, mildly-narcotic (and addictive) substance, which is ignited, and the resulting smoke is inhaled. These come in varying sizes, and the substance within is normally made from a variety of different plants depending on where in the galaxy they were made. Like most luxuries, they vary immensely in quality between those used by the wealthy and those used by everyone else.",
+    "effect": "A character who smokes lho-sticks during a Regroup recovers 1d3+1 Shock, as the narcotic substance and familiar habit eases their stress and calms them. A single pack of lho-sticks (or the materials to roll one's own), contains 10 doses.",
+    "value": 1,
+    "rarity": "Common",
+    "keywords": [
+      "IMPERIUM",
+      "SCUM"
+    ],
+    "source": "apocrypha",
+    "page": 427
+  },
+  {
+    "id": "obscura_aoa",
+    "name": "Obscura (Abundance of Apocrypha)",
+    "category": "drugs",
+    "description": "Though prohibited across much of the Imperium, obscura is a widely abused narcotic at all levels of society, smuggled from world to world by criminals, hedonist cults, and others. It produces a pleasant dream-like state which lasts a few hours, but then turns into a deep depression once it wears off unless another dose is taken. It is highly addictive and has been known to be smoked and injected directly into the bloodstream.",
+    "effect": "A character who takes obscura is essentially unconscious for 1d3+3 hours, though they are still (just about) capable of walking slowly and talking incoherently in this narcotic stupor. Once the drug's effects end, the character becomes exhausted for twice as many hours as the drug's effects lasted, which can be alleviated by taking another dose of obscura. A single purchase contains one dose.",
+    "value": 3,
+    "rarity": "Uncommon",
+    "keywords": [
+      "CHAOS",
+      "SCUM"
+    ],
+    "source": "apocrypha",
+    "page": 427
+  },
+  {
+    "id": "recaff_aoa",
+    "name": "Recaff (Abundance of Apocrypha)",
+    "category": "drugs",
+    "description": "Recaff is a popular hot beverage in the Imperium made from crushed and brewed plant matter. Its composition, preparation—and common name—can vary depending on the planet it is found, but most blends contain some form of mild stimulant such as caffeine or detoxified pharamoxine compounds. The stimulant effect is often sufficient to help the drinker wake up in the morning, or to keep them alert during a long night.",
+    "effect": "A character who drinks a cup of recaff during a regroup recovers 1d3 Shock and adds +1 bonus dice to any test to remain awake or resist the effects of fatigue or sleeplessness for the next 1d3 hours. Each successive cup of recaff reduces the duration of the benefit by 1 hour, as sleep eventually catches up. A single purchase contains enough to make 10 cups.",
+    "value": 1,
+    "rarity": "Common",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM"
+    ],
+    "source": "apocrypha",
+    "page": 428
+  },
+  {
+    "id": "spook_aoa",
+    "name": "Spook (Abundance of Apocrypha)",
+    "category": "drugs",
+    "description": "Spook is an addictive and highly illegal psychic combat drug manufactured in several Hive Cities, normally from ingredients too unpleasant to mention. When drunk in small amounts, spook awakens the imbiber's psychic abilities. It is for this reason that spook is an extremely dangerous substance, and its use viciously repressed by the Imperium.",
+    "effect": "When taken by a PSYKER, Spook adds a +2d bonus to all Psychic Mastery tests attempted in the next hour, but they also add +20 to all rolls on the Perils of the Warp table. At the end of the hour, the character must take a DN 5 Corruption test. When taken by a non-PSYKER keyword, the character must immediately take a DN 5 Corruption test, with failure adding 1d3 Corruption instead of 1. If the character succeeds, they gain the PSYKER keyword, and a Minor Psychic Power (randomly determined using the table on page 258 of the Wrath & Glory rulebook) for the next 1d3+2 hours. A single purchase contains 1 dose.",
+    "value": 4,
+    "rarity": "Rare",
+    "keywords": [
+      "CHAOS",
+      "SCUM"
+    ],
+    "source": "apocrypha",
+    "page": 429
+  },
+  {
+    "id": "abominatus_combat_stimms_aoa",
+    "name": "Abominatus Combat Stimms (Abundance of Apocrypha)",
+    "category": "drugs",
+    "description": "Champions of Slaanesh often partake of bizarre and horrific combat drugs, produced from renderings of sentient creatures and suffused with the power of the warp. These drugs are often dispensed from baroque injector rigs fused into the user's armour.",
+    "effect": "As a Simple Action, the user may administer a dose of these Combat Stimms, which have an effect which lasts until the start of their next turn. The user may select up to three effects from the following list, and then suffers Mortal Wounds equal to the number of effects chosen: +2 dice on Athletics tests; +2 dice on Weapon Skill tests; Melee attacks inflict +2ED; +2 Determination; Ignore up to 2 points of DN penalty on a Multi-Attack.",
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "CHAOS",
+      "SLAANESH"
+    ],
+    "source": "apocrypha",
+    "page": 430
+  },
+  {
+    "id": "aggressor_stimms_aoa",
+    "name": "Aggressor Stimms (Abundance of Apocrypha)",
+    "category": "drugs",
+    "description": "A potent cocktail of aggression-enhancing combat drugs, commonly given to the mortal followers of the World Eaters Legion, these drugs contain a drop of warp-tainted blood from one of the World Eaters themselves, suffusing the entire cocktail with the fury of Angron's bloody-handed sons.",
+    "effect": "A character may take a dose of Aggressor Stimms as a Simple Action. They immediately suffer 1 Mortal Wound and become Frenzied. Further, they will inflict +2ED on all melee attacks until the end of their next turn. A single purchase contains 8 doses.",
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "CHAOS",
+      "KHORNE"
+    ],
+    "source": "apocrypha",
+    "page": 430
+  },
+  {
+    "id": "allure_of_slaanesh_aoa",
+    "name": "Allure of Slaanesh (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "The Dark Prince has blessed you with a fragment of their inescapable allure, and you can now fascinate those around you with a look.",
+    "effect": "When you make a Persuasion Interaction Attack, enemies affected must also move up to half their Speed directly towards you, avoiding any hazards or obstacles along the way.",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "DARK GIFT",
+      "CHAOS",
+      "SLAANESH"
+    ],
+    "source": "apocrypha",
+    "page": 430
+  },
+  {
+    "id": "aura_of_acquiescence_aoa",
+    "name": "Aura of Acquiescence (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "You are wreathed in the glamour of Slaanesh, and such is your magnetism that enemies often yield to your will even against their own survival instincts.",
+    "effect": "When an enemy becomes engaged with you, they must immediately pass a DN 3 Resolve test. If they fail, they become Vulnerable (2).",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "DARK GIFT",
+      "CHAOS",
+      "SLAANESH"
+    ],
+    "source": "apocrypha",
+    "page": 431
+  },
+  {
+    "id": "banner_of_rage_aoa",
+    "name": "Banner of Rage (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "The Banner of Rage contains the bound souls of the most bloodthirsty of Khorne's servants. It radiates palpable waves of anger and bloodlust which beat upon the minds of those nearby, driving them into a killing frenzy.",
+    "effect": "KHORNE DAEMONS within 8m of this banner may re-roll any 1s when rolling Determination. Further, you may unleash the banner's power as a Combat Action. When the banner is unleashed, all CHAOS allies within 8m immediately become Frenzied. Once you have unleashed the banner's power, it may not be unleashed again until after your next Regroup.",
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "CHAOS",
+      "KHORNE",
+      "ICON"
+    ],
+    "source": "apocrypha",
+    "page": 431
+  },
+  {
+    "id": "binding_chains_aoa",
+    "name": "Binding Chains (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "These heavy iron chains are inscribed with powerful hexagrammic wards designed to assist with the summoning, containment, and binding of daemons.",
+    "effect": "When these chains are used to bind a living creature, any DAEMON summoned into or possessing that creature is Restrained and suffers +4DN on any Willpower tests to break free. If you wrap the chains around yourself, you gain +3 bonus dice on any Opposed Willpower test made against a DAEMON attempting to possess you and take control.",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "CHAOS",
+      "DAEMON"
+    ],
+    "source": "apocrypha",
+    "page": 431
+  },
+  {
+    "id": "blasted_standard_aoa",
+    "name": "Blasted Standard (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "Riddled with the power of change, this standard's design shifts constantly. Energy and power growl through it and when an enemy approaches, the energy is released in a blinding roar.",
+    "effect": "TZEENTCH DAEMONS within 9m of this banner may re-roll any 1s when rolling Determination. Further, you may unleash the banner's power as a Combat Action. This counts as a ranged attack with the profile below. Once you have unleashed the banner's power, it may not be unleashed again until after your next Regroup. Unleashed profile: Damage 12, ED 3, AP -1, Range 9, Traits: Corrupting, Flamer, Inflict (Terror 5).",
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "CHAOS",
+      "TZEENTCH",
+      "ICON"
+    ],
+    "source": "apocrypha",
+    "page": 431
+  },
+  {
+    "id": "chaos_icon_aoa",
+    "name": "Chaos Icon (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "This symbol is a powerful focus for the energies of the Dark Gods and bolsters the zeal and spite of other servants of the Dark Gods nearby.",
+    "effect": "DAEMONS within 8m of this banner may re-roll any 1s when rolling Determination. Further, CHAOS allies within 8m gain +2 Resolve.",
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "CHAOS",
+      "ICON"
+    ],
+    "source": "apocrypha",
+    "page": 431
+  },
+  {
+    "id": "collar_of_khorne_aoa",
+    "name": "Collar of Khorne (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "A talisman forged in the heat of Khorne's rage at the very foot of the Blood God's throne of brass. The collar can suck the energy of the Warp from the air around it, defeating psychic onslaughts before they can begin.",
+    "effect": "Psychic powers or attacks are immediately negated if they target you or include you in the area of effect. Further, weapons with the Force trait do not gain any bonus damage from the wielder's Willpower against you.",
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "DARK GIFT",
+      "CHAOS",
+      "KHORNE"
+    ],
+    "source": "apocrypha",
+    "page": 431
+  },
+  {
+    "id": "eye_of_tzeentch_aoa",
+    "name": "Eye of Tzeentch (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "You bear a third (or subsequent) eye on your body or within your wargear. This eye sees glimpses of the future, allowing you to adjust your actions before your fate comes to pass.",
+    "effect": "Each turn during combat, you may re-roll a number of d6 equal to your Rank. You may use these all at once or spread them across multiple rolls. Outside of combat, you may re-roll Rank dice on any test. You also gain +2 bonus dice on all Psychic Mastery tests to use Divination psychic powers.",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "DARK GIFT",
+      "CHAOS",
+      "TZEENTCH"
+    ],
+    "source": "apocrypha",
+    "page": 432
+  },
+  {
+    "id": "nurgles_rot_aoa",
+    "name": "Nurgle's Rot (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "The Plague Lord's most infamous accomplishment sets the benchmark for all his other creations. Despite millennia of effort, he has never bettered that disease which bears his name: Nurgle's Rot. You are a vector for this blessed malady, a carrier for this most virulent of pathogens.",
+    "effect": "Any living creature without the NURGLE keyword within 7m of you at the start of their turn must roll 1d6. If an Exalted Icon is rolled, they immediately suffer the Poisoned (7) condition. While Poisoned from Nurgle's Rot, a creature suffers 1d3 Mortal Wounds at the start of each of their turns.",
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "DARK GIFT",
+      "CHAOS",
+      "NURGLE",
+      "PLAGUE"
+    ],
+    "source": "apocrypha",
+    "page": 432
+  },
+  {
+    "id": "nurgling_infestation_aoa",
+    "name": "Nurgling Infestation (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "Champions of Nurgle are frequently accompanied by gaggles of chattering Nurglings eager to frolic within the death and decay the Champion spreads. Some of these Nurglings seem to appear from the dank corners of the world, while others squeeze themselves loose from the Champion's filth-ridden flesh, growing to full-size in moments after falling to the ground… but they just as easily get lost, or are crushed underfoot.",
+    "effect": "You are constantly accompanied by a mob of Nurglings. This mob consists of 2d6 Nurglings: the number is rolled at the start of your turn. These Nurglings will take an action on your turn, and will attempt to remain as close to you as possible, and they will attack anyone who attacks you, but they will not listen to your commands.",
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "DARK GIFT",
+      "CHAOS",
+      "NURGLE",
+      "DAEMON"
+    ],
+    "source": "apocrypha",
+    "page": 432
+  },
+  {
+    "id": "plague_banner_aoa",
+    "name": "Plague Banner (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "This frightening creation of rotting hide flaps in a pestilent breeze. Powerful magics hold a great spell of corruption in check until the time is ripe to send disease and decay scything through the enemy ranks.",
+    "effect": "NURGLE DAEMONS within 7m of this banner may re-roll any 1s when rolling Determination. Further, you may unleash the banner's power as a Combat Action. This counts as a ranged attack with the profile below. Once you have unleashed the banner's power, it may not be unleashed again until after your next Regroup. Unleashed profile: Damage 7, ED 7, AP -2, Range 14, Traits: Gas, Blast (7), Fleshbane, Mortal (1).",
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "CHAOS",
+      "NURGLE",
+      "ICON"
+    ],
+    "source": "apocrypha",
+    "page": 432
+  },
+  {
+    "id": "rage_of_khorne_aoa",
+    "name": "Rage of Khorne (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "The Champion is so consumed by the need for battle that their rage builds and builds until it can be released in the fury of combat.",
+    "effect": "You may become Frenzied as a Simple Action. While Frenzied, add +3ED to the damage of all melee attacks you make, and reduce the DN increase for melee Multi-Attacks by Double Rank.",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "DARK GIFT",
+      "CHAOS",
+      "KHORNE"
+    ],
+    "source": "apocrypha",
+    "page": 433
+  },
+  {
+    "id": "rapturous_standard_aoa",
+    "name": "Rapturous Standard (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "The Rapturous Standard contains the bound essence of innumerable servants of the Dark Prince, each of whom died in rapturous slaughter. The air around the standard is filled with their ecstatic howls and overpowering waves of heady, exotic musk.",
+    "effect": "SLAANESH DAEMONS within 6m of this banner may re-roll any 1s when rolling Determination. Further, you may unleash the banner's power as a Combat Action. Until the start of your next turn, all SLAANESH allies within 6m automatically pass Resolve tests, and reduce all Shock they suffer to 0. Once you have unleashed the banner's power, it may not be unleashed again until after your next Regroup.",
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "CHAOS",
+      "SLAANESH",
+      "ICON"
+    ],
+    "source": "apocrypha",
+    "page": 433
+  },
+  {
+    "id": "talisman_of_burning_blood_aoa",
+    "name": "Talisman of Burning Blood (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "This amulet constantly drips with thick, bubbling gore. The air around it is so heavy with the charnel stench of the slaughterhouse that it imbues the bearer's limbs with a supernatural swiftness to match their eagerness to butcher the foe.",
+    "effect": "Your Speed is increased by +1 when you Run or Charge. This increases to +2 when you are Frenzied.",
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "DARK GIFT",
+      "CHAOS",
+      "KHORNE"
+    ],
+    "source": "apocrypha",
+    "page": 433
+  },
+  {
+    "id": "talisman_of_tzeentch_aoa",
+    "name": "Talisman of Tzeentch (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "These strange psychic devices allow those dedicated to the Changer of Ways to enact their master's will and vanquish anyone who would dare claim themselves mightier than his own.",
+    "effect": "Enemy PSYKERS within a distance equal to your Intellect x9 metres suffer a Wrath complication on any Wrath die result of 1, 2, or 3.",
+    "value": 7,
+    "rarity": "Rare",
+    "keywords": [
+      "DARK GIFT",
+      "CHAOS",
+      "TZEENTCH",
+      "SORCERY"
+    ],
+    "source": "apocrypha",
+    "page": 433
+  },
+  {
+    "id": "warp_talisman_aoa",
+    "name": "Warp Talisman (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "These bizarre trinkets demonstrate that the bearer is favoured by the Dark Gods.",
+    "effect": "You may re-roll all failures on a Psychic Mastery test. Once you have used this item, it may not be used until after your next Regroup.",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "CHAOS",
+      "SORCERY"
+    ],
+    "source": "apocrypha",
+    "page": 433
+  },
+  {
+    "id": "auto_calibrator_aoa",
+    "name": "Auto-Calibrator (Abundance of Apocrypha)",
+    "category": "tools",
+    "description": "This device syncs with your weapons and your own integrated augmetics to refine targeting.",
+    "effect": "Select one weapon you are carrying which has the HunTR trait. You may re-roll any dice which roll 1s when you make a ranged attack with that weapon. You may sync the auto-calibrator to a different HunTR weapon after taking a Respite.",
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 441
+  },
+  {
+    "id": "cyberstimms_aoa",
+    "name": "Cyberstimms (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "This device interfaces with the neural augmetics of the user, allowing them to generate specialised stimulants that banish fatigue, enhance muscle performance, and dull pain.",
+    "effect": "You may activate or deactivate the Cyberstimms as a simple action, though they will immediately deactivate when you take a Respite or Regroup. While active, you add +Rank to your Speed when you Run or Charge, you increase your Determination by +Rank, and you recover 1d3 Shock at the start of each turn. However, while they are active, you halve your Passive Awareness (round up) and add +2 DN to all Intellect and Fellowship based tests.",
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "LEAGUES OF VOTANN",
+      "CTHONIAN"
+    ],
+    "source": "apocrypha",
+    "page": 441
+  },
+  {
+    "id": "grav_lift_device_aoa",
+    "name": "Grav-Lift Device (Abundance of Apocrypha)",
+    "category": "tools",
+    "description": "These flat devices are commonly used during salvage and mining expeditions to make it easier to traverse difficult environments. They are capable of generating a brief antigravity field, allowing the user to manoeuvre more easily.",
+    "effect": "You may deploy this device as an action. Any LEAGUES OF VOTANN character who begins their turn within 1m of the grav-lift device may choose to gain a Fly speed equal to their normal Speed until the end of their turn.",
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 442
+  },
+  {
+    "id": "iron_masters_tools_aoa",
+    "name": "Iron-master's Tools (Abundance of Apocrypha)",
+    "category": "tools",
+    "description": "Each Brôkhyr Ironmaster fashions their own tools, developing a distinct and individual assortment of devices throughout their careers. Some particularly traditional Ironmasters insist that the only real way to work is to travel light and make whatever tools you need on-site.",
+    "effect": "You ignore DN penalties to build, repair, maintain, and sabotage Leagues of Votann technology. This also works on Imperial technology, due to the common STC origins of both cultures' technologies. Furthermore, These tools may be used as a Medipack on any ROBOT character and heal an additional +Rank Wounds when used in this way.",
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "LEAGUES OF VOTANN",
+      "BRÔKHYR"
+    ],
+    "source": "apocrypha",
+    "page": 442
+  },
+  {
+    "id": "kin_medipack_aoa",
+    "name": "Kin Medipack (Abundance of Apocrypha)",
+    "category": "tools",
+    "description": "These are similar to the medikits used by the Imperium, but specially-tailored to interact with the engineered biology and augmetic implants of Kin. Given the durability of Kin physiology, their ability to withstand and recover from damage is already considerable, and these medipacks contain tools designed to stimulate a Kin's implants to promote natural recovery.",
+    "effect": "Functions as a Medikit (page 238 of the Wrath & Glory core rulebook). In addition, when the Medipack is used to Heal Wounds on a Kin character, this heals +Rank Wounds.",
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 442
+  },
+  {
+    "id": "kognitaar_module_aoa",
+    "name": "Kognitâar Module (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "Designed to interface with the cerebral unit of an Ironkin, this module processes tactical information at an astonishing rate, giving their comrades a tactical edge in battle.",
+    "effect": "As a simple action on your turn, you may spend 1 Glory to perform tactical analysis. Mark a single location on the battlefield that you can see, and then choose either attack or defend. This mark lasts until the start of your next turn. When a LEAGUES OF VOTANN character is within 3m of a location marked attack, they may re-roll Rank dice on any attack they make. When a LEAGUES OF VOTANN character is within 3m of a location marked defend, they add +Rank to their Defence and may re-roll Rank dice when rolling Determination.",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 442
+  },
+  {
+    "id": "las_beam_cutter_aoa",
+    "name": "Las-Beam Cutter (Abundance of Apocrypha)",
+    "category": "tools",
+    "description": "A common tool used by the servants and attendants of an Iron-master, these potent lasers are not really intended for battle, but for industrial work. However, in a pinch, they can be used as improvised weaponry.",
+    "effect": "This grants you a +4 bonus to any Tech test made to cut through obstacles or disassemble large objects. In addition, it may be used as a ranged weapon. Ranged: A Las-Beam Cutter can be used as a Ranged weapon, using the following profile: Damage 13, ED 1, AP -3, Range 5-10-15, Salvo 1, Traits: Beam, Pistol, Unwieldy (1).",
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "LEAGUES OF VOTANN",
+      "BRÔKHYR"
+    ],
+    "source": "apocrypha",
+    "page": 442
+  },
+  {
+    "id": "multispectral_visor_aoa",
+    "name": "Multispectral Visor (Abundance of Apocrypha)",
+    "category": "tools",
+    "description": "A Multispectral Visor is a scanning technology employed by the Brôkhyr engineers and artificers of the Leagues of Votann. As the name implies, the technology allows an individual Iron-master to view any substance or environment in multiple spectral wavelengths. While originally designed to aid fabrication of new technologies at the Forge, some Brôkhyr Iron-masters also make use of their visors while carrying out their duty of maintaining and repairing damaged Kin war engines on the battlefield. Their work can give those vehicles added tactical potency following a battlefield refit.",
+    "effect": "This functions as Preysense Goggles, allowing you to ignore any penalties to Tests due to visual conditions. In addition, as a simple action, the wearer may scan an object, structure, vehicle, or enemy you can see. All LEAGUES OF VOTANN allies within 9m of you gain +Rank dice on any ranged attack made against that target and improve the AP of their ranged attacks by one (i.e., from -1 to -2).",
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "LEAGUES OF VOTANN",
+      "BRÔKHYR"
+    ],
+    "source": "apocrypha",
+    "page": 443
+  },
+  {
+    "id": "multiwave_comms_array_aoa",
+    "name": "Multiwave Comms Array (Abundance of Apocrypha)",
+    "category": "tools",
+    "description": "A Multiwave Comms Array is a radio-wave communications device similar to the Imperial vox used by the Leagues of Votann. It is able to broadcast and receive on multiple frequency carrier waves, in order to overcome any hindrance or interference that would block communications. This naturally takes considerable skill to operate, so these communications arrays are often carried by a dedicated operators called a Kinlynk, who maintain contact with, and coordinates actions between their immediate group and the rest of their Oathband.",
+    "effect": "You can communicate with anyone within 100 kilometres that has a comm unit (a comms array, vox, or similar). In addition, when using this item, the maximum range of Tech interaction attacks is increased to your Intellect Attribute multiplied by Double Rank.",
+    "value": 4,
+    "rarity": "Rare",
+    "keywords": [
+      "LEAGUES OF VOTANN",
+      "BRÔKHYR"
+    ],
+    "source": "apocrypha",
+    "page": 443
+  },
+  {
+    "id": "omni_visor_aoa",
+    "name": "Omni-Visor (Abundance of Apocrypha)",
+    "category": "tools",
+    "description": "An Omni-visor is an advanced scanning tool used by the Brôkhyr engineers and artificers of the Leagues of Votann. While it was developed to provide aid with civil engineering tasks, it has been adapted by the Brôkhyr Thunderkyn as a weapon of war, allowing them to pick out the telltale signs of enemy units through dense terrain.",
+    "effect": "This functions as Preysense Goggles, allowing you to ignore any penalties to Tests due to visual conditions. In addition, when you make a ranged attack, the target does not receive the benefits of Cover against the attack.",
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "LEAGUES OF VOTANN",
+      "BRÔKHYR"
+    ],
+    "source": "apocrypha",
+    "page": 443
+  },
+  {
+    "id": "pan_spectral_scanner_aoa",
+    "name": "Pan-Spectral Scanner (Abundance of Apocrypha)",
+    "category": "tools",
+    "description": "A pan spectral scanner, also called a pan spectral array, is a powerful information-gathering and diagnostic tool available to the Kin of the Leagues of Votann. Pan spectral scanners exist in several different sizes, including Kin-portable or vehicle or installation-mounted. The larger systems possess more range, power and diagnostic capability. The Kin's pan spectral scanners are useful both in prospecting for strategic resources and combat. They can detect an incredible range of energy spectra not only through solid matter, but even across multidimensional wavelengths, such as Warp energy signatures, ensuring the Hernkyn are rarely surprised during their explorations by even the most cunning or esoterically empowered foes. These scanners are equally unlikely to miss the presence of natural resources the Kin would prize. When such rich discoveries are made, Hernkyn mark the location using powerful claim-beacons, whose multispectral energy signatures are bounced back along networks of relay satellites all the way to League space. It is at such times that the Cthonian Mining Guilds rumble into action to begin exploiting the new resource deposits.",
+    "effect": "This functions as an Auspex (page 236 of the Wrath & Glory core rulebook). In addition, the user increases their Passive Awareness by Double Rank.",
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 443
+  },
+  {
+    "id": "plasma_torch_aoa",
+    "name": "Plasma Torch (Abundance of Apocrypha)",
+    "category": "tools",
+    "description": "A common tool used by the servants and attendants of an Iron-master, these potent plasma cutters are not really intended for battle, but for industrial work. However, in a pinch, they can be used as improvised weaponry.",
+    "effect": "This grants you a +4 bonus to any Tech test made to cut or weld objects or obstacles. In addition, it may be used as a melee weapon. Melee: A Plasma Torch can be used as a melee weapon, using the following profile: (S)+8, ED 2, AP -4, Traits: Careful, Unwieldy (2).",
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "LEAGUES OF VOTANN",
+      "BRÔKHYR"
+    ],
+    "source": "apocrypha",
+    "page": 444
+  },
+  {
+    "id": "teleport_crest_aoa",
+    "name": "Teleport Crest (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "A Teleport Crest is a technology that takes the form of a decorative personal void armour or exo-armour crest used by some senior military personnel of the Leagues of Votann that allows them to instantaneously teleport through the Immaterium for relatively short distances on the battlefield.",
+    "effect": "This item must be mounted on a suit of LEAGUES OF VOTANN armour but it cannot be mounted if the armour already has another crest (such as a Weavefield Crest). A teleport crest may be used as a Combat Action for a short-range teleport: the wearer vanishes from the battlefield and reappears anywhere within 100m that is more than 9m from an enemy. Once used this way, it cannot be used again until it has been recharged. It can also be used in conjunction with teleportation holds and other larger forms of teleport technology.",
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 444
+  },
+  {
+    "id": "advanced_stabilisation_system_aoa",
+    "name": "Advanced Stabilisation System (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "With this system equipped, all the Battlesuit's weapons are upgraded with stabilising gyroscopes that enable them to be brought to bear at speed, even when on the move. As a result, the Advanced Stabilisation System allows its user a high degree of mobility whilst retaining the ability to fire even the heaviest of weapons accurately.",
+    "effect": "This system can only be fitted on an XV88 Broadside Battlesuit. When you move and make an attack with a Mounted weapon, you ignore the normal DN increase.",
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "T'AU EMPIRE",
+      "XV88",
+      "SUPPORT SYSTEM"
+    ],
+    "source": "apocrypha",
+    "page": 445
+  },
+  {
+    "id": "advanced_targeting_system_aoa",
+    "name": "Advanced Targeting System (Abundance of Apocrypha)",
+    "category": "tools",
+    "description": "An Advanced Targeting System is a T'au Battlesuit Support System available to most types of T'au Battlesuits, as well as a T'au vehicle support system. An Advanced Targeting System is a specialised target acquisition computer that identifies and picks out high-priority targets of value amid battle before plotting efficient fire plans to counter them. With this system, tactically important enemy figures such as squad leaders, special weapon wielders, and commanders can all be more effectively pinpointed as specific targets for elimination.",
+    "effect": "When you make a ranged attack, each Exalted Icon you shift for Extra Damage adds +2ED rather than 1.",
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "T'AU EMPIRE",
+      "SUPPORT SYSTEM"
+    ],
+    "source": "apocrypha",
+    "page": 445
+  },
+  {
+    "id": "counterfire_defence_system_aoa",
+    "name": "Counterfire Defence System (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "Point defence systems blunt incoming attacks with bursts of shrapnel and pulses of energy. A Counterfire Defence System is a Support System available to most forms of T'au Battlesuit.",
+    "effect": "When you are attacked, you may spend 1 Glory as a Reflexive Action to activate this system. The attack's number of ED is reduced to 1.",
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "T'AU EMPIRE",
+      "SUPPORT SYSTEM"
+    ],
+    "source": "apocrypha",
+    "page": 445
+  },
+  {
+    "id": "drone_controller_battlesuit_aoa",
+    "name": "Drone Controller (Battlesuit) (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "A Drone Controller is an electronic device that is used by the T'au to control their robotic T'au Drones, as it acts as a hub of digital communications between the operator and any Drones that are nearby the user, allowing them to operate more efficiently. A Drone Controller is a T'au technology employed by a variety of T'au personnel.",
+    "effect": "Friendly DRONE characters within 12m of you at the start of your turn may add your Tech skill ranks to any of their own skill ranks. Drones within that distance are not affected by the Threat Identification Protocol rule.",
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "T'AU EMPIRE",
+      "SUPPORT SYSTEM"
+    ],
+    "source": "apocrypha",
+    "page": 445
+  },
+  {
+    "id": "drone_controller_personnel_aoa",
+    "name": "Drone Controller (Personnel) (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "A Drone Controller is an electronic device that is used by the T'au to control their robotic T'au Drones, as it acts as a hub of digital communications between the operator and any Drones that are nearby the user, allowing them to operate more efficiently. A Drone Controller is a T'au technology employed by a variety of T'au personnel.",
+    "effect": "Friendly DRONE characters within 12m of you at the start of your turn may add your Tech skill ranks to any of their own skill ranks. Drones within that distance are not affected by the Threat Identification Protocol rule. This is a version of the Drone Controller which does not have the SUPPORT SYSTEM keyword; its Value is increased by +1 and its Rarity is Rare.",
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "T'AU EMPIRE"
+    ],
+    "source": "apocrypha",
+    "page": 445
+  },
+  {
+    "id": "early_warning_override_aoa",
+    "name": "Early Warning Override (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "An Early Warning Override is an advanced sensor suite that has been calibrated to detect the electronic signatures of teleport beams and orbital-entry jump systems. If such a signal is detected, the system jolts a T'au Battlesuit's weapons to lock-on status and firing before the target has a chance to react. This Support System is available to most forms of T'au Battlesuit.",
+    "effect": "When you are Charged, you may use your Reflexive Action and spend 1 ammo to make a ranged attack against the enemy Charging you. This attack is resolved before the Charge begins. This is considered a Salvo option, so you must reload your weapon after this attack before you can fire it again.",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "T'AU EMPIRE",
+      "SUPPORT SYSTEM"
+    ],
+    "source": "apocrypha",
+    "page": 446
+  },
+  {
+    "id": "ejection_system_aoa",
+    "name": "Ejection System (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "An Ejection System provides a T'au Battlesuit pilot a chance of escaping catastrophic damage to his Battlesuit by throwing him clear of its imminent destruction. Once ejected, the Battlesuit pilot is armed with nothing more than a Pulse Pistol and must make his own escape from the battlefield. Often used by those T'au Commanders who lead from the front but are considered too valuable to the T'au Empire to die, Ejection Systems are a special-issue system only available to lone XV8 Crisis Battlesuit pilots of the rank of Shas'vre or higher.",
+    "effect": "When you are reduced to 0 Wounds, the suit's systems eject you. You land 3d6 metres away, in the direction furthest from the enemy. Your battlesuit is destroyed, but you have Wounds remaining equal to 1d3 plus the game's Tier, and a Pulse Pistol.",
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "T'AU EMPIRE",
+      "SUPPORT SYSTEM"
+    ],
+    "source": "apocrypha",
+    "page": 446
+  },
+  {
+    "id": "holographic_projector_aoa",
+    "name": "Holographic Projector (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "This device, an offshoot of the holographic camouflage employed by Stealth Battlesuits, has been developed to serve the needs of the Water Caste, and can be used in a variety of ways.",
+    "effect": "You may project a holographic decoy to any location you can see; the hologram immediately vanishes if line of sight to the projector is broken. It can take any appearance the user knows. While active, it will carry out simple pre-chosen actions—walking forwards, playing pre-recorded speech. The hologram has a Defence of 1 and is disrupted if it takes any damage. The user may use a Combat Action to give the hologram different instructions or control it directly.",
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "T'AU EMPIRE",
+      "WATER CASTE"
+    ],
+    "source": "apocrypha",
+    "page": 446
+  },
+  {
+    "id": "miniaturised_disruption_pod_aoa",
+    "name": "Miniaturised Disruption Pod (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "Some T'au vehicles are equipped with disruption pods, sophisticated scrambler devices that blur and conceal the vehicle's appearance making it more difficult for enemies to target them. This device is a compact form of that technology, used to protect VIPs.",
+    "effect": "The wearer's Defence is increased by +1 against ranged attacks, and enemies attempting a ranged attack cannot gain a bonus from aiming or called shots.",
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "T'AU EMPIRE",
+      "WATER CASTE",
+      "ETHEREAL CASTE"
+    ],
+    "source": "apocrypha",
+    "page": 446
+  },
+  {
+    "id": "multi_tracker_aoa",
+    "name": "Multi-Tracker (Abundance of Apocrypha)",
+    "category": "tools",
+    "description": "A Multi-Tracker is a sophisticated fire control system mounted in a sensor node. A Multi-Tracker aids the user by coordinating the firing against multiple targets, defeating large numbers of enemies at once.",
+    "effect": "Whenever you make a ranged attack at an enemy Mob, or when you make a Multi-Attack, each Exalted Icon shifted allows you to hit one additional enemy. No enemy may be hit more than once by such an attack.",
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "T'AU EMPIRE",
+      "SUPPORT SYSTEM"
+    ],
+    "source": "apocrypha",
+    "page": 446
+  },
+  {
+    "id": "neuroweb_system_jammer_aoa",
+    "name": "Neuroweb System Jammer (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "Developed in the T'au's quest to seek mastery over not only their own technology, but also over that of the other starfaring races, a Neuroweb System Jammer is a device capable of broadcasting a jamming field that interferes with enemy weapon systems and senses alike.",
+    "effect": "This device allows the wielder to make a Tech interaction attack out to a range of five times your Intellect score in metres. In addition, when using the device, you may target multiple enemies with the Interaction Attack, adding +2DN for each enemy after the first, as per a Multi-Attack.",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "T'AU EMPIRE",
+      "PATHFINDER"
+    ],
+    "source": "apocrypha",
+    "page": 447
+  },
+  {
+    "id": "polyglot_hedron_aoa",
+    "name": "Polyglot Hedron (Abundance of Apocrypha)",
+    "category": "tools",
+    "description": "This item is a typical translation device used by the Water Caste, which instantly translates and transmits whatever the bearer says in one of the programmed languages.",
+    "effect": "When you speak into this device, it instantly translates your speech into the desired language. It can be connected to communication systems such as vox casters to broadcast the translated speech. Each polyglot hedron contains hundreds of languages.",
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "T'AU EMPIRE",
+      "WATER CASTE"
+    ],
+    "source": "apocrypha",
+    "page": 447
+  },
+  {
+    "id": "stimulant_injector_aoa",
+    "name": "Stimulant Injector (Abundance of Apocrypha)",
+    "category": "wargear",
+    "description": "A Stimulant Injector system consists of an advanced life support system fitted within a T'au Battlesuit and can flood the pilot's metabolic systems with life-sustaining stimulants and analgesic drugs should be become wounded so that he may continue to fight on at full effectiveness. A Stimulant Injector is a T'au Battlesuit Support System available to most forms of T'au Battlesuit.",
+    "effect": "When you roll Determination, you may activate your stimulant injector to re-roll all failed dice on the roll, and ignore all Shock gained from that roll. Once this has been used, you cannot use it again until after you have Regrouped, as your body needs time to recover.",
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "T'AU EMPIRE",
+      "SUPPORT SYSTEM"
+    ],
+    "source": "apocrypha",
+    "page": 447
+  },
+  {
+    "id": "target_analysis_optic_aoa",
+    "name": "Target Analysis Optic (Abundance of Apocrypha)",
+    "category": "tools",
+    "effect": "-",
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "T'AU EMPIRE",
+      "PATHFINDER"
+    ],
+    "source": "apocrypha",
+    "page": 445
+  },
+  {
+    "id": "target_lock_aoa",
+    "name": "Target Lock (Abundance of Apocrypha)",
+    "category": "tools",
+    "description": "A Target Lock is a sophisticated target acquisition system. Target Locks use AI to filter battlefield information, picking out targets even when they're hidden behind cover. A Target Lock is a form of T'au Battlesuit Support System, though certain Fire Caste infantry and Battlesuit pilots of the rank of Shas'vre or higher may also be found with hard-wired versions of the system.",
+    "effect": "When you make a ranged attack, the target does not increase their Defence due to being in cover.",
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "T'AU EMPIRE",
+      "SUPPORT SYSTEM"
+    ],
+    "source": "apocrypha",
+    "page": 447
+  },
+  {
+    "id": "velocity_tracker_aoa",
+    "name": "Velocity Tracker (Abundance of Apocrypha)",
+    "category": "tools",
+    "description": "A Velocity Tracker is an advanced sensor suite that consists of sophisticated motion detecting and heat-seeking sensor systems designed to track the movements of airborne targets such as enemy aircraft. With a Velocity Tracker system, the bearer can accurately bring his weapons to bear on otherwise hard-to-hit, high-flying. A Velocity Tracker is a Support System available to most forms of T'au Battlesuit.",
+    "effect": "Whenever you make a ranged attack against an enemy which is hovering, moved using a fly speed in its last turn, or which is a vehicle with the Flyer or Hover trait which is currently airborne, add +2 bonus dice to your attack.",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "T'AU EMPIRE",
+      "SUPPORT SYSTEM"
+    ],
+    "source": "apocrypha",
+    "page": 447
   }
 ]

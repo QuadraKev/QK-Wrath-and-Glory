@@ -943,10 +943,10 @@
   },
   {
     "id": "auramite_custodian_power_armour_aoa",
-    "name": "Auramite Custodian Power Armour (Abundance of Apocrypha)",
+    "name": "Auramite Custodes Power Armour (Abundance of Apocrypha)",
     "type": "power",
     "description": "Custodian Armour is an advanced form of highly sophisticated, Artificer-wrought Power Armour utilised exclusively by the Adeptus Custodes, the elite guardians of the Emperor of Mankind. Finely wrought, Custodian Armour is customised exactly to task, and was produced without any regard to the consumption of resources or rarity of components or lore required; to arm and outfit the Custodians to the optimum, nothing was spared.",
-    "ar": 6,
+    "ar": 7,
     "traits": [
       "Powered (4)"
     ],
@@ -957,7 +957,7 @@
       "ADEPTUS CUSTODES"
     ],
     "source": "apocrypha",
-    "page": 398
+    "page": 399
   },
   {
     "id": "endurant_shield_aoa",

@@ -2292,5 +2292,44 @@
     ],
     "source": "core",
     "page": 233
+  },
+  {
+    "id": "novitiate_armour",
+    "name": "Novitiate Armour",
+    "type": "light",
+    "description": "Usually taking the form of a close-fitting corselet, vambraces, and greaves, this suit of carapace armour provides light protection without sacrificing mobility.",
+    "ar": 3,
+    "traits": [],
+    "value": 3,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS MINISTORUM",
+      "ADEPTA SORORITAS"
+    ],
+    "source": "redacted2",
+    "page": 45
+  },
+  {
+    "id": "sacresant_shield",
+    "name": "Sacresant Shield",
+    "type": "shield",
+    "description": "Polished to a gleaming shine and embellished with the sacred icons of the Adepta Sororitas, these powered shields provide considerable protection against assault. Many orders ensure they are blessed before and after every battle, a process involving anointment and the sacred litanies of cleansing.",
+    "ar": 3,
+    "traits": [
+      "Shield",
+      "Power Field"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "FORCE FIELD",
+      "IMPERIUM",
+      "ADEPTUS MINISTORUM",
+      "ADEPTA SORORITAS"
+    ],
+    "invulnerable": true,
+    "source": "redacted2",
+    "page": 45
   }
 ]

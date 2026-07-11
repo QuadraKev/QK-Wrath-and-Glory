@@ -4949,5 +4949,77 @@
     ],
     "source": "apocrypha",
     "page": 455
+  },
+  {
+    "id": "hephestian_foresight",
+    "name": "Hephestian Foresight",
+    "category": "ritual",
+    "description": "Known only to the upper echelons of Enochian aristocracy and the Adeptus Ministorum that rule the Shrine World, this ritual attempts to divine the future through the myriad wisdoms of the God-Emperor disseminated by the Cult Imperialis.\n\nThe basis of the ritual known as Hephestian Foresight is simple: ask a wise and pious elder of Hephesteum's Rest (an Adeptus Ministorum monastery on Enoch, detailed in Litanies of the Lost) a simple question, and they will rake their recollections, scour sacred librariums, and potentially use sanctioned esotericism to divine an answer. Of course, this definition is broad, with myriad permutations depending on the parties performing or requisitioning the Ritual and the questions asked in its course.",
+    "effect": "Hephestian Foresight functions similarly to the Psychometry Psychic Power (Wrath & Glory Rulebook, page 275), but where Psychometry deals with the past, Hephestian Foresight can purportedly also dredge up obscure information about the present and what may come to pass. Any clues gleaned are likely vague and fraught with ambiguous symbology, pointing towards some important fact the Agents must uncover and which may even be at odds with their goals.",
+    "value": 8,
+    "rarity": "Rare",
+    "keywords": [],
+    "source": "redacted2",
+    "page": 9
+  },
+  {
+    "id": "julyannas_banishment",
+    "name": "Julyanna's Banishment",
+    "category": "ritual",
+    "description": "Of the many miracles attributed to Saint Julyanna, one of the strangest is the exorcism of a daemon said to possess the body of one of her attendants. The tale of Julyanna's Banishment is a frequent addition to the sermons of many Ministorum preachers in Gilead, and details of the long and gruesome ritual it entailed are relayed with relish.",
+    "effect": "As relayed by the chief confessor of Enoch, the ritual requires various trappings, including holy texts, a dozen iron nails, and an icon of the God-Emperor. How many of these are essential, and how many merely embellishments added by successive generations of preachers is unclear. Certainly the devotion of the participants must be absolute. The possessed person must be present, ideally restrained, and within a circle drawn with warding symbols and passages from holy texts. The time taken is said to vary along with the potency of the daemon in question — at least an hour, perhaps several days. If successful, the daemon is cast back into the warp.\n\nIt is traditionally claimed that a daemon so banished may not return for a year and a day, though if this has any merit, or is merely related due to the fact that Julyanna's unfortunate attendant is said to have lingered on for only a single year after the experience, is unclear.",
+    "value": 9,
+    "rarity": "Very Rare",
+    "keywords": [],
+    "source": "redacted2",
+    "page": 10
+  },
+  {
+    "id": "rosarius_of_saint_agatha",
+    "name": "Rosarius of Saint Agatha",
+    "category": "relic",
+    "description": "Agatha de Souza was a manufactorum overseer on Gilead Primus during the Age of Apostasy. Records indicate she was burned at the stake for the murder of a Ministorum deacon, a supporter of Lord Vandire who wanted the weapons she manufactured. It is said that as the deacon's supporters crowded around Agatha's pyre in mockery, she prayed only for retribution. At the moment of Agatha's death, the pyre answered with a conflagration that wiped out the baying mob.\n\nHer Rosarius, a reward for exceeding production quotas, was the only item to survive the fire. A few weeks later news reached Gilead of Vandire's death, leading many to believe that Agatha died at the precise moment of Vandire's execution.",
+    "effect": "It is a standard Rosarius, with the following additions; its power field crackles with arcs of golden electricity, even when dormant, giving the wearer +2 to Intimidation Interaction Attacks. Striking the field causes an energy backlash: unless the attacker passes a DN 3 Initiative (I) Test, they become Blinded and On Fire. The DN is raised by 1 for enemies with the HERETIC Keyword.",
+    "value": "-",
+    "rarity": "-",
+    "keywords": [],
+    "source": "redacted2",
+    "page": 20
+  },
+  {
+    "id": "skadi_matrix",
+    "name": "Skadi Matrix",
+    "category": "relic",
+    "description": "The Skadi Matrix is a simple data chip, such as those installed in Servitors. However, its Machine Spirit refuses any attempt to study or copy its contents. Tech-Priests in Gilead are aware of (and jealously guard) only two Skadi Matrices in the system, though they chase any rumour of more.\n\nThey are in effect targeting algorithms, but sophisticated beyond the Adeptus Mechanicus. A Skadi Matrix draws data and power from nearby sensors, using them to track objects and calculate firing solutions for the user. The more data feeds it can access, the more complex and accurate its targeting abilities become. How it does this is a mystery. The oldest, most knowledgeable Magi mutter cryptically of fractal programming and emergent energy fields, but even they admit to speculation. Skadi Matrices are miracles of the Omnissiah, proof that He once granted Mankind mastery of the universe through knowledge.",
+    "effect": "A Skadi Matrix must be installed in a Mind Impulse Unit. It automatically interfaces with any sensory technology within roughly 50m, including highly encrypted data feeds, which would concern other Imperial organisations deeply if they knew.\n\nThe user may declare a Ranged attack using the Skadi Matrix in combat. The syphoning of energy causes nearby lights to dim and devices to malfunction, inflicting a +1 DN penalty to enemy attacks until the end of the round. The user is granted up to +5 bonus dice for a Ranged Attack, but at a cost — the chip's calculations generate intense heat within the skull, causing severe injury. For every +1 bonus dice the user adds to the Ranged Attack, they suffer 2 Shock damage. If surrounding technology is absent, the maximum bonus may be limited as the GM decides.",
+    "value": "-",
+    "rarity": "-",
+    "keywords": [],
+    "source": "redacted2",
+    "page": 22
+  },
+  {
+    "id": "the_cornerstone",
+    "name": "The Cornerstone",
+    "category": "relic",
+    "description": "Precisely which structure the Cornerstone came from is hotly debated in the Enochian Synod; some claim it was the first brick laid in Saint Julyanna's tomb, others that it marked the first temple on the planet, and more still that it belonged to the tomb of any number of other revered heroes and prophets of the Gilead Crusade. The Synod's sects can agree on precisely three points; it possesses great power, it should not be available to the public, and its theft by the Adeptus Mechanicus during the Age of Apostasy is intolerable.\n\nThe Cornerstone is a kiln-fired brick of a yellow-brown colour. Its surfaces are worn smooth from the touch of countless pilgrims over millennia. Detailed analysis reveals traces of gold and cerulean glaze, suggesting that its function was decorative rather than structural, but the Ministorum will not tolerate such blasphemy. This is of little interest to the Adeptus Mechanicus, who are utterly at a loss to explain its power.",
+    "effect": "If a character is brave or foolish enough to touch the Cornerstone, they instantly lose the minimum number of Corruption Points required to lower their Corruption Level (Wrath & Glory Rulebook, page 285) by 1. For example, whether a character has 6-11 Corruption Points (Tarnished), they immediately reduce them to 5 (Pure). The affected character also takes 1 Mortal Wound for every Corruption Point removed in this way. This only works once; the Cornerstone will not save those who fall twice.",
+    "value": "-",
+    "rarity": "-",
+    "keywords": [],
+    "source": "redacted2",
+    "page": 24
+  },
+  {
+    "id": "the_unwilling_orb",
+    "name": "The Unwilling Orb",
+    "category": "relic",
+    "description": "Genestealer Cults, though wildly varied, all share some similarities, due to their secretive nature and the hierarchy which develops under the Patriarch at each cult's heart. The Unwilling Orb is an artefact found across infestations. Cultists treat the Unwilling Orb with awed reverence; it is a manifestation of their Patriarch's power to defend his children and destroy those who would harm them. It is the third eye of one of the Imperium's Navigators, torn from its socket and preserved, somehow still alive, in a gemstone wrought by xenos alchemy. In battle it pulses with sickening light, protecting the faithful from enemy psychic powers with appalling ease, while allowing a Magus to channel an even greater portion of their Patriarch's ravenous psychic might.",
+    "effect": "The Unwilling Orb is a Psychic Focus (Wrath & Glory Rulebook, page 239), with some additions. These abilities only apply for characters with the GENESTEALER CULT and PSYKER Keywords. It grants the user a number of bonus dice equal to the game's Tier to their Psychic Mastery (Wil) Tests. It allows the user to cast Deny the Witch up to twice each round as a Free Action. The character need not be aware that a Psychic Power is being cast.",
+    "value": "-",
+    "rarity": "-",
+    "keywords": [],
+    "source": "redacted2",
+    "page": 26
   }
 ]

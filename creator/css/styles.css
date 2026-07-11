@@ -1184,6 +1184,11 @@ textarea {
     margin-top: 4px;
 }
 
+.wargear-relic-detail {
+    font-size: 11px;
+    margin-top: 4px;
+}
+
 .wargear-actions {
     display: flex;
     gap: 8px;
@@ -1256,6 +1261,33 @@ textarea {
     position: absolute;
     left: 5px;
     color: var(--accent-gold);
+}
+
+/* Holy Relic Entry Card */
+.holy-relic-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--accent-gold);
+    border-radius: var(--radius-md);
+    padding: 15px 20px;
+    margin-bottom: 20px;
+}
+
+.holy-relic-cta-text h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent-gold);
+    margin-bottom: 6px;
+}
+
+.holy-relic-cta-text p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0;
 }
 
 /* Wargear Browser */

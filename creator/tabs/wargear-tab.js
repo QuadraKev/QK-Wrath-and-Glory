@@ -8,6 +8,7 @@ const WargearTab = {
     init() {
         // Initialize the upgrade modal
         this.initUpgradeModal();
+        RelicWizard.onSaved = () => this.render();
         this.render();
     },
 
@@ -71,7 +72,7 @@ const WargearTab = {
             const wargear = DataLoader.getWargearItem(item.id);
             if (!wargear) continue;
 
-            const entry = { ...wargear, wargearIndex: i, isStarting: item.isStarting, upgrades: item.upgrades || [] };
+            const entry = { ...wargear, wargearIndex: i, isStarting: item.isStarting, upgrades: item.upgrades || [], relic: item.relic };
 
             if (DataLoader.getWeapon(item.id)) {
                 grouped.weapons.push(entry);
@@ -125,7 +126,7 @@ const WargearTab = {
                 const wargearIndex = parseInt(btn.dataset.index, 10);
                 const wargearEntry = State.getCharacter().wargear[wargearIndex];
                 const item = wargearEntry ? DataLoader.getWargearItem(wargearEntry.id) : null;
-                const name = item ? item.name : 'this item';
+                const name = wargearEntry?.relic?.name || (item ? item.name : 'this item');
                 const confirmed = await window.api.showConfirm(`Remove ${name}?`);
                 if (!confirmed) return;
                 State.removeWargearByIndex(wargearIndex);
@@ -136,6 +137,12 @@ const WargearTab = {
         container.querySelectorAll('.btn-manage-upgrades').forEach(btn => {
             btn.addEventListener('click', () => {
                 this.showUpgradeModal(parseInt(btn.dataset.index, 10));
+            });
+        });
+
+        container.querySelectorAll('.btn-edit-relic').forEach(btn => {
+            btn.addEventListener('click', () => {
+                RelicWizard.open(parseInt(btn.dataset.index, 10));
             });
         });
     },
@@ -154,14 +161,18 @@ const WargearTab = {
         const typeLabel = weapon.type === 'melee' ? 'Melee' : 'Ranged';
         const startingBadge = weapon.isStarting ? '<span class="badge-starting">Starting</span>' : '';
 
+        const relicHtml = this.renderRelicInfo(weapon.relic, weapon.name);
+
         return `
             <div class="wargear-item wargear-item-owned">
                 <div class="wargear-info">
-                    <div class="wargear-name">${weapon.name} ${startingBadge}</div>
-                    <div class="wargear-type">${typeLabel} Weapon${weapon.category ? ' • ' + weapon.category : ''}</div>
+                    <div class="wargear-name">${relicHtml ? relicHtml.nameLine : weapon.name} ${startingBadge}</div>
+                    <div class="wargear-type">${relicHtml ? relicHtml.typeLine : `${typeLabel} Weapon${weapon.category ? ' • ' + weapon.category : ''}`}</div>
+                    ${relicHtml ? relicHtml.detailLine : ''}
                     ${upgradeText}
                 </div>
                 <div class="wargear-actions">
+                    ${relicHtml ? `<button class="btn-small btn-edit-relic" data-index="${weapon.wargearIndex}">Edit</button>` : ''}
                     <button class="btn-small btn-manage-upgrades" data-index="${weapon.wargearIndex}">Upgrades</button>
                     <button class="btn-small btn-remove-wargear" data-index="${weapon.wargearIndex}">Remove</button>
                 </div>
@@ -174,17 +185,74 @@ const WargearTab = {
         const startingBadge = item.isStarting ? '<span class="badge-starting">Starting</span>' : '';
         const typeLabel = type === 'armor' ? 'Armor' : (item.category || 'Equipment');
 
+        const relicHtml = this.renderRelicInfo(item.relic, item.name);
+
         return `
             <div class="wargear-item wargear-item-owned">
                 <div class="wargear-info">
-                    <div class="wargear-name">${item.name} ${startingBadge}</div>
-                    <div class="wargear-type">${typeLabel}</div>
+                    <div class="wargear-name">${relicHtml ? relicHtml.nameLine : item.name} ${startingBadge}</div>
+                    <div class="wargear-type">${relicHtml ? relicHtml.typeLine : typeLabel}</div>
+                    ${relicHtml ? relicHtml.detailLine : ''}
                 </div>
                 <div class="wargear-actions">
+                    ${relicHtml ? `<button class="btn-small btn-edit-relic" data-index="${item.wargearIndex}">Edit</button>` : ''}
                     <button class="btn-small btn-remove-wargear" data-index="${item.wargearIndex}">Remove</button>
                 </div>
             </div>
         `;
+    },
+
+    // Build the name/type/detail line HTML for a relic entry, or null if not a relic
+    renderRelicInfo(relic, baseItemName) {
+        if (!relic) return null;
+
+        const parts = this.getRelicDisplayParts(relic);
+        const choiceText = relic.powerChoice ? ` (${relic.powerChoice})` : '';
+        const oddityText = parts.oddityNames.length ? ` • Oddities: ${parts.oddityNames.join(', ')}` : '';
+
+        return {
+            nameLine: `${this.escapeHtml(relic.name)} <span class="badge-relic">Holy Relic</span>`,
+            typeLine: `Holy Relic (${parts.formName}) • ${baseItemName}`,
+            detailLine: `<div class="wargear-relic-detail text-muted">Origin: ${parts.ownerName}, ${parts.anointmentName} • Power: ${parts.powerName}${choiceText}${oddityText}</div>`
+        };
+    },
+
+    // Resolve a relic's id fields to display names via DataLoader.getHolyRelics(),
+    // falling back to the raw id if the lookup misses (e.g. data not yet loaded).
+    getRelicDisplayParts(relic) {
+        const relics = DataLoader.getHolyRelics();
+        if (!relics) {
+            return {
+                formName: relic.form,
+                ownerName: relic.originalOwner,
+                anointmentName: relic.anointment,
+                powerName: relic.power,
+                oddityNames: relic.oddities || []
+            };
+        }
+
+        const form = relics.forms[relic.form];
+        const owner = relics.origins.originalOwner.entries.find(e => e.id === relic.originalOwner);
+        const anointment = relics.origins.anointment.entries.find(e => e.id === relic.anointment);
+
+        let power = null;
+        for (const table of Object.values(relics.powers)) {
+            power = table.entries.find(e => e.id === relic.power);
+            if (power) break;
+        }
+
+        const oddityNames = (relic.oddities || []).map(id => {
+            const oddity = relics.oddities.entries.find(e => e.id === id);
+            return oddity ? oddity.name : id;
+        });
+
+        return {
+            formName: form ? form.name : relic.form,
+            ownerName: owner ? owner.name : relic.originalOwner,
+            anointmentName: anointment ? anointment.name : relic.anointment,
+            powerName: power ? power.name : relic.power,
+            oddityNames
+        };
     },
 
     // Render the wargear browser with categories
@@ -242,9 +310,21 @@ const WargearTab = {
             }
         }
 
+        // Holy Relic entry card (Redacted Records II)
+        const holyRelicCtaHtml = State.isSourceEnabled('redacted2') ? `
+            <div class="holy-relic-cta">
+                <div class="holy-relic-cta-text">
+                    <h4>Holy Relic</h4>
+                    <p>Sanctify a piece of wargear using the Relic creation rules from Redacted Records II (pp. 12–19): choose a Form, a base item, Origins, a Power, and Oddities.</p>
+                </div>
+                <button class="btn-primary" id="btn-build-relic">Build a Holy Relic</button>
+            </div>
+        ` : '';
+
         container.innerHTML = `
             ${startingGearHtml}
             ${ascensionGearHtml}
+            ${holyRelicCtaHtml}
             <div class="wargear-browser">
                 <div class="wargear-browser-controls">
                     <input type="text" id="wargear-search" class="search-input" placeholder="Search wargear..." value="${this.escapeHtml(this.searchQuery)}">
@@ -265,6 +345,12 @@ const WargearTab = {
         `;
 
         // Bind events
+        if (document.getElementById('btn-build-relic')) {
+            document.getElementById('btn-build-relic').addEventListener('click', () => {
+                RelicWizard.open();
+            });
+        }
+
         if (document.getElementById('btn-add-starting')) {
             document.getElementById('btn-add-starting').addEventListener('click', () => {
                 for (const entry of archetype.startingWargear) {

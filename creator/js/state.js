@@ -737,6 +737,24 @@ const State = {
         return false;
     },
 
+    // Add a Holy Relic wargear entry (base item id + relic overlay)
+    addRelicWargear(itemId, relic) {
+        this.character.wargear.push({ id: itemId, isStarting: false, relic: relic });
+        this.notifyListeners('wargear', itemId);
+    },
+
+    // Update a Holy Relic wargear entry in place (edit flow)
+    updateRelicWargear(wargearIndex, itemId, relic) {
+        if (wargearIndex < 0 || wargearIndex >= this.character.wargear.length) return;
+        const entry = this.character.wargear[wargearIndex];
+        if (entry.id !== itemId) {
+            entry.id = itemId;
+            entry.upgrades = [];
+        }
+        entry.relic = relic;
+        this.notifyListeners('wargear', itemId);
+    },
+
     // Toggle weapon equipped status (for Simultaneous Strike tracking)
     // Uses array index for unique identification when same weapon appears multiple times
     toggleWeaponEquipped(wargearIndex) {

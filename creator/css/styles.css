@@ -5725,3 +5725,234 @@ textarea {
         display: none !important;
     }
 }
+
+/* ===== Relic Wizard ===== */
+.relic-wizard-progress {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-tertiary);
+}
+
+.relic-wizard-step-num {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+    letter-spacing: 0.05em;
+}
+
+.relic-wizard-step-title {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.relic-option-group {
+    margin-bottom: 18px;
+}
+
+.relic-option-group h4 {
+    margin: 0 0 8px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 4px;
+}
+
+.relic-option-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.relic-option-card {
+    display: block;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.relic-option-card:hover {
+    border-color: var(--border-light);
+    background: var(--bg-hover);
+}
+
+.relic-option-card.selected {
+    border-color: var(--accent-gold);
+    background: rgba(212, 175, 55, 0.12);
+}
+
+.relic-option-card.disabled,
+.relic-option-card[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.relic-option-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.relic-option-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.relic-rule-text {
+    margin-top: 6px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+/* Form step cards render as a compact grid */
+.relic-form-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Base item rows */
+.relic-baseitem-list {
+    max-height: 46vh;
+    overflow-y: auto;
+}
+
+.relic-baseitem-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.relic-baseitem-main {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.relic-baseitem-stat {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* Choice pickers and chips */
+.relic-choice-picker {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-color);
+}
+
+.relic-choice-picker h4 {
+    margin: 0 0 8px;
+    font-size: 13px;
+    color: var(--text-primary);
+}
+
+.relic-choice-chips {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.relic-choice-chip {
+    padding: 6px 12px;
+}
+
+/* Oddity checkbox cards */
+.relic-oddity-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Roll buttons */
+.relic-roll-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.relic-roll-result {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent-gold);
+}
+
+/* Sacred Shells / info note */
+.relic-info-note {
+    background: var(--bg-tertiary);
+    border-left: 3px solid var(--accent-gold);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+.relic-powers-heading {
+    margin: 0 0 12px;
+    font-size: 15px;
+    color: var(--accent-gold);
+}
+
+/* Summary */
+.relic-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.relic-summary-block {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+}
+
+.relic-summary-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.relic-summary-value {
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.relic-summary-stat {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-left: 6px;
+}
+
+/* Small amber/gold relic badge (same shape as .badge-starting) */
+.badge-relic {
+    display: inline-block;
+    padding: 2px 6px;
+    background: var(--accent-gold);
+    color: var(--bg-primary);
+    border-radius: var(--radius-sm);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-left: 8px;
+    vertical-align: middle;
+}

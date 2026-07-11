@@ -2481,5 +2481,25 @@
     ],
     "source": "voa",
     "page": 72
+  },
+  {
+    "id": "centurion_warsuit",
+    "name": "Centurion Warsuit",
+    "type": "power",
+    "description": "Gigantic armoured figures, Centurion Warsuits bridge the gap between Dreadnought and powered armour, rendering the wearer virtually invulnerable. The pilot's Black Carapace is interfaced directly with the control system, allowing them to move as if the warsuit was an extension of their own body. Learning to pilot such a suit is an arduous process that few Astartes can master, but those that do are grouped into small but potent units and typically used to destroy fortifications or break through enemy lines. There are two main variants in common use — one for Assault Marines that employs enormous Siege Drills, and one for Devastators that features paired heavy weapons. These suits are not sized for Primaris Marines, who employ the more flexible Mk 10 Gravis armour for such dangerous roles.",
+    "ar": 8,
+    "traits": [
+      "Bulky (1)",
+      "Cumbersome",
+      "Powered (5)"
+    ],
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES"
+    ],
+    "source": "voa",
+    "page": 72
   }
 ]

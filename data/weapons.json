@@ -19244,5 +19244,509 @@
     ],
     "source": "apocrypha",
     "page": 508
+  },
+  {
+    "id": "power_blades_aoa",
+    "name": "Power Blades (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Aeldari",
+    "description": "A powered blade, often in the form of scythes, or forearm-mounted long-daggers, worn or mounted in such a way as to leave the wielder's hands free for other activities.",
+    "damage": {
+      "base": 5,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -3,
+    "traits": [
+      "Paired"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "POWER FIELD",
+      "AELDARI",
+      "ASURYANI"
+    ],
+    "source": "apocrypha",
+    "page": 338
+  },
+  {
+    "id": "psytronome_shaper_aoa",
+    "name": "Psytronome Shaper (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Aeldari",
+    "description": "A bizarrely shaped device, more musical instrument than weapon, the psytronome shaper is a tool of Aeldari Bonesingers, used to focus and direct their powers.",
+    "damage": {
+      "base": 3,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": 0,
+    "traits": [
+      "Force"
+    ],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "FORCE",
+      "AELDARI",
+      "ASURYANI"
+    ],
+    "source": "apocrypha",
+    "page": 338
+  },
+  {
+    "id": "scorpion_chainsword_aoa",
+    "name": "Scorpion Chainsword (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Aeldari",
+    "description": "The Scorpion Chainsword is a deadly one-handed melee weapon whose vicious blade is comprised of diamond-toothed edges that mangle and tear flesh. First amongst the ritual weapons used by the Striking Scorpions Shrine, these distinctive chainswords bolster the killing power of their users. It bears a resemblance to the Chainswords utilised by the military forces of the Imperium of Man, but for one crucial detail—the mechanism of the weapon is extremely quiet and only activates when the blade touches the foe, allowing for almost silent kills.",
+    "damage": {
+      "base": 6,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -1,
+    "traits": [
+      "Brutal",
+      "Parry",
+      "Silent"
+    ],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "CHAIN",
+      "ASURYANI"
+    ],
+    "source": "apocrypha",
+    "page": 338
+  },
+  {
+    "id": "demiklaives_aoa",
+    "name": "Demiklaives (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Aeldari",
+    "description": "Some Incubi sects—and often the Klaivex champions—favour the Demiklaive over the traditional Klaive. Each Demiklaive is a pair of powered blades which can be wielded separately or fitted together to strike as a single weapon. Masters of the form can switch between the two methods in moments.",
+    "damage": {
+      "base": 5,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -2,
+    "traits": [
+      "Parry",
+      "Reaping",
+      "Paired"
+    ],
+    "value": 8,
+    "rarity": "Unique",
+    "keywords": [
+      "POWER FIELD",
+      "2-HANDED",
+      "DRUKHARI"
+    ],
+    "special": "A pair of Demiklaives use the profile listed above, but can be fitted into a single weapon, using the normal Klaive profile, with a Simple Action.",
+    "source": "apocrypha",
+    "page": 341
+  },
+  {
+    "id": "djin_blade_aoa",
+    "name": "Djin Blade (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Aeldari",
+    "damage": {
+      "base": 5,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -3,
+    "traits": [
+      "Parry",
+      "Sustained",
+      "Volatile (1)"
+    ],
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "BLADE",
+      "DAEMON",
+      "DRUKHARI"
+    ],
+    "source": "apocrypha",
+    "page": 341
+  },
+  {
+    "id": "razorflail_aoa",
+    "name": "Razorflail (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Aeldari",
+    "description": "Wyches known as Lacerai wield a pair of razorflails, a retracting sword which can be wielded either as a solid blade or as a flexible whip-like series of segmented blades. Razorflails are a difficult weapon to counter, as they are almost impossible to block or parry.",
+    "damage": {
+      "base": 4,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -1,
+    "range": 2,
+    "traits": [
+      "Overwhelming",
+      "Reaping"
+    ],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "BLADE",
+      "DRUKHARI"
+    ],
+    "source": "apocrypha",
+    "page": 341
+  },
+  {
+    "id": "wrack_blades_aoa",
+    "name": "Wrack Blades (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Aeldari",
+    "description": "The servants of the Haemonculi are frequently equipped with razor-sharp cleavers, flensing-blades, and macro-scalpels, all liberally coated with a cocktail of deadly toxins.",
+    "damage": {
+      "base": 3,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -1,
+    "traits": [
+      "Fleshbane"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "BLADE",
+      "DRUKHARI"
+    ],
+    "source": "apocrypha",
+    "page": 341
+  },
+  {
+    "id": "ancestral_ward_stave_aoa",
+    "name": "Ancestral Ward Stave (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Votann",
+    "description": "An extension of their Barrier-Tech, Ancestral Ward Staves help a Grimnyr commune with the Votann through their Hold's fane. They also serve as symbols of office, and can function as potent weapons, directing the energies of the Warp both to fuel the Grimnyr's powers and to deliver punishing strikes in melee.",
+    "damage": {
+      "base": 6,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -2,
+    "range": 2,
+    "traits": [
+      "Brutal",
+      "Force"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "FORCE",
+      "2-HANDED",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 344
+  },
+  {
+    "id": "concussion_gauntlet_aoa",
+    "name": "Concussion Gauntlet (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Votann",
+    "description": "Superficially similar to an Imperial power fist, Concussion gauntlets—also sometimes called Mass Gauntlets—use \"mass driver\" technology to magnify the impact force of strikes by several orders of magnitude. Whether used as a mining tool by the Cthonian Mining Guilds, or as a weapon by a Kahl and his Einhyr Hearthguard (or by Cthonian Berserks), they allow a lone operator to punch with devastating force.",
+    "damage": {
+      "base": 6,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 5,
+    "ap": -2,
+    "traits": [
+      "Brutal",
+      "Inflict (Staggered)"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "MASS DRIVER",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 344
+  },
+  {
+    "id": "concussion_hammer_aoa",
+    "name": "Concussion Hammer (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Votann",
+    "description": "Commonly wielded by elite Einhyr warriors, concussion hammers—sometimes also called mass hammers—are a reinforced haft topped with a head containing powerful \"mass driver\" technology that significantly increases the impact forces of the weapon's strikes. The construction of the weapon allows it to deliver much heavier strikes than concussion gauntlets, but it takes a skilled combatant to control the weapon's power and direct it properly: in the hands of the unskilled, a concussion hammer would be dangerously cumbersome.",
+    "damage": {
+      "base": 7,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -2,
+    "traits": [
+      "Brutal",
+      "Inflict (Staggered)",
+      "Unwieldy (2)"
+    ],
+    "value": 9,
+    "rarity": "Very Rare",
+    "keywords": [
+      "MASS DRIVER",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 344
+  },
+  {
+    "id": "concussion_knuckles_aoa",
+    "name": "Concussion Knuckles (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Votann",
+    "description": "The lightest and most compact form of concussion weapon, a pair of concussion knuckles—sometimes referred to as \"knux\"—can turn a warrior's punches into battering rams, allowing them to break down hatches and shatter smaller obstacles in the cramped confines of a derelict ship, space hulk, or mineshaft. They're just as useful at pulverising enemies who get in the way. These compact devices are often worn in pairs.",
+    "damage": {
+      "base": 5,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -2,
+    "traits": [
+      "Brutal",
+      "Inflict (Staggered)",
+      "Paired"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "MASS DRIVER",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 344
+  },
+  {
+    "id": "concussion_maul_aoa",
+    "name": "Concussion Maul (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Votann",
+    "description": "A larger form of concussion hammer, the concussion maul is a two-handed mining tool and weapon used most often by Cthonian Berserks. The great size and heft of the weapon allows it to deliver the heaviest and most punishing strikes, producing intense shockwaves of pulverizing force far beyond what the weapon's own mass could create.",
+    "damage": {
+      "base": 8,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 6,
+    "ap": -3,
+    "range": 2,
+    "traits": [
+      "Brutal",
+      "Inflict (Staggered)",
+      "Unwieldy (2)"
+    ],
+    "value": 9,
+    "rarity": "Very Rare",
+    "keywords": [
+      "MASS DRIVER",
+      "2-HANDED",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 344
+  },
+  {
+    "id": "darkstar_axe_aoa",
+    "name": "Darkstar Axe (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Votann",
+    "description": "Amongst the most feared melee weapons produced by the Kin are those wrought from Darkstar ore. This strange material, found only in the fringes of the dead zones of the galactic core, generates a damping field which renders anything it touches inert, whether the electro-mechanical functions of a machine or the organic processes of living tissue. The mineral must be handled and shaped with great care and reverence, for the slightest mishap could be disastrous. Those few armed with Darkstar blades bear them with similar care, for a single cut can sap the life from a victim.",
+    "damage": {
+      "base": 5,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -3,
+    "traits": [
+      "Reaping",
+      "Mortal (1)"
+    ],
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "DARKSTAR",
+      "LEAGUES OF VOTANN"
+    ],
+    "special": "Damage inflicted by a DARKSTAR weapon cannot be negated by rolling Determination.",
+    "source": "apocrypha",
+    "page": 344
+  },
+  {
+    "id": "graviton_hammer_aoa",
+    "name": "Graviton Hammer (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Votann",
+    "description": "Commonly found in the hands of Brôkhyr Iron-Masters, graviton hammers are sophisticated melee weapons which can alter the effect of local gravity. A single strike from this weapon will see the foe crushed beneath the mass of their own body and armour.",
+    "damage": {
+      "base": 5,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -2,
+    "traits": [
+      "Grav"
+    ],
+    "value": 10,
+    "rarity": "Unique",
+    "keywords": [
+      "GRAV",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 344
+  },
+  {
+    "id": "heavy_plasma_axe_aoa",
+    "name": "Heavy Plasma Axe (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Votann",
+    "description": "These two-handed greataxes are used by Cthonian Berserks to cut through rock and enemies alike. Their effectiveness comes from the use of high-temperature plasma contained within blade-shaped magnetic fields: only the object or opponent struck feels the intense heat of the \"blade\", which will quickly burn through even the most resilient objects.",
+    "damage": {
+      "base": 5,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 5,
+    "ap": -3,
+    "traits": [
+      "Brutal or Reaping",
+      "Rending (2)"
+    ],
+    "value": 7,
+    "rarity": "Very Rare",
+    "keywords": [
+      "PLASMA",
+      "LEAGUES OF VOTANN"
+    ],
+    "special": "When you make an attack with this weapon, choose whether the weapon will have the Brutal trait or the Reaping trait.",
+    "source": "apocrypha",
+    "page": 344
+  },
+  {
+    "id": "plasma_axe_aoa",
+    "name": "Plasma Axe (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Votann",
+    "description": "A single-handed battle axe with a blade of coherent plasma, as commonly wielded by Kin squad leaders and commanders as the power sword is amongst the Imperium and the Aeldari. In the hands of a skilled warrior, a plasma axe can reduce an enemy to a heap of scorched meat and charred bone.",
+    "damage": {
+      "base": 5,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -3,
+    "traits": [
+      "Rending (2)"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "PLASMA",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 344
+  },
+  {
+    "id": "plasma_blade_gauntlet_aoa",
+    "name": "Plasma Blade Gauntlet (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Votann",
+    "description": "Exo-armour gauntlets can be fitted with a wrist-mounted plasma field generator, which projects a short-sword sized blade of coherent plasma.",
+    "damage": {
+      "base": 5,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -3,
+    "traits": [
+      "Rending (2)"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "PLASMA",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 344
+  },
+  {
+    "id": "plasma_knife_aoa",
+    "name": "Plasma Knife (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Votann",
+    "description": "A great many Kin carry plasma knives, whether as tools of utility, ceremonial objects, symbols of office, or some mixture of the three.",
+    "damage": {
+      "base": 4,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -2,
+    "traits": [
+      "Rending (1)"
+    ],
+    "value": 4,
+    "rarity": "Common",
+    "keywords": [
+      "PLASMA",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 344
+  },
+  {
+    "id": "plasma_sword_aoa",
+    "name": "Plasma Sword (Abundance of Apocrypha)",
+    "type": "melee",
+    "category": "Votann",
+    "description": "Some Kin favour a sword over an axe in battle, projecting the plasma field around a central physical \"blade\". This allows the weapon to be balanced more like a physical sword and ensures that the weapon is more able to deflect and parry incoming attacks, at the cost of a slightly less powerful blade.",
+    "damage": {
+      "base": 5,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 3,
+    "ap": -3,
+    "traits": [
+      "Parry",
+      "Rending (1)"
+    ],
+    "value": 5,
+    "rarity": "Rare",
+    "keywords": [
+      "PLASMA",
+      "LEAGUES OF VOTANN"
+    ],
+    "source": "apocrypha",
+    "page": 344
   }
 ]

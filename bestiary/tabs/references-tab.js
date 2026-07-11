@@ -501,6 +501,9 @@ const ReferencesTab = {
             case 'grenades':
                 html += this.renderWeaponBody(entry);
                 break;
+            case 'vehicleWargear':
+                html += (entry.type === 'melee' || entry.type === 'ranged') ? this.renderWeaponBody(entry) : this.renderEquipmentBody(entry);
+                break;
             case 'armor':
                 html += this.renderArmorBody(entry);
                 break;

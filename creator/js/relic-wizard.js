@@ -185,7 +185,7 @@ const RelicWizard = {
             <div class="form-group">
                 <label for="relic-name-input">Relic Name</label>
                 <input type="text" id="relic-name-input" class="search-input" style="max-width:100%;"
-                    placeholder="Name your relic..." value="${this.escapeHtml(this.wizard.name)}">
+                    placeholder="Name your relic..." value="${this.escapeAttr(this.wizard.name)}">
                 <span class="form-hint">Give your Holy Relic a name.</span>
             </div>
         `;
@@ -220,7 +220,7 @@ const RelicWizard = {
         return `
             <div class="form-group">
                 <input type="text" id="relic-baseitem-search" class="search-input" style="max-width:100%;"
-                    placeholder="Search base items..." value="${this.escapeHtml(this.wizard.baseSearch)}">
+                    placeholder="Search base items..." value="${this.escapeAttr(this.wizard.baseSearch)}">
             </div>
             <div id="relic-baseitem-list" class="relic-option-cards relic-baseitem-list">
                 ${this.renderBaseItemRows()}
@@ -342,7 +342,7 @@ const RelicWizard = {
 
     opt(value) {
         const selected = this.wizard.powerChoice === value ? ' selected' : '';
-        return `<option value="${this.escapeHtml(value)}"${selected}>${this.escapeHtml(value)}</option>`;
+        return `<option value="${this.escapeAttr(value)}"${selected}>${this.escapeHtml(value)}</option>`;
     },
 
     // Step 6 - Oddities
@@ -808,5 +808,10 @@ const RelicWizard = {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    },
+
+    // Escape user-entered text for a double-quoted HTML attribute (escapeHtml + quotes)
+    escapeAttr(text) {
+        return this.escapeHtml(text).replace(/"/g, '&quot;');
     }
 };

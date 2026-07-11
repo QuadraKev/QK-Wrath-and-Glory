@@ -2356,7 +2356,7 @@
     "name": "Astartes Shotgun",
     "type": "ranged",
     "category": "Solid Projectile Weapons",
-    "description": "[AI-Generated] Used by Space Marine Scouts for close-quarters combat, the Astartes Shotgun fires devastating solid-slug ammunition capable of tearing through light armour.",
+    "description": "The most refined and technologically advanced variant of the Shotgun is most frequently wielded by the scout squads of the Adeptus Astartes. Larger than even the Combat Shotgun, the Astartes variant is capable of multiple modes of fire, with a single large-bore barrel that makes it devastating in close quarters.\n\nAstartes Shotguns fire oversized shells and are designed to be capable of using a variety of ammunition variants, from solid, armour-piercing shells to deadly incendiary shot.\n\nDue to being designed and constructed specifically for use by those who have undertaken the extensive gene modification required to become an Astartes, their sheer size and associated recoil make these weapons almost impossible to use except by the strongest of unmodified Humans.",
     "damage": {
       "base": 10,
       "attribute": null,
@@ -2372,18 +2372,18 @@
     "salvo": 2,
     "traits": [
       "Assault",
-      "Spread",
-      "Reliable"
+      "Reliable",
+      "Spread"
     ],
     "value": 6,
     "rarity": "Rare",
     "keywords": [
-      "IMPERIUM",
       "PROJECTILE",
+      "IMPERIUM",
       "ADEPTUS ASTARTES"
     ],
-    "source": "voa",
-    "page": 67
+    "source": "shotguns",
+    "page": 7
   },
   {
     "id": "auto_bolt_rifle",
@@ -13375,7 +13375,7 @@
     "keywords": [
       "PROJECTILE",
       "IMPERIUM",
-      "SCUM"
+      "ASTRA MILITARUM"
     ],
     "source": "shotguns",
     "page": 6
@@ -13391,7 +13391,7 @@
       "attribute": null,
       "bonus": 0
     },
-    "ed": 2,
+    "ed": 1,
     "ap": 0,
     "range": {
       "short": 6,
@@ -13438,12 +13438,12 @@
       "Pistol",
       "Spread"
     ],
-    "value": 2,
-    "rarity": "Common",
+    "value": 4,
+    "rarity": "Uncommon",
     "keywords": [
       "PROJECTILE",
       "IMPERIUM",
-      "ASTRA MILITARUM"
+      "SCUM"
     ],
     "source": "shotguns",
     "page": 6

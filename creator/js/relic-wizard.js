@@ -34,6 +34,7 @@ const RelicWizard = {
 
     wizard: null,
     _searchTimer: null,
+    _renderedStep: null,
 
     // --- Lifecycle / entry point ---
 
@@ -52,8 +53,10 @@ const RelicWizard = {
             powerChoice: null,
             oddities: [],
             baseSearch: '',
-            rollMessage: ''
+            rollMessage: '',
+            choiceRollMessage: ''
         };
+        this._renderedStep = null;
 
         if (wargearIndex !== null) {
             const entry = State.getCharacter().wargear[wargearIndex];
@@ -127,6 +130,7 @@ const RelicWizard = {
         if (!this.isStepValid(this.wizard.step)) return;
         this.wizard.step++;
         this.wizard.rollMessage = '';
+        this.wizard.choiceRollMessage = '';
         this.render();
     },
 
@@ -134,6 +138,7 @@ const RelicWizard = {
         if (this.wizard.step === 0) return;
         this.wizard.step--;
         this.wizard.rollMessage = '';
+        this.wizard.choiceRollMessage = '';
         this.render();
     },
 
@@ -149,7 +154,11 @@ const RelicWizard = {
             `<span class="relic-wizard-step-title">${this.STEPS[w.step].title}</span>`;
 
         const body = document.getElementById('relic-wizard-body');
+        // Preserve scroll position when re-rendering within the same step
+        const scrollTop = this._renderedStep === w.step ? body.scrollTop : 0;
         body.innerHTML = this.renderStep(w.step);
+        body.scrollTop = scrollTop;
+        this._renderedStep = w.step;
         this.bindStep(w.step);
         this.updateNav();
         this.enhanceGlossary(body);
@@ -291,13 +300,11 @@ const RelicWizard = {
             html += `<div class="relic-info-note"><strong>Sacred Shells:</strong> ${relics.sacredShells}</div>`;
         }
 
-        html += this.renderEntryCards(table.entries, this.wizard.power, 'power');
-        html += this.renderRollRow('relic-roll-power', 'Roll 1d6');
-
+        // The dependent choice picker renders inside the selected power's card
         const power = this.getSelectedPower();
-        if (power && power.choice) {
-            html += this.renderChoicePicker(power.choice);
-        }
+        const pickerHtml = (power && power.choice) ? this.renderChoicePicker(power.choice) : '';
+        html += this.renderEntryCards(table.entries, this.wizard.power, 'power', pickerHtml);
+        html += this.renderRollRow('relic-roll-power', 'Roll 1d6');
         return html;
     },
 
@@ -307,12 +314,11 @@ const RelicWizard = {
 
         if (choiceType === 'enemyKeyword') {
             html += '<h4>Choose an Enemy Keyword</h4>';
-            const chips = relics.enemyKeywords.entries.map(e => {
-                const selected = this.wizard.powerChoice === e.keyword ? ' selected' : '';
-                return `<div class="relic-option-card relic-choice-chip${selected}" data-keyword="${e.keyword}">${e.keyword}</div>`;
-            }).join('');
-            html += `<div class="relic-option-cards relic-choice-chips">${chips}</div>`;
-            html += this.renderRollRow('relic-roll-keyword', 'Roll 4d6');
+            html += `<select id="relic-choice-select" class="search-input" style="max-width:100%;">
+                <option value="">Select...</option>
+                ${relics.enemyKeywords.entries.map(e => this.opt(e.keyword)).join('')}
+            </select>`;
+            html += this.renderRollRow('relic-roll-keyword', 'Roll 4d6', this.wizard.choiceRollMessage);
         } else if (choiceType === 'attributeOrSkill') {
             const attrs = this.ATTRIBUTES.filter(a => a !== 'Strength');
             html += '<h4>Choose an Attribute or Skill (besides Strength)</h4>';
@@ -408,23 +414,27 @@ const RelicWizard = {
 
     // --- Shared render helpers ---
 
-    // Render a set of selectable option cards (name + verbatim description)
-    renderEntryCards(entries, selectedId, kind) {
+    // Render a set of selectable option cards (name + verbatim description).
+    // selectedExtraHtml is injected into the selected card only (e.g. the power choice picker).
+    renderEntryCards(entries, selectedId, kind, selectedExtraHtml = '') {
         const cards = entries.map(e => {
             const selected = selectedId === e.id ? ' selected' : '';
+            const extra = selected ? selectedExtraHtml : '';
             return `
                 <div class="relic-option-card${selected}" data-kind="${kind}" data-id="${e.id}">
                     <div class="relic-option-name">${e.name}</div>
                     <div class="relic-rule-text">${e.description}</div>
+                    ${extra}
                 </div>
             `;
         }).join('');
         return `<div class="relic-option-cards">${cards}</div>`;
     },
 
-    renderRollRow(buttonId, label) {
-        const msg = this.wizard.rollMessage
-            ? `<span class="relic-roll-result">${this.escapeHtml(this.wizard.rollMessage)}</span>` : '';
+    // Roll button + result text; message defaults to the step's shared roll message
+    renderRollRow(buttonId, label, message = this.wizard.rollMessage) {
+        const msg = message
+            ? `<span class="relic-roll-result">${this.escapeHtml(message)}</span>` : '';
         return `<div class="relic-roll-row"><button class="btn-small" id="${buttonId}" type="button">${label}</button>${msg}</div>`;
     },
 
@@ -496,14 +506,12 @@ const RelicWizard = {
                 this.rollEntry(table.entries, (e) => this.selectPower(e.id));
             });
 
-            // Dependent choice picker bindings
-            const chips = body.querySelectorAll('.relic-choice-chip');
-            chips.forEach(chip => {
-                chip.addEventListener('click', () => {
-                    this.wizard.powerChoice = chip.dataset.keyword;
-                    this.render();
-                });
-            });
+            // Choice picker is embedded in the selected card: keep its clicks
+            // from bubbling into the card's select-power handler
+            const picker = body.querySelector('.relic-choice-picker');
+            if (picker) {
+                picker.addEventListener('click', (e) => e.stopPropagation());
+            }
             const keywordRoll = document.getElementById('relic-roll-keyword');
             if (keywordRoll) {
                 keywordRoll.addEventListener('click', () => {
@@ -511,9 +519,9 @@ const RelicWizard = {
                     const entry = relics.enemyKeywords.entries.find(k => k.roll === sum);
                     if (entry) {
                         this.wizard.powerChoice = entry.keyword;
-                        this.wizard.rollMessage = `Rolled ${sum} → ${entry.keyword}`;
+                        this.wizard.choiceRollMessage = `Rolled ${sum} → ${entry.keyword}`;
                     } else {
-                        this.wizard.rollMessage = `Rolled ${sum}`;
+                        this.wizard.choiceRollMessage = `Rolled ${sum}`;
                     }
                     this.render();
                 });
@@ -578,6 +586,7 @@ const RelicWizard = {
             this.wizard.baseSearch = '';
             this.wizard.power = null;
             this.wizard.powerChoice = null;
+            this.wizard.choiceRollMessage = '';
         }
         if (!keepRollMessage) this.wizard.rollMessage = '';
         this.render();
@@ -588,6 +597,7 @@ const RelicWizard = {
         if (this.wizard.power !== powerId) {
             this.wizard.power = powerId;
             this.wizard.powerChoice = null;
+            this.wizard.choiceRollMessage = '';
         }
         this.render();
     },

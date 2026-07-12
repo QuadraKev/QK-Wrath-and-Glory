@@ -5880,26 +5880,18 @@ textarea {
     white-space: nowrap;
 }
 
-/* Choice pickers and chips */
+/* Choice picker (embedded in the selected power card) */
 .relic-choice-picker {
-    margin-top: 16px;
-    padding-top: 14px;
+    margin-top: 10px;
+    padding-top: 10px;
     border-top: 1px solid var(--border-color);
+    cursor: default;
 }
 
 .relic-choice-picker h4 {
     margin: 0 0 8px;
     font-size: 13px;
     color: var(--text-primary);
-}
-
-.relic-choice-chips {
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-
-.relic-choice-chip {
-    padding: 6px 12px;
 }
 
 /* Oddity checkbox cards */

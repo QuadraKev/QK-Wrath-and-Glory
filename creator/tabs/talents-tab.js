@@ -86,7 +86,7 @@ const TalentsTab = {
         // Get dynamic options based on choice type
         const options = this.getChoiceOptions(talent);
 
-        if (talent.choiceType === 'freeform' || talent.choiceType === 'keyword') {
+        if (this.usesFreeformInput(talent)) {
             // Freeform text input
             optionsContainer.classList.add('hidden');
             freeformContainer.classList.remove('hidden');
@@ -118,6 +118,11 @@ const TalentsTab = {
         }
 
         modal.classList.remove('hidden');
+    },
+
+    // Choice types answered with the freeform text input rather than option buttons
+    usesFreeformInput(talent) {
+        return ['freeform', 'keyword', 'augmetics'].includes(talent.choiceType);
     },
 
     // Get choice options based on talent type and character state
@@ -232,7 +237,7 @@ const TalentsTab = {
 
         let choice = null;
 
-        if (this.pendingTalent.choiceType === 'freeform') {
+        if (this.usesFreeformInput(this.pendingTalent)) {
             choice = document.getElementById('talent-choice-input').value.trim();
             if (!choice) {
                 alert('Please enter a choice.');

@@ -80,6 +80,7 @@
     "prerequisites": {},
     "effect": "Pick one of your 5 senses (sight, hearing, smell, taste, or touch). Whenever you make an Awareness Test based on that sense, you gain +Rank bonus dice.",
     "flavor": "",
+    "repeatable": true,
     "requiresChoice": true,
     "choiceType": "sense",
     "choiceOptions": [
@@ -389,6 +390,7 @@
     "prerequisites": {},
     "effect": "You replace part of your biology with an augmetic, the common name for cybernetic implants in the Imperium. You may take this Talent more than once. Each time you take this Talent you may select two augmetics of Rare or lower rarity, or a single Very Rare augmetic. The GM determines which augmetics are available (usually any of those designed for your Species) and who can perform the necessary installation procedure.",
     "flavor": "",
+    "repeatable": true,
     "requiresChoice": true,
     "choiceType": "augmetics",
     "choiceLabel": "Augmetic Selection",
@@ -1625,6 +1627,7 @@
     },
     "effect": "Choose one environmental hazard: suffocation, extreme heat, extreme cold, radiation, poisons, or another option at the GM's discretion. You gain +Rank on Toughness Tests to resist the hazard's effects, and +Double Rank to Medicae (Int) and Survival (Wil) Tests to adapt protections against that hazard. You can purchase this Talent multiple times, choosing a different environmental hazard each time.",
     "flavor": "You were raised or campaigned on one of the deadliest worlds in the Imperium, and survived only by adapting your body to resist its environmental hazards.",
+    "repeatable": true,
     "requiresChoice": true,
     "choiceType": "freeform",
     "choiceLabel": "Environmental Hazard",
@@ -1819,6 +1822,7 @@
     },
     "effect": "Through reputation or assignment, you have gathered a number of followers that will do whatever you ask. If you are attacked, they intervene.\nYour devotees are a Mob of any Troop level Threat, as described in Chapter 14: Bestiary. A number of devotees equal to Double Rank +2 have decided to follow you. You may use the stats presented in Chapter 14 for each devotee, or use the following rules:\nDevotee Attributes are equal to 1 + Double Rank. Devotee Skills are equal to 1 + Double Rank. A devotee's Attributes and Skills cannot be higher than your own.\nWhenever you are hit by any form of attack, any of your devotees may make a DN5 Initiative Test as a Reflexive Action. If they succeed, the attack kills the devotee instead of hitting you.\nSlain devotees may be replaced for free with new devotees the next time you visit a major encampment or city.\nIf you take this Talent more than once, you gain more devotees of the same type you already possess.\nIf you already have followers from an archetype ability, this Talent provides additional followers of that type instead.",
     "flavor": "Through reputation or assignment, you have gathered a number of followers that will do whatever you ask. If you are attacked, they intervene.",
+    "repeatable": true,
     "source": "core",
     "page": 132
   },
@@ -2719,6 +2723,7 @@
     "prerequisites": {},
     "effect": "Select a Keyword to be the focus of your hatred. You gain +Double Rank bonus dice on melee attacks against targets that have the chosen Keyword. You suffer a +2 DN penalty whenever you interact socially with individuals of the chosen Keyword.",
     "flavor": "You have honed your hatred toward a specific foe into a weapon.",
+    "repeatable": true,
     "requiresChoice": true,
     "choiceType": "keyword",
     "choiceLabel": "Hatred Target",
@@ -2997,6 +3002,7 @@
     },
     "effect": "When you take this Talent, you must pick which of your Skills it applies to from the list in the Requirements section above. During any social encounter you can make a Skill Test using your Jargon Skill. The DN is determined by the GM based on how friendly the target is to you. If you fail, everyone around you ignores your incoherent babbling. If you succeed and the target is interested or trained in the Skill, they are likely to become more friendly to you. If the target doesn't share your knowledge and slang, they stand stupefied whilst you babble — they are distracted, unable to get away from your conversation for up to 20 minutes (Terran standard).",
     "flavor": "You're knowledgeable enough on a particular subject to open your mouth and let the information flow out. The mystifying slang, precise vernacular, and strange idioms are enough to stupefy the unlearned and make fast friends of strangers who share your passion.",
+    "repeatable": true,
     "requiresChoice": true,
     "choiceType": "skill",
     "choiceOptions": [
@@ -3369,6 +3375,7 @@
     },
     "effect": "When you take this Talent, choose a Keyword. This could be a bureau of the Imperium, a xenos species, or something esoteric (and forbidden) like daemonology. All Keyword selections are subject to GM approval. If you select another Species as the keyword, you can speak their native language as well as your own. Educational insight can have broad applications. Studying a culture's history invariably reveals information about their traditions, military prowess, and technological innovations. Whenever you make a Skill Test related to the chosen Keyword, you gain +Double Rank bonus dice. This includes Scholar Tests, but can also be relevant to any Test that involves interacting with that Keyword, including Interaction Attacks. The GM is the arbiter of what is sufficiently relevant to your selected Keyword to receive this bonus.",
     "flavor": "You are highly educated in a specific field.",
+    "repeatable": true,
     "requiresChoice": true,
     "choiceType": "keyword",
     "choiceLabel": "Lore Subject",
@@ -5373,6 +5380,7 @@
     },
     "effect": "When you take this Talent, you must select one of the Skills listed in the Requirements. When you make an Interaction Attack with the chosen Skill, you may select either 1 + Double Rank targets or a Mob of any number of Troops. The DN for the Interaction Attack does not increase.",
     "flavor": "The weight of your presence demands attention, even from large groups of individuals.",
+    "repeatable": true,
     "requiresChoice": true,
     "choiceType": "skill",
     "choiceOptions": [
@@ -5689,6 +5697,7 @@
     },
     "effect": "When you take this Talent, you must select one of your Attributes with a rating of 5 or higher. This Talent applies to that Attribute. Whenever you make a Test using the selected Attribute, you gain +Double Rank bonus dice.",
     "flavor": "",
+    "repeatable": true,
     "requiresChoice": true,
     "choiceType": "attribute",
     "choiceOptions": [
@@ -5825,6 +5834,7 @@
     "prerequisites": {},
     "effect": "Increase one of these Traits by +Rank: Conviction, Defence, Resilience, Resolve, Shock, Determination, Speed, or Wounds.",
     "flavor": "",
+    "repeatable": true,
     "requiresChoice": true,
     "choiceType": "trait",
     "choiceOptions": [
@@ -5885,6 +5895,7 @@
     },
     "effect": "Choose any Skill with a rating of 4+. When making a Test with the selected Skill, reduce any DN modifiers by –Double Rank, to a minimum of 0. This does not change the task's base difficulty, just any modifiers. Examples include attempting a Test without appropriate tools, in complete darkness, or a specific combat option.",
     "flavor": "",
+    "repeatable": true,
     "requiresChoice": true,
     "choiceType": "skill_any",
     "choiceLabel": "Skill",

@@ -253,6 +253,12 @@ const TalentsTab = {
             choice = selectedBtn.dataset.value !== undefined ? selectedBtn.dataset.value : selectedBtn.textContent;
         }
 
+        // Repeatable talents must take a different choice each time
+        if (this.pendingTalent.repeatable && State.hasTalentChoice(this.pendingTalent.id, choice)) {
+            alert('You already have this talent with that choice.');
+            return;
+        }
+
         // Add the talent with the choice
         if (State.addTalent(this.pendingTalent.id, choice)) {
             this.hideChoiceModal();
@@ -412,8 +418,8 @@ const TalentsTab = {
             const canAfford = XPCalculator.canAfford(character, talent.cost || 0);
             const canAdd = prereqCheck.met && canAfford;
 
-            // Show indicator for talents that require choices
-            const requiresChoice = talent.requiresChoice ? ' *' : '';
+            // Show indicator for talents that can be taken multiple times
+            const repeatableMark = talent.repeatable ? ' *' : '';
 
             // Create a wrapper for the row and its expandable description
             const rowWrapper = document.createElement('div');
@@ -423,7 +429,7 @@ const TalentsTab = {
             row.className = 'talent-row';
             row.innerHTML = `
                 <span class="talent-expand">&#9654;</span>
-                <span class="talent-name">${talent.name}${requiresChoice}</span>
+                <span class="talent-name">${talent.name}${repeatableMark}</span>
                 <span class="talent-cost">${talent.cost || 0}</span>
                 <span class="talent-prereq ${prereqCheck.met ? '' : 'unmet'}">
                     ${PrerequisiteChecker.formatPrerequisites(talent)}
@@ -490,6 +496,12 @@ const TalentsTab = {
             rowWrapper.appendChild(descRow);
             container.appendChild(rowWrapper);
         }
+
+        // Legend for the repeatable marker
+        const legend = document.createElement('div');
+        legend.className = 'talent-legend text-muted';
+        legend.textContent = '* Can be taken multiple times';
+        container.appendChild(legend);
 
         // Pagination controls
         this.renderPagination(totalPages);

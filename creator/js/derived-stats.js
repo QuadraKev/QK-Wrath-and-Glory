@@ -148,24 +148,16 @@ const DerivedStats = {
         );
     },
 
-    // Helper to get talent entry with choice
-    getTalentEntry(character, talentId) {
-        const entry = (character.talents || []).find(t =>
-            (typeof t === 'string' ? t : t.id) === talentId
-        );
-        if (!entry) return null;
-        return typeof entry === 'string' ? { id: entry } : entry;
-    },
-
     // Get talent bonus for a specific trait (handles Uncanny talent)
     getTalentTraitBonus(character, traitName) {
         const rank = character.rank || 1;
         let bonus = 0;
 
-        // Uncanny [Trait]: Increase one trait by +Rank
-        const uncannyEntry = this.getTalentEntry(character, 'uncanny');
-        if (uncannyEntry && uncannyEntry.choice === traitName) {
-            bonus += rank;
+        // Uncanny [Trait]: Increase one trait by +Rank (repeatable, one instance per trait)
+        for (const entry of character.talents || []) {
+            if (typeof entry === 'object' && entry.id === 'uncanny' && entry.choice === traitName) {
+                bonus += rank;
+            }
         }
 
         return bonus;

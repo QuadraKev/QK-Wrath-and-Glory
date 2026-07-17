@@ -634,6 +634,9 @@ const State = {
                 (typeof t === 'string' ? t : t.id) === talentId
             );
             if (hasTalent) return false;
+        } else if (talent.requiresChoice && choice !== null) {
+            // Repeatable choice talents need a different choice each time
+            if (this.hasTalentChoice(talentId, choice)) return false;
         }
 
         if (XPCalculator.canAfford(this.character, talent.cost || 0)) {
@@ -662,6 +665,15 @@ const State = {
             return true;
         }
         return false;
+    },
+
+    // Check if character already has a talent with this exact choice (case-insensitive)
+    hasTalentChoice(talentId, choice) {
+        const wanted = String(choice).trim().toLowerCase();
+        return this.character.talents.some(t =>
+            typeof t === 'object' && t.id === talentId &&
+            String(t.choice).trim().toLowerCase() === wanted
+        );
     },
 
     // Get talent entry (returns { id, choice } or { id } for string entries)

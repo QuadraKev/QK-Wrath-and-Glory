@@ -987,6 +987,12 @@ textarea {
     border-bottom: none;
 }
 
+.talent-legend {
+    padding: 8px 15px;
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
 .talent-row {
     display: grid;
     grid-template-columns: 30px 1fr 80px 1fr 80px;

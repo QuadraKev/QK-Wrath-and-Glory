@@ -3345,6 +3345,9 @@
     "abilities": [
       {
         "name": "Shadow Creature",
+        "unarmoredBonuses": {
+          "resilience": "rank"
+        },
         "description": "You are not a creature of flesh and blood, instead dwelling in a liminal state between realities. When you are not wearing armour, you gain +Rank Resilience, and can roll Determination against attacks that inflict Mortal Wounds. You always count as being in heavy fog, with all corresponding vision penalties (+3 DN to target with Awareness and Ballistic Skill Tests, +2 DN to target with Weapon Skill Tests). When you move, you ignore all obstacles between your start and end point, so long as you move from one shadow to another."
       }
     ],
@@ -6755,7 +6758,7 @@
     "abilities": [
       {
         "name": "Fasta! FASTA!",
-        "description": "When you are the PILOT or CREW of an ORK vehicle, you do not replace extra dice with Wrath dice when travelling at Break- Neck Speed. Further, you add +2 to your Conviction and Resolve while mounted on an ORK vehicle. This increases to +3 on any turn in which you travel at Breakneck Speed."
+        "description": "When you are the PILOT or CREW of an ORK vehicle, you do not replace extra dice with Wrath dice when travelling at Breakneck Speed. Further, you add +2 to your Conviction and Resolve while mounted on an ORK vehicle. This increases to +3 on any turn in which you travel at Breakneck Speed."
       }
     ],
     "startingWargear": [
@@ -9027,7 +9030,7 @@
     "startingWargear": [
       "Mark X Gravis Power Armour",
       "Jump Pack",
-      "Grav- Chute",
+      "Grav-Chute",
       "two Assault Bolters or two Plasma Exterminators"
     ],
     "source": "apocrypha",
@@ -9848,7 +9851,7 @@
       "Etherium",
       "Force Matrix",
       "Animus Speculum",
-      "3 Psyk- Out Grenades",
+      "3 Psyk-Out Grenades",
       "Assassinorum Bodyglove"
     ],
     "source": "apocrypha",

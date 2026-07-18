@@ -156,6 +156,22 @@ const TalentsTab = {
                 }
                 return weapons;
 
+            case 'armor_owned':
+                // Get non-shield armor the character currently owns with its wargear index
+                const armors = [];
+                const armorCounts = {};
+                for (let i = 0; i < (character.wargear || []).length; i++) {
+                    const armor = DataLoader.getArmor(character.wargear[i].id);
+                    if (!armor) continue;
+                    if ((armor.traits || []).some(t => t === 'Shield')) continue;
+                    armorCounts[armor.name] = (armorCounts[armor.name] || 0) + 1;
+                    const count = armorCounts[armor.name];
+                    const total = character.wargear.filter(w => DataLoader.getArmor(w.id)?.name === armor.name).length;
+                    const label = count > 1 || total > 1 ? `${armor.name} (#${count})` : armor.name;
+                    armors.push({ label, value: i }); // value is wargear index
+                }
+                return armors;
+
             case 'skill_any':
                 // All skills that meet the prerequisite (usually 4+)
                 const skillNames = {
@@ -297,12 +313,14 @@ const TalentsTab = {
             if (talentChoice !== null && talentChoice !== undefined) {
                 // For weapon_owned choices, convert wargear index to weapon name
                 let choiceDisplay = talentChoice;
-                if (talent.choiceType === 'weapon_owned') {
+                if (talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned') {
                     const wargearIndex = parseInt(talentChoice, 10);
                     if (!isNaN(wargearIndex) && character.wargear[wargearIndex]) {
-                        const weapon = DataLoader.getWeapon(character.wargear[wargearIndex].id);
-                        if (weapon) {
-                            choiceDisplay = weapon.name;
+                        const item = talent.choiceType === 'weapon_owned'
+                            ? DataLoader.getWeapon(character.wargear[wargearIndex].id)
+                            : DataLoader.getArmor(character.wargear[wargearIndex].id);
+                        if (item) {
+                            choiceDisplay = item.name;
                         }
                     }
                 }

@@ -1481,6 +1481,7 @@
     "abilities": [
       {
         "name": "Wraithbone Form",
+        "naturalArmor": 5,
         "effect": "Wraith Constructs are immune to the Blinded, Bleeding, and Poisoned Conditions, and cannot Suffocate. They cannot wear armour, but always count as having an Armour Rating (AR) of 5."
       }
     ],
@@ -1530,6 +1531,7 @@
       },
       {
         "name": "Wraithbone Form",
+        "naturalArmor": 5,
         "bonuses": {
           "determination": 3
         },

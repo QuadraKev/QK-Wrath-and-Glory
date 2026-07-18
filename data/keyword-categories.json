@@ -76,13 +76,13 @@
       { "value": "ORDER OF THE ARGENT SHROUD", "label": "Order of the Argent Shroud", "apocryphaBonus": {"name": "Deeds, Not Words", "effect": "When you make an attack, you may re-roll up to Rank dice on that attack.", "page": 34} },
       { "value": "ORDER OF THE BLOODY ROSE", "label": "Order of the Bloody Rose", "apocryphaBonus": {"name": "Quick to Anger", "effect": "Add +Rank bonus dice to your melee attacks when you Charge.", "page": 34} },
       { "value": "ORDER OF THE EBON CHALICE", "label": "Order of the Ebon Chalice", "apocryphaBonus": {"name": "Daughter of the Emperor", "effect": "When you roll Determination, you may spend 1 Faith. If you do so, negate all damage the attack would cause, including Mortal Wounds, but do not suffer any Shock.", "page": 34} },
-      { "value": "ORDER OF THE SACRED ROSE", "label": "Order of the Sacred Rose", "apocryphaBonus": {"name": "Devout Serenity", "effect": "You increase your Resolve by +Rank. Further, if you ever roll a 6 on your Wrath die when making a Resolve test, you gain 1 Faith.", "page": 34} },
+      { "value": "ORDER OF THE SACRED ROSE", "label": "Order of the Sacred Rose", "apocryphaBonus": {"name": "Devout Serenity", "bonuses": {"resolve": "rank"}, "effect": "You increase your Resolve by +Rank. Further, if you ever roll a 6 on your Wrath die when making a Resolve test, you gain 1 Faith.", "page": 34} },
       { "value": "ORDER OF THE VALOROUS HEART", "label": "Order of the Valorous Heart", "apocryphaBonus": {"name": "Stoic Endurance", "effect": "You add +Rank bonus dice to Determination rolls.", "page": 34} },
       { "value": "ORDER OF THE HOLY WORD", "label": "Order of the Holy Word", "apocryphaBonus": {"name": "Voice of the Church", "effect": "You gain +Rank bonus dice on all Persuasion tests.", "page": 35} },
-      { "value": "ORDER OF THE QUILL", "label": "Order of the Quill", "apocryphaBonus": {"name": "Pious Scrutiny", "effect": "Your Passive Awareness is increased by +Rank.", "page": 35} },
+      { "value": "ORDER OF THE QUILL", "label": "Order of the Quill", "apocryphaBonus": {"name": "Pious Scrutiny", "bonuses": {"passiveAwareness": "rank"}, "effect": "Your Passive Awareness is increased by +Rank.", "page": 35} },
       { "value": "ORDER OF THE SACRED OATH", "label": "Order of the Sacred Oath", "apocryphaBonus": {"name": "Voice of Judgement", "effect": "When you attempt a Persuasion interaction attack, you may spend 1 Faith Point to target +Rank enemies.", "page": 35} },
-      { "value": "ORDER OF THE LEXICON", "label": "Order of the Lexicon", "apocryphaBonus": {"name": "Unquestioned Faith", "effect": "You increase your Conviction by +Rank.", "page": 35} },
-      { "value": "ORDER OF THE KEY", "label": "Order of the Key", "apocryphaBonus": {"name": "Key to Power", "effect": "You increase your Influence by +1.", "page": 35} },
+      { "value": "ORDER OF THE LEXICON", "label": "Order of the Lexicon", "apocryphaBonus": {"name": "Unquestioned Faith", "bonuses": {"conviction": "rank"}, "effect": "You increase your Conviction by +Rank.", "page": 35} },
+      { "value": "ORDER OF THE KEY", "label": "Order of the Key", "apocryphaBonus": {"name": "Key to Power", "bonuses": {"influence": 1}, "effect": "You increase your Influence by +1.", "page": 35} },
       { "value": "ORDER OF THE GATE", "label": "Order of the Gate", "apocryphaBonus": {"name": "Watchful Counselor", "effect": "When you attempt an Awareness, Insight, Leadership, Scholar, or Persuasion test, each point of Glory you spend adds +2 dice.", "page": 35} },
       { "value": "ORDER OF THE HOLY SEAL", "label": "Order of the Holy Seal", "apocryphaBonus": {"name": "Inescapable Scrutiny", "effect": "When you succeed at an Insight test, you may spend 1 Faith point to discern some inner truth or secret shame of the target. Ask the GM one question about the target.", "page": 35} },
       { "value": "ORDER OF THE SACRED COIN", "label": "Order of the Sacred Coin", "apocryphaBonus": {"name": "Faith and Coin", "effect": "When you attempt an Influence test to requisition items, you may spend 2 Glory to gain the effects of 1 Wealth.", "page": 35} },
@@ -97,12 +97,12 @@
   "craftworld": {
     "label": "Craftworld",
     "options": [
-      { "value": "ALAITOC", "label": "Alaitoc", "apocryphaBonus": {"name": "Puritanical Discipline", "effect": "Your Conviction is increased by +Rank.", "page": 38} },
+      { "value": "ALAITOC", "label": "Alaitoc", "apocryphaBonus": {"name": "Puritanical Discipline", "bonuses": {"conviction": "rank"}, "effect": "Your Conviction is increased by +Rank.", "page": 38} },
       { "value": "BIEL-TAN", "label": "Biel-Tan", "apocryphaBonus": {"name": "Prowess of the Bladewind", "effect": "Select either ranged attacks or melee attacks. You may re-roll up to Rank dice on the chosen type of attack.", "page": 38} },
-      { "value": "IYANDEN", "label": "Iyanden", "apocryphaBonus": {"name": "Stoic and Tenacious", "effect": "Your Resolve is increased by +Rank.", "page": 38} },
+      { "value": "IYANDEN", "label": "Iyanden", "apocryphaBonus": {"name": "Stoic and Tenacious", "bonuses": {"resolve": "rank"}, "effect": "Your Resolve is increased by +Rank.", "page": 38} },
       { "value": "UL-KHARI", "label": "Ul-Khari" },
       { "value": "ULTHWE", "label": "Ulthwe", "apocryphaBonus": {"name": "Foresight of the Damned", "effect": "You increase your Passive Perception by +Rank.", "page": 38} },
-      { "value": "ALTANSAR", "label": "Altansar", "apocryphaBonus": {"name": "Grim Survivors", "effect": "Your Determination is increased by +Rank.", "page": 38} },
+      { "value": "ALTANSAR", "label": "Altansar", "apocryphaBonus": {"name": "Grim Survivors", "bonuses": {"determination": "rank"}, "effect": "Your Determination is increased by +Rank.", "page": 38} },
       { "value": "SAIM-HANN", "label": "Saim-Hann", "apocryphaBonus": {"name": "Fury of the Wild Hunt", "effect": "You increase your Speed by +Rank when you Sprint or Charge, or when mounted on an AELDARI vehicle with the Hover trait.", "page": 38} }
     ],
     "allowCustom": true,
@@ -136,7 +136,7 @@
   "legion": {
     "label": "Legion",
     "options": [
-      { "value": "BLACK LEGION", "label": "Black Legion", "apocryphaBonus": {"name": null, "effect": "The Tip of the Spear: You may re-roll Rank dice on all Ballistic Skill tests made with a ranged weapon at close range. You may also re-roll Rank dice on Weapon Skill tests made when you Charge. You also gain +1 Resolve.\nBitter Pride: You suffer a +2DN penalty for Interaction tests involving anyone outside the Black Legion, unless those people are subordinate to the Black Legion character.", "page": 32} },
+      { "value": "BLACK LEGION", "label": "Black Legion", "apocryphaBonus": {"name": null, "bonuses": {"resolve": 1}, "effect": "The Tip of the Spear: You may re-roll Rank dice on all Ballistic Skill tests made with a ranged weapon at close range. You may also re-roll Rank dice on Weapon Skill tests made when you Charge. You also gain +1 Resolve.\nBitter Pride: You suffer a +2DN penalty for Interaction tests involving anyone outside the Black Legion, unless those people are subordinate to the Black Legion character.", "page": 32} },
       { "value": "DEATH GUARD", "label": "Death Guard", "apocryphaBonus": {"name": null, "effect": "Inexorable Advance: You suffer no penalty for operating a Heavy weapon without bracing it, and when you take a normal move, you may use your Simple Action to aim.\nIntractable: You must spend a point of Glory to take the Sprint action.\nCharacters with the DEATH GUARD keyword must take NURGLE as their [MARK OF CHAOS] keyword.", "page": 31} },
       { "value": "WORD BEARERS", "label": "Word Bearers", "apocryphaBonus": {"name": null, "effect": "Profane Zeal: When you charge, you may re-roll up to Rank dice on your Weapon Skill test. In addition, you may re-roll Rank dice when you roll Determination. In addition, you are immune to fear caused by creatures with the DAEMON keyword.\nThe Will of the Gods: You start each session with 1 Wrath Point instead of 2.", "page": 32} },
       { "value": "EMPEROR'S CHILDREN", "label": "Emperor's Children", "apocryphaBonus": {"name": null, "effect": "In Pursuit of Perfection: Select one of the following skills: Awareness, Ballistic Skill, Leadership, Pilot, Weapon Skill. You gain +Rank dice as a bonus to all uses of that skill.\nFear of Imperfection: Whenever you suffer a complication on the skill chosen for Pursuit of Perfection, above, the GM gains 1 Ruin, in addition to any other results.\nCharacters with the EMPEROR'S CHILDREN keyword must take SLAANESH as their [MARK OF CHAOS] keyword.", "page": 29} },
@@ -152,7 +152,7 @@
   "shield_host": {
     "label": "Shield Host",
     "options": [
-      { "value": "EMPEROR'S CHOSEN", "label": "Emperor's Chosen", "apocryphaBonus": {"name": "Exemplar", "effect": "You increase your Influence, Resolve, and Conviction each by +1.", "page": 42} },
+      { "value": "EMPEROR'S CHOSEN", "label": "Emperor's Chosen", "apocryphaBonus": {"name": "Exemplar", "bonuses": {"influence": 1, "resolve": 1, "conviction": 1}, "effect": "You increase your Influence, Resolve, and Conviction each by +1.", "page": 42} },
       { "value": "SHADOWKEEPERS", "label": "Shadowkeepers", "apocryphaBonus": {"name": "Warden", "effect": "When an enemy engaged with you attempts to Fall Back, roll a number of d6 equal to Double Rank. For each Icon rolled, the enemy's Speed is reduced by 1.", "page": 42} },
       { "value": "DREAD HOST", "label": "Dread Host", "apocryphaBonus": {"name": "Wrath of the Throne", "effect": "At the start of the first round of combat, or when you enter combat, enemies who can see you who lack the IMPERIUM keyword must pass a DN 2 +Rank Fear test.", "page": 42} },
       { "value": "AQUILAN SHIELD", "label": "Aquilan Shield", "apocryphaBonus": {"name": "Guardian", "effect": "At the start of the first round of combat, or when you enter combat, you may select a single ally with the IMPERIUM keyword. While that ally is within 3 metres of you, they add +Rank to their Defence.", "page": 42} },
@@ -186,7 +186,7 @@
   "kabal": {
     "label": "Kabal",
     "options": [
-      { "value": "BLACK HEART", "label": "The Black Heart", "apocryphaBonus": {"name": null, "effect": "Increase the character's Resolve and Determination by +Rank.", "page": 58} },
+      { "value": "BLACK HEART", "label": "The Black Heart", "apocryphaBonus": {"name": null, "bonuses": {"resolve": "rank", "determination": "rank"}, "effect": "Increase the character's Resolve and Determination by +Rank.", "page": 58} },
       { "value": "POISONED TONGUE", "label": "The Poisoned Tongue", "apocryphaBonus": {"name": null, "effect": "The character adds +Rank dice to Stealth tests and adds +Rank ED to any damage rolls with Fleshbane weapons.", "page": 58} },
       { "value": "FLAYED SKULL", "label": "The Flayed Skull", "apocryphaBonus": {"name": null, "effect": "The character adds +Rank to all ranged attacks or melee attacks made when they are above their target.", "page": 58} },
       { "value": "OBSIDIAN ROSE", "label": "The Obsidian Rose", "apocryphaBonus": {"name": null, "effect": "The short range of any ranged weapon the character possesses is increased by +Rank, the medium range is increased by +Double Rank, and the long range is increased by three times Rank. In addition, the character may re-roll up to Rank ED when determining damage with one of their own weapons.", "page": 58} }
@@ -220,7 +220,7 @@
       { "value": "GREATER THURIAN LEAGUE", "label": "The Greater Thurian League", "apocryphaBonus": {"name": "Highly Efficient", "effect": "You add +1 to your Influence, and you gain +1 Wealth at the end of each session.", "page": 64} },
       { "value": "YMYR CONGLOMERATE", "label": "The Ymyr Conglomerate", "apocryphaBonus": {"name": "Elite Artisans", "effect": "You add +Rank to Tech skill tests and add +1 to the AR of any armour you wear.", "page": 64} },
       { "value": "URANI-SURTR REGULATES", "label": "Urani-Surtr Regulates", "apocryphaBonus": {"name": "To the Last", "effect": "You add +Rank to your Resolve, and you add +1 to your Determination.", "page": 64} },
-      { "value": "TRANS-HYPERIAN ALLIANCE", "label": "Trans-Hyperian Alliance", "apocryphaBonus": {"name": "Nomadic Explorers", "effect": "You increase your Passive Awareness by +Rank and add +1d to all Pilot skill tests.", "page": 64} },
+      { "value": "TRANS-HYPERIAN ALLIANCE", "label": "Trans-Hyperian Alliance", "apocryphaBonus": {"name": "Nomadic Explorers", "bonuses": {"passiveAwareness": "rank"}, "effect": "You increase your Passive Awareness by +Rank and add +1d to all Pilot skill tests.", "page": 64} },
       { "value": "KRONUS HEGEMONY", "label": "Kronus Hegemony", "apocryphaBonus": {"name": "Aggressive Expansion", "effect": "You may re-roll Rank dice on melee attacks when you charge and add +1ED to the damage of all melee attacks when you charge.", "page": 65} },
       { "value": "THE GHULO INDUSTRIAL COMPLEX", "label": "The Ghulo Industrial Complex" },
       { "value": "THE TYPHON-STYX PROTECTORATE", "label": "The Typhon-Styx Protectorate" },

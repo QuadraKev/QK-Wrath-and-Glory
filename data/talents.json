@@ -354,6 +354,10 @@
     },
     "effect": "Select a single suit of armour you possess when you choose this Talent. When you wear that armour, increase the Armour Rating by +Rank. You must be able to spend at least an hour a day maintaining and adjusting the armour in order to gain this bonus.",
     "flavor": "Your craft allows you to enhance the effectiveness of your armour.",
+    "requiresChoice": true,
+    "choiceType": "armor_owned",
+    "choiceLabel": "Maintained Armour",
+    "choiceDescription": "Select a suit of armour you possess to maintain (+Rank AR while worn)",
     "source": "apocrypha",
     "page": 231
   },
@@ -5306,7 +5310,7 @@
         "RAVEN GUARD"
       ]
     },
-    "effect": "When you attack an enemy unaware of your presence, or make an attack during an ambush, your target becomes Vulnerable with a rating equal to your Rank. Sudden Shot",
+    "effect": "When you attack an enemy unaware of your presence, or make an attack during an ambush, your target becomes Vulnerable with a rating equal to your Rank.",
     "flavor": "The Sons of Corax emerge from the shadows and fall upon their prey in a swift, deadly strike that leaves the enemy dead before they can respond.",
     "source": "apocrypha",
     "page": 244
@@ -5321,7 +5325,7 @@
         "stealth": 2
       }
     },
-    "effect": "When you make a ranged attack against an unaware enemy, the target, and all enemies within 5 metres of the target, must pass a Resolve test with a DN equal to your Stealth score or be Pinned. Suffer Not The Unclean to Live [Vow]",
+    "effect": "When you make a ranged attack against an unaware enemy, the target, and all enemies within 5 metres of the target, must pass a Resolve test with a DN equal to your Stealth score or be Pinned.",
     "flavor": "You know that there is no shot quite as effective as the unexpected one.",
     "source": "apocrypha",
     "page": 244
@@ -5335,7 +5339,7 @@
         "BLACK TEMPLARS"
       ]
     },
-    "effect": "When you score a Wrath critical on a melee attack against an enemy (other than a vehicle), increase the severity of that critical as if you had spent a number of points of Glory equal to your Rank. However, if you can Charge an enemy when you begin your turn, you must do so. You may only have one Vow talent. During downtime, you may replace this talent with any other BLACK TEMPLARS talent marked as a Vow. Supporting Fire",
+    "effect": "When you score a Wrath critical on a melee attack against an enemy (other than a vehicle), increase the severity of that critical as if you had spent a number of points of Glory equal to your Rank. However, if you can Charge an enemy when you begin your turn, you must do so. You may only have one Vow talent. During downtime, you may replace this talent with any other BLACK TEMPLARS talent marked as a Vow.",
     "flavor": "You will not persist an enemy of Mankind to exist in your sight.",
     "source": "apocrypha",
     "page": 244
@@ -5522,7 +5526,7 @@
         "ASTRA MILITARUM"
       ]
     },
-    "effect": "If you mean to survive to fight another day, it helps to put something between you and the enemy. When you are targeted by a ranged attack while in cover, you may take cover as a Reflexive action to increase your Defence by +Rank until the start of your next turn. If you do so, you may not move during your next turn. Tears of Isha",
+    "effect": "If you mean to survive to fight another day, it helps to put something between you and the enemy. When you are targeted by a ranged attack while in cover, you may take cover as a Reflexive action to increase your Defence by +Rank until the start of your next turn. If you do so, you may not move during your next turn.",
     "flavor": "",
     "source": "apocrypha",
     "page": 244
@@ -5565,7 +5569,7 @@
         "ghost warrior"
       ]
     },
-    "effect": "When you roll Determination, you heal 1 Wound for each Icon rolled beyond those needed to negate an attack’s damage. That is, if you took 6 damage, and rolled 8 Icons, you would heal 2 Wounds. Tormented Manifestation",
+    "effect": "When you roll Determination, you heal 1 Wound for each Icon rolled beyond those needed to negate an attack’s damage. That is, if you took 6 damage, and rolled 8 Icons, you would heal 2 Wounds.",
     "flavor": "Legend says that the first spirit stones were the tears wept by the mother-goddess Isha, cast to the material world that she might protect her children.",
     "source": "apocrypha",
     "page": 244
@@ -5751,7 +5755,7 @@
         "primaris"
       ]
     },
-    "effect": "When you are the target of an attack, you may spend 1 Wrath. Your Resilience is increased to be equal to the Base Damage of the attacking weapon. This is done before the effects of AP are applied. Unparalleled Mastery",
+    "effect": "When you are the target of an attack, you may spend 1 Wrath. Your Resilience is increased to be equal to the Base Damage of the attacking weapon. This is done before the effects of AP are applied.",
     "flavor": "Your enhanced form can withstand injuries that would slay even Firstborn Astartes.",
     "source": "apocrypha",
     "page": 245
@@ -5929,7 +5933,7 @@
         "aeldari"
       ]
     },
-    "effect": "You may attempt to use multiple psychic powers in a single turn, as part of a Multi-Action. You may use no more than 1+Rank psychic powers in one turn. Uphold the Honour of the Emperor [Vow]",
+    "effect": "You may attempt to use multiple psychic powers in a single turn, as part of a Multi-Action. You may use no more than 1+Rank psychic powers in one turn.",
     "flavor": "The incredible discipline of the Aeldari makes them amongst the most formidable psykers in the galaxy.",
     "source": "apocrypha",
     "page": 245
@@ -5975,7 +5979,7 @@
         "BLACK TEMPLARS"
       ]
     },
-    "effect": "You increase your Resilience by +Rank. However, you cannot gain the benefits of cover at any time. You may only have one Vow talent. During downtime, you may replace this talent with any other BLACK TEMPLARS talent marked as a [VOW]. Victor of the Blood Games",
+    "effect": "You increase your Resilience by +Rank. However, you cannot gain the benefits of cover at any time. You may only have one Vow talent. During downtime, you may replace this talent with any other BLACK TEMPLARS talent marked as a [VOW].",
     "flavor": "You will not fall while a single enemy draws breath.",
     "source": "apocrypha",
     "page": 245
@@ -6004,7 +6008,7 @@
         "custodian"
       ]
     },
-    "effect": "What foe could best a warrior who has pierced the defences of Holy Terra itself? Each turn in combat, you may add one bonus die to a Test, add +1 to the damage value of an attack, or increase the severity of a Critical Hit as if you had spent a point of Glory. War Hymns",
+    "effect": "What foe could best a warrior who has pierced the defences of Holy Terra itself? Each turn in combat, you may add one bonus die to a Test, add +1 to the damage value of an attack, or increase the severity of a Critical Hit as if you had spent a point of Glory.",
     "flavor": "",
     "source": "apocrypha",
     "page": 245
@@ -6135,7 +6139,7 @@
         "primaris astartes"
       ]
     },
-    "effect": "You can direct that power to bolster your prowess. You may ignore the DN increase for sustaining a Psychic Power as long as you are sustaining only one power, and that power affects only you. Whispering Spirits",
+    "effect": "You can direct that power to bolster your prowess. You may ignore the DN increase for sustaining a Psychic Power as long as you are sustaining only one power, and that power affects only you.",
     "flavor": "Your psychic might has been honed into a weapon deadlier than any blade or gun.",
     "source": "apocrypha",
     "page": 245
@@ -6210,7 +6214,7 @@
         "drukhari"
       ]
     },
-    "effect": "Enemies within 3m of you adds +1 to the DN of Resolve tests for every two Soul tokens you possess. Witch’s Nightmare",
+    "effect": "Enemies within 3m of you adds +1 to the DN of Resolve tests for every two Soul tokens you possess.",
     "flavor": "The Ynnari are surrounded by the souls of the dead, whose sibilant whispers distract and unnerve nearby foes.",
     "source": "apocrypha",
     "page": 245
@@ -6295,7 +6299,7 @@
         "pariah"
       ]
     },
-    "effect": "Creatures possessing the DAEMON or PSYKER keywords must make a Terror test with a DN equal to 2+Rank when they encounter you, even if they’re normally immune to terror. As you cause terror to them, you are immune to fear, terror, or Intimidation Interaction attacks caused by DAEMONS and PSYKERS. Wonders of the Brôkhyr",
+    "effect": "Creatures possessing the DAEMON or PSYKER keywords must make a Terror test with a DN equal to 2+Rank when they encounter you, even if they’re normally immune to terror. As you cause terror to them, you are immune to fear, terror, or Intimidation Interaction attacks caused by DAEMONS and PSYKERS.",
     "flavor": "Your presence is an impossible void to psykers, and they cannot bear your presence.",
     "source": "apocrypha",
     "page": 246

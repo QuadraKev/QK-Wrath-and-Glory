@@ -173,7 +173,7 @@ const DerivedStats = {
     // Sum a stat bonus from archetype ability `bonuses` across every route that
     // grants abilities: the primary archetype (or a custom archetype's purchased
     // ability) and any archetype ascensions
-    getArchetypeAbilityBonusTotal(character, bonusKey) {
+    getArchetypeAbilityBonusTotal(character, bonusKey, field = 'bonuses') {
         const rank = character.rank || 1;
         const archetypes = [];
         if (character.archetype?.id === 'custom' && character.customArchetype?.abilityArchetypeId) {
@@ -189,8 +189,8 @@ const DerivedStats = {
         let bonus = 0;
         for (const arch of archetypes) {
             for (const ability of arch?.abilities || []) {
-                if (ability.bonuses?.[bonusKey] !== undefined) {
-                    bonus += this.getBonusValue(ability.bonuses[bonusKey], rank);
+                if (ability[field]?.[bonusKey] !== undefined) {
+                    bonus += this.getBonusValue(ability[field][bonusKey], rank);
                 }
             }
         }
@@ -198,36 +198,59 @@ const DerivedStats = {
     },
 
     // Sum a stat bonus from species ability `bonuses`
-    getSpeciesAbilityBonusTotal(character, bonusKey) {
+    getSpeciesAbilityBonusTotal(character, bonusKey, field = 'bonuses') {
         const rank = character.rank || 1;
         const species = DataLoader.getSpecies(character.species?.id);
         let bonus = 0;
         for (const ability of species?.abilities || []) {
-            if (ability.bonuses?.[bonusKey] !== undefined) {
-                bonus += this.getBonusValue(ability.bonuses[bonusKey], rank);
+            if (ability[field]?.[bonusKey] !== undefined) {
+                bonus += this.getBonusValue(ability[field][bonusKey], rank);
             }
         }
         return bonus;
     },
 
     // Sum a stat bonus from talent `bonuses` (each owned instance counts)
-    getTalentDataBonusTotal(character, bonusKey) {
+    getTalentDataBonusTotal(character, bonusKey, field = 'bonuses') {
         const rank = character.rank || 1;
         let bonus = 0;
         for (const entry of character.talents || []) {
             const talent = DataLoader.getTalent(typeof entry === 'string' ? entry : entry.id);
-            if (talent?.bonuses?.[bonusKey] !== undefined) {
-                bonus += this.getBonusValue(talent.bonuses[bonusKey], rank);
+            if (talent?.[field]?.[bonusKey] !== undefined) {
+                bonus += this.getBonusValue(talent[field][bonusKey], rank);
             }
         }
         return bonus;
     },
 
-    // Combined archetype-ability + species-ability + talent data bonus for a stat
-    getAbilityBonusTotal(character, bonusKey) {
-        return this.getArchetypeAbilityBonusTotal(character, bonusKey)
-            + this.getSpeciesAbilityBonusTotal(character, bonusKey)
-            + this.getTalentDataBonusTotal(character, bonusKey);
+    // Sum a stat bonus from Apocrypha sub-faction keyword bonuses. These are
+    // homebrew, so they only apply while the apocrypha source is enabled.
+    getKeywordBonusTotal(character, bonusKey) {
+        if (typeof State !== 'undefined' && State.isSourceEnabled && !State.isSourceEnabled('apocrypha')) {
+            return 0;
+        }
+        const categories = DataLoader.getKeywordCategories ? DataLoader.getKeywordCategories() : null;
+        if (!categories) return 0;
+        const rank = character.rank || 1;
+        const keywords = PrerequisiteChecker.getCharacterKeywords(character);
+        let bonus = 0;
+        for (const cat of Object.values(categories)) {
+            for (const opt of cat.options || []) {
+                if (opt.apocryphaBonus?.bonuses?.[bonusKey] !== undefined && keywords.includes(opt.value)) {
+                    bonus += this.getBonusValue(opt.apocryphaBonus.bonuses[bonusKey], rank);
+                }
+            }
+        }
+        return bonus;
+    },
+
+    // Combined archetype-ability + species-ability + talent + keyword data bonus for a stat
+    getAbilityBonusTotal(character, bonusKey, field = 'bonuses') {
+        const keywordBonus = field === 'bonuses' ? this.getKeywordBonusTotal(character, bonusKey) : 0;
+        return this.getArchetypeAbilityBonusTotal(character, bonusKey, field)
+            + this.getSpeciesAbilityBonusTotal(character, bonusKey, field)
+            + this.getTalentDataBonusTotal(character, bonusKey, field)
+            + keywordBonus;
     },
 
     // Calculate Defence (Initiative - 1 + Shield AR + Equipment Bonuses + Talent Bonuses + Mutation Bonuses)
@@ -258,7 +281,12 @@ const DerivedStats = {
         const talentBonus = this.getTalentTraitBonus(character, 'Resilience');
         const mutationBonus = this.getMutationBonusTotal(character, 'resilience');
         const abilityBonus = this.getAbilityBonusTotal(character, 'resilience');
-        return base + subOptionBonus + equipBonus + talentBonus + mutationBonus + abilityBonus;
+        // Unarmored ability bonuses (e.g. Mandrake's Shadow Creature) apply only
+        // when no armour is worn
+        const unarmoredBonus = bestArmorAR === 0
+            ? this.getAbilityBonusTotal(character, 'resilience', 'unarmoredBonuses')
+            : 0;
+        return base + subOptionBonus + equipBonus + talentBonus + mutationBonus + abilityBonus + unarmoredBonus;
     },
 
     // Calculate Determination (equal to Toughness + background bonus + Talent Bonuses)
@@ -368,7 +396,8 @@ const DerivedStats = {
         }
 
         const mutationBonus = this.getMutationBonusTotal(character, 'passiveAwareness');
-        return base + talentBonus + mutationBonus;
+        const abilityBonus = this.getAbilityBonusTotal(character, 'passiveAwareness');
+        return base + talentBonus + mutationBonus + abilityBonus;
     },
 
     // Calculate Influence (Fellowship - 1 + Archetype Bonus + Background Bonus + Ascension Bonuses)
@@ -400,7 +429,8 @@ const DerivedStats = {
             }
         }
 
-        return Math.max(0, fellowship - 1 + archetypeBonus + backgroundBonus + ascensionBonus);
+        const abilityBonus = this.getAbilityBonusTotal(character, 'influence');
+        return Math.max(0, fellowship - 1 + archetypeBonus + backgroundBonus + ascensionBonus + abilityBonus);
     },
 
     // Tiers gained by a single ascension: experience ascensions are one tier each;
@@ -537,24 +567,50 @@ const DerivedStats = {
         let shieldAR = 0;
         let shieldName = null;
 
-        for (const item of character.wargear || []) {
+        // Armour-Monger: +Rank AR on the maintained suit (stored as a wargear index)
+        const rank = character.rank || 1;
+        let armourMongerIndex = -1;
+        for (const t of character.talents || []) {
+            if (typeof t === 'object' && t.id === 'armourmonger_aoa' && t.choice !== null && t.choice !== undefined) {
+                armourMongerIndex = parseInt(t.choice, 10);
+            }
+        }
+
+        const wargear = character.wargear || [];
+        for (let i = 0; i < wargear.length; i++) {
+            const item = wargear[i];
             const armor = DataLoader.getArmor(item.id);
             if (!armor) continue;
 
-            const ar = armor.ar || 0;
+            let ar = armor.ar || 0;
+            let armorName = armor.name;
+            if (i === armourMongerIndex) {
+                ar += rank;
+                armorName = `${armor.name} (Armour-Monger)`;
+            }
             const traits = armor.traits || [];
             const isShield = traits.some(t => t === 'Shield');
 
             if (isShield) {
                 if (ar > shieldAR) {
                     shieldAR = ar;
-                    shieldName = armor.name;
+                    shieldName = armorName;
                 }
             } else {
                 if (ar > bestArmorAR) {
                     bestArmorAR = ar;
-                    bestArmorName = armor.name;
+                    bestArmorName = armorName;
                 }
+            }
+        }
+
+        // Natural armour from species abilities (e.g. Wraithbone Form) counts as
+        // worn armour when better than anything owned
+        const species = DataLoader.getSpecies(character.species?.id);
+        for (const ability of species?.abilities || []) {
+            if (ability.naturalArmor && ability.naturalArmor > bestArmorAR) {
+                bestArmorAR = ability.naturalArmor;
+                bestArmorName = ability.name;
             }
         }
 

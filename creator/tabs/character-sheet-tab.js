@@ -1438,14 +1438,16 @@ const CharacterSheetTab = {
 
             if (!talent) return '';
 
-            // For weapon_owned choices, convert wargear index to weapon name
+            // For weapon_owned/armor_owned choices, convert wargear index to item name
             let choiceDisplay = choice;
-            if (choice !== null && choice !== undefined && talent.choiceType === 'weapon_owned') {
+            if (choice !== null && choice !== undefined && (talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned')) {
                 const wargearIndex = parseInt(choice, 10);
                 if (!isNaN(wargearIndex) && character.wargear[wargearIndex]) {
-                    const weapon = DataLoader.getWeapon(character.wargear[wargearIndex].id);
-                    if (weapon) {
-                        choiceDisplay = weapon.name;
+                    const item = talent.choiceType === 'weapon_owned'
+                        ? DataLoader.getWeapon(character.wargear[wargearIndex].id)
+                        : DataLoader.getArmor(character.wargear[wargearIndex].id);
+                    if (item) {
+                        choiceDisplay = item.name;
                     }
                 }
             }

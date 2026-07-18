@@ -1235,6 +1235,10 @@
   },
   {
     "id": "codex_discipline_aoa",
+    "bonuses": {
+      "conviction": "rank",
+      "resolve": "rank"
+    },
     "name": "Codex Discipline (Abundance of Apocrypha)",
     "cost": 10,
     "prerequisites": {
@@ -1667,6 +1671,9 @@
   },
   {
     "id": "ded_ard_aoa",
+    "bonuses": {
+      "resilience": "rank"
+    },
     "name": "Ded ‘Ard! (Abundance of Apocrypha)",
     "cost": 40,
     "prerequisites": {
@@ -2819,6 +2826,10 @@
   },
   {
     "id": "immortal_endurance_aoa",
+    "bonuses": {
+      "resilience": 2,
+      "determination": 2
+    },
     "name": "Immortal Endurance (Abundance of Apocrypha)",
     "cost": 30,
     "prerequisites": {
@@ -5954,6 +5965,9 @@
   },
   {
     "id": "uphold_the_honour_of_the_emperor_vow_aoa",
+    "bonuses": {
+      "resilience": "rank"
+    },
     "name": "Uphold the Honour of the Emperor [Vow] (Abundance of Apocrypha)",
     "cost": 20,
     "prerequisites": {

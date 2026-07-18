@@ -162,6 +162,9 @@
       },
       {
         "name": "Honour the Chapter",
+        "bonuses": {
+          "resolve": 1
+        },
         "effect": "You are subject to the orders of your chapter master, and must honour the beliefs and traditions of your chapter. Your Resolve increases by +1."
       },
       {
@@ -597,6 +600,9 @@
       },
       {
         "name": "Honour the Chapter (Primaris)",
+        "bonuses": {
+          "resolve": 1
+        },
         "effect": "You are subject to the orders of your chapter master, and must honour the beliefs and traditions of your chapter. Your Resolve increases by +1. As a Primaris, you ignore any impurities in your Chapter Gene-Seed, and also gain +3 Wounds."
       },
       {
@@ -1524,6 +1530,9 @@
       },
       {
         "name": "Wraithbone Form",
+        "bonuses": {
+          "determination": 3
+        },
         "effect": "Your robotic body is extremely resistant to harm. Your body naturally has an Armour Rating of 5. In addition, your Determination increases by +3d, and you are immune to the Bleeding, Exhausted, and Poisoned conditions, and cannot suffocate. You are healed using the Tech skill instead of Medicae."
       },
       {
@@ -1582,6 +1591,10 @@
       },
       {
         "name": "Indomitable, Incorruptible",
+        "bonuses": {
+          "resolve": 2,
+          "maxWounds": 4
+        },
         "effect": "You add +2 to your Resolve, and you automatically succeed on all Corruption Tests. Your Maximum Wounds are increased by +4."
       },
       {
@@ -1874,6 +1887,9 @@
     "abilities": [
       {
         "name": "Shrouded Soul",
+        "bonuses": {
+          "conviction": 2
+        },
         "effect": "Your Conviction increases by +2."
       },
       {
@@ -1957,6 +1973,9 @@
     "abilities": [
       {
         "name": "Cerebral Unit",
+        "bonuses": {
+          "conviction": 2
+        },
         "effect": "Your Conviction increases by +2. Further, if you are slain, your Cerebral Unit (CU) can be retrieved and a new body built for you."
       },
       {

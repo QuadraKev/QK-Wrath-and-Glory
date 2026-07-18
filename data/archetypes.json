@@ -776,6 +776,9 @@
     "abilities": [
       {
         "name": "Armour of Faith",
+        "bonuses": {
+          "resolve": "rank"
+        },
         "description": "You gain +Double Rank bonus dice to melee attack tests against targets with the CHAOS or HERETIC Keyword. Your Resolve also increases by +Rank."
       }
     ],
@@ -2980,6 +2983,9 @@
     "abilities": [
       {
         "name": "War Construct",
+        "bonuses": {
+          "determination": "rank"
+        },
         "description": "Your new body weathers the strains of battle better than any living creature could. Any ranged weapons you wield without the Heavy Trait gain the Pistol Trait. When wielding two melee weapons, you reduce the DN penalty for making Multi-Attacks by 2. You gain +Rank Determination."
       }
     ],
@@ -3470,6 +3476,9 @@
     "abilities": [
       {
         "name": "Master of Pain",
+        "bonuses": {
+          "resilience": "rank"
+        },
         "description": "You have inflicted such violations upon your own flesh that enemy attacks are barely cause for concern. You gain +Rank Resilience. In addition, when you heal another creature's Wounds, you can choose to heal additional Wounds by inflicting an equal amount of Shock on the patient, up to Double Rank."
       }
     ],
@@ -4635,6 +4644,9 @@
     "abilities": [
       {
         "name": "Sanctified Linguist",
+        "bonuses": {
+          "conviction": "rank"
+        },
         "description": "Sanctified Linguist: You add +Rank bonus dice on Scholar tests relating to language, and you know Double Rank additional languages. You also gain +Rank Conviction."
       }
     ],
@@ -4774,6 +4786,9 @@
     "abilities": [
       {
         "name": "Aura of Change",
+        "bonuses": {
+          "resilience": "rank"
+        },
         "description": "Aura of Change: Your Resilience increases by +Rank, and you make roll Determination against Mortal Wounds. In addition, gain +1d3 Corruption."
       }
     ],
@@ -4876,6 +4891,9 @@
     "abilities": [
       {
         "name": "Insensible to Pain",
+        "bonuses": {
+          "maxShock": "rank"
+        },
         "description": "Insensible to Pain: Your maximum Shock is increased by +Rank. Further, when you roll Determination, you may re-roll any die which rolls a 1. You may roll Determination against Mortal Wounds. You cannot wear armour, due to your altered physiology."
       }
     ],
@@ -5830,6 +5848,9 @@
     "abilities": [
       {
         "name": "Voltaic Fanaticism",
+        "bonuses": {
+          "maxShock": "doubleRank"
+        },
         "description": "Your maximum Shock is increased by +Double Rank, and you ignore all penalties for being Wounded."
       }
     ],
@@ -5914,6 +5935,9 @@
     "abilities": [
       {
         "name": "Voltaic Fanaticism",
+        "bonuses": {
+          "maxShock": "doubleRank"
+        },
         "description": "Your maximum Shock is increased by +Double Rank, and you ignore all penalties for being Wounded."
       }
     ],
@@ -7120,6 +7144,9 @@
     "abilities": [
       {
         "name": "Hardened Augmetics",
+        "bonuses": {
+          "resilience": "rank"
+        },
         "description": "Your Resilience is increased by +Rank, but you may not wear any armour. In addition, when you roll Determination, you may re- roll any dice which roll 1."
       }
     ],
@@ -8329,6 +8356,10 @@
     "abilities": [
       {
         "name": "Magos Biologis",
+        "bonuses": {
+          "maxWounds": "rank",
+          "maxShock": "rank"
+        },
         "description": "You add +Rank bonus dice to any Medicae test you attempt and take only half as long to perform a Medicae test. In addition, your bioengineered and genetic augmentations increase your Max Wounds and Max Shock by +Rank."
       }
     ],
@@ -8790,6 +8821,9 @@
     "abilities": [
       {
         "name": "Disgustingly Resilient",
+        "bonuses": {
+          "speed": -1
+        },
         "description": "You may roll Determination against Mortal Wounds. In addition, any Wounds negated by Determination are ignored rather than being converted into Shock. However, your Speed is reduced by 1. In addition, you gain 1d3x4 Corruption when you select this Archetype."
       }
     ],

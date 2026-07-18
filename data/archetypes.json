@@ -5870,8 +5870,8 @@
     "influenceModifier": 2,
     "abilities": [
       {
-        "name": "Serpent's Tongue You add +Rank bonus dice to all Persuasion and Intimidation Interaction attacks against targets with the IMPERIUM, SCUM, or HERETIC keywords. On a successful Interaction Attack, you may spend 1 Wrath to add +Rank Exalted Icons to the result.",
-        "description": ""
+        "name": "Serpent's Tongue",
+        "description": "You add +Rank bonus dice to all Persuasion and Intimidation Interaction attacks against targets with the IMPERIUM, SCUM, or HERETIC keywords. On a successful Interaction Attack, you may spend 1 Wrath to add +Rank Exalted Icons to the result."
       }
     ],
     "startingWargear": [
@@ -6126,8 +6126,8 @@
     "influenceModifier": 1,
     "abilities": [
       {
-        "name": "Fix it Proppa. You gain +Double Rank bonus dice on Tech tests to fix any weapon, vehicle, or other machine with the ORK keyword. In addition, during a regroup or respite, you may tinker with a weapon, vehicle, or other machine with the ORK keyword. If tinkering with a weapon, you may add your Rank from the weapon's Range (add the same to all range categories), ED, Salvo rating, or any rated Trait the weapon already possesses. Other machines gain a bonus of the GM's discretion. These bonuses last until the next respite, or until the machine suffers a complication, whichever comes first.",
-        "description": ""
+        "name": "Fix it Proppa",
+        "description": "You gain +Double Rank bonus dice on Tech tests to fix any weapon, vehicle, or other machine with the ORK keyword. In addition, during a regroup or respite, you may tinker with a weapon, vehicle, or other machine with the ORK keyword. If tinkering with a weapon, you may add your Rank from the weapon's Range (add the same to all range categories), ED, Salvo rating, or any rated Trait the weapon already possesses. Other machines gain a bonus of the GM's discretion. These bonuses last until the next respite, or until the machine suffers a complication, whichever comes first."
       }
     ],
     "startingWargear": [
@@ -6730,8 +6730,8 @@
     "influenceModifier": 0,
     "abilities": [
       {
-        "name": "Fasta! FASTA! When you are the PILOT or CREW of an ORK vehicle, you do not replace extra dice with Wrath dice when travelling at Break- Neck Speed. Further, you add +2 to your Conviction and Resolve while mounted on an ORK vehicle. This increases to +3 on any turn in which you travel at Breakneck Speed.",
-        "description": ""
+        "name": "Fasta! FASTA!",
+        "description": "When you are the PILOT or CREW of an ORK vehicle, you do not replace extra dice with Wrath dice when travelling at Break- Neck Speed. Further, you add +2 to your Conviction and Resolve while mounted on an ORK vehicle. This increases to +3 on any turn in which you travel at Breakneck Speed."
       }
     ],
     "startingWargear": [
@@ -7346,8 +7346,8 @@
     "influenceModifier": 4,
     "abilities": [
       {
-        "name": "Voice of the Tau'va You gain +Rank bonus dice whenever you make a social Skill Test against a T'AU EMPIRE character. This increases to +Double Rank if the character's species is Shas T'au, Fio T'au, Por T'au, or Kor T'au.",
-        "description": ""
+        "name": "Voice of the Tau'va",
+        "description": "You gain +Rank bonus dice whenever you make a social Skill Test against a T'AU EMPIRE character. This increases to +Double Rank if the character's species is Shas T'au, Fio T'au, Por T'au, or Kor T'au."
       }
     ],
     "startingWargear": [
@@ -7718,8 +7718,8 @@
     "influenceModifier": 1,
     "abilities": [
       {
-        "name": "Cruel Hunters Enemies within 15 metres of you add your Rank to the DN of any Resolve tests they are required to make.",
-        "description": ""
+        "name": "Cruel Hunters",
+        "description": "Enemies within 15 metres of you add your Rank to the DN of any Resolve tests they are required to make."
       }
     ],
     "startingWargear": [
@@ -8040,8 +8040,8 @@
     "influenceModifier": 2,
     "abilities": [
       {
-        "name": "Skyleap So long as you are able to Fly, you may Fall Back as a Simple action, rather than a Combat Action. In addition, when you take the Full Defence action, you immediately move twice your Flying Speed (instead of halving your Speed) away from the enemy and add +Rank bonus dice to the Initiative test to increase your Defence. Naturally, these abilities require that you be able to fly, and have room to do so.",
-        "description": ""
+        "name": "Skyleap",
+        "description": "So long as you are able to Fly, you may Fall Back as a Simple action, rather than a Combat Action. In addition, when you take the Full Defence action, you immediately move twice your Flying Speed (instead of halving your Speed) away from the enemy and add +Rank bonus dice to the Initiative test to increase your Defence. Naturally, these abilities require that you be able to fly, and have room to do so."
       }
     ],
     "startingWargear": [
@@ -8170,8 +8170,8 @@
     "influenceModifier": 0,
     "abilities": [
       {
-        "name": "The Power of the WAAAGH! You are a Psyker; you know the Smite psychic power. You know the WAAAGH discipline, and one power from that Discipline. When using psychic powers, you do not choose a Power Level; rather, you gain one additional Wrath die for every five Orks within 20 metres of you. You must roll these Wrath dice. Each 1 rolled on a Wrath die when using a Psychic Power inflicts one Mortal Wound on you instead of a roll on the Perils of the Warp table, and if you exceed your Max Wounds from this, you explode, dying instantly and inflicting 1d3+Tier Mortal Wounds on all Orks within 20 metres.",
-        "description": ""
+        "name": "The Power of the WAAAGH!",
+        "description": "You are a Psyker; you know the Smite psychic power. You know the WAAAGH discipline, and one power from that Discipline. When using psychic powers, you do not choose a Power Level; rather, you gain one additional Wrath die for every five Orks within 20 metres of you. You must roll these Wrath dice. Each 1 rolled on a Wrath die when using a Psychic Power inflicts one Mortal Wound on you instead of a roll on the Perils of the Warp table, and if you exceed your Max Wounds from this, you explode, dying instantly and inflicting 1d3+Tier Mortal Wounds on all Orks within 20 metres."
       }
     ],
     "startingWargear": [
@@ -8489,8 +8489,8 @@
     "influenceModifier": 2,
     "abilities": [
       {
-        "name": "Blood for the Blood God! When you make an All-Out Attack, you may add up to +Rank additional Wrath dice to your dice pool, in addition to the normal Wrath die. If any of these Wrath dice are 6s, then you score a Critical hit. That Critical Hit increases in effect as if a Glory point had been spent, for each Wrath die after the first which rolls a 6. In addition, you gain 1d3x4 Corruption when you select this Archetype.",
-        "description": ""
+        "name": "Blood for the Blood God!",
+        "description": "When you make an All-Out Attack, you may add up to +Rank additional Wrath dice to your dice pool, in addition to the normal Wrath die. If any of these Wrath dice are 6s, then you score a Critical hit. That Critical Hit increases in effect as if a Glory point had been spent, for each Wrath die after the first which rolls a 6. In addition, you gain 1d3x4 Corruption when you select this Archetype."
       }
     ],
     "startingWargear": [
@@ -8838,8 +8838,8 @@
     "influenceModifier": 1,
     "abilities": [
       {
-        "name": "Firestorm. When you make a ranged attack and do not move during your turn, you increase the Salvo of your weapons by +Rank. In addition, when you wield a pair of Auto Boltstorm Gauntlets or Flamestorm Gauntlets, you may benefit from the Dual Wield or Simultaneous Strike talents even though those weapons lack the Pistol trait.",
-        "description": ""
+        "name": "Firestorm",
+        "description": "When you make a ranged attack and do not move during your turn, you increase the Salvo of your weapons by +Rank. In addition, when you wield a pair of Auto Boltstorm Gauntlets or Flamestorm Gauntlets, you may benefit from the Dual Wield or Simultaneous Strike talents even though those weapons lack the Pistol trait."
       }
     ],
     "startingWargear": [
@@ -10422,8 +10422,8 @@
     "influenceModifier": 1,
     "abilities": [
       {
-        "name": "Cutting of the Crone's Cord Your weapons take life so utterly and completely that it inspires abject dread in the living. When you make a ranged attack with a DISTORT weapon, enemies within 6m of a target slain by the attack must pass a DN 2+Rank Resolve test or suffer the Pinned condition.",
-        "description": ""
+        "name": "Cutting of the Crone's Cord",
+        "description": "Your weapons take life so utterly and completely that it inspires abject dread in the living. When you make a ranged attack with a DISTORT weapon, enemies within 6m of a target slain by the attack must pass a DN 2+Rank Resolve test or suffer the Pinned condition."
       }
     ],
     "startingWargear": [

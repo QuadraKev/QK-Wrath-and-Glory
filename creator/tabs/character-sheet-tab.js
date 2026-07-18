@@ -343,6 +343,12 @@ const CharacterSheetTab = {
                 Glossary.enhanceElement(eff);
             });
 
+            // Weapon upgrade names are pre-wrapped as glossary terms — only attach handlers
+            const upgradeCells = container.querySelectorAll('.sheet-weapon-upgrades');
+            upgradeCells.forEach(cell => {
+                Glossary.attachHandlers(cell);
+            });
+
             // NOTE: .sheet-item-description is intentionally NOT processed - these are flavor text
         }
     },
@@ -713,8 +719,10 @@ const CharacterSheetTab = {
                     : `${weapon.range.short ?? '-'}/${weapon.range.medium ?? '-'}/${weapon.range.long ?? '-'}m`)
                 : '-';
 
-            // Build upgrade names display
-            const upgradeNames = weapon.upgradeDetails.map(u => u.name).join(', ');
+            // Build upgrade names display (each name is a glossary term with a popout)
+            const upgradeNames = weapon.upgradeDetails.map(u =>
+                `<span class="glossary-term" data-term-key="${u.id}" data-term-type="weaponUpgrade">${u.name}</span>`
+            ).join(', ');
             const upgradesDisplay = upgradeNames
                 ? `<div class="sheet-weapon-upgrades">${upgradeNames}</div>`
                 : '';

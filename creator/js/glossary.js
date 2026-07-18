@@ -282,6 +282,9 @@ const Glossary = {
             psychicPower: 'psychicPowers',
             keyword: 'keywords'
         };
+        if (type === 'weaponUpgrade' && typeof DataLoader !== 'undefined') {
+            return DataLoader.getWeaponUpgrade(key) || null;
+        }
         const category = typeToCategory[type];
         const block = category && this.data[category];
         return block && block[key] ? block[key] : null;
@@ -303,6 +306,7 @@ const Glossary = {
         if (type === 'equipment') return 'Equipment';
         if (type === 'archetype') return 'Archetype';
         if (type === 'species') return 'Species';
+        if (type === 'weaponUpgrade') return 'Weapon Upgrade';
         return 'Term';
     },
 
@@ -354,7 +358,8 @@ const Glossary = {
                 ['talent', DataLoader.getAllTalents],
                 ['equipment', DataLoader.getAllEquipment],
                 ['archetype', DataLoader.getAllArchetypes],
-                ['species', DataLoader.getAllSpecies]
+                ['species', DataLoader.getAllSpecies],
+                ['weaponUpgrade', DataLoader.getAllWeaponUpgrades]
             ];
             for (const [type, getter] of compendium) {
                 if (typeof getter !== 'function') continue;
@@ -388,7 +393,12 @@ const Glossary = {
         // no divider) so the common case is visually unchanged.
         const sections = definitions.map((def, index) => {
             // Compendium entries (talents) use `effect`, not `description`.
-            const processedDescription = this.processText(def.description || def.effect || '');
+            // Weapon upgrades have both: effect is the rules text, description
+            // the flavor, so show effect first (matching the Compendium).
+            const bodyText = def.type === 'weaponUpgrade'
+                ? [def.effect, def.description].filter(Boolean).join('<br>')
+                : (def.description || def.effect || '');
+            const processedDescription = this.processText(bodyText);
 
             // Format source + page reference for this specific definition.
             const sourceRef = typeof DataLoader !== 'undefined' ? DataLoader.formatSourcePage(def) : '';

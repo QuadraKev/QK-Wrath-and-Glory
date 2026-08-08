@@ -58,31 +58,58 @@ Each follower:
   id: "flw_1",                  // local id, for list operations
   threatId: "cyber_mastiff",    // key into data/threats.json
   name: "",                     // optional custom name; falls back to the threat name
-  fromDevotees: false,          // true = this unit comes from the Devotees talent
+  source: "other",              // which talent or ability granted this follower
   kind: "individual" | "mob",
   count: 1,                     // starting members; mob only
   livingCount: 1,               // current members; mob only. Drives the attack bonus
-  useDevoteeStats: false,       // only permitted when fromDevotees is true
+  useAlternativeStats: false,   // only permitted when the source allows it
   currentWounds: null,          // null = undamaged
   currentShock: null,
   notes: ""
 }
 ```
 
-### The `fromDevotees` flag
+### The `source` field
 
-The flag controls three behaviors:
+Four talents carry the alternative-stats rule and two do not, thus a single flag cannot express
+the difference. `source` names the granting talent. Its `id` values match real talent ids, so
+the UI can show whether the character has actually taken that talent.
 
-- `kind` becomes `mob`, because Devotees are always a mob.
-- `count` defaults to Double Rank + 2.
-- The `useDevoteeStats` toggle becomes available. Its label cites core p132.
+`creator/js/followers.js` holds the table:
 
-When the flag is false, the follower uses the printed statblock and the stats toggle is hidden.
-This keeps the Cyber Mastiff and the Animal Companion correct, because neither has an
-alternative-stats rule.
+```js
+const FOLLOWER_SOURCES = [
+  { id: 'devotees',            name: 'Devotees',           book: 'core',      page: 132,
+    altStats: true,  forcesMob: true,
+    hint: 'A Mob of any Troop threat. Double Rank + 2 members.' },
+  { id: 'companion_aoa',       name: 'Companion',          book: 'apocrypha', page: 234,
+    altStats: true,  forcesMob: false, hint: 'A single Troop threat.' },
+  { id: 'companion_elite_aoa', name: 'Companion (Elite)',  book: 'apocrypha', page: 234,
+    altStats: true,  forcesMob: false, hint: 'A single Elite threat.' },
+  { id: 'familiar_aoa',        name: 'Familiar',           book: 'apocrypha', page: 236,
+    altStats: true,  forcesMob: false,
+    hint: 'A single Troop threat of Tiny or Small size. Defence +2 within 3m.' },
+  { id: 'animal_companion',    name: 'Animal Companion',   book: 'aeldari',   page: 60,
+    altStats: false, forcesMob: false,
+    hint: 'A single BEAST threat that is not an Adversary at your Tier.' },
+  { id: 'other',               name: 'Other or GM-granted', book: null,       page: null,
+    altStats: false, forcesMob: false, hint: 'Uses the printed statblock.' },
+];
+```
 
-The Companion and Familiar talents have the same alternative-stats clause. This design does not
-surface it for them. To add it later, extend the same condition.
+Behavior:
+
+- `altStats: true` shows the `useAlternativeStats` toggle, labelled with that talent's book and
+  page. `altStats: false` hides it, thus the Animal Companion and the Arbites Cyber Mastiff keep
+  the printed statblock.
+- `forcesMob: true`, which is Devotees alone, sets `kind` to `mob` and defaults `count` to
+  Double Rank + 2.
+- The `hint` shows below the dropdown as guidance. It never blocks a choice, which keeps the
+  picker freeform.
+
+The default is `other`, which gives the printed statblock. Every source is always listed, and
+the list does not depend on which talents the character has taken, because a follower can also
+arrive through an archetype ability or a GM ruling.
 
 ## Lazy loading
 
@@ -177,7 +204,8 @@ mobAttackBonus(livingCount) =
 The outer `Math.max(0, …)` matters. Without it, a mob of 0 living members returns -1. The
 bestiary clamps the same way at line 462.
 
-Devotee stats, which apply only when `useDevoteeStats` is true:
+Alternative stats, which apply only when `useAlternativeStats` is true and the source permits
+it:
 
 ```js
 value = Math.min(1 + 2 * rank, characterValue)
@@ -190,9 +218,9 @@ value comes from `DerivedStats.getEffectiveAttribute()`.
 Threat skills are a free-text string, thus the card shows one line, `All Skills: N`, rather than
 a parse of the printed string.
 
-The talent redefines Attributes and Skills only. It says nothing about Wounds, Shock, Defence,
-or Resilience, thus those keep the printed values. The card labels the mode, so the reader can
-see which values changed.
+All four talents redefine Attributes and Skills only. None says anything about Wounds, Shock,
+Defence, or Resilience, thus those keep the printed values. The card labels the mode, so the
+reader can see which values changed.
 
 ## Character sheet
 
@@ -214,25 +242,34 @@ no dependencies, exit code 1 on failure.
 Cases:
 
 1. `mobAttackBonus` for counts 0, 1, 2, 3, 4, 5, 10. Expect 0, 0, 1, 1, 2, 2, 5.
-2. Devotee stats at rank 1, 2, and 3, which give 3, 5, and 7.
+2. Alternative stats at rank 1, 2, and 3, which give 3, 5, and 7.
 3. The cap. A rank 3 character with Strength 4 gets 4, not 7.
 4. The threat-key to character-key attribute map covers all seven attributes.
 5. Every `threatId` a test follower can hold resolves in `data/threats.json`.
+6. Every `FOLLOWER_SOURCES` id except `other` resolves to a real talent id in
+   `data/talents.json`. This catches a talent id that a later data edit renames.
+7. `altStats` is true for exactly `devotees`, `companion_aoa`, `companion_elite_aoa`, and
+   `familiar_aoa`, and false for the rest.
+8. `forcesMob` is true for `devotees` alone.
 
 Browser verification:
 
 1. Startup does NOT fetch `threats.json`. Check the network requests.
 2. Opening the Followers section fetches it once, and a second visit does not refetch.
-3. Add a Cyber Mastiff. The card renders and no stats toggle appears.
-4. Add a Devotees mob. The count defaults to Double Rank + 2, and the toggle appears.
-5. Wounds and shock tracking persists through an auto-save and a reload.
+3. Add a Cyber Mastiff, left at source `other`. The card renders and no stats toggle appears.
+4. Set the source to Devotees. The unit becomes a mob and the count defaults to Double Rank + 2,
+   and the alternative-stats toggle appears citing core p132.
+5. Set the source to Companion. The unit stays an individual, and the toggle still appears,
+   citing apocrypha p234.
+6. Set the source to Animal Companion. The toggle disappears and the printed statblock returns.
+7. Wounds and shock tracking persists through an auto-save and a reload.
 6. Save to file and load back. The followers array round-trips.
 7. A character saved before this feature loads with an empty followers array.
 
 ## Out of scope
 
-- Temporary summons, such as Daemonic Summons.
-- The alternative-stats rule for the Companion and Familiar talents.
+- Temporary summons, such as Daemonic Summons, which last 3 rounds and are thus not roster
+  entries. A player can still add one by hand, because the picker is freeform.
 - Any bestiary change.
 - Unifying the threat-card renderer into `shared/`.
 - Experience-point or Influence costs for followers.

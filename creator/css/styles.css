@@ -6140,3 +6140,162 @@ textarea {
     white-space: pre-line;
     padding: 0 12px;
 }
+
+/* Tier/Threat Table */
+.tier-threat-table {
+    width: auto;
+    margin-bottom: 10px;
+}
+
+.tier-threat-table th,
+.tier-threat-table td {
+    min-width: 50px;
+}
+
+/* Attributes Table */
+.attributes-table th,
+.attributes-table td {
+    min-width: 45px;
+}
+
+/* Resilience Row */
+.resilience-row {
+    background: var(--bg-tertiary);
+    padding: 10px 15px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 15px;
+}
+
+.resilience-label {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.resilience-value {
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
+.resilience-note {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+/* Defence/Wounds/Shock Table */
+.combat-stats-table th,
+.combat-stats-table td {
+    min-width: 80px;
+}
+
+/* Skills Row */
+.skills-row {
+    margin-bottom: 15px;
+}
+
+.skills-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+.skills-value {
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+/* Abilities Section */
+.abilities-section {
+    margin-bottom: 15px;
+}
+
+.abilities-header {
+    background: var(--bg-tertiary);
+    padding: 8px 12px;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    border-left: 3px solid var(--accent-gold);
+    margin-bottom: 10px;
+}
+
+.ability-type {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+    margin-right: 6px;
+}
+
+.ability-stats {
+    color: var(--accent-gold);
+    font-weight: 500;
+    margin-left: 4px;
+}
+
+.ability-description {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-top: 4px;
+}
+
+/* Bonuses Section */
+.bonuses-section {
+    margin-bottom: 15px;
+}
+
+.bonuses-header {
+    background: var(--bg-tertiary);
+    padding: 8px 12px;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+.bonus-item {
+    margin-bottom: 8px;
+    padding: 0 12px;
+}
+
+.bonus-name {
+    font-weight: 600;
+    color: var(--accent-gold);
+    margin-right: 6px;
+}
+
+.bonus-description {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* Determination Row */
+.determination-row {
+    background: var(--bg-tertiary);
+    padding: 10px 15px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 15px;
+}
+
+.determination-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+.determination-value {
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+/* Bottom Stats Table */
+.bottom-stats-table th,
+.bottom-stats-table td {
+    min-width: 70px;
+}

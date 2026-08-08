@@ -47,10 +47,6 @@ const ThreatCard = {
                 <div class="threat-card-header">
                     <div class="threat-card-header-top">
                         <h2 class="threat-card-title">${threat.name}</h2>
-                        <div class="threat-card-header-actions">
-                            <button class="btn-copy" id="btn-copy-threat">Copy</button>
-                            <button class="btn-copy" id="btn-customize-threat">Customize</button>
-                        </div>
                     </div>
                     ${threat.quote ? `
                         <p class="threat-card-quote">${threat.quote}</p>

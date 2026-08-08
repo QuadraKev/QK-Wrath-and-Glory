@@ -58,58 +58,35 @@ Each follower:
   id: "flw_1",                  // local id, for list operations
   threatId: "cyber_mastiff",    // key into data/threats.json
   name: "",                     // optional custom name; falls back to the threat name
-  source: "other",              // which talent or ability granted this follower
   kind: "individual" | "mob",
   count: 1,                     // starting members; mob only
   livingCount: 1,               // current members; mob only. Drives the attack bonus
-  useAlternativeStats: false,   // only permitted when the source allows it
+  useAlternativeStats: false,   // use 1 + Double Rank instead of the printed statblock
   currentWounds: null,          // null = undamaged
   currentShock: null,
   notes: ""
 }
 ```
 
-### The `source` field
+### The alternative-stats toggle
 
-Four talents carry the alternative-stats rule and two do not, thus a single flag cannot express
-the difference. `source` names the granting talent. Its `id` values match real talent ids, so
-the UI can show whether the character has actually taken that talent.
+`useAlternativeStats` is a plain per-follower toggle. It is always available, and the app does
+not try to work out which talent granted the follower. The player decides when the rule applies,
+which matches how the picker itself is freeform.
 
-`creator/js/followers.js` holds the table:
+The toggle carries the rule and its sources in its label and help text, so the decision is
+informed:
 
-```js
-const FOLLOWER_SOURCES = [
-  { id: 'devotees',            name: 'Devotees',           book: 'core',      page: 132,
-    altStats: true,  forcesMob: true,
-    hint: 'A Mob of any Troop threat. Double Rank + 2 members.' },
-  { id: 'companion_aoa',       name: 'Companion',          book: 'apocrypha', page: 234,
-    altStats: true,  forcesMob: false, hint: 'A single Troop threat.' },
-  { id: 'companion_elite_aoa', name: 'Companion (Elite)',  book: 'apocrypha', page: 234,
-    altStats: true,  forcesMob: false, hint: 'A single Elite threat.' },
-  { id: 'familiar_aoa',        name: 'Familiar',           book: 'apocrypha', page: 236,
-    altStats: true,  forcesMob: false,
-    hint: 'A single Troop threat of Tiny or Small size. Defence +2 within 3m.' },
-  { id: 'animal_companion',    name: 'Animal Companion',   book: 'aeldari',   page: 60,
-    altStats: false, forcesMob: false,
-    hint: 'A single BEAST threat that is not an Adversary at your Tier.' },
-  { id: 'other',               name: 'Other or GM-granted', book: null,       page: null,
-    altStats: false, forcesMob: false, hint: 'Uses the printed statblock.' },
-];
-```
+> **Alternative stats** — Attributes and Skills become 1 + Double Rank, and neither can exceed
+> your own. Granted by Devotees (core p132), Companion and Companion (Elite) (apocrypha p234),
+> and Familiar (apocrypha p236). Animal Companion and the Arbites Cyber Mastiff use the printed
+> statblock instead.
 
-Behavior:
+The default is off, which gives the printed statblock.
 
-- `altStats: true` shows the `useAlternativeStats` toggle, labelled with that talent's book and
-  page. `altStats: false` hides it, thus the Animal Companion and the Arbites Cyber Mastiff keep
-  the printed statblock.
-- `forcesMob: true`, which is Devotees alone, sets `kind` to `mob` and defaults `count` to
-  Double Rank + 2.
-- The `hint` shows below the dropdown as guidance. It never blocks a choice, which keeps the
-  picker freeform.
-
-The default is `other`, which gives the printed statblock. Every source is always listed, and
-the list does not depend on which talents the character has taken, because a follower can also
-arrive through an archetype ability or a GM ruling.
+This drops the automatic Double Rank + 2 member count that a Devotees-aware design could have
+filled in. The mob count is a plain number input the player sets. That is the intended trade:
+one toggle and one number beats a talent registry that has to be kept in step with the data.
 
 ## Lazy loading
 
@@ -246,25 +223,20 @@ Cases:
 3. The cap. A rank 3 character with Strength 4 gets 4, not 7.
 4. The threat-key to character-key attribute map covers all seven attributes.
 5. Every `threatId` a test follower can hold resolves in `data/threats.json`.
-6. Every `FOLLOWER_SOURCES` id except `other` resolves to a real talent id in
-   `data/talents.json`. This catches a talent id that a later data edit renames.
-7. `altStats` is true for exactly `devotees`, `companion_aoa`, `companion_elite_aoa`, and
-   `familiar_aoa`, and false for the rest.
-8. `forcesMob` is true for `devotees` alone.
 
 Browser verification:
 
 1. Startup does NOT fetch `threats.json`. Check the network requests.
 2. Opening the Followers section fetches it once, and a second visit does not refetch.
-3. Add a Cyber Mastiff, left at source `other`. The card renders and no stats toggle appears.
-4. Set the source to Devotees. The unit becomes a mob and the count defaults to Double Rank + 2,
-   and the alternative-stats toggle appears citing core p132.
-5. Set the source to Companion. The unit stays an individual, and the toggle still appears,
-   citing apocrypha p234.
-6. Set the source to Animal Companion. The toggle disappears and the printed statblock returns.
-7. Wounds and shock tracking persists through an auto-save and a reload.
-6. Save to file and load back. The followers array round-trips.
-7. A character saved before this feature loads with an empty followers array.
+3. Add a Cyber Mastiff. The card renders with the printed statblock and the toggle is off.
+4. Turn the alternative-stats toggle on. Attributes and Skills switch to 1 + Double Rank, capped
+   at the character's own, and the card labels the mode. Turn it off and the printed values
+   return.
+5. Switch a follower to a mob, set the count, and confirm the attack bonus matches
+   `mobAttackBonus`.
+6. Wounds and shock tracking persists through an auto-save and a reload.
+7. Save to file and load back. The followers array round-trips.
+8. A character saved before this feature loads with an empty followers array.
 
 ## Out of scope
 

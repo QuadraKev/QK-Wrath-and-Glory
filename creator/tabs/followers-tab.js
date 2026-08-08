@@ -1,7 +1,9 @@
 // Followers Tab - pick threats from the bestiary dataset as companions or mobs
 
 const FollowersTab = {
-    _filters: { search: '', role: 'all', size: 'all', keyword: 'all' },
+    // keyword is free text, not a fixed choice: the dataset has 215 distinct keywords, which
+    // is far too many for a dropdown.
+    _filters: { search: '', role: 'all', size: 'all', keyword: '' },
     _loading: false,
 
     // No threat fetch here. threats.json is 2.64 MB, so it loads the first time the
@@ -105,11 +107,14 @@ const FollowersTab = {
             <h3>Add a Follower</h3>
             <div class="follower-filters">
                 <input type="text" id="follower-search" placeholder="Search threats…" value="${this.escapeHtml(this._filters.search)}">
+                <input type="text" id="follower-keyword" placeholder="Filter by keyword…" value="${this.escapeHtml(this._filters.keyword)}">
                 <select id="follower-role">
                     <option value="all">Any role</option>
                     <option value="T">Troop at your Tier</option>
                     <option value="E">Elite at your Tier</option>
                     <option value="A">Adversary at your Tier</option>
+                    <option value="MC">Monstrous Creature at your Tier</option>
+                    <option value="M">Monster at your Tier</option>
                 </select>
                 <select id="follower-size">
                     <option value="all">Any size</option>
@@ -121,12 +126,15 @@ const FollowersTab = {
         `;
     },
 
-    // Role letter for the character's tier, from the threat's tierThreat table.
+    // Role letter for the character's tier, from the threat's tierThreat table. A "-" means
+    // the book gives the threat no role at that tier, which reads better spelled out.
     roleAtTier(threat, tier) {
         const key = String(tier || 1);
         const letter = threat.tierThreat && threat.tierThreat[key];
-        return { T: 'Troop', E: 'Elite', A: 'Adversary' }[letter] || '-';
+        return this.ROLE_LABELS[letter] || 'Not at this Tier';
     },
+
+    ROLE_LABELS: { T: 'Troop', E: 'Elite', A: 'Adversary', MC: 'Monstrous Creature', M: 'Monster' },
 
     sizeOptions() {
         const sizes = new Set();
@@ -137,11 +145,14 @@ const FollowersTab = {
     },
 
     filteredThreats(character) {
-        const { search, role, size } = this._filters;
+        const { search, role, size, keyword } = this._filters;
         const needle = search.trim().toLowerCase();
+        // Substring, not equality: "cult" must find GENESTEALER CULT and CULT MECHANICUS.
+        const keywordNeedle = keyword.trim().toLowerCase();
         const tierKey = String(character.tier || 1);
         return DataLoader.getAllThreats().filter(t => {
             if (needle && !t.name.toLowerCase().includes(needle)) return false;
+            if (keywordNeedle && !(t.keywords || []).some(kw => kw.toLowerCase().includes(keywordNeedle))) return false;
             if (role !== 'all' && (!t.tierThreat || t.tierThreat[tierKey] !== role)) return false;
             if (size !== 'all' && t.size !== size) return false;
             return true;
@@ -158,6 +169,16 @@ const FollowersTab = {
                 this._filters.search = e.target.value;
                 this.render();
                 const again = document.getElementById('follower-search');
+                if (again) { again.focus(); again.setSelectionRange(again.value.length, again.value.length); }
+            });
+        }
+
+        const keyword = container.querySelector('#follower-keyword');
+        if (keyword) {
+            keyword.addEventListener('input', e => {
+                this._filters.keyword = e.target.value;
+                this.render();
+                const again = document.getElementById('follower-keyword');
                 if (again) { again.focus(); again.setSelectionRange(again.value.length, again.value.length); }
             });
         }

@@ -318,6 +318,20 @@ const CharacterSheetTab = {
                 this.render();
             });
         });
+
+        // Living-count stepper for mobs. The re-render keeps the mob attack bonus in step.
+        container.querySelectorAll('.sheet-follower .follower-living-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const item = btn.closest('.sheet-follower');
+                const id = item.dataset.followerId;
+                const follower = State.getFollower(id);
+                if (!follower) return;
+                const next = follower.livingCount + Number(btn.dataset.delta);
+                if (next < 0 || next > follower.count) return;
+                State.updateFollower(id, { livingCount: next });
+                this.render();
+            });
+        });
     },
 
     // Bind event handlers for weapon equip checkboxes
@@ -376,6 +390,14 @@ const CharacterSheetTab = {
             const upgradeCells = container.querySelectorAll('.sheet-weapon-upgrades');
             upgradeCells.forEach(cell => {
                 Glossary.attachHandlers(cell);
+            });
+
+            // Threat statblocks mark their own enhanceable fields (abilities, bonuses,
+            // determination, skills). Scope the query to the card so this touches nothing
+            // outside a follower.
+            const threatFields = container.querySelectorAll('.threat-card [data-glossary-enhance]');
+            threatFields.forEach(field => {
+                Glossary.enhanceElement(field);
             });
 
             // NOTE: .sheet-item-description is intentionally NOT processed - these are flavor text
@@ -609,9 +631,18 @@ const CharacterSheetTab = {
         const curWounds = follower.currentWounds === null ? 0 : follower.currentWounds;
         const curShock = follower.currentShock === null ? 0 : follower.currentShock;
 
+        // Only the living count is adjustable here. The mob size is a builder decision, the
+        // same way max Wounds is: the sheet tracks what changes in play.
         const mobRow = isMob ? `
             <div class="sheet-follower-mob">
-                <span>Members: ${follower.livingCount} / ${follower.count}</span>
+                <span class="sheet-follower-members">
+                    Members:
+                    <button class="follower-living-btn" data-delta="-1" title="One more casualty"
+                            ${follower.livingCount <= 0 ? 'disabled' : ''}>&minus;</button>
+                    <span class="sheet-follower-living">${follower.livingCount} / ${follower.count}</span>
+                    <button class="follower-living-btn" data-delta="1" title="One more living member"
+                            ${follower.livingCount >= follower.count ? 'disabled' : ''}>+</button>
+                </span>
                 <span>Mob attack bonus: +${Followers.mobAttackBonus(follower.livingCount)}</span>
             </div>
         ` : '';
@@ -2015,6 +2046,29 @@ const CharacterSheetTab = {
                 if (State.UNIVERSAL_ABILITY_IDS.includes(powerId)) continue;
                 const power = DataLoader.getPsychicPower(powerId);
                 if (power) lines.push(`  ${power.name} (DN ${power.dn || '-'})`);
+            }
+            lines.push('');
+        }
+
+        // Followers
+        const followers = character.followers || [];
+        if (followers.length > 0) {
+            lines.push('FOLLOWERS');
+            for (const follower of followers) {
+                const threat = DataLoader.getThreat(follower.threatId);
+                const threatName = threat ? threat.name : follower.threatId;
+                const displayName = follower.name || threatName;
+                const kindText = follower.kind === 'mob'
+                    ? `Mob, ${follower.livingCount}/${follower.count} living, attack bonus +${Followers.mobAttackBonus(follower.livingCount)}`
+                    : 'Individual';
+                const curWounds = follower.currentWounds === null ? 0 : follower.currentWounds;
+                const curShock = follower.currentShock === null ? 0 : follower.currentShock;
+                // The threat data loads lazily, so the maximums are only known once it is in.
+                const maxWounds = threat ? ` / ${Number(threat.wounds) || 0}` : '';
+                const maxShock = threat ? ` / ${Number(threat.shock) || 0}` : '';
+                lines.push(`  ${displayName} (${threatName})`);
+                lines.push(`    ${kindText}`);
+                lines.push(`    Wounds: ${curWounds}${maxWounds} | Shock: ${curShock}${maxShock}`);
             }
             lines.push('');
         }

@@ -5986,3 +5986,157 @@ textarea {
     margin-left: 8px;
     vertical-align: middle;
 }
+
+/* ===== Threat statblock card (ported from the bestiary for Followers) ===== */
+.threat-tier-badge {
+    padding: 2px 8px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-gold);
+}
+
+.threat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.threat-card-header {
+    background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+    padding: 20px;
+    border-bottom: 2px solid var(--accent-gold);
+}
+
+.threat-card-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.threat-card-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent-gold);
+    margin-bottom: 8px;
+}
+
+.threat-card-source {
+    display: block;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.threat-card-quote {
+    font-style: italic;
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.threat-card-attribution {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.threat-card-body {
+    padding: 20px;
+}
+
+.threat-card-description {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+.threat-stats-section {
+    margin-bottom: 20px;
+}
+
+.threat-stat-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+
+.threat-stat-table-header {
+    background: var(--accent-gold);
+    color: var(--bg-primary);
+    font-weight: 600;
+    text-align: center;
+    padding: 8px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.threat-stat-table th {
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 11px;
+    padding: 8px 10px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+
+.threat-stat-table td {
+    background: var(--bg-card);
+    padding: 8px 10px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    font-size: 14px;
+}
+
+.threat-stat-table td.stat-value {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.threat-keywords-row {
+    margin-bottom: 15px;
+}
+
+.threat-keywords-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-right: 8px;
+}
+
+.threat-keyword {
+    display: inline-block;
+    padding: 3px 10px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--accent-gold);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    color: var(--accent-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    cursor: pointer;
+}
+
+.threat-keyword:hover {
+    background: var(--accent-gold);
+    color: var(--bg-primary);
+}
+
+.threat-text-section {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    white-space: pre-line;
+    padding: 0 12px;
+}

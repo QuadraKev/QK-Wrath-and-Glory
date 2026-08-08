@@ -139,6 +139,32 @@ The Framework "Exaction Squad EX-G-X784" (page 16) needs a data structure and a 
 does not have. The D66 name table and the D6 objectives table (pages 6 to 7) have no home in the
 data model. This content stays out of both apps.
 
+## Typographic corrections
+
+Data text is verbatim book text. The one exception is obvious typographic errors, which are
+corrected. The book contains these:
+
+| Location | Printed | Corrected |
+| --- | --- | --- |
+| Arbites Revelatum, description | "devices to to strip away" | "devices to strip away" |
+| Arbites Castigator, description | "in the name of the emperor" | "the Emperor" |
+| Ruthless Triage (Chirurgant) | "any Test to aquire information" | "acquire" |
+| Watchdog (Leashmaster) | no terminal period | period added |
+| Earn the Eagle, description | no terminal period | period added |
+| Go For the Throat! (Cyber Mastiff) | "uses it's Plasteel Bite" | "uses its" |
+| Castigator suggested talents | "Castigators Stance" | "Castigator's Stance" |
+
+Two defects are recorded rather than corrected, because a correction needs information the book
+does not supply:
+
+- The page 18 armour table clips its keyword cell. It reads "ADEPTUS ARBITES," with a trailing
+  comma, and artwork covers the rest. Only the confirmed keyword is stored.
+- The Arbites Grenade Launcher prints an asterisk for Damage and ED, and the book gives no legend.
+  The `special` field carries the standard grenade-launcher wording under an `[AI-Generated]`
+  prefix.
+- The Lone Wolf talent prints "Requirements: ADEPTUS ARBITES," with a trailing comma. A second
+  requirement appears to be missing. Only the printed keyword is stored.
+
 ## Verification
 
 Serve the repository root on port 8137. Then confirm that:

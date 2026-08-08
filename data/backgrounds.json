@@ -1293,7 +1293,7 @@
     {
       "id": "earn_the_eagle",
       "name": "Earn the Eagle",
-      "description": "You strive to rise through the ranks of the Adeptus Arbites",
+      "description": "You strive to rise through the ranks of the Adeptus Arbites.",
       "bonus": "+1 Influence",
       "bonusType": "influence",
       "factions": [

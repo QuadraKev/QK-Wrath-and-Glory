@@ -1008,13 +1008,27 @@ const State = {
     updateFollower(id, patch) {
         const follower = this.getFollower(id);
         if (!follower) return;
+        const wasMob = follower.kind === 'mob';
         Object.assign(follower, patch);
         // A mob cannot have more living members than it started with, and an individual is
         // always a single creature.
         if (follower.kind === 'individual') {
+            // Leaving a mob: remember its numbers so they come back if the user switches
+            // back to Mob, instead of silently resetting to 1/1.
+            if (wasMob) {
+                follower.mobCount = follower.count;
+                follower.mobLivingCount = follower.livingCount;
+            }
             follower.count = 1;
             follower.livingCount = 1;
         } else {
+            // Becoming a mob again with no explicit numbers in this patch: restore what was
+            // remembered, if anything. Each value restores independently, so a patch that
+            // only sets one of count/livingCount still gets the other from memory.
+            if (!wasMob && follower.mobCount != null) {
+                if (!('count' in patch)) follower.count = follower.mobCount;
+                if (!('livingCount' in patch)) follower.livingCount = follower.mobLivingCount;
+            }
             follower.count = Math.max(1, Number(follower.count) || 1);
             follower.livingCount = Math.min(Math.max(0, Number(follower.livingCount) || 0), follower.count);
         }

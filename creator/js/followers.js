@@ -38,6 +38,10 @@ const Followers = {
             kind: 'individual',
             count: 1,
             livingCount: 1,
+            // Remembers a mob's count/livingCount across a mob -> individual -> mob round
+            // trip (State.updateFollower). Null until the follower has been a mob at least once.
+            mobCount: null,
+            mobLivingCount: null,
             useAlternativeStats: false,
             currentWounds: null,
             currentShock: null,

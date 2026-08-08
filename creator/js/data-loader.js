@@ -133,7 +133,7 @@ const DataLoader = {
 
     // Idempotent. Concurrent callers share one fetch.
     ensureThreatsLoaded() {
-        if (this.cache['threats.json']) return Promise.resolve();
+        if (this.cache['threats.json'] && this.cache['threat-weapons.json']) return Promise.resolve();
         if (!this._threatsPromise) {
             this._threatsPromise = Promise.all([
                 this.loadFile('threats.json'),

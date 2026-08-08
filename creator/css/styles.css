@@ -5218,6 +5218,41 @@ textarea {
         border-color: #333 !important;
     }
 
+    /* Threat statblock card colors (Followers) */
+    body.print-light-theme .threat-card-description,
+    body.print-light-theme .threat-card-source,
+    body.print-light-theme .threat-card-quote,
+    body.print-light-theme .threat-card-attribution,
+    body.print-light-theme .ability-description,
+    body.print-light-theme .bonus-description,
+    body.print-light-theme .threat-text-section,
+    body.print-light-theme .determination-value,
+    body.print-light-theme .skills-value,
+    body.print-light-theme .resilience-value,
+    body.print-light-theme .resilience-note,
+    body.print-light-theme .sheet-follower-type,
+    body.print-light-theme .sheet-follower-mob,
+    body.print-light-theme .sheet-follower-track-label,
+    body.print-light-theme .sheet-follower-altstats,
+    body.print-light-theme .sheet-follower-notes {
+        color: #555 !important;
+    }
+
+    body.print-light-theme .threat-card-title,
+    body.print-light-theme .abilities-header,
+    body.print-light-theme .bonuses-header,
+    body.print-light-theme .threat-stat-table th,
+    body.print-light-theme .threat-keywords-label,
+    body.print-light-theme .threat-keyword,
+    body.print-light-theme .resilience-label,
+    body.print-light-theme .skills-label,
+    body.print-light-theme .ability-type,
+    body.print-light-theme .ability-stats,
+    body.print-light-theme .bonus-name,
+    body.print-light-theme .determination-label {
+        color: #333 !important;
+    }
+
     /* Hide section nav in print */
     .section-nav {
         display: none !important;
@@ -5988,15 +6023,6 @@ textarea {
 }
 
 /* ===== Threat statblock card (ported from the bestiary for Followers) ===== */
-.threat-tier-badge {
-    padding: 2px 8px;
-    background: var(--bg-tertiary);
-    border-radius: var(--radius-sm);
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--accent-gold);
-}
-
 .threat-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
@@ -6066,17 +6092,6 @@ textarea {
     margin-bottom: 15px;
 }
 
-.threat-stat-table-header {
-    background: var(--accent-gold);
-    color: var(--bg-primary);
-    font-weight: 600;
-    text-align: center;
-    padding: 8px;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
 .threat-stat-table th {
     background: var(--bg-tertiary);
     color: var(--text-muted);
@@ -6125,12 +6140,6 @@ textarea {
     letter-spacing: 0.5px;
     margin-right: 6px;
     margin-bottom: 6px;
-    cursor: pointer;
-}
-
-.threat-keyword:hover {
-    background: var(--accent-gold);
-    color: var(--bg-primary);
 }
 
 .threat-text-section {

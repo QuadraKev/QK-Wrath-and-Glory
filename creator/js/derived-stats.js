@@ -78,6 +78,7 @@ const DerivedStats = {
     // Get all mutation bonuses grouped by key
     getMutationBonuses(character) {
         const bonuses = {};
+        const rank = character.rank || 1;
         const data = DataLoader.getInjuriesCorruptionData();
         for (const entry of character.mutations || []) {
             const mutation = data?.mutations?.find(m => m.id === entry.id);
@@ -95,7 +96,9 @@ const DerivedStats = {
                 const sourceName = entry.subChoice && mutation.subChoices
                     ? `${mutation.name} (${mutation.subChoices.find(s => s.id === entry.subChoice)?.name || entry.subChoice})`
                     : mutation.name;
-                bonuses[key].push({ value, source: sourceName });
+                // Resolve 'rank'/'doubleRank' here, as getEquipmentBonuses does, so no consumer
+                // receives the raw string and adds it to a number.
+                bonuses[key].push({ value: this.getBonusValue(value, rank), source: sourceName });
             }
         }
         return bonuses;

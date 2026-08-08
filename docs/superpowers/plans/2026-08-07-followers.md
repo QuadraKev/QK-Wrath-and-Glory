@@ -359,11 +359,12 @@ Extract the block with:
 sed -n '363,467p;486,693p' bestiary/tabs/threats-tab.js > /tmp/threat-card-body.js
 ```
 
-Three changes to the copied code, and nothing else:
+Four changes to the copied code, and nothing else:
 
 1. Rename `renderThreatCard(threat)` to `render(threat)`.
 2. In `render`, delete the `${this.renderAddToEncounterHeader(threat)}` interpolation. That header is the encounter builder's Add-to-Encounter controls and has no meaning in the creator.
-3. Leave every `this.` call as is. All eleven sub-renderers travel together, so they resolve inside `ThreatCard`.
+3. Delete the `.threat-card-header-actions` div and the Copy and Customize buttons inside it. Their click handlers live in the bestiary's `renderThreatDetail`, which is not ported, so in the creator they would be dead buttons.
+4. Leave every `this.` call as is. All eleven sub-renderers travel together, so they resolve inside `ThreatCard`.
 
 The only external references in the copied block are `DataLoader.getThreatWeapon` and `DataLoader.formatSourcePage`, both added in Task 2.
 
@@ -397,7 +398,22 @@ The bestiary has a single stylesheet, `bestiary/css/styles.css`:
 grep -n "^\.threat-card\|^\.threat-stat-table\|^\.threat-stats-section\|^\.threat-text-section\|^\.threat-tier-badge\|^\.threat-keyword" bestiary/css/styles.css
 ```
 
-Copy the rules for exactly these classes: `.threat-card`, `.threat-card-body`, `.threat-card-header`, `.threat-card-header-top`, `.threat-card-title`, `.threat-card-quote`, `.threat-card-attribution`, `.threat-card-description`, `.threat-card-source`, `.threat-stat-table`, `.threat-stat-table-header`, `.threat-stats-section`, `.threat-text-section`, `.threat-tier-badge`, `.threat-keyword`, `.threat-keywords-row`, `.threat-keywords-label`.
+Do not hand-enumerate the classes — an enumeration is how this step first shipped a card with 25
+unstyled classes. Derive the list from what the markup actually emits, and make this check print
+nothing before you commit:
+
+```bash
+grep -oE 'class="[a-z0-9 _-]+"' creator/js/threat-card.js \
+  | sed 's/class="//;s/"//' | tr ' ' '\n' | sort -u > /tmp/emitted.txt
+while read c; do [ -z "$c" ] && continue; \
+  grep -q "\.$c[ ,{:.]" creator/css/styles.css || echo "MISSING: .$c"; done < /tmp/emitted.txt
+```
+
+Copy each missing rule verbatim from `bestiary/css/styles.css`. The card needs roughly 40 classes
+in total, spanning the card chrome (`.threat-card*`, `.threat-keyword*`), the stat tables
+(`.tier-threat-table`, `.attributes-table`, `.combat-stats-table`, `.bottom-stats-table`), and the
+content rows (`.resilience-*`, `.skills-*`, `.abilities-*`, `.ability-*`, `.bonuses-*`,
+`.bonus-*`, `.determination-*`).
 
 Do **not** copy `.threat-card-header-actions`, `.threat-list*`, `.threat-detail*`, `.threat-count`, or `.threat-card-mini`. Those belong to the bestiary's list and encounter UI.
 

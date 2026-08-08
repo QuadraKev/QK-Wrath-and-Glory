@@ -447,13 +447,28 @@ const App = {
 
     // ===== Auto-Save Restore =====
 
+    // Sources the app knew about before the auto-save started recording knownSources.
+    // An auto-save without that field was written before Lex Imperialis was added, so any
+    // source outside this list is a book that auto-save's owner never saw.
+    _LEGACY_KNOWN_SOURCES: ['core', 'fspg', 'redacted1', 'redacted2', 'church', 'voa', 'aeldari', 'apocrypha', 'dh', 'shotguns'],
+
+    // Merge the stored source choices with any books added since that auto-save was written.
+    // A source the user never saw cannot have been switched off on purpose, so it starts enabled.
+    // Anything they did switch off stays off.
+    _mergeEnabledSources(saved) {
+        const registry = (typeof SettingsTab !== 'undefined' ? SettingsTab.sourceButtons : []).map(b => b.id);
+        const known = Array.isArray(saved.knownSources) ? saved.knownSources : this._LEGACY_KNOWN_SOURCES;
+        const addedSinceSave = registry.filter(id => !known.includes(id));
+        return [...new Set([...saved.enabledSources, ...addedSinceSave])];
+    },
+
     // Check for auto-saved state on startup and auto-load it
     checkAutoSave() {
         const saved = State.getAutoSave();
         if (!saved) return;
 
         if (saved.enabledSources) {
-            State.setEnabledSources(saved.enabledSources);
+            State.setEnabledSources(this._mergeEnabledSources(saved));
         }
         if (saved.ignorePrerequisites) {
             State.setIgnorePrerequisites(true);

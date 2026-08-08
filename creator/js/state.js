@@ -1369,6 +1369,9 @@ const State = {
             const data = {
                 character: this.character,
                 enabledSources: this.enabledSources,
+                // Every source the app offered at save time. On restore this tells us which books
+                // are new to this user, so a book added later starts enabled instead of hidden.
+                knownSources: (typeof SettingsTab !== 'undefined' ? SettingsTab.sourceButtons : []).map(b => b.id),
                 ignorePrerequisites: this.ignorePrerequisites,
                 timestamp: Date.now()
             };

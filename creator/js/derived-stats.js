@@ -625,6 +625,7 @@ const DerivedStats = {
     // Get all equipment bonuses grouped by key
     getEquipmentBonuses(character) {
         const bonuses = {};
+        const rank = character.rank || 1;
 
         for (const item of character.wargear || []) {
             const equip = DataLoader.getEquipment(item.id);
@@ -632,7 +633,9 @@ const DerivedStats = {
 
             for (const [key, value] of Object.entries(equip.bonuses)) {
                 if (!bonuses[key]) bonuses[key] = [];
-                bonuses[key].push({ value, source: equip.name });
+                // Resolve 'rank'/'doubleRank' here so no consumer ever receives the raw string
+                // and adds it to a number, which would concatenate instead of sum.
+                bonuses[key].push({ value: this.getBonusValue(value, rank), source: equip.name });
             }
         }
 

@@ -216,9 +216,13 @@ mob of 0 living members from returning -1. alternativeStatValue applies the
 
 **Interfaces:**
 - Consumes: `window.api.loadGameData(filename)` from `creator/js/web-api.js`, and `DataLoader.loadFile(filename)`.
-- Produces: `DataLoader.ensureThreatsLoaded() → Promise<void>`, `DataLoader.getThreat(id) → object|undefined`, `DataLoader.getAllThreats() → array`, `DataLoader.getThreatWeapon(id) → object|undefined`, `DataLoader.formatSourcePage(entity) → string`.
+- Produces: `DataLoader.ensureThreatsLoaded() → Promise<void>`, `DataLoader.areThreatsLoaded() → boolean`, `DataLoader.getThreat(id) → object|undefined`, `DataLoader.getAllThreats() → array`, `DataLoader.getThreatWeapon(id) → object|undefined`.
 
-`getThreatWeapon` and `formatSourcePage` are required by the card renderer in Task 3.
+`getThreatWeapon` is required by the card renderer in Task 3, which also needs
+`DataLoader.formatSourcePage(item)`. **`formatSourcePage` already exists** at
+`creator/js/data-loader.js:339` and returns `"Name, p. N"`. Do not add a second one — a
+duplicate key in the object literal is silently shadowed by the later definition, so it would
+be dead code. Reuse the existing method.
 
 - [ ] **Step 1: Add the loader and accessors**
 
@@ -261,14 +265,9 @@ In `creator/js/data-loader.js`, insert immediately after the `getWargearItem(id)
         const weapons = this.cache['threat-weapons.json'] || [];
         return weapons.find(w => w.id === id);
     },
-
-    // Format a "Source p.N" citation for a threat card
-    formatSourcePage(entity) {
-        if (!entity || !entity.source) return '';
-        const name = this.getSourceDisplayName(entity.source);
-        return entity.page ? `${name} p.${entity.page}` : name;
-    },
 ```
+
+Do **not** add a `formatSourcePage`. One already exists at `creator/js/data-loader.js:339`.
 
 - [ ] **Step 2: Verify the file still parses**
 
@@ -302,7 +301,7 @@ await DataLoader.ensureThreatsLoaded();
 DataLoader.getAllThreats().length          // Expected: 844
 DataLoader.getThreat('cyber_mastiff').name // Expected: "CYBER MASTIFF"
 DataLoader.formatSourcePage(DataLoader.getThreat('cyber_mastiff'))
-// Expected: "Lex Imperialis p.12"
+// Expected: "Lex Imperialis, p. 12" — the existing app-wide citation format
 
 await DataLoader.ensureThreatsLoaded();    // second call
 performance.getEntriesByType('resource')

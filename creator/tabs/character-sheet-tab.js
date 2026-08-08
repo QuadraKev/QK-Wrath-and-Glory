@@ -7,6 +7,10 @@ const CharacterSheetTab = {
     _tocEscHandler: null,
     _tocDismissHandler: null,
 
+    // Threat-load state for the Followers block: 'idle' | 'pending' | 'loaded' | 'failed'.
+    // Guards against asking DataLoader for the threats more than once.
+    _followerThreatLoad: 'idle',
+
     // Initialize the tab
     init() {
         // Print button
@@ -75,6 +79,7 @@ const CharacterSheetTab = {
                     ${this.renderAugmetics(character)}
                     ${this.renderEquipment(character)}
                     ${this.renderHolyRelics(character)}
+                    ${this.renderFollowers(character)}
                 </div>
             </div>
         `;
@@ -90,6 +95,9 @@ const CharacterSheetTab = {
 
         // Bind session tracking controls
         this.bindSessionTrackingControls(container);
+
+        // Bind the per-follower wounds and shock trackers
+        this.bindFollowerTracking(container);
 
         // Give each section a stable id and rebuild the jump-to-section list
         this._assignSectionIds(container);
@@ -244,8 +252,9 @@ const CharacterSheetTab = {
 
     // Bind event handlers for session tracking (boxes and +/- buttons)
     bindSessionTrackingControls(container) {
-        // Clickable boxes for wounds and shock
-        container.querySelectorAll('.tracking-box').forEach(box => {
+        // Clickable boxes for wounds and shock. Follower boxes reuse the .tracking-box look
+        // but have their own handler, so they are excluded here.
+        container.querySelectorAll('.tracking-box:not(.follower-box)').forEach(box => {
             box.addEventListener('click', () => {
                 const type = box.dataset.type;
                 const index = parseInt(box.dataset.index, 10);
@@ -286,6 +295,26 @@ const CharacterSheetTab = {
                     State.modifyCurrentFaith(delta);
                 }
 
+                this.render();
+            });
+        });
+    },
+
+    // Bind event handlers for the per-follower wounds and shock boxes
+    bindFollowerTracking(container) {
+        container.querySelectorAll('.sheet-follower .follower-box').forEach(box => {
+            box.addEventListener('click', () => {
+                const item = box.closest('.sheet-follower');
+                const id = item.dataset.followerId;
+                const type = box.dataset.trackType;
+                const index = Number(box.dataset.index);
+                const follower = State.getFollower(id);
+                if (!follower) return;
+                const field = type === 'wounds' ? 'currentWounds' : 'currentShock';
+                const currentValue = follower[field] === null ? 0 : follower[field];
+                // Clicking the last filled box clears it; otherwise fill up to the clicked box.
+                const next = (currentValue === index + 1) ? index : index + 1;
+                State.updateFollower(id, { [field]: next });
                 this.render();
             });
         });
@@ -520,6 +549,123 @@ const CharacterSheetTab = {
                 </div>
             </div>
         `;
+    },
+
+    // Render the Followers block. Threats load lazily, so this asks for a re-render once
+    // the data arrives rather than blocking the rest of the sheet.
+    renderFollowers(character) {
+        const followers = character.followers || [];
+        if (followers.length === 0) return '';
+
+        if (!DataLoader.areThreatsLoaded()) return this.renderFollowersNotice();
+
+        return `
+            <div class="sheet-section">
+                <h2 class="sheet-section-title">Followers</h2>
+                ${followers.map(f => this.renderFollower(f, character)).join('')}
+            </div>
+        `;
+    },
+
+    // Placeholder shown while the threat data is missing. The sheet asks for the load ONCE:
+    // DataLoader keeps its threat promise even when the fetch failed, so a fetch on every
+    // render would resolve immediately, re-render, and spin forever.
+    renderFollowersNotice() {
+        if (this._followerThreatLoad === 'idle') {
+            this._followerThreatLoad = 'pending';
+            DataLoader.ensureThreatsLoaded()
+                .then(() => {
+                    this._followerThreatLoad = DataLoader.areThreatsLoaded() ? 'loaded' : 'failed';
+                    this.render();
+                })
+                .catch(() => {
+                    this._followerThreatLoad = 'failed';
+                    this.render();
+                });
+        }
+
+        const message = this._followerThreatLoad === 'failed'
+            ? 'Threat data could not be loaded, so the follower statblocks are unavailable. Reload the page to try again.'
+            : 'Loading threat data…';
+
+        return `
+            <div class="sheet-section">
+                <h2 class="sheet-section-title">Followers</h2>
+                <p class="sheet-empty">${message}</p>
+            </div>
+        `;
+    },
+
+    renderFollower(follower, character) {
+        const threat = DataLoader.getThreat(follower.threatId);
+        if (!threat) {
+            return `<div class="sheet-follower"><p class="sheet-empty">Unknown threat: ${this.escapeHtml(follower.threatId)}</p></div>`;
+        }
+
+        const displayName = follower.name || threat.name;
+        const isMob = follower.kind === 'mob';
+        const maxWounds = Number(threat.wounds) || 0;
+        const maxShock = Number(threat.shock) || 0;
+        const curWounds = follower.currentWounds === null ? 0 : follower.currentWounds;
+        const curShock = follower.currentShock === null ? 0 : follower.currentShock;
+
+        const mobRow = isMob ? `
+            <div class="sheet-follower-mob">
+                <span>Members: ${follower.livingCount} / ${follower.count}</span>
+                <span>Mob attack bonus: +${Followers.mobAttackBonus(follower.livingCount)}</span>
+            </div>
+        ` : '';
+
+        const statsNote = follower.useAlternativeStats ? `
+            <div class="sheet-follower-altstats">
+                Alternative stats in use: all Attributes and Skills are
+                ${Followers.alternativeStatValue(character.rank, null)},
+                capped at your own. Wounds, Shock, Defence and Resilience keep the printed values.
+                ${this.renderAlternativeAttributes(character)}
+            </div>
+        ` : '';
+
+        return `
+            <div class="sheet-follower" data-follower-id="${follower.id}">
+                <div class="sheet-follower-header">
+                    <span class="sheet-follower-name">${this.escapeHtml(displayName)}</span>
+                    <span class="sheet-follower-type">${isMob ? 'Mob' : 'Individual'}</span>
+                </div>
+                ${mobRow}
+                ${statsNote}
+                <div class="sheet-follower-tracking">
+                    <div class="sheet-follower-track">
+                        <span class="sheet-follower-track-label">Wounds</span>
+                        <span class="sheet-follower-boxes" data-track="wounds">${this.renderFollowerBoxes('wounds', curWounds, maxWounds)}</span>
+                    </div>
+                    <div class="sheet-follower-track">
+                        <span class="sheet-follower-track-label">Shock</span>
+                        <span class="sheet-follower-boxes" data-track="shock">${this.renderFollowerBoxes('shock', curShock, maxShock)}</span>
+                    </div>
+                </div>
+                ${follower.notes ? `<p class="sheet-follower-notes">${this.escapeHtml(follower.notes)}</p>` : ''}
+                ${ThreatCard.render(threat)}
+            </div>
+        `;
+    },
+
+    // Attribute line for a follower using the alternative stats.
+    renderAlternativeAttributes(character) {
+        const parts = [];
+        for (const [threatKey, charKey] of Object.entries(Followers.THREAT_ATTR_MAP)) {
+            const own = DerivedStats.getEffectiveAttribute(character, charKey);
+            parts.push(`${threatKey} ${Followers.alternativeStatValue(character.rank, own)}`);
+        }
+        return `<div class="sheet-follower-altstats-line">${parts.join(' &middot; ')}</div>`;
+    },
+
+    renderFollowerBoxes(type, current, max) {
+        let boxes = '';
+        for (let i = 0; i < max; i++) {
+            const filled = i < current ? 'filled' : '';
+            boxes += `<span class="tracking-box follower-box ${filled}" data-track-type="${type}" data-index="${i}"></span>`;
+        }
+        return boxes || '<span class="sheet-empty">-</span>';
     },
 
     // Render clickable tracking boxes for wounds/shock

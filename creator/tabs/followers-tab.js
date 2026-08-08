@@ -222,10 +222,12 @@ const FollowersTab = {
         State.updateFollower(id, { [field]: value });
     },
 
+    // The quote escape is not decorative: this output goes into attribute values, and a
+    // follower name is free text.
     escapeHtml(text) {
         if (!text) return '';
         const div = document.createElement('div');
         div.textContent = text;
-        return div.innerHTML;
+        return div.innerHTML.replace(/"/g, '&quot;');
     }
 };

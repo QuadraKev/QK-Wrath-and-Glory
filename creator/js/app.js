@@ -337,6 +337,7 @@ const App = {
         // Always update XP display and sidebar
         this.updateXPDisplay();
         this.updateSidebar();
+        FollowersTab.updateSidebarCount(character);
 
         // Update keywords in footer
         this.updateKeywords();

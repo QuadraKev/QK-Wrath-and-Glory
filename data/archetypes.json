@@ -10468,5 +10468,528 @@
     ],
     "source": "apocrypha",
     "page": 208
+  },
+  {
+    "id": "arbites_arbitrator",
+    "name": "Arbites Arbitrator",
+    "description": "Bound by a sacred oath to uphold the Lex Imperialis, the men and women who comprise the ranks of the Adeptus Arbites are known as Arbitrators and serve as the relentless judge, jury and executioner of the Imperium's vast legal bureaucracy. Wielding their iconic combat shotguns and encased in black carapace, they approach every investigation, riot or recidivist with cold, dispassionate precision and authority. Whether tracking heretical cult leaders through the toxic depths of a hive or breaking the rioting lines of a worker insurgency, the Arbitrator serves as the incorruptible and merciless face of the Emperor's justice.",
+    "tier": 2,
+    "species": [
+      "human"
+    ],
+    "cost": 70,
+    "faction": "Adeptus Arbites",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "attributeBonus": {
+      "strength": 3,
+      "toughness": 3,
+      "intellect": 3
+    },
+    "skillBonus": {
+      "ballisticSkill": 2,
+      "intimidation": 2,
+      "investigation": 3,
+      "weaponSkill": 2
+    },
+    "influenceModifier": 1,
+    "abilities": [
+      {
+        "name": "The Eye of the Lex",
+        "description": "In combat, you may spend a Simple Action to declare one enemy you can see as a Designated Lawbreaker. You and any Allies targeting that enemy gain +Rank bonus dice to attack rolls against them. You may only have one Designated Lawbreaker active at a time."
+      }
+    ],
+    "startingWargear": [
+      "arbites_carapace_armour",
+      "arbites_assault_shield",
+      "shock_maul_lex",
+      "combat_shotgun",
+      "data_slate",
+      "vox_bead"
+    ],
+    "suggested": {
+      "attributesXp": 54,
+      "attributes": {
+        "strength": 4,
+        "toughness": 4,
+        "agility": 3,
+        "initiative": 3,
+        "willpower": 2,
+        "intellect": 3,
+        "fellowship": 3
+      },
+      "skillsXp": 26,
+      "skills": {
+        "athletics": 1,
+        "awareness": 2,
+        "ballisticSkill": 3,
+        "intimidation": 3,
+        "investigation": 3,
+        "leadership": 2,
+        "weaponSkill": 2
+      },
+      "talents": [
+        {
+          "name": "Bloodhound",
+          "source": "redacted1",
+          "page": 61
+        },
+        {
+          "name": "Brutalist",
+          "source": "core",
+          "page": 13
+        },
+        {
+          "name": "Deductive Genius",
+          "source": "redacted1",
+          "page": 63
+        },
+        {
+          "name": "Disarming Stare",
+          "source": "redacted1",
+          "page": 64
+        }
+      ]
+    },
+    "source": "lex",
+    "page": 8
+  },
+  {
+    "id": "arbites_castigator",
+    "name": "Arbites Castigator",
+    "description": "You pass judgment and execute those found in violation of the Lex in the name of the emperor. It is the Castigator's role to ensure that the guilty receive due punishment, their hood-like helms steeling their resolve against curses and pleas alike. Once the quarry is located, the Castigator is charged with their subdual by any means – a task they perform with zealous dedication. Armed with heavy shock mauls and Arbites Assault Shields, they wade into the most dangerous of compliance situations, delivering bone-shattering strikes meant to break a criminal's spirit along with their body. The Castigator represents the physical wrath of Imperial Law, an unstoppable juggernaut of state-sanctioned violence. They do not care about the politics or the motives behind a crime; they care only that the lawbreaker is brought to heel, broken and bleeding, ready to face the final, ultimate judgment of the Imperium.",
+    "tier": 2,
+    "species": [
+      "human"
+    ],
+    "cost": 70,
+    "faction": "Adeptus Arbites",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "attributeBonus": {
+      "strength": 3,
+      "toughness": 3,
+      "intellect": 3
+    },
+    "skillBonus": {
+      "ballisticSkill": 2,
+      "intimidation": 2,
+      "investigation": 3,
+      "weaponSkill": 2
+    },
+    "influenceModifier": 1,
+    "abilities": [
+      {
+        "name": "Summary Execution",
+        "description": "When you reduce an enemy to 0 Wounds using a melee weapon, you can choose to execute them in a brutal, highly visible display of Imperial justice. All enemies within a 15-metre radius who witness the execution must immediately pass a Resolve Test (DN 2 + Rank) or become Pinned and Staggered for 1 round as their morale shatters."
+      }
+    ],
+    "startingWargear": [
+      "arbites_carapace_armour",
+      "arbites_assault_shield",
+      "shock_maul_lex",
+      "arbites_combat_shotgun",
+      "data_slate",
+      "vox_bead"
+    ],
+    "suggested": {
+      "attributesXp": 54,
+      "attributes": {
+        "strength": 4,
+        "toughness": 4,
+        "agility": 3,
+        "initiative": 3,
+        "willpower": 2,
+        "intellect": 3,
+        "fellowship": 3
+      },
+      "skillsXp": 26,
+      "skills": {
+        "athletics": 1,
+        "awareness": 2,
+        "ballisticSkill": 3,
+        "intimidation": 3,
+        "investigation": 3,
+        "leadership": 2,
+        "weaponSkill": 2
+      },
+      "talents": [
+        {
+          "name": "Castigators Stance",
+          "source": "lex",
+          "page": 15
+        },
+        {
+          "name": "Brutalist",
+          "source": "core",
+          "page": 13
+        },
+        {
+          "name": "Deductive Genius",
+          "source": "redacted1",
+          "page": 63
+        }
+      ]
+    },
+    "source": "lex",
+    "page": 9
+  },
+  {
+    "id": "arbites_chirurgant",
+    "name": "Arbites Chirurgant",
+    "description": "You tend to the medical needs of your fellow Arbites, and when needed, utilise the same skills to extract information from uncooperative prisoners. These grim individuals are highly skilled medical specialists, accustomed to treating the horrific and often debilitating wounds inflicted by those desperate souls foolish enough to resist Imperial detention. In the heat of battle, a Chirurgant operates with a cold, detached efficiency, quickly attending to shattered limbs and arterial spray amidst the deafening chaos of a firefight so that their fellow Arbites can maintain the pursuit of Imperial justice. However, their duties extend far beyond battlefield triage, and they are equally skilled in the dark, clinical art of the tactical questioning of prisoners. To the Adeptus Arbites, information is just as vital as ammunition, and the Chirurgant, possessing an intimate, anatomical knowledge of pain and endurance, know exactly how to elicit critical answers from a heretic or a gang lord without accidentally granting them the Emperor's mercy via an array of surgical tools, stimulants, and paralytic toxins.",
+    "tier": 2,
+    "species": [
+      "human"
+    ],
+    "cost": 76,
+    "faction": "Adeptus Arbites",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "attributeBonus": {
+      "strength": 3,
+      "toughness": 3,
+      "intellect": 3
+    },
+    "skillBonus": {
+      "ballisticSkill": 2,
+      "intimidation": 2,
+      "investigation": 3,
+      "weaponSkill": 2,
+      "medicae": 2
+    },
+    "influenceModifier": 1,
+    "abilities": [
+      {
+        "name": "Ruthless Triage",
+        "description": "When you use an Arbites Medi-kit to restore Wounds or Shock to an ally with the ADEPTUS ARBITES Keyword you add +Rank to the total amount restored. When interrogating a suspect, you may use your Arbites Medi-kit to assist, gaining +Rank to any Test to aquire information. If successful, this action also immediately restores 1 point of Glory to the group pool."
+      }
+    ],
+    "startingWargear": [
+      "arbites_carapace_armour",
+      "arbites_medi_kit",
+      "shock_maul_lex",
+      "arbites_shotpistol",
+      "data_slate",
+      "vox_bead"
+    ],
+    "suggested": {
+      "attributesXp": 54,
+      "attributes": {
+        "strength": 4,
+        "toughness": 4,
+        "agility": 3,
+        "initiative": 3,
+        "willpower": 2,
+        "intellect": 3,
+        "fellowship": 3
+      },
+      "skillsXp": 26,
+      "skills": {
+        "athletics": 1,
+        "awareness": 2,
+        "ballisticSkill": 3,
+        "intimidation": 3,
+        "investigation": 3,
+        "leadership": 2,
+        "medicae": 2,
+        "weaponSkill": 2
+      },
+      "talents": [
+        {
+          "name": "Breaking Dissent",
+          "source": "lex",
+          "page": 14
+        },
+        {
+          "name": "Brutalist",
+          "source": "core",
+          "page": 13
+        },
+        {
+          "name": "Deductive Genius",
+          "source": "redacted1",
+          "page": 63
+        },
+        {
+          "name": "First Response",
+          "source": "redacted1",
+          "page": 65
+        }
+      ]
+    },
+    "source": "lex",
+    "page": 10
+  },
+  {
+    "id": "arbites_revelatum",
+    "name": "Arbites Revelatum",
+    "description": "You scout the treacherous path ahead for your fellow Arbites, and utilise those same keen senses to flush out your prey from the dark, ensuring that no lawbreaker can evade the Emperor's grasp. Accustomed to navigating the lethal, choked ruins and dilapidated hab-blocks of underhives and the volatile crowds of rebellious districts and rioters, Arbites Revelatum are forward scouts and master trackers. Moving ahead of the Exaction Squad. An Arbites Revelatum operates with quiet, lethal foresight, often slipping through deadly crossfire and debris undetected to illuminate priority targets and disarm hidden hazards before the main Arbites force advances. Armed with a deadly Arbites Shot Pistol and iron-like determination, the Arbites Revelatum utilise their understanding of human panic, local architecture, alongside an array of advanced tracking and auspex devices to to strip away the safety of the dark, rendering those who would violate the Lex Imperialis desperate attempts at escape useless.",
+    "tier": 2,
+    "species": [
+      "human"
+    ],
+    "cost": 70,
+    "faction": "Adeptus Arbites",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "attributeBonus": {
+      "strength": 3,
+      "toughness": 3,
+      "intellect": 3
+    },
+    "skillBonus": {
+      "ballisticSkill": 2,
+      "intimidation": 2,
+      "investigation": 3,
+      "weaponSkill": 2
+    },
+    "influenceModifier": 1,
+    "abilities": [
+      {
+        "name": "Recidivist Hunter",
+        "description": "You gain +Rank Bonus Dice on all Awareness (Int) and Survival (Wil) tests made to track targets, navigate hostile environments, or detect hidden hazards. As a Simple Action, you can use your Soulguilt Scanner to mark a single target within your line of sight. For the rest of the combat encounter, that target cannot benefit from Cover or Stealth against attacks made by you or your allies."
+      }
+    ],
+    "startingWargear": [
+      "arbites_carapace_armour",
+      "shock_maul_lex",
+      "arbites_shotpistol",
+      "soulguilt_scanner",
+      "data_slate",
+      "vox_bead"
+    ],
+    "suggested": {
+      "attributesXp": 54,
+      "attributes": {
+        "strength": 4,
+        "toughness": 4,
+        "agility": 3,
+        "initiative": 3,
+        "willpower": 2,
+        "intellect": 3,
+        "fellowship": 3
+      },
+      "skillsXp": 26,
+      "skills": {
+        "athletics": 1,
+        "awareness": 2,
+        "ballisticSkill": 3,
+        "intimidation": 3,
+        "investigation": 3,
+        "leadership": 2,
+        "weaponSkill": 2
+      },
+      "talents": [
+        {
+          "name": "Bloodhound",
+          "source": "redacted1",
+          "page": 61
+        },
+        {
+          "name": "Eliminator",
+          "source": "core",
+          "page": 133
+        },
+        {
+          "name": "Deductive Genius",
+          "source": "redacted1",
+          "page": 63
+        },
+        {
+          "name": "Disarming Stare",
+          "source": "redacted1",
+          "page": 64
+        }
+      ]
+    },
+    "source": "lex",
+    "page": 11
+  },
+  {
+    "id": "arbites_leashmaster",
+    "name": "Arbites Leashmaster",
+    "description": "The bond between a Leashmaster and their Cyber-mastiff is forged in cold steel and underpinned by absolute obedience. When a suspect breaks cover and runs, the Leashmaster unleashes their metallic beast, issuing metallic-sounding orders and terrifying judicial threats that boom directly from the Cyber-mastiff's built-in vox emitters. The psychological horror of hearing a booming, robotic voice demanding your surrender while a mass of steel jaws and razor-sharp claws tears after you in the darkness of the hive is enough to break the resolve of even the most hardened of recidivists. A Leashmaster takes immense pride in their work, orchestrating the perfect ambush and watching dispassionately as their mechanical hounds pin the gasping, terrified lawbreakers to the ground, holding them perfectly in place for the arrival of their fellow Arbites.",
+    "tier": 2,
+    "species": [
+      "human"
+    ],
+    "cost": 70,
+    "faction": "Adeptus Arbites",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "attributeBonus": {
+      "strength": 3,
+      "toughness": 3,
+      "intellect": 3
+    },
+    "skillBonus": {
+      "ballisticSkill": 2,
+      "intimidation": 2,
+      "investigation": 3,
+      "weaponSkill": 2
+    },
+    "influenceModifier": 1,
+    "abilities": [
+      {
+        "name": "Watchdog",
+        "description": "While your Cyber Mastiff is within 3m of you, you gain +Double Rank bonus dice on any Intimidation tests"
+      }
+    ],
+    "startingWargear": [
+      "arbites_carapace_armour",
+      "arbites_assault_shield",
+      "shock_maul_lex",
+      "arbites_combat_shotgun",
+      "data_slate",
+      "vox_bead"
+    ],
+    "suggested": {
+      "attributesXp": 54,
+      "attributes": {
+        "strength": 4,
+        "toughness": 4,
+        "agility": 3,
+        "initiative": 3,
+        "willpower": 2,
+        "intellect": 3,
+        "fellowship": 3
+      },
+      "skillsXp": 26,
+      "skills": {
+        "athletics": 1,
+        "awareness": 2,
+        "ballisticSkill": 3,
+        "intimidation": 3,
+        "investigation": 3,
+        "leadership": 2,
+        "weaponSkill": 2
+      },
+      "talents": [
+        {
+          "name": "Bloodhound",
+          "source": "redacted1",
+          "page": 61
+        },
+        {
+          "name": "Fury of the Lawbringer",
+          "source": "lex",
+          "page": 15
+        },
+        {
+          "name": "Deductive Genius",
+          "source": "redacted1",
+          "page": 63
+        },
+        {
+          "name": "Disarming Stare",
+          "source": "redacted1",
+          "page": 64
+        }
+      ]
+    },
+    "source": "lex",
+    "page": 12
+  },
+  {
+    "id": "arbites_proctor_exactant",
+    "name": "Arbites Proctor-Exactant",
+    "description": "You select and lead an Arbites Exaction Squad, enforcing Imperial justice with an iron fist. Clad in the black carapace of the Adeptus Arbites, these terrifying individuals are the embodiment of Imperial Law, marching into the most chaotic and dangerous fringes of the Imperium to enforce the Lex Imperialis with an unflinching resolve and single-minded purpose. Exaction Squads are usually selected and led by Proctors-exactant. These experienced Arbitrators are ruthless tacticians and savvy fighters. A Proctor-Exactant possesses an encyclopedic knowledge of Imperial law, viewing every riot, rebellion, and cultist not just as a physical threat or transgression but as an intolerable affront against the Emperor's divine law. Proctor-Exactants are master tacticians who view their squad members as precision tools to dismantle sedition. They do not negotiate with recidivists, nor do they accept excuses or pleas for mercy in the deliverance of the Emperor's law.",
+    "tier": 4,
+    "species": [
+      "human"
+    ],
+    "cost": 174,
+    "faction": "Adeptus Arbites",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "attributeBonus": {
+      "strength": 3,
+      "toughness": 4,
+      "initiative": 4,
+      "willpower": 3,
+      "intellect": 4
+    },
+    "skillBonus": {
+      "ballisticSkill": 3,
+      "leadership": 4,
+      "scholar": 4,
+      "weaponSkill": 3
+    },
+    "influenceModifier": 3,
+    "abilities": [
+      {
+        "name": "Dictat Authoritas",
+        "description": "As a Simple Action, choose one ally with the ADEPTUS ARBITES Keyword within 15-metres who can hear you. That ally may immediately take a free Movement action or a single Weapon Attack action using your Rank as bonus dice to their pool. This can only be done once per combat encounter."
+      }
+    ],
+    "startingWargear": [
+      "arbites_carapace_armour",
+      "excruciator_maul",
+      "nuncio_aquila",
+      "chastisor_auto_vox",
+      "arbites_combat_shotgun",
+      "data_slate",
+      "vox_bead"
+    ],
+    "suggested": {
+      "attributesXp": 40,
+      "attributes": {
+        "strength": 4,
+        "toughness": 4,
+        "agility": 3,
+        "initiative": 4,
+        "willpower": 4,
+        "intellect": 4,
+        "fellowship": 3
+      },
+      "skillsXp": 130,
+      "skills": {
+        "awareness": 3,
+        "ballisticSkill": 5,
+        "insight": 3,
+        "intimidation": 4,
+        "investigation": 4,
+        "leadership": 4,
+        "scholar": 4,
+        "weaponSkill": 4
+      },
+      "talents": [
+        {
+          "name": "Stand and Die Protocol",
+          "source": "lex",
+          "page": 15
+        },
+        {
+          "name": "Brutalist",
+          "source": "core",
+          "page": 13
+        },
+        {
+          "name": "Deductive Genius",
+          "source": "redacted1",
+          "page": 63
+        },
+        {
+          "name": "Disarming Stare",
+          "source": "redacted1",
+          "page": 64
+        }
+      ]
+    },
+    "source": "lex",
+    "page": 13
   }
 ]

@@ -573,6 +573,12 @@
       "source": "core",
       "page": 162,
       "description": "The Wrath Die replaces one of the d6 in your dice pool. If you only have one die in your pool for a Test, it is the Wrath Die. The Wrath Die works the same as every other die in your pool when determining Icons and Exalted Icons, but also activates specific effects when it lands on a 1 or 6. When the Wrath Die lands on a 6, you've rolled a Wrath Critical. When the Wrath Die lands on a 1, you've rolled a Complication."
+    },
+    "using_glory": {
+      "name": "Using Glory",
+      "source": "lex",
+      "page": 14,
+      "description": "The forces of the Adeptus Arbites act for the good of the Imperium and their pursuit of justice, and rigid adherence can put them at odds with fellow party members. To represent this dichotomy, many Arbites Talents use the shared resource Glory rather than Wrath. While Wrath represents an individual's personal fury and desperate survival instinct, the forces of the Adeptus Arbites do not fight out of personal anger or reckless emotion; they are the cold, dispassionate instruments of the Emperor's law. Spending Glory represents the collective triumph of the Imperium and the execution of Imperial justice."
     }
   },
   "keywords": {
@@ -602,9 +608,9 @@
     },
     "adeptus_arbites": {
       "name": "ADEPTUS ARBITES",
-      "source": "core",
-      "page": null,
-      "description": "[AI-Generated] The enforcers of Imperial law, the Adeptus Arbites maintain order across the Imperium through unyielding adherence to the Lex Imperialis. They are judge, jury, and executioner."
+      "source": "lex",
+      "page": 5,
+      "description": "The fighting forces of the Adeptus Arbites are the Arbitrators. They are warriors of Imperial justice and the militant counterpart of the Lord Marshals and Judges. Exempt from any prohibitions on operating warp-capable craft – such as planetary governors must abide by – the Adeptus Arbites are capable of deploying in force to a planet, void station or ship upon which their intelligence has revealed the taint of criminal activities, or the inaction that allowed it."
     },
     "adeptus_astartes": {
       "name": "ADEPTUS ASTARTES",

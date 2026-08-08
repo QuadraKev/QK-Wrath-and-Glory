@@ -454,8 +454,12 @@
     "name": "Baleful Acolyte (Abundance of Apocrypha)",
     "cost": 10,
     "prerequisites": {
-      "keywords": ["CHAOS"],
-      "forbiddenKeywords": ["PSYKER"]
+      "keywords": [
+        "CHAOS"
+      ],
+      "forbiddenKeywords": [
+        "PSYKER"
+      ]
     },
     "effect": "You gain the PSYKER keyword and learn the Smite psychic power. You may learn minor psychic powers, and powers from a single Chaos Discipline (any Discipline with powers with the CHAOS keyword). You rely on a focal item: a balefire tome, a ritual dagger, or similar, and can only use your powers when you have that item in hand.",
     "flavor": "You have dabbled in sorcerous power, drawing power from vile artefacts and malign grimoires.",
@@ -2894,8 +2898,12 @@
     "name": "Indomitable Belief (Abundance of Apocrypha)",
     "cost": 20,
     "prerequisites": {
-      "keywords": ["ADEPTA SORORITAS"],
-      "forbiddenKeywords": ["CHAOS"]
+      "keywords": [
+        "ADEPTA SORORITAS"
+      ],
+      "forbiddenKeywords": [
+        "CHAOS"
+      ]
     },
     "effect": "You, and all ADEPTA SORORITAS characters within 15m of you, add +Rank to Resilience. In addition, when you suffer damage in excess of your Maximum Wounds, you gain 1 Faith. If you die, all characters with the ADEPTUS MINISTORUM or ADEPTA SORORITAS keywords gain 2 Faith and recover +Double Rank Shock, as they are spurred on by your martyrdom.",
     "flavor": "Your faith is such that you will not yield before the Emperor’s enemies.",
@@ -3085,8 +3093,12 @@
     "name": "Latent Psyker (Abundance of Apocrypha)",
     "cost": 10,
     "prerequisites": {
-      "species": ["human"],
-      "forbiddenKeywords": ["PSYKER"]
+      "species": [
+        "human"
+      ],
+      "forbiddenKeywords": [
+        "PSYKER"
+      ]
     },
     "effect": "You gain the PSYKER keyword, and a single minor psychic power. You cannot purchase additional psychic powers. You may only attempt to use your power at the Unbound power level. Further, whenever you suffer a complication, the GM may spend 1 Ruin to have you roll on the Perils of the Warp table, as your powers run out of control.",
     "flavor": "You possess a minor psychic talent, that you’re barely aware of and have little hope of controlling.",
@@ -4236,8 +4248,12 @@
     "name": "Psy-Inert (Abundance of Apocrypha)",
     "cost": 20,
     "prerequisites": {
-      "species": ["human"],
-      "forbiddenKeywords": ["PSYKER"]
+      "species": [
+        "human"
+      ],
+      "forbiddenKeywords": [
+        "PSYKER"
+      ]
     },
     "effect": "The DN of any psychic power that targets you is increased by +Rank.",
     "flavor": "Your soul is dull and doesn’t react to the influence of the Warp.",
@@ -6490,5 +6506,146 @@
     "isPrayer": true,
     "source": "dh",
     "page": 115
+  },
+  {
+    "id": "break_the_line",
+    "name": "Break the Line",
+    "cost": 20,
+    "prerequisites": {
+      "keywords": [
+        "IMPERIUM",
+        "ADEPTUS ARBITES"
+      ]
+    },
+    "effect": "With a shattering charge, you smash through enemy formations to scatter rioters and infractionists. As a Simple Action, spend a point of Glory. All attacks you make this turn gain +Double Rank Bonus Dice. Enemies that suffer damage from any melee attacks you make this turn also gain the Staggered Condition until their next Turn.",
+    "flavor": null,
+    "source": "lex",
+    "page": 14
+  },
+  {
+    "id": "breaking_dissent",
+    "name": "Breaking Dissent",
+    "cost": 20,
+    "prerequisites": {
+      "keywords": [
+        "ADEPTUS ARBITES"
+      ]
+    },
+    "effect": "With a booming judicial litany and the liberal application of Shock Maul, Arbites are masters of ensuring that crowds of recidivists falter in the face of justice. As a Simple Action, spend a point of Glory. You and any Allies with the ADEPTUS ARBITES keyword within a 15m radius inflict +Rank additional ED against enemies with the Staggered condition until the end of the next combat round.",
+    "flavor": null,
+    "source": "lex",
+    "page": 14
+  },
+  {
+    "id": "castigators_stance",
+    "name": "Castigator's Stance",
+    "cost": 20,
+    "prerequisites": {
+      "keywords": [
+        "ADEPTUS ARBITES"
+      ]
+    },
+    "effect": "Recalling the intense drills and teachings of the Progenium, you adopt a braced combat stance, becoming an immovable force of suppression. As a Simple Action, spend a point of Glory. You gain +Rank movement speed, and the effects of “Full Defence” without the movement or action penalties for 1 round. Upon activation, roll Determination and replenish wounds and gain shock as normal.",
+    "flavor": null,
+    "source": "lex",
+    "page": 15
+  },
+  {
+    "id": "fury_of_the_lawbringer",
+    "name": "Fury of the Lawbringer",
+    "cost": 10,
+    "prerequisites": {
+      "keywords": [
+        "ADEPTUS ARBITES"
+      ]
+    },
+    "effect": "The absolute authority of the Lex Imperialis burns within you, shielding your squad from doubt and terror. As a Simple Action, spend a point of Glory. For +Rank rounds, you and any Allies with the ADEPTUS ARBITES keyword are immune to the Pinned, Staggered, and Fear conditions.",
+    "flavor": null,
+    "source": "lex",
+    "page": 15
+  },
+  {
+    "id": "go_get_em",
+    "name": "Go Get 'Em!",
+    "cost": 10,
+    "prerequisites": {
+      "keywords": [
+        "ADEPTUS ARBITES"
+      ]
+    },
+    "effect": "With a sharp whistle and a pointed finger, or another well-trained gesture, you unleash your cybernetic hound into the thick of the crowd. Your Cyber Mastiff gains +Double Rank bonus dice when rolling to hit against Mobs of enemies.",
+    "flavor": null,
+    "source": "lex",
+    "page": 15
+  },
+  {
+    "id": "lone_wolf",
+    "name": "Lone Wolf",
+    "cost": 20,
+    "prerequisites": {
+      "keywords": [
+        "ADEPTUS ARBITES"
+      ]
+    },
+    "effect": "Relying only on your shotgun, your armour, and your faith in the Lex Imperialis, you operate best without the distractions of your fellow Arbites. When not within 20m of an ally, you gain +Rank to Determination and Weapon Skill Tests, as well as reducing multi-attack DN by 2 (to a minimum of 0).",
+    "flavor": null,
+    "source": "lex",
+    "page": 15
+  },
+  {
+    "id": "part_of_the_squad",
+    "name": "Part of the Squad",
+    "cost": 10,
+    "prerequisites": {
+      "keywords": [
+        "ADEPTUS ARBITES"
+      ]
+    },
+    "effect": "A well-trained Cyber Mastiff will kill and die for its master. As a reaction, you may spend a point of Glory to make your Cyber Mastiff intercept an attack against yourself or an Ally (Target must be within 8m of the Cyber Mastiff). You must choose to do this after the attack is rolled, but before damage is applied. A Cyber Mastiff that receives damage in this way reduces the amount received by +Rank.",
+    "flavor": null,
+    "source": "lex",
+    "page": 15
+  },
+  {
+    "id": "ruthless_efficiency",
+    "name": "Ruthless Efficiency",
+    "cost": 10,
+    "prerequisites": {
+      "keywords": [
+        "ADEPTUS ARBITES"
+      ]
+    },
+    "effect": "From their youth spent in the halls and training fields of the Progenium, through to the continual, meticulous training of the Adeptus Arbites, the men and women of the Arbites Exaction Squads are trained to eliminate threats with mechanical, synchronised precision. Once per combat, you may perform 1 Salvo attack without needing to Reload afterwards.",
+    "flavor": null,
+    "source": "lex",
+    "page": 15
+  },
+  {
+    "id": "stand_and_die_protocol",
+    "name": "Stand and Die Protocol",
+    "cost": 20,
+    "prerequisites": {
+      "keywords": [
+        "ADEPTUS ARBITES"
+      ]
+    },
+    "effect": "The ranks of the Adeptus Arbites do not retreat; they hold the line until the Emperor's justice is delivered, even in the face of death. As a Simple Action, you may spend a point of Glory to declare that the STAND AND DIE PROTOCOL is in effect. You and allies within 30m with the ADEPTUS ARBITES keyword may immediately make a ranged attack. Additionally, until the end of the current encounter or until moving away from a foe, they automatically pass any Leadership tests they are required to make. The STAND AND DIE PROTOCOL may be declared only once per encounter.",
+    "flavor": null,
+    "source": "lex",
+    "page": 15
+  },
+  {
+    "id": "unleashed_brutality",
+    "name": "Unleashed Brutality",
+    "cost": 10,
+    "prerequisites": {
+      "keywords": [
+        "ADEPTUS ARBITES"
+      ]
+    },
+    "effect": "No high-ranking criminal or heretical ringleader can outrun the combined wrath of an Arbitrator and their Cyber Mastiff. When you and your Cyber Mastiff are tracking a known target together, your Cyber Mastiff’s attacks gain +Rank ED vs Elites and Adversaries.",
+    "flavor": null,
+    "source": "lex",
+    "page": 15
   }
 ]

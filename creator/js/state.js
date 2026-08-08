@@ -8,7 +8,7 @@ const State = {
     gameData: null,
 
     // Enabled source books
-    enabledSources: ['core', 'fspg', 'redacted1', 'redacted2', 'church', 'voa', 'aeldari', 'apocrypha', 'dh', 'shotguns'],
+    enabledSources: ['core', 'fspg', 'redacted1', 'redacted2', 'church', 'voa', 'aeldari', 'apocrypha', 'dh', 'shotguns', 'lex'],
 
     // House rule: ignore prerequisites/requirements when selecting content
     ignorePrerequisites: false,

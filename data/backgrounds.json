@@ -359,6 +359,42 @@
       "factions": [
         "chaos"
       ]
+    },
+    {
+      "id": "schola_progenium",
+      "name": "Schola Progenium",
+      "description": "You were raised from childhood to know nothing but discipline, duty, and the Emperor's laws.",
+      "bonus": "+1 Max Wounds",
+      "bonusType": "maxWounds",
+      "factions": [
+        "adeptus_arbites"
+      ],
+      "source": "lex",
+      "page": 7
+    },
+    {
+      "id": "line_of_duty",
+      "name": "Line-of-Duty",
+      "description": "You were drafted directly from a planetary enforcement force after demonstrating cold-blooded efficiency in the application of local law.",
+      "bonus": "+1 Resolve",
+      "bonusType": "resolve",
+      "factions": [
+        "adeptus_arbites"
+      ],
+      "source": "lex",
+      "page": 7
+    },
+    {
+      "id": "secundus_tithe",
+      "name": "Secundus Tithe",
+      "description": "You were transferred from a distant sector of Imperial space to replace heavy losses and, as such, view the local populations with suspicion.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "adeptus_arbites"
+      ],
+      "source": "lex",
+      "page": 7
     }
   ],
   "accomplishments": [
@@ -771,6 +807,42 @@
       "factions": [
         "chaos"
       ]
+    },
+    {
+      "id": "the_long_night",
+      "name": "The Long Night",
+      "description": "You were part of a force holding a remote Arbites Precinct against overwhelming odds.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "adeptus_arbites"
+      ],
+      "source": "lex",
+      "page": 7
+    },
+    {
+      "id": "workplace_negotiator",
+      "name": "Workplace Negotiator",
+      "description": "You participated in suppressing a workforce riot and executed the ringleaders with ruthless efficiency.",
+      "bonus": "+1 Max Shock",
+      "bonusType": "maxShock",
+      "factions": [
+        "adeptus_arbites"
+      ],
+      "source": "lex",
+      "page": 7
+    },
+    {
+      "id": "high_treason",
+      "name": "High Treason",
+      "description": "You prosecuted the fall of a corrupt noble house, regardless of political consequence.",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "adeptus_arbites"
+      ],
+      "source": "lex",
+      "page": 7
     }
   ],
   "goals": [
@@ -1193,6 +1265,42 @@
       "factions": [
         "chaos"
       ]
+    },
+    {
+      "id": "sector_subjugation",
+      "name": "Sector Subjugation",
+      "description": "You seek to bring the order of Imperial Law to the Sector.",
+      "bonus": "+1 Conviction",
+      "bonusType": "conviction",
+      "factions": [
+        "adeptus_arbites"
+      ],
+      "source": "lex",
+      "page": 7
+    },
+    {
+      "id": "bounty_hunter",
+      "name": "Bounty Hunter",
+      "description": "You are tracking a known recidivist and will stop at nothing to bring them to justice.",
+      "bonus": "+1 Determination",
+      "bonusType": "determination",
+      "factions": [
+        "adeptus_arbites"
+      ],
+      "source": "lex",
+      "page": 7
+    },
+    {
+      "id": "earn_the_eagle",
+      "name": "Earn the Eagle",
+      "description": "You strive to rise through the ranks of the Adeptus Arbites",
+      "bonus": "+1 Influence",
+      "bonusType": "influence",
+      "factions": [
+        "adeptus_arbites"
+      ],
+      "source": "lex",
+      "page": 7
     }
   ]
 }

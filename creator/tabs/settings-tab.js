@@ -12,6 +12,7 @@ const SettingsTab = {
         { id: 'aeldari', label: 'Aeldari: Inheritance of Embers' },
         { id: 'dh', label: 'Threat Assessment: Daemons & Heretics' },
         { id: 'shotguns', label: 'Departmento Munitorum Shotguns' },
+        { id: 'lex', label: 'Lex Imperialis' },
         { id: 'apocrypha', label: 'An Abundance of Apocrypha (Homebrew)' }
     ],
 

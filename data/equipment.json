@@ -5344,7 +5344,7 @@
     "name": "Alcohol (Abundance of Apocrypha)",
     "category": "drugs",
     "description": "Most intelligent species have developed some form or other of alcoholic drink, and most cultures have devised countless methods of creating beverages that include alcohol in some form, from crude rotgut distilled in engine machinery (itself an offence to the Machine Spirit), to carefully aged and precisely flavoured concoctions reserved for only the most powerful and most deserving. Consuming alcohol tends to loosen inhibitions and provide \"liquid courage\", but overconsumption can lead to other problems. From human amasec, to Aeldari dreamwine, to Ork fungus brew, and the Bru of the Leagues of Votann, alcoholic beverages are found across the galaxy.",
-    "effect": "A single purchase contains 6 doses. A character gains +1 Resolve for the next hour after drinking. A character who takes a number of doses exceeding their Toughness within one day gains +2 Resolve instead, but also suffers +1DN on all other activities, and will suffer 1d3 Shock when they awaken after their next sleep. Excessive drinking may lead to other side-effects, such as nausea, poor decision-making, and\/or unconsciousness.",
+    "effect": "A single purchase contains 6 doses. A character gains +1 Resolve for the next hour after drinking. A character who takes a number of doses exceeding their Toughness within one day gains +2 Resolve instead, but also suffers +1DN on all other activities, and will suffer 1d3 Shock when they awaken after their next sleep. Excessive drinking may lead to other side-effects, such as nausea, poor decision-making, and/or unconsciousness.",
     "value": 2,
     "rarity": "Common",
     "keywords": [
@@ -6127,5 +6127,121 @@
     ],
     "source": "apocrypha",
     "page": 447
+  },
+  {
+    "id": "arbites_medi_kit",
+    "name": "Arbites Medi-kit",
+    "category": "tool",
+    "description": "These sterile, cold-iron cases contain specialised combat stimulants, coagulant sprays, and surgical tools designed for rapid battlefield triage. It is built to patch up Arbitrators or keep valuable suspects alive just long enough to face formal interrogation.",
+    "effect": "When making a Medicae (Int) test to heal an ally, you gain +1 Bonus Dice. If used on an incapacitated enemy, they are automatically stabilised and cannot bleed out for the next hour.",
+    "value": 3,
+    "rarity": "Uncommon",
+    "keywords": [
+      "ADEPTUS ARBITES"
+    ],
+    "source": "lex",
+    "page": 18
+  },
+  {
+    "id": "nuncio_aquila",
+    "name": "Nuncio Aquila",
+    "category": "wargear",
+    "description": "A large mechanical eagle drone that circles the battlefield, broadcasting deafening judicial litanies. Its advanced targeting optics sync directly to the Exaction Squad's helmets, mapping enemy movements and exposing cover.",
+    "effect": "When in use, ranged attacks gain +Rank Bonus Dice. Can be activated once per combat.",
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "ADEPTUS ARBITES"
+    ],
+    "source": "lex",
+    "page": 18
+  },
+  {
+    "id": "soulguilt_scanner",
+    "name": "Soulguilt Scanner",
+    "category": "tool",
+    "description": "This handheld Auspex variant detects the physiological tells of deception and anxiety, tracking heart rate, pheromone spikes, and neural anomalies. It strips away the anonymity of a crowd, pinpointing the most nervous and likely guilty targets.",
+    "effect": "You gain +Rank Bonus Dice on all Insight (Wil) tests. Additionally, it negates any benefits an enemy receives from concealing their identity or hiding in a crowd.",
+    "value": 7,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "source": "lex",
+    "page": 18
+  },
+  {
+    "id": "arbites_assault_shield",
+    "name": "Arbites Assault Shield",
+    "category": "wargear",
+    "description": "This massive, ballistic shield is forged from reinforced plasteel and layered ceramite, designed to withstand furious rioting and heavy-calibre ballistic fire. With a narrow viewing slit and a low-frequency kinetic disruptor field across its front face, it allows an Arbitrator to anchor a defensive line or forcefully push their way through a hostile crowd.",
+    "effect": "You gain +Rank to your Resilience when equipped. As a Simple Action, you may plant the shield to gain the benefits of Light Cover (+Rank to Defence) until the start of your next turn. Additionally, any enemy who fails a melee attack against you must immediately make a Strength Test (DN 2 + Rank) or be knocked back, gaining the Staggered condition by the shield's kinetic discharge.",
+    "bonuses": {
+      "resilience": "rank"
+    },
+    "value": 6,
+    "rarity": "Uncommon",
+    "keywords": [
+      "ADEPTUS ARBITES"
+    ],
+    "source": "lex",
+    "page": 19
+  },
+  {
+    "id": "the_lex_imperialis",
+    "name": "The Lex Imperialis",
+    "category": "wargear",
+    "description": "Often bound in heavy leather or clad in ceramite plates, this massive tome contains millions of codified imperial legal sub-statutes, precedents, and prescribed punishments. Carried onto the battlefield by senior Arbitrators, it projects the absolute imperial authority of the Adeptus Arbites.",
+    "effect": "You gain +Rank Bonus Dice on all Scholar (Int) and Leadership (Wil) tests. Additionally, as a Simple Action, you may spend a point of Glory to read a verdict aloud, quoting the Lex Imperialis directly. All enemies within a 15-meter radius who can hear you must immediately pass a Resolve Test (DN 2 + Rank) or suffer the Pinned condition as the terrifying weight of their Emperor's justice shatters their resolve.",
+    "value": 3,
+    "rarity": "Common",
+    "keywords": [
+      "ADEPTUS ARBITES"
+    ],
+    "source": "lex",
+    "page": 19
+  },
+  {
+    "id": "manhunters_helm",
+    "name": "Manhunter's Helm",
+    "category": "wargear",
+    "description": "This faceless, steel-reinforced helm cuts out all external auditory distractions, allowing the Arbitrator to focus solely on their target. Its internal HUD projects a glowing tracking reticle over anyone designated a fugitive of Imperial justice.",
+    "effect": "When worn, you gain +Rank to all Intimidate Tests. You gain a +1 bonus to defence against the target of your current investigation or pursuit.",
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "ADEPTUS ARBITES"
+    ],
+    "source": "lex",
+    "page": 19
+  },
+  {
+    "id": "vasovs_auto_oppressor",
+    "name": "Vasov's Auto-Oppressor",
+    "category": "wargear",
+    "description": "This ancient device emits focused grav-pulses that force its targets to their knees in obeisance. Stripped of the ability to stand against the Emperor's law, those caught in its localised gravity well are pinned to the earth under the full weight of Imperial justice.",
+    "effect": "Once per combat, you can activate this device to target an area within 15 meters. The target must pass a Strength Test (DN 3) or immediately fall Prone and have their Speed reduced to 0 until the end of their next turn.",
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "ADEPTUS ARBITES"
+    ],
+    "source": "lex",
+    "page": 19
+  },
+  {
+    "id": "chastisor_auto_vox",
+    "name": "Chastisor Auto-Vox",
+    "category": "wargear",
+    "description": "An amplified vocal array integrated into a Proctor's armour. It projects the user's voice with a booming, artificial resonance that can drown out the roar of heavy machinery, carrying the weight and terrifying authority of the Lex Imperialis.",
+    "effect": "You gain +2 Bonus Dice to all Intimidation (Wil) tests. Once per encounter, you can shout a command; all non-Elite enemies within 10 meters must pass a Resolve Test (DN 2 + Rank) or be Pinned.",
+    "value": 4,
+    "rarity": "Uncommon",
+    "keywords": [
+      "ADEPTUS ARBITES"
+    ],
+    "source": "lex",
+    "page": 19
   }
 ]

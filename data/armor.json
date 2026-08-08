@@ -2503,5 +2503,20 @@
     ],
     "source": "voa",
     "page": 72
+  },
+  {
+    "id": "arbites_carapace_armour",
+    "name": "Arbites Carapace Armour",
+    "type": "heavy",
+    "description": "The Arbitrators who uphold Imperial justice wear thick mantles of carapace armour over flexible undersuits, and many wear the signature mirror-visored helm – open at the mouth to facilitate shouted commands. These armoured suits usually incorporate the gauntlet and scales icon of the Adeptus Arbites. They are ideal for close-quarters suppression, affording protection against their prey's illegal weapons and the mobility required to negotiate twisted underhives.",
+    "ar": 4,
+    "traits": [],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "ADEPTUS ARBITES"
+    ],
+    "source": "lex",
+    "page": 18
   }
 ]

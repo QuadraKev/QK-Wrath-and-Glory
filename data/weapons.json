@@ -23673,5 +23673,438 @@
     ],
     "source": "apocrypha",
     "page": 418
+  },
+  {
+    "id": "arbites_shotpistol",
+    "name": "Arbites Shotpistol",
+    "type": "ranged",
+    "category": "Solid Projectile",
+    "description": null,
+    "damage": {
+      "base": 6,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Brutal",
+      "Pistol"
+    ],
+    "value": 5,
+    "rarity": "Common",
+    "keywords": [
+      "PROJECTILE",
+      "ADEPTUS ARBITES"
+    ],
+    "source": "lex",
+    "page": 17
+  },
+  {
+    "id": "arbites_combat_shotgun",
+    "name": "Arbites Combat Shotgun",
+    "type": "ranged",
+    "category": "Solid Projectile",
+    "description": null,
+    "damage": {
+      "base": 8,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Brutal",
+      "Rapid Fire (2)"
+    ],
+    "value": 6,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PROJECTILE",
+      "ADEPTUS ARBITES"
+    ],
+    "source": "lex",
+    "page": 17
+  },
+  {
+    "id": "arbites_grenade_launcher",
+    "name": "Arbites Grenade Launcher",
+    "type": "ranged",
+    "category": "Grenade",
+    "description": null,
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": {
+      "short": 14,
+      "medium": 28,
+      "long": 42
+    },
+    "salvo": "-",
+    "traits": [
+      "Assault"
+    ],
+    "value": 5,
+    "rarity": "Common",
+    "keywords": [
+      "PROJECTILE",
+      "ADEPTUS ARBITES"
+    ],
+    "source": "lex",
+    "page": 17,
+    "special": "[AI-Generated] Damage: Use the profile of the Grenade fired. The book prints an asterisk for Damage and ED with no accompanying legend."
+  },
+  {
+    "id": "executioner_shotgun",
+    "name": "Executioner Shotgun",
+    "type": "ranged",
+    "category": "Solid Projectile",
+    "description": null,
+    "damage": {
+      "base": 9,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": 0,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": 1,
+    "traits": [
+      "Assault",
+      "Spread"
+    ],
+    "value": 3,
+    "rarity": "Common",
+    "keywords": [
+      "PROJECTILE",
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "source": "lex",
+    "page": 17
+  },
+  {
+    "id": "heavy_stubber_lex",
+    "name": "Heavy Stubber (Adeptus Arbites)",
+    "type": "ranged",
+    "category": "Solid Projectile",
+    "description": "This large, belt-fed slugthrower is equally capable of laying down a formidable hail of suppressive fire and cutting through ranks of infantry.",
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": 0,
+    "range": {
+      "short": 18,
+      "medium": 36,
+      "long": 54
+    },
+    "salvo": 3,
+    "traits": [
+      "Heavy (4)"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "PROJECTILE",
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "source": "lex",
+    "page": 17
+  },
+  {
+    "id": "webber",
+    "name": "Webber",
+    "type": "ranged",
+    "category": "Exotic",
+    "description": null,
+    "damage": {
+      "base": 0,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 0,
+    "ap": 0,
+    "range": {
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "salvo": "-",
+    "traits": [
+      "Blast (3)"
+    ],
+    "value": 3,
+    "rarity": "Common",
+    "keywords": [
+      "PROJECTILE",
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "source": "lex",
+    "page": 17
+  },
+  {
+    "id": "arbites_grenade",
+    "name": "Arbites Grenade",
+    "type": "ranged",
+    "category": "Explosive",
+    "description": null,
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": 0,
+    "range": "(S) x4m",
+    "salvo": "-",
+    "traits": [
+      "Spread"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "EXPLOSIVE",
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "source": "lex",
+    "page": 17
+  },
+  {
+    "id": "voltaic_shock_mine",
+    "name": "Voltaic Shock Mine",
+    "type": "ranged",
+    "category": "Explosive",
+    "description": null,
+    "damage": {
+      "base": 6,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": "(S) x4m",
+    "salvo": "-",
+    "traits": [
+      "Blast (6)"
+    ],
+    "value": "-",
+    "rarity": "Uncommon",
+    "keywords": [
+      "EXPLOSIVE",
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "source": "lex",
+    "page": 17
+  },
+  {
+    "id": "remote_detonation",
+    "name": "Remote Detonation",
+    "type": "ranged",
+    "category": "Explosive",
+    "description": null,
+    "damage": {
+      "base": 10,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": "Proximity Activated - 1m",
+    "salvo": "-",
+    "traits": [
+      "Heavy (4)",
+      "Blast (6)"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "EXPLOSIVE",
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "source": "lex",
+    "page": 17
+  },
+  {
+    "id": "power_sword_lex",
+    "name": "Power Sword (Adeptus Arbites)",
+    "type": "melee",
+    "category": "Power",
+    "description": "Rare weapons reserved for heroes of renown and officers of great endeavour, the energy arcing along the edge of a Power Sword is both a warning and a challenge to all who stand against its bearer.",
+    "damage": {
+      "base": 5,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -3,
+    "traits": [
+      "Parry"
+    ],
+    "value": 6,
+    "rarity": "Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ARBITES",
+      "POWER FIELD"
+    ],
+    "source": "lex",
+    "page": 17
+  },
+  {
+    "id": "excruciator_maul",
+    "name": "Excruciator Maul",
+    "type": "melee",
+    "category": "Power",
+    "description": null,
+    "damage": {
+      "base": 5,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -2,
+    "traits": [
+      "Agonising",
+      "Parry",
+      "Brutal"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "ADEPTUS ARBITES",
+      "POWER FIELD"
+    ],
+    "source": "lex",
+    "page": 17
+  },
+  {
+    "id": "power_maul_lex",
+    "name": "Power Maul (Adeptus Arbites)",
+    "type": "melee",
+    "category": "Power",
+    "description": "A simple mace enhanced by a power field, these weapons are valued for their utility. As the power field covers a smaller area of the weapon, its intensity can be adjusted, allowing it to deliver blows that can impact power armour or non-lethal warning taps to a Human skull.",
+    "damage": {
+      "base": 5,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -1,
+    "traits": [
+      "Brutal"
+    ],
+    "value": 6,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ARBITES",
+      "POWER FIELD"
+    ],
+    "source": "lex",
+    "page": 17
+  },
+  {
+    "id": "shock_maul_lex",
+    "name": "Shock Maul (Adeptus Arbites)",
+    "type": "melee",
+    "category": "Exotic",
+    "description": "The judges and enforcers of the Adeptus Arbites use these electrified bone-breaking truncheons to render suspects unconscious and break up unlawful gatherings.",
+    "damage": {
+      "base": 4,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 4,
+    "ap": -1,
+    "traits": [
+      "Agonising",
+      "Brutal"
+    ],
+    "value": 5,
+    "rarity": "Uncommon",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "source": "lex",
+    "page": 17
+  },
+  {
+    "id": "power_fist_lex",
+    "name": "Power Fist (Adeptus Arbites)",
+    "type": "melee",
+    "category": "Power",
+    "description": "[AI-Generated] A Power Fist is a massive armoured gauntlet surrounded by a disruptive power field. The weapon's crushing grip can pulp a man in an instant and punch through the thickest armour plate.",
+    "damage": {
+      "base": 5,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 5,
+    "ap": -3,
+    "traits": [
+      "Brutal",
+      "Unwieldy (2)"
+    ],
+    "value": 8,
+    "rarity": "Very Rare",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "source": "lex",
+    "page": 17
+  },
+  {
+    "id": "combat_knife_lex",
+    "name": "Combat Knife (Adeptus Arbites)",
+    "type": "melee",
+    "category": "Low-Tech",
+    "description": "From a grox butcher's chopper to an assassin's stiletto, any number of small bladed weapons can qualify as a 'Knife'. This includes any blades that may be affixed to a weapon as a bayonet.",
+    "damage": {
+      "base": 3,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "traits": [],
+    "value": 2,
+    "rarity": "Common",
+    "keywords": [
+      "BLADE",
+      "IMPERIUM",
+      "ADEPTUS ARBITES"
+    ],
+    "source": "lex",
+    "page": 17
   }
 ]

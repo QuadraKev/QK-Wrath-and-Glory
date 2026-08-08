@@ -327,14 +327,16 @@ All game data lives in `data/` as JSON files.
 ### Source Field Values
 
 **Creator app** (lowercase shortcodes):
-`core`, `fspg`, `church`, `aeldari`, `redacted1`, `redacted2`, `voa`, `shotguns`, `dh`, `apocrypha`
+`core`, `fspg`, `church`, `aeldari`, `redacted1`, `redacted2`, `voa`, `shotguns`, `dh`, `lex`, `apocrypha`
 
 **Bestiary app** (full names):
 `"Core Rules"`, `"Forsaken System Player Guide"`, `"Church of Steel"`, `"Abundance of Apocrypha"`, etc.
 
 ### Common Data Patterns
 
-- **IDs**: snake_case. Apocrypha content uses `_aaa` suffix to avoid collisions.
+- **IDs**: snake_case. Apocrypha content uses `_aaa` suffix to avoid collisions. Official books
+  use bare ids; when a book reprints an item another book already defines, suffix the new id with
+  the source code (e.g. `power_sword_lex`) and disambiguate the display name with a parenthetical.
 - **Traits/Keywords**: Arrays of uppercase strings (`["IMPERIUM", "ADEPTUS ASTARTES"]`).
 - **Missing/N/A values**: Use `"-"` string (not `null` or `0`) for display fields like shock.
 - **Speed**: Always integer. Use a separate `speedNote` field for text like `"Flight"`.

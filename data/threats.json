@@ -67168,5 +67168,59 @@
     "mobAbilities": "HUMAN WAVES: The GM gains 1 Ruin whenever this Mob fails a Resolve test or is wiped out.\nBRING IT DOWN! The Mob gains +2ED when all members attack the same target.",
     "source": "Abundant Apocryphal Adversaries: Heretic Astartes (Apocrypha)",
     "page": 27
+  },
+  {
+    "id": "cyber_mastiff",
+    "name": "CYBER MASTIFF",
+    "quote": "",
+    "attribution": "",
+    "description": "The bond between a Leashmaster and their Cyber-mastiff is forged in cold steel and underpinned by absolute obedience. When a suspect breaks cover and runs, the Leashmaster unleashes their metallic beast, issuing metallic-sounding orders and terrifying judicial threats that boom directly from the Cyber-mastiff's built-in vox emitters.",
+    "tierThreat": {
+      "1": "T",
+      "2": "T",
+      "3": "T",
+      "4": "T",
+      "5": "T"
+    },
+    "keywords": [
+      "ADEPTUS ARBITES",
+      "IMPERIUM"
+    ],
+    "attributes": {
+      "S": 3,
+      "T": 3,
+      "A": 3,
+      "I": 4,
+      "Wil": 2,
+      "Int": 2,
+      "Fel": 2
+    },
+    "resilience": {
+      "value": 8,
+      "note": "Armour Plating: 3 AR"
+    },
+    "defence": 3,
+    "wounds": 5,
+    "shock": 3,
+    "skills": "Default 4, Stealth 9, Weapon Skill 6",
+    "abilities": [
+      {
+        "type": "BATTLECRY",
+        "name": "Go For the Throat!",
+        "description": "The Cyber Mastiff Charges at the nearest target and uses it's Plasteel Bite. If it deals one or more Wounds, the target suffers the Bleeding and Prone Conditions."
+      },
+      {
+        "type": "ACTION",
+        "name": "Plasteel Bite",
+        "stats": "6 +4 ED / Rending (3)"
+      }
+    ],
+    "determination": "Spend 1 Ruin to roll 3d6. This Threat can roll Determination against Mortal Wounds.",
+    "conviction": 3,
+    "resolve": 2,
+    "speed": 8,
+    "size": "Avg",
+    "source": "Lex Imperialis",
+    "page": 12
   }
 ]

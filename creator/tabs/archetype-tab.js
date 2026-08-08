@@ -239,6 +239,8 @@ const ArchetypeTab = {
                 </div>
             ` : ''}
 
+            ${this.renderSuggestedBuild(archetype)}
+
             <div class="info-box" style="margin-top: 15px; padding: 10px; background: var(--bg-tertiary); border-radius: var(--radius-sm); font-size: 13px; color: var(--text-secondary);">
                 &#9432; You can add your (starting) equipment in the 6. Wargear section.
             </div>
@@ -689,6 +691,53 @@ const ArchetypeTab = {
         }
 
         return parts.join(', ');
+    },
+
+    // Suggested build printed alongside some archetypes (e.g. Lex Imperialis). Optional field.
+    renderSuggestedBuild(archetype) {
+        const s = archetype.suggested;
+        if (!s) return '';
+
+        const rows = [];
+        if (s.attributes && Object.keys(s.attributes).length > 0) {
+            const xp = s.attributesXp != null ? ` (${s.attributesXp} XP)` : '';
+            rows.push(`
+                <div class="ability-item">
+                    <div class="ability-name">Attributes${xp}</div>
+                    <div class="ability-desc">${this.formatBonuses(s.attributes, true)}</div>
+                </div>
+            `);
+        }
+        if (s.skills && Object.keys(s.skills).length > 0) {
+            const xp = s.skillsXp != null ? ` (${s.skillsXp} XP)` : '';
+            rows.push(`
+                <div class="ability-item">
+                    <div class="ability-name">Skills${xp}</div>
+                    <div class="ability-desc">${this.formatBonuses(s.skills, false)}</div>
+                </div>
+            `);
+        }
+        if (s.talents && s.talents.length > 0) {
+            const talents = s.talents.map(t => {
+                const book = DataLoader.getSourceDisplayName(t.source);
+                const cite = book ? ` (${book}${t.page ? ` p.${t.page}` : ''})` : '';
+                return `${t.name}${cite}`;
+            }).join(', ');
+            rows.push(`
+                <div class="ability-item">
+                    <div class="ability-name">Talents</div>
+                    <div class="ability-desc">${talents}</div>
+                </div>
+            `);
+        }
+        if (rows.length === 0) return '';
+
+        return `
+            <div class="detail-section">
+                <div class="detail-section-title">Suggested Build</div>
+                ${rows.join('')}
+            </div>
+        `;
     },
 
     formatWargear(wargearEntries) {

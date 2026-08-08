@@ -66,6 +66,7 @@ const SettingsTab = {
         'redacted2': 'Redacted Records II',
         'shotguns': 'Departmento Munitorum Shotguns',
         'dh': 'Threat Assessment: Daemons & Heretics',
+        'lex': 'Lex Imperialis',
         'apocrypha': 'Apocrypha'
     },
 

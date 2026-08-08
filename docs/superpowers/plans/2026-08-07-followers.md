@@ -624,15 +624,19 @@ Add after the `<div id="section-ascension" class="builder-section">…</div>` bl
                     </div>
 ```
 
-Add the three script tags, before `<script src="js/app.js?v=115"></script>`:
+Add the three script tags. The ordering constraint governs placement:
+
+- `js/followers.js` and `js/threat-card.js` go in the `js/` group, before the `tabs/` group.
+- `tabs/followers-tab.js` goes in the `tabs/` group, before `tabs/character-sheet-tab.js`.
+- All of them load before `js/app.js`, which is last.
 
 ```html
     <script src="js/followers.js?v=116"></script>
     <script src="js/threat-card.js?v=116"></script>
+    ...
     <script src="tabs/followers-tab.js?v=116"></script>
+    <script src="tabs/character-sheet-tab.js?v=116"></script>
 ```
-
-`followers.js` and `threat-card.js` must load before `tabs/followers-tab.js` and before `tabs/character-sheet-tab.js`.
 
 - [ ] **Step 3: Bump the cache version**
 
@@ -654,8 +658,11 @@ const FollowersTab = {
     _filters: { search: '', role: 'all', size: 'all', keyword: 'all' },
     _loading: false,
 
+    // No threat fetch here. threats.json is 2.64 MB, so it must load the first time the
+    // section is OPENED, not at startup. init() runs during App.init(), so it must never
+    // call render().
     init() {
-        this.render();
+        this.updateSidebarCount(State.getCharacter());
     },
 
     refresh() {
@@ -882,7 +889,10 @@ At `http://127.0.0.1:8137/creator/`:
 3. Click "10. Followers". A brief "Loading threat data…" appears, then the picker.
 4. The same check now returns `1`.
 5. Search `mastiff`, click Add on CYBER MASTIFF. It appears in the roster.
-6. Switch it to Mob, set Members to 8. "Mob attack bonus: +4" appears.
+6. Switch it to Mob, set Members to 8. "Mob attack bonus: +4" appears. Note this only works if
+   raising `count` on a mob at full strength raises `livingCount` with it — otherwise
+   `livingCount` stays at 1 and the bonus reads +0. A mob that has taken casualties
+   (`livingCount < count`) must keep them when `count` rises.
 7. Set Living to 12. It clamps to 8 and the bonus stays +4. Set Living to 3; the bonus becomes +1.
 8. Switch back to Individual. The member inputs disappear.
 9. Leave and re-enter the section. `…includes('threats.json')).length` is still `1`.

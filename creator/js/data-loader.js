@@ -127,6 +127,43 @@ const DataLoader = {
         return this.getWeapon(id) || this.getArmor(id) || this.getEquipment(id);
     },
 
+    // Threats power the Followers feature. threats.json is 2.64 MB against the creator's
+    // 2.21 MB of startup data, so it is fetched on demand instead of in loadAll().
+    _threatsPromise: null,
+
+    // Idempotent. Concurrent callers share one fetch.
+    ensureThreatsLoaded() {
+        if (this.cache['threats.json'] && this.cache['threat-weapons.json']) return Promise.resolve();
+        if (!this._threatsPromise) {
+            this._threatsPromise = Promise.all([
+                this.loadFile('threats.json'),
+                this.loadFile('threat-weapons.json')
+            ]).then(() => undefined);
+        }
+        return this._threatsPromise;
+    },
+
+    // True once threats are available, so callers can render without awaiting.
+    areThreatsLoaded() {
+        return !!this.cache['threats.json'];
+    },
+
+    // Get all threats. Empty until ensureThreatsLoaded() resolves.
+    getAllThreats() {
+        return this.cache['threats.json'] || [];
+    },
+
+    // Get threat by ID
+    getThreat(id) {
+        return this.getAllThreats().find(t => t.id === id);
+    },
+
+    // Get threat weapon by ID (referenced by a threat ability's weaponId)
+    getThreatWeapon(id) {
+        const weapons = this.cache['threat-weapons.json'] || [];
+        return weapons.find(w => w.id === id);
+    },
+
     // Get the Holy Relic creation tables (Redacted Records II)
     getHolyRelics() {
         return this.cache['holy-relics.json'] || null;

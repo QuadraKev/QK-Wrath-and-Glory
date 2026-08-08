@@ -106,6 +106,7 @@ const State = {
             memorableInjuries: [],   // [{ id, escalated }]
             traumaticInjuries: [],   // [{ id, side }]  (side: "left"/"right"/null)
             mutations: [],           // [{ id, subChoice }]  (subChoice: sub-option id or null)
+            followers: [],
 
             languages: ['low_gothic'],
             freeLanguages: [],
@@ -976,6 +977,48 @@ const State = {
             this.character.mutations.splice(index, 1);
             this.notifyListeners('injuries');
         }
+    },
+
+    // ===== Followers =====
+
+    // Add a follower for a threat id. Returns the new entry.
+    addFollower(threatId) {
+        if (!this.character.followers) this.character.followers = [];
+        const follower = Followers.create(threatId);
+        this.character.followers.push(follower);
+        this.notifyListeners('followers');
+        return follower;
+    },
+
+    // Remove a follower by its local id
+    removeFollower(id) {
+        if (!this.character.followers) return;
+        const i = this.character.followers.findIndex(f => f.id === id);
+        if (i === -1) return;
+        this.character.followers.splice(i, 1);
+        this.notifyListeners('followers');
+    },
+
+    // Get a follower by its local id
+    getFollower(id) {
+        return (this.character.followers || []).find(f => f.id === id);
+    },
+
+    // Merge a partial update into a follower
+    updateFollower(id, patch) {
+        const follower = this.getFollower(id);
+        if (!follower) return;
+        Object.assign(follower, patch);
+        // A mob cannot have more living members than it started with, and an individual is
+        // always a single creature.
+        if (follower.kind === 'individual') {
+            follower.count = 1;
+            follower.livingCount = 1;
+        } else {
+            follower.count = Math.max(1, Number(follower.count) || 1);
+            follower.livingCount = Math.min(Math.max(0, Number(follower.livingCount) || 0), follower.count);
+        }
+        this.notifyListeners('followers');
     },
 
     // === SESSION TRACKING (Current Wounds, Shock, Wealth) ===

@@ -8,7 +8,7 @@ const App = {
     currentSection: 'setting',
 
     // Ordered list of builder sections for prev/next navigation
-    SECTION_ORDER: ['setting', 'species', 'archetype', 'stats', 'talents', 'wargear', 'powers', 'background', 'injuries', 'ascension'],
+    SECTION_ORDER: ['setting', 'species', 'archetype', 'stats', 'talents', 'wargear', 'powers', 'background', 'injuries', 'ascension', 'followers'],
 
     // Initialize the application
     async init() {
@@ -47,6 +47,7 @@ const App = {
         PowersTab.init();
         BackgroundTab.init();
         InjuriesTab.init();
+        FollowersTab.init();
         CharacterSheetTab.init();
         GlossaryTab.init();
         ReferencesTab.init();
@@ -325,6 +326,9 @@ const App = {
             case 'injuries':
                 InjuriesTab.refresh();
                 break;
+            case 'followers':
+                FollowersTab.refresh();
+                break;
         }
     },
 
@@ -333,6 +337,7 @@ const App = {
         // Always update XP display and sidebar
         this.updateXPDisplay();
         this.updateSidebar();
+        FollowersTab.updateSidebarCount(character);
 
         // Update keywords in footer
         this.updateKeywords();

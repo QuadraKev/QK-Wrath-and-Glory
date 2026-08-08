@@ -4844,7 +4844,8 @@ textarea {
     }
 
     /* Hide tracker +/- buttons in print */
-    .tracker-btn {
+    .tracker-btn,
+    .follower-living-btn {
         display: none !important;
     }
 

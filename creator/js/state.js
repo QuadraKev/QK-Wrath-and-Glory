@@ -1023,10 +1023,11 @@ const State = {
             follower.livingCount = 1;
         } else {
             // Becoming a mob again with no explicit numbers in this patch: restore what was
-            // remembered, if anything.
-            if (!wasMob && follower.mobCount != null && !('count' in patch) && !('livingCount' in patch)) {
-                follower.count = follower.mobCount;
-                follower.livingCount = follower.mobLivingCount;
+            // remembered, if anything. Each value restores independently, so a patch that
+            // only sets one of count/livingCount still gets the other from memory.
+            if (!wasMob && follower.mobCount != null) {
+                if (!('count' in patch)) follower.count = follower.mobCount;
+                if (!('livingCount' in patch)) follower.livingCount = follower.mobLivingCount;
             }
             follower.count = Math.max(1, Number(follower.count) || 1);
             follower.livingCount = Math.min(Math.max(0, Number(follower.livingCount) || 0), follower.count);

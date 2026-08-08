@@ -75,8 +75,12 @@ const stateSandbox = {
         setItem: (k, v) => { stateStore[k] = String(v); },
         removeItem: k => { delete stateStore[k]; }
     },
-    setTimeout,
-    clearTimeout
+    // No-op timers: state.js schedules an auto-save via setTimeout/clearTimeout on every
+    // notifyListeners() call. The real timers would leave a debounce timer live for the
+    // life of the process, which would fire inside _performAutoSave after the tests are
+    // done making assertions.
+    setTimeout: () => 0,
+    clearTimeout: () => {}
 };
 vm.createContext(stateSandbox);
 vm.runInContext(source, stateSandbox); // defines Followers in this context
@@ -161,6 +165,37 @@ State.character.followers = [revived];
 State.updateFollower(revived.id, { kind: 'mob' });
 check('a follower survives JSON.stringify/JSON.parse with its remembered mob numbers intact',
     { count: revived.count, livingCount: revived.livingCount }, { count: 8, livingCount: 5 });
+
+// updateFollower: intervening individual-to-individual patches must not clobber the
+// remembered mob numbers. wasMob is captured fresh at the top of each call, so it is
+// only true on the actual mob -> individual transition, not on later edits made while
+// already individual (a name change, then a notes change).
+State.character = { followers: [] };
+const survivesEdits = State.addFollower('cyber_mastiff');
+State.updateFollower(survivesEdits.id, { kind: 'mob', count: 8, livingCount: 5 });
+State.updateFollower(survivesEdits.id, { kind: 'individual' });
+State.updateFollower(survivesEdits.id, { name: 'Rex' });
+State.updateFollower(survivesEdits.id, { notes: 'loyal' });
+State.updateFollower(survivesEdits.id, { kind: 'mob' });
+check('individual-to-individual edits between mob visits do not clobber remembered numbers',
+    { count: survivesEdits.count, livingCount: survivesEdits.livingCount }, { count: 8, livingCount: 5 });
+
+// updateFollower: the count and livingCount restores are independent. A patch that only
+// sets livingCount when switching back to mob must still restore count from memory.
+State.character = { followers: [] };
+const partialRestore = State.addFollower('cyber_mastiff');
+State.updateFollower(partialRestore.id, { kind: 'mob', count: 8, livingCount: 5 });
+State.updateFollower(partialRestore.id, { kind: 'individual' });
+State.updateFollower(partialRestore.id, { kind: 'mob', livingCount: 4 });
+check('a patch that only sets livingCount still restores count from memory',
+    { count: partialRestore.count, livingCount: partialRestore.livingCount }, { count: 8, livingCount: 4 });
+
+// addFollower: lazily creates character.followers when it is missing entirely
+State.character = { followers: [] };
+delete State.character.followers;
+const lazy = State.addFollower('cyber_mastiff');
+check('addFollower lazily creates character.followers when absent',
+    Array.isArray(State.character.followers) && State.character.followers[0] === lazy, true);
 
 console.log(failures === 0 ? '\nAll checks passed.' : `\n${failures} check(s) failed.`);
 process.exit(failures === 0 ? 0 : 1);

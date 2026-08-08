@@ -8,7 +8,7 @@ const App = {
     currentSection: 'setting',
 
     // Ordered list of builder sections for prev/next navigation
-    SECTION_ORDER: ['setting', 'species', 'archetype', 'stats', 'talents', 'wargear', 'powers', 'background', 'injuries', 'ascension'],
+    SECTION_ORDER: ['setting', 'species', 'archetype', 'stats', 'talents', 'wargear', 'powers', 'background', 'injuries', 'ascension', 'followers'],
 
     // Initialize the application
     async init() {
@@ -47,6 +47,7 @@ const App = {
         PowersTab.init();
         BackgroundTab.init();
         InjuriesTab.init();
+        FollowersTab.init();
         CharacterSheetTab.init();
         GlossaryTab.init();
         ReferencesTab.init();
@@ -324,6 +325,9 @@ const App = {
                 break;
             case 'injuries':
                 InjuriesTab.refresh();
+                break;
+            case 'followers':
+                FollowersTab.refresh();
                 break;
         }
     },

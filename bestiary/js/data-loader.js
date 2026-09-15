@@ -404,6 +404,33 @@ const DataLoader = {
         return name;
     },
 
+    // Rarity penalty added to an item's Value (Core Rulebook p. 206, "Rarity Penalties")
+    rarityPenalties: {
+        'Common': 0,
+        'Uncommon': 1,
+        'Rare': 2,
+        'Very Rare': 3,
+        'Unique': 4
+    },
+
+    // Format rarity with its penalty for display (e.g. "Rare (+2)")
+    formatRarity(rarity) {
+        const penalty = this.rarityPenalties[rarity];
+        if (penalty == null) return rarity || '-';
+        return `${rarity} (+${penalty})`;
+    },
+
+    // Requisition DN = Value + rarity penalty (Core Rulebook p. 205, "Requisitioning Wargear").
+    // Returns null when the value or the rarity is missing/unknown.
+    requisitionDN(item) {
+        if (!item) return null;
+        const penalty = this.rarityPenalties[item.rarity];
+        if (penalty == null) return null;
+        const value = typeof item.value === 'number' ? item.value : parseFloat(item.value);
+        if (!Number.isFinite(value)) return null;
+        return value + penalty;
+    },
+
     // Get all talents
     getAllTalents() {
         return this.cache['talents.json'] || [];

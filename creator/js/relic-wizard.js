@@ -261,7 +261,7 @@ const RelicWizard = {
 
         return items.map(item => {
             const selected = this.wizard.baseItemId === item.id ? ' selected' : '';
-            const rarity = item.rarity || 'Common';
+            const rarity = DataLoader.formatRarity(item.rarity || 'Common');
             const category = item.category || '-';
             return `
                 <div class="relic-option-card relic-baseitem-card${selected}" data-id="${item.id}">

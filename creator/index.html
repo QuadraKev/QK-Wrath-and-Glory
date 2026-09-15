@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=117">
-    <link rel="stylesheet" href="../shared/feedback.css?v=117">
+    <link rel="stylesheet" href="css/styles.css?v=118">
+    <link rel="stylesheet" href="../shared/feedback.css?v=118">
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
 <body>
@@ -147,6 +147,12 @@
                         <div class="sidebar-item" data-section="followers">
                             <span class="sidebar-label">10. Followers</span>
                             <span id="sidebar-followers-count" class="sidebar-count"></span>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <div class="sidebar-item" data-section="notes">
+                            <span class="sidebar-label">11. Notes</span>
                         </div>
                     </div>
                 </aside>
@@ -372,11 +378,6 @@
                                 <button id="btn-add-language" class="btn-small">+</button>
                             </div>
                         </div>
-
-                        <div class="background-section">
-                            <h3>Notes</h3>
-                            <textarea id="character-notes" placeholder="Additional notes about your character..."></textarea>
-                        </div>
                     </div>
 
                     <!-- Injuries & Corruption Section -->
@@ -397,6 +398,13 @@
                     <!-- Followers Section -->
                     <div id="section-followers" class="builder-section">
                         <!-- Rendered by FollowersTab -->
+                    </div>
+
+                    <!-- Notes Section -->
+                    <div id="section-notes" class="builder-section">
+                        <h2>Notes</h2>
+                        <p class="section-desc">Anything you want to keep with this character. Also editable on the character sheet.</p>
+                        <textarea id="character-notes" placeholder="Additional notes about your character..."></textarea>
                     </div>
 
                     <!-- Section Navigation -->
@@ -513,35 +521,36 @@
     </script>
 
     <!-- Scripts -->
-    <script src="js/web-api.js?v=117"></script>
-    <script src="js/data-loader.js?v=117"></script>
-    <script src="js/xp-calculator.js?v=117"></script>
-    <script src="js/derived-stats.js?v=117"></script>
-    <script src="js/prerequisite.js?v=117"></script>
-    <script src="js/state.js?v=117"></script>
-    <script src="js/relic-wizard.js?v=117"></script>
-    <script src="js/character-io.js?v=117"></script>
-    <script src="js/glossary.js?v=117"></script>
-    <script src="js/keyword-bonus.js?v=117"></script>
-    <script src="js/followers.js?v=117"></script>
-    <script src="js/threat-card.js?v=117"></script>
-    <script src="tabs/setting-tab.js?v=117"></script>
-    <script src="tabs/species-tab.js?v=117"></script>
-    <script src="tabs/archetype-tab.js?v=117"></script>
-    <script src="tabs/ascension-tab.js?v=117"></script>
-    <script src="tabs/stats-tab.js?v=117"></script>
-    <script src="tabs/talents-tab.js?v=117"></script>
-    <script src="tabs/wargear-tab.js?v=117"></script>
-    <script src="tabs/powers-tab.js?v=117"></script>
-    <script src="tabs/background-tab.js?v=117"></script>
-    <script src="tabs/injuries-tab.js?v=117"></script>
-    <script src="tabs/followers-tab.js?v=117"></script>
-    <script src="tabs/character-sheet-tab.js?v=117"></script>
-    <script src="tabs/glossary-tab.js?v=117"></script>
-    <script src="tabs/references-tab.js?v=117"></script>
-    <script src="tabs/settings-tab.js?v=117"></script>
-    <script src="js/app.js?v=117"></script>
-    <script src="js/header-overflow.js?v=117"></script>
-    <script src="../shared/feedback.js?v=117"></script>
+    <script src="js/web-api.js?v=118"></script>
+    <script src="js/data-loader.js?v=118"></script>
+    <script src="js/xp-calculator.js?v=118"></script>
+    <script src="js/derived-stats.js?v=118"></script>
+    <script src="js/prerequisite.js?v=118"></script>
+    <script src="js/state.js?v=118"></script>
+    <script src="js/relic-wizard.js?v=118"></script>
+    <script src="js/character-io.js?v=118"></script>
+    <script src="js/glossary.js?v=118"></script>
+    <script src="js/keyword-bonus.js?v=118"></script>
+    <script src="js/followers.js?v=118"></script>
+    <script src="js/threat-card.js?v=118"></script>
+    <script src="tabs/setting-tab.js?v=118"></script>
+    <script src="tabs/species-tab.js?v=118"></script>
+    <script src="tabs/archetype-tab.js?v=118"></script>
+    <script src="tabs/ascension-tab.js?v=118"></script>
+    <script src="tabs/stats-tab.js?v=118"></script>
+    <script src="tabs/talents-tab.js?v=118"></script>
+    <script src="tabs/wargear-tab.js?v=118"></script>
+    <script src="tabs/powers-tab.js?v=118"></script>
+    <script src="tabs/background-tab.js?v=118"></script>
+    <script src="tabs/injuries-tab.js?v=118"></script>
+    <script src="tabs/followers-tab.js?v=118"></script>
+    <script src="tabs/notes-tab.js?v=118"></script>
+    <script src="tabs/character-sheet-tab.js?v=118"></script>
+    <script src="tabs/glossary-tab.js?v=118"></script>
+    <script src="tabs/references-tab.js?v=118"></script>
+    <script src="tabs/settings-tab.js?v=118"></script>
+    <script src="js/app.js?v=118"></script>
+    <script src="js/header-overflow.js?v=118"></script>
+    <script src="../shared/feedback.js?v=118"></script>
 </body>
 </html>

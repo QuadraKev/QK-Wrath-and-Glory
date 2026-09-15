@@ -641,7 +641,7 @@ const ArchetypeTab = {
                 <tr>
                     <td class="wargear-table-name">${item.name}</td>
                     <td class="wargear-table-center">${value}</td>
-                    <td class="wargear-table-rarity ${rarityClass}">${item.rarity || 'Common'}</td>
+                    <td class="wargear-table-rarity ${rarityClass}">${DataLoader.formatRarity(item.rarity || 'Common')}</td>
                     <td class="wargear-table-action">
                         ${canAdd
                             ? `<button class="btn-small btn-add-custom-wargear" data-id="${item.id}">Add</button>`

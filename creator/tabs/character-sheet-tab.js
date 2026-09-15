@@ -99,6 +99,9 @@ const CharacterSheetTab = {
         // Bind the per-follower wounds and shock trackers
         this.bindFollowerTracking(container);
 
+        // Bind the editable notes box
+        this.bindNotesInput(container);
+
         // Give each section a stable id and rebuild the jump-to-section list
         this._assignSectionIds(container);
         this._buildTocList();
@@ -331,6 +334,24 @@ const CharacterSheetTab = {
                 State.updateFollower(id, { livingCount: next });
                 this.render();
             });
+        });
+    },
+
+    // Bind the editable notes box. Deliberately no this.render() here: re-rendering the
+    // sheet on every keystroke would replace the textarea and lose the caret. The only
+    // other thing that needs updating is the print-only copy, which is patched in place.
+    bindNotesInput(container) {
+        const input = container.querySelector('.sheet-notes-input');
+        if (!input) return;
+
+        // Assigning the value rather than trusting the markup: the HTML parser eats a
+        // leading newline inside a <textarea>, which would silently trim the notes.
+        input.value = State.getCharacter().notes || '';
+
+        const printCopy = container.querySelector('.sheet-notes-print');
+        input.addEventListener('input', (e) => {
+            State.setNotes(e.target.value);
+            if (printCopy) printCopy.textContent = e.target.value;
         });
     },
 
@@ -933,7 +954,7 @@ const CharacterSheetTab = {
             // Rarity display
             const rarityClass = this.getRarityClass(weapon.rarity);
             const rarityDisplay = weapon.rarity && weapon.rarity !== 'Common'
-                ? `<span class="sheet-item-rarity ${rarityClass}">${weapon.rarity}</span>`
+                ? `<span class="sheet-item-rarity ${rarityClass}">${DataLoader.formatRarity(weapon.rarity)}</span>`
                 : '';
 
             // Relic weapons display under their custom name with the base weapon in parentheses
@@ -1069,7 +1090,7 @@ const CharacterSheetTab = {
             // Rarity display
             const rarityClass = this.getRarityClass(armor.rarity);
             const rarityDisplay = armor.rarity && armor.rarity !== 'Common'
-                ? `<span class="sheet-item-rarity ${rarityClass}">${armor.rarity}</span>`
+                ? `<span class="sheet-item-rarity ${rarityClass}">${DataLoader.formatRarity(armor.rarity)}</span>`
                 : '';
 
             // Relic armour displays under its custom name with the base item in parentheses
@@ -1141,7 +1162,7 @@ const CharacterSheetTab = {
         const rows = augmetics.map(aug => {
             const rarityClass = this.getRarityClass(aug.rarity);
             const rarityDisplay = aug.rarity && aug.rarity !== 'Common'
-                ? `<span class="sheet-item-rarity ${rarityClass}">${aug.rarity}</span>`
+                ? `<span class="sheet-item-rarity ${rarityClass}">${DataLoader.formatRarity(aug.rarity)}</span>`
                 : '';
 
             // Format bonuses as stat list
@@ -1228,7 +1249,7 @@ const CharacterSheetTab = {
             // Rarity display
             const rarityClass = this.getRarityClass(equip.rarity);
             const rarityDisplay = equip.rarity && equip.rarity !== 'Common'
-                ? `<span class="sheet-item-rarity ${rarityClass}">${equip.rarity}</span>`
+                ? `<span class="sheet-item-rarity ${rarityClass}">${DataLoader.formatRarity(equip.rarity)}</span>`
                 : '';
 
             // Relic equipment displays under its custom name with the base item in parentheses
@@ -1922,16 +1943,15 @@ const CharacterSheetTab = {
         `;
     },
 
-    // Render notes
+    // Render notes (editable in place; always shown so it stays in the table of contents)
     renderNotes(character) {
-        if (!character.notes || character.notes.trim() === '') {
-            return '';
-        }
+        const notes = character.notes || '';
 
         return `
             <div class="sheet-section">
                 <h2 class="sheet-section-title">Notes</h2>
-                <div class="sheet-notes">${this.escapeHtml(character.notes)}</div>
+                <textarea class="sheet-notes-input" placeholder="Notes taken during play...">${this.escapeHtml(notes)}</textarea>
+                <div class="sheet-notes sheet-notes-print">${this.escapeHtml(notes)}</div>
             </div>
         `;
     },
@@ -2070,6 +2090,13 @@ const CharacterSheetTab = {
                 lines.push(`    ${kindText}`);
                 lines.push(`    Wounds: ${curWounds}${maxWounds} | Shock: ${curShock}${maxShock}`);
             }
+            lines.push('');
+        }
+
+        // Notes
+        if (character.notes && character.notes.trim() !== '') {
+            lines.push('NOTES');
+            lines.push(character.notes);
             lines.push('');
         }
 

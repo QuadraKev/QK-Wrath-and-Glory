@@ -2337,12 +2337,19 @@ textarea {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--border-color);
+    background: #ffffff;
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--border-light);
+    background: #e5e7eb;
+}
+
+/* Firefox has no ::-webkit-scrollbar; scoping keeps Chrome on the rules above */
+@supports not selector(::-webkit-scrollbar) {
+    * {
+        scrollbar-color: #ffffff var(--bg-secondary);
+    }
 }
 
 /* ===== Custom Archetype ===== */
@@ -4041,6 +4048,22 @@ textarea {
     white-space: pre-wrap;
 }
 
+/* Notes are editable on screen; the plain-text copy is what prints, because a
+   textarea clips anything past its visible height on paper. */
+.sheet-notes-input {
+    min-height: 160px;
+    line-height: 1.6;
+}
+
+.sheet-notes-print {
+    display: none;
+}
+
+/* The Notes builder step is a full page, so give it a taller box than the form default */
+#character-notes {
+    min-height: 300px;
+}
+
 /* Empty State */
 .sheet-empty {
     color: var(--text-muted);
@@ -5040,6 +5063,15 @@ textarea {
 
     .tracker-row {
         margin-bottom: 5px !important;
+    }
+
+    /* Print the plain-text copy of the notes, not the editable box */
+    .sheet-notes-input {
+        display: none !important;
+    }
+
+    .sheet-notes-print {
+        display: block !important;
     }
 }
 

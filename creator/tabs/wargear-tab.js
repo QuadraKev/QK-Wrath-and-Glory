@@ -503,6 +503,7 @@ const WargearTab = {
             const damage = this.formatMeleeDamage(w);
             const reach = w.reach || '-';
             const rarityClass = this.getRarityClass(w.rarity);
+            const reqDN = DataLoader.requisitionDN(w);
             const ownedBadge = ownedCount > 0 ? `<span class="owned-count">${ownedCount}</span>` : '';
             const traits = (w.traits || []);
             const keywords = (w.keywords || []);
@@ -523,7 +524,7 @@ const WargearTab = {
                             <span class="wargear-card-type">Melee${w.category ? ' • ' + w.category : ''}</span>
                         </div>
                         <div class="wargear-card-actions">
-                            <span class="wargear-card-meta">Value: ${w.value || '-'} • <span class="${rarityClass}">${w.rarity || 'Common'}</span></span>
+                            <span class="wargear-card-meta">Value: ${w.value ?? '-'} • <span class="${rarityClass}">${DataLoader.formatRarity(w.rarity || 'Common')}</span>${reqDN != null ? ` • DN ${reqDN}` : ''}</span>
                             ${ownedBadge}
                             <button class="btn-small btn-add-wargear" data-id="${w.id}">Add</button>
                         </div>
@@ -557,6 +558,7 @@ const WargearTab = {
             const ownedCount = ownedCounts[w.id] || 0;
             const range = w.range ? `${w.range.short}/${w.range.medium}/${w.range.long}` : '-';
             const rarityClass = this.getRarityClass(w.rarity);
+            const reqDN = DataLoader.requisitionDN(w);
             const ownedBadge = ownedCount > 0 ? `<span class="owned-count">${ownedCount}</span>` : '';
             const traits = (w.traits || []);
             const keywords = (w.keywords || []);
@@ -577,7 +579,7 @@ const WargearTab = {
                             <span class="wargear-card-type">Ranged${w.category ? ' • ' + w.category : ''}</span>
                         </div>
                         <div class="wargear-card-actions">
-                            <span class="wargear-card-meta">Value: ${w.value || '-'} • <span class="${rarityClass}">${w.rarity || 'Common'}</span></span>
+                            <span class="wargear-card-meta">Value: ${w.value ?? '-'} • <span class="${rarityClass}">${DataLoader.formatRarity(w.rarity || 'Common')}</span>${reqDN != null ? ` • DN ${reqDN}` : ''}</span>
                             ${ownedBadge}
                             <button class="btn-small btn-add-wargear" data-id="${w.id}">Add</button>
                         </div>
@@ -611,6 +613,7 @@ const WargearTab = {
         const cards = armorItems.map(a => {
             const ownedCount = ownedCounts[a.id] || 0;
             const rarityClass = this.getRarityClass(a.rarity);
+            const reqDN = DataLoader.requisitionDN(a);
             const ownedBadge = ownedCount > 0 ? `<span class="owned-count">${ownedCount}</span>` : '';
             const traits = (a.traits || []);
             const keywords = (a.keywords || []);
@@ -631,7 +634,7 @@ const WargearTab = {
                             <span class="wargear-card-type">Armor</span>
                         </div>
                         <div class="wargear-card-actions">
-                            <span class="wargear-card-meta">Value: ${a.value || '-'} • <span class="${rarityClass}">${a.rarity || 'Common'}</span></span>
+                            <span class="wargear-card-meta">Value: ${a.value ?? '-'} • <span class="${rarityClass}">${DataLoader.formatRarity(a.rarity || 'Common')}</span>${reqDN != null ? ` • DN ${reqDN}` : ''}</span>
                             ${ownedBadge}
                             <button class="btn-small btn-add-wargear" data-id="${a.id}">Add</button>
                         </div>
@@ -662,6 +665,7 @@ const WargearTab = {
             const ownedCount = ownedCounts[e.id] || 0;
             const effect = e.effect || e.description || '';
             const rarityClass = this.getRarityClass(e.rarity);
+            const reqDN = DataLoader.requisitionDN(e);
             const ownedBadge = ownedCount > 0 ? `<span class="owned-count">${ownedCount}</span>` : '';
             const keywords = (e.keywords || []);
 
@@ -681,7 +685,7 @@ const WargearTab = {
                             <span class="wargear-card-type">${e.category || 'Equipment'}</span>
                         </div>
                         <div class="wargear-card-actions">
-                            <span class="wargear-card-meta">Value: ${e.value || '-'} • <span class="${rarityClass}">${e.rarity || 'Common'}</span></span>
+                            <span class="wargear-card-meta">Value: ${e.value ?? '-'} • <span class="${rarityClass}">${DataLoader.formatRarity(e.rarity || 'Common')}</span>${reqDN != null ? ` • DN ${reqDN}` : ''}</span>
                             ${ownedBadge}
                             <button class="btn-small btn-add-wargear" data-id="${e.id}">Add</button>
                         </div>
@@ -800,16 +804,17 @@ const WargearTab = {
         } else {
             html += '<div class="upgrade-list">';
             for (const upgrade of validUpgrades) {
+                const upgDN = DataLoader.requisitionDN(upgrade);
                 html += `
                     <div class="upgrade-item">
                         <div class="upgrade-header">
                             <span class="upgrade-name">${upgrade.name}</span>
                             <span class="upgrade-type">${upgrade.type}</span>
-                            <span class="upgrade-rarity">${upgrade.rarity}</span>
+                            <span class="upgrade-rarity">${DataLoader.formatRarity(upgrade.rarity)}</span>
                         </div>
                         <div class="upgrade-effect">${upgrade.effect}</div>
                         <div class="upgrade-meta">
-                            <span>Value: ${upgrade.value}</span>
+                            <span>Value: ${upgrade.value}${upgDN != null ? ` • DN ${upgDN}` : ''}</span>
                         </div>
                         <button class="btn-small btn-add-upgrade" data-id="${upgrade.id}">Add Upgrade</button>
                     </div>

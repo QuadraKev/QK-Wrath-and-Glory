@@ -1298,12 +1298,19 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--border-color);
+    background: #ffffff;
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--border-light);
+    background: #e5e7eb;
+}
+
+/* Firefox has no ::-webkit-scrollbar; scoping keeps Chrome on the rules above */
+@supports not selector(::-webkit-scrollbar) {
+    * {
+        scrollbar-color: #ffffff var(--bg-secondary);
+    }
 }
 
 /* ===== Utilities ===== */

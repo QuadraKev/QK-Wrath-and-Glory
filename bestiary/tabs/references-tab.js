@@ -605,7 +605,8 @@ const ReferencesTab = {
         if (entry.keywords && entry.keywords.length > 0) {
             html += `<div class="ref-stat"><span class="ref-label">Keywords:</span> ${entry.keywords.join(', ')}</div>`;
         }
-        html += `<div class="ref-stat"><span class="ref-label">Value:</span> ${entry.value} &nbsp; <span class="ref-label">Rarity:</span> ${entry.rarity}</div>`;
+        const reqDN = DataLoader.requisitionDN(entry);
+        html += `<div class="ref-stat"><span class="ref-label">Value:</span> ${entry.value} &nbsp; <span class="ref-label">Rarity:</span> ${DataLoader.formatRarity(entry.rarity)}${reqDN != null ? ` &nbsp; <span class="ref-label">Requisition DN:</span> ${reqDN}` : ''}</div>`;
         if (entry.special) {
             html += `<div class="ref-stat ref-weapon-special"><span class="ref-label">Special:</span> ${entry.special}</div>`;
         }
@@ -627,7 +628,8 @@ const ReferencesTab = {
         if (entry.keywords && entry.keywords.length > 0) {
             html += `<div class="ref-stat"><span class="ref-label">Keywords:</span> ${entry.keywords.join(', ')}</div>`;
         }
-        html += `<div class="ref-stat"><span class="ref-label">Value:</span> ${entry.value} &nbsp; <span class="ref-label">Rarity:</span> ${entry.rarity}</div>`;
+        const reqDN = DataLoader.requisitionDN(entry);
+        html += `<div class="ref-stat"><span class="ref-label">Value:</span> ${entry.value} &nbsp; <span class="ref-label">Rarity:</span> ${DataLoader.formatRarity(entry.rarity)}${reqDN != null ? ` &nbsp; <span class="ref-label">Requisition DN:</span> ${reqDN}` : ''}</div>`;
         html += '</div>';
         if (entry.description) {
             html += `<div class="glossary-entry-description">${entry.description}</div>`;
@@ -640,7 +642,8 @@ const ReferencesTab = {
         if (entry.effect) {
             html += `<div class="ref-stat"><span class="ref-label">Effect:</span> ${entry.effect}</div>`;
         }
-        html += `<div class="ref-stat"><span class="ref-label">Value:</span> ${entry.value} &nbsp; <span class="ref-label">Rarity:</span> ${entry.rarity}</div>`;
+        const reqDN = DataLoader.requisitionDN(entry);
+        html += `<div class="ref-stat"><span class="ref-label">Value:</span> ${entry.value} &nbsp; <span class="ref-label">Rarity:</span> ${DataLoader.formatRarity(entry.rarity)}${reqDN != null ? ` &nbsp; <span class="ref-label">Requisition DN:</span> ${reqDN}` : ''}</div>`;
         html += '</div>';
         if (entry.description) {
             html += `<div class="glossary-entry-description">${entry.description}</div>`;
@@ -665,7 +668,8 @@ const ReferencesTab = {
         if (entry.keywords?.length > 0) {
             html += `<div class="ref-stat"><span class="ref-label">Keywords:</span> ${entry.keywords.join(', ')}</div>`;
         }
-        html += `<div class="ref-stat"><span class="ref-label">Value:</span> ${entry.value} &nbsp; <span class="ref-label">Rarity:</span> ${entry.rarity}</div>`;
+        const reqDN = DataLoader.requisitionDN(entry);
+        html += `<div class="ref-stat"><span class="ref-label">Value:</span> ${entry.value} &nbsp; <span class="ref-label">Rarity:</span> ${DataLoader.formatRarity(entry.rarity)}${reqDN != null ? ` &nbsp; <span class="ref-label">Requisition DN:</span> ${reqDN}` : ''}</div>`;
         html += '</div>';
         if (entry.description) {
             html += `<div class="glossary-entry-description">${entry.description}</div>`;
@@ -704,7 +708,8 @@ const ReferencesTab = {
                 html += `<div class="ref-stat"><span class="ref-label">Restrictions:</span> ${parts.join('; ')}</div>`;
             }
         }
-        html += `<div class="ref-stat"><span class="ref-label">Value:</span> ${entry.value} &nbsp; <span class="ref-label">Rarity:</span> ${entry.rarity}</div>`;
+        const reqDN = DataLoader.requisitionDN(entry);
+        html += `<div class="ref-stat"><span class="ref-label">Value:</span> ${entry.value} &nbsp; <span class="ref-label">Rarity:</span> ${DataLoader.formatRarity(entry.rarity)}${reqDN != null ? ` &nbsp; <span class="ref-label">Requisition DN:</span> ${reqDN}` : ''}</div>`;
         html += '</div>';
         if (entry.description) {
             html += `<div class="glossary-entry-description">${entry.description}</div>`;

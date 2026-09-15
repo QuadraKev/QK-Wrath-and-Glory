@@ -1,4 +1,4 @@
-// Background Tab - Origin, Accomplishment, Goal, Languages, Notes
+// Background Tab - Origin, Accomplishment, Goal, Languages
 
 const BackgroundTab = {
     init() {
@@ -45,11 +45,6 @@ const BackgroundTab = {
             }
         });
 
-        // Notes textarea
-        document.getElementById('character-notes').addEventListener('input', (e) => {
-            State.setNotes(e.target.value);
-        });
-
         this.render();
     },
 
@@ -57,7 +52,6 @@ const BackgroundTab = {
         this.populateSelects();
         this.renderDetails();
         this.renderLanguages();
-        this.renderNotes();
         this.renderBonusDisplay();
     },
 
@@ -248,11 +242,6 @@ const BackgroundTab = {
 
             container.appendChild(chip);
         }
-    },
-
-    renderNotes() {
-        const character = State.getCharacter();
-        document.getElementById('character-notes').value = character.notes || '';
     },
 
     refresh() {

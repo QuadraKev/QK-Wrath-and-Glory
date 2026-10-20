@@ -2870,6 +2870,10 @@
     },
     "effect": "You may make a Survival (Wil) or Tech (Int) Test to fashion a crude weapon, with a profile from the table. By default this takes 8 minutes. The DN is usually 3 for a melee weapon, or 5 for a simple firearm, but may increase depending on the availability of tools and materials. Shifts on this Test can be spent to: Half the crafting time (this option may be chosen more than once). Increase the weapon Damage by +Rank. Remove the Unwieldy Trait. Add one of the following Traits: Inflict (On Fire), Inflict (Poisoned 3), Inflict (Restrained), Parry, Pistol, Silent. This option may be chosen more than once, selecting a different Trait each time. Double all weapon Ranges (Simple Firearm only). Players should provide details about the weapon they craft, which may affect its Keywords and possibly the range of available Traits you can spend Shifts on.",
     "flavor": "You are never truly disarmed, as long as you have access to raw materials and crafting time.",
+    "profiles": [
+      "improvised_melee_weapon",
+      "improvised_simple_firearm"
+    ],
     "source": "redacted1",
     "page": 66
   },

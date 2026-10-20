@@ -239,6 +239,16 @@ const CharacterIO = {
                     const oddityText = parts.oddityNames.length ? parts.oddityNames.join(', ') : 'none';
                     sheet += `- ${item.relic.name} (Holy Relic — ${baseName})\n`;
                     sheet += `    Power: ${parts.powerName}${choiceText}; Oddities: ${oddityText}\n`;
+                } else if (item.improvised && wargear) {
+                    const resolved = ImprovisedBuilder.resolve(item, wargear, character.rank || 1);
+                    sheet += ImprovisedBuilder.displayName(item.improvised.name, baseName) === baseName
+                        ? `- ${baseName} (Improvised)\n`
+                        : `- ${item.improvised.name.trim()} (Improvised — ${baseName})\n`;
+                    sheet += `    ${ImprovisedBuilder.formatStatLine(resolved)}\n`;
+                    sheet += `    ${ImprovisedBuilder.summary(item.improvised)}\n`;
+                    if (item.improvised.details) {
+                        for (const line of item.improvised.details.split(/\r?\n/)) sheet += `    ${line}\n`;
+                    }
                 } else {
                     sheet += `- ${baseName}\n`;
                 }

@@ -683,6 +683,7 @@ const RelicWizard = {
     isEligible(item) {
         if (item.rarity === 'Unique') return false;
         if ((item.category || '').startsWith('Vehicle')) return false;
+        if ((item.id || '').startsWith('improvised_')) return false;
         return State.isSourceEnabled(item.source);
     },
 

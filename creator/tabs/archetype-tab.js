@@ -593,12 +593,12 @@ const ArchetypeTab = {
         let html = '';
 
         if (this.wargearCategory === 'all' || this.wargearCategory === 'melee') {
-            const melee = filterBySearch(filterBySource(weapons.filter(w => w.type === 'melee')));
+            const melee = filterBySearch(filterBySource(weapons.filter(w => w.type === 'melee' && !w.id.startsWith('improvised_'))));
             if (melee.length > 0) html += this.renderCustomWargearTable(melee, 'Melee Weapons', budget);
         }
 
         if (this.wargearCategory === 'all' || this.wargearCategory === 'ranged') {
-            const ranged = filterBySearch(filterBySource(weapons.filter(w => w.type === 'ranged')));
+            const ranged = filterBySearch(filterBySource(weapons.filter(w => w.type === 'ranged' && !w.id.startsWith('improvised_'))));
             if (ranged.length > 0) html += this.renderCustomWargearTable(ranged, 'Ranged Weapons', budget);
         }
 

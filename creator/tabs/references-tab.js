@@ -568,6 +568,7 @@ const ReferencesTab = {
         if (entry.effect) {
             html += `<div class="glossary-entry-description">${entry.effect}</div>`;
         }
+        html += ImprovisedBuilder.talentProfilesHtml(entry);
         if (entry.flavor) {
             html += `<div class="ref-flavor">${entry.flavor}</div>`;
         }

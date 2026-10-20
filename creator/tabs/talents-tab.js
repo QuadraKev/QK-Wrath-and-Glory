@@ -352,6 +352,7 @@ const TalentsTab = {
                     ${removeBtn}
                 </div>
                 <div class="selected-talent-effect">${talent.effect || ''}</div>
+                ${ImprovisedBuilder.talentProfilesHtml(talent)}
                 ${flavorHtml}
                 <div class="source-ref">${DataLoader.formatSourcePage(talent)}</div>
             `;
@@ -464,6 +465,7 @@ const TalentsTab = {
             descRow.className = 'talent-desc-row hidden';
             descRow.innerHTML = `
                 <div class="talent-desc-effect">${talent.effect || 'No description available.'}</div>
+                ${ImprovisedBuilder.talentProfilesHtml(talent)}
                 ${flavorHtml}
                 <div class="source-ref">${DataLoader.formatSourcePage(talent)}</div>
                 <div class="talent-desc-actions">

@@ -6389,3 +6389,49 @@ textarea {
 /* The boxes sit in a span, so they need their own flex context to keep .tracking-box sizing. */
 .sheet-follower-boxes { display: inline-flex; flex-wrap: wrap; gap: 4px; vertical-align: middle; }
 .sheet-follower-notes { font-size: 13px; font-style: italic; }
+
+/* ===== Stats XP hover tip (issue #27) ===== */
+.xp-tip {
+    position: fixed;
+    z-index: 2000;
+    padding: 3px 8px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--accent-gold);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+    color: var(--text-primary);
+    font-size: 12px;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+/* ===== Improvised Weapon builder (Improvised Weaponry, Redacted Records I) ===== */
+.improvised-counter-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    cursor: default;
+}
+
+.improvised-counter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.improvised-counter-value {
+    min-width: 20px;
+    text-align: center;
+    font-weight: 600;
+    color: var(--accent-gold);
+}
+
+.improvised-trait-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.improvised-preview-meta {
+    margin-top: 8px;
+}

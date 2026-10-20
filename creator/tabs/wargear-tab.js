@@ -9,6 +9,7 @@ const WargearTab = {
         // Initialize the upgrade modal
         this.initUpgradeModal();
         RelicWizard.onSaved = () => this.render();
+        ImprovisedBuilder.onSaved = () => this.render();
         this.render();
     },
 
@@ -72,7 +73,7 @@ const WargearTab = {
             const wargear = DataLoader.getWargearItem(item.id);
             if (!wargear) continue;
 
-            const entry = { ...wargear, wargearIndex: i, isStarting: item.isStarting, upgrades: item.upgrades || [], relic: item.relic };
+            const entry = { ...wargear, wargearIndex: i, isStarting: item.isStarting, upgrades: item.upgrades || [], relic: item.relic, improvised: item.improvised };
 
             if (DataLoader.getWeapon(item.id)) {
                 grouped.weapons.push(entry);
@@ -126,7 +127,7 @@ const WargearTab = {
                 const wargearIndex = parseInt(btn.dataset.index, 10);
                 const wargearEntry = State.getCharacter().wargear[wargearIndex];
                 const item = wargearEntry ? DataLoader.getWargearItem(wargearEntry.id) : null;
-                const name = wargearEntry?.relic?.name || (item ? item.name : 'this item');
+                const name = wargearEntry?.relic?.name || wargearEntry?.improvised?.name || (item ? item.name : 'this item');
                 const confirmed = await window.api.showConfirm(`Remove ${name}?`);
                 if (!confirmed) return;
                 State.removeWargearByIndex(wargearIndex);
@@ -145,6 +146,12 @@ const WargearTab = {
                 RelicWizard.open(parseInt(btn.dataset.index, 10));
             });
         });
+
+        container.querySelectorAll('.btn-edit-improvised').forEach(btn => {
+            btn.addEventListener('click', () => {
+                ImprovisedBuilder.open(parseInt(btn.dataset.index, 10));
+            });
+        });
     },
 
     // Render an owned weapon with upgrade info
@@ -161,7 +168,9 @@ const WargearTab = {
         const typeLabel = weapon.type === 'melee' ? 'Melee' : 'Ranged';
         const startingBadge = weapon.isStarting ? '<span class="badge-starting">Starting</span>' : '';
 
-        const relicHtml = this.renderRelicInfo(weapon.relic, weapon.name);
+        const relicHtml = this.renderRelicInfo(weapon.relic, weapon.name)
+            || this.renderImprovisedInfo(weapon.improvised, weapon.name, typeLabel);
+        const editClass = weapon.relic ? 'btn-edit-relic' : 'btn-edit-improvised';
 
         return `
             <div class="wargear-item wargear-item-owned">
@@ -172,7 +181,7 @@ const WargearTab = {
                     ${upgradeText}
                 </div>
                 <div class="wargear-actions">
-                    ${relicHtml ? `<button class="btn-small btn-edit-relic" data-index="${weapon.wargearIndex}">Edit</button>` : ''}
+                    ${relicHtml ? `<button class="btn-small ${editClass}" data-index="${weapon.wargearIndex}">Edit</button>` : ''}
                     <button class="btn-small btn-manage-upgrades" data-index="${weapon.wargearIndex}">Upgrades</button>
                     <button class="btn-small btn-remove-wargear" data-index="${weapon.wargearIndex}">Remove</button>
                 </div>
@@ -214,6 +223,21 @@ const WargearTab = {
             nameLine: `${this.escapeHtml(relic.name)} <span class="badge-relic">Holy Relic</span>`,
             typeLine: `Holy Relic (${this.escapeHtml(parts.formName)}) • ${this.escapeHtml(baseItemName)}`,
             detailLine: `<div class="wargear-relic-detail text-muted">Origin: ${this.escapeHtml(parts.ownerName)}, ${this.escapeHtml(parts.anointmentName)} • Power: ${this.escapeHtml(parts.powerName)}${choiceText}${oddityText}</div>`
+        };
+    },
+
+    // Build the name/type/detail line HTML for an improvised weapon entry, or null if not improvised
+    renderImprovisedInfo(improvised, baseItemName, typeLabel) {
+        if (!improvised) return null;
+
+        const details = improvised.details
+            ? `<div class="wargear-relic-detail text-muted">${this.escapeHtml(improvised.details)}</div>`
+            : '';
+
+        return {
+            nameLine: `${this.escapeHtml(improvised.name)} <span class="badge-relic">Improvised</span>`,
+            typeLine: `${typeLabel} Weapon • ${this.escapeHtml(baseItemName)}`,
+            detailLine: `<div class="wargear-relic-detail text-muted">${this.escapeHtml(ImprovisedBuilder.summary(improvised))}</div>${details}`
         };
     },
 
@@ -321,10 +345,22 @@ const WargearTab = {
             </div>
         ` : '';
 
+        // Improvised Weaponry entry card (Redacted Records I), only for characters with the talent
+        const improvisedCtaHtml = State.hasTalent('improvised_weaponry') ? `
+            <div class="holy-relic-cta">
+                <div class="holy-relic-cta-text">
+                    <h4>Improvised Weapon</h4>
+                    <p>Fashion a crude weapon with the Improvised Weaponry talent from Redacted Records I (pp. 65–66): choose a profile, then spend Shifts on its options.</p>
+                </div>
+                <button class="btn-primary" id="btn-build-improvised">Build an Improvised Weapon</button>
+            </div>
+        ` : '';
+
         container.innerHTML = `
             ${startingGearHtml}
             ${ascensionGearHtml}
             ${holyRelicCtaHtml}
+            ${improvisedCtaHtml}
             <div class="wargear-browser">
                 <div class="wargear-browser-controls">
                     <input type="text" id="wargear-search" class="search-input" placeholder="Search wargear..." value="${this.escapeHtml(this.searchQuery)}">
@@ -348,6 +384,12 @@ const WargearTab = {
         if (document.getElementById('btn-build-relic')) {
             document.getElementById('btn-build-relic').addEventListener('click', () => {
                 RelicWizard.open();
+            });
+        }
+
+        if (document.getElementById('btn-build-improvised')) {
+            document.getElementById('btn-build-improvised').addEventListener('click', () => {
+                ImprovisedBuilder.open();
             });
         }
 
@@ -434,9 +476,9 @@ const WargearTab = {
 
         let html = '';
 
-        // Render Melee Weapons
+        // Render Melee Weapons (the improvised_ base records are only built through the Improvised Weaponry builder)
         if (this.currentCategory === 'all' || this.currentCategory === 'melee') {
-            const meleeWeapons = filterBySearch(filterBySource(weapons.filter(w => w.type === 'melee')));
+            const meleeWeapons = filterBySearch(filterBySource(weapons.filter(w => w.type === 'melee' && !w.id.startsWith('improvised_'))));
             if (meleeWeapons.length > 0) {
                 html += this.renderMeleeWeaponsCards(meleeWeapons, ownedCounts);
             }
@@ -444,7 +486,7 @@ const WargearTab = {
 
         // Render Ranged Weapons
         if (this.currentCategory === 'all' || this.currentCategory === 'ranged') {
-            const rangedWeapons = filterBySearch(filterBySource(weapons.filter(w => w.type === 'ranged')));
+            const rangedWeapons = filterBySearch(filterBySource(weapons.filter(w => w.type === 'ranged' && !w.id.startsWith('improvised_'))));
             if (rangedWeapons.length > 0) {
                 html += this.renderRangedWeaponsCards(rangedWeapons, ownedCounts);
             }

@@ -10,13 +10,64 @@ const StatsTab = {
             }
         });
 
+        this.bindXpTip();
         this.render();
     },
 
     render() {
+        this.hideXpTip();
         this.renderAttributes();
         this.renderDerivedStats();
         this.renderSkills();
+    },
+
+    // Text for the hover tip on a +/- button: the XP change, or why the button is disabled
+    xpTipText({ direction, value, min, max, nextCost, refund, canAfford }) {
+        if (direction === '-') {
+            return value > min ? `−${refund} XP` : 'Minimum rank';
+        }
+        if (value >= max || nextCost === null) return 'Maximum rank';
+        return canAfford ? `+${nextCost} XP` : `Not enough XP (needs ${nextCost})`;
+    },
+
+    // One delegated hover handler per list, because the rows are rebuilt on every render
+    bindXpTip() {
+        if (this._xpTipBound) return;
+        this._xpTipBound = true;
+        for (const id of ['attributes-list', 'skills-list']) {
+            const list = document.getElementById(id);
+            list.addEventListener('mouseover', (e) => {
+                const btn = e.target.closest('[data-xp-tip]');
+                if (btn) this.showXpTip(btn);
+            });
+            list.addEventListener('mouseout', (e) => {
+                if (e.target.closest('[data-xp-tip]')) this.hideXpTip();
+            });
+        }
+    },
+
+    showXpTip(btn) {
+        this.hideXpTip();
+        const tip = document.createElement('div');
+        tip.className = 'xp-tip';
+        tip.textContent = btn.dataset.xpTip;
+        document.body.appendChild(tip);
+
+        const rect = btn.getBoundingClientRect();
+        const tipRect = tip.getBoundingClientRect();
+        const left = rect.left + rect.width / 2 - tipRect.width / 2;
+        let top = rect.top - tipRect.height - 6;
+        if (top < 4) top = rect.bottom + 6;
+        tip.style.left = `${Math.max(4, Math.min(left, window.innerWidth - tipRect.width - 4))}px`;
+        tip.style.top = `${top}px`;
+        this._xpTipEl = tip;
+    },
+
+    hideXpTip() {
+        if (this._xpTipEl) {
+            this._xpTipEl.remove();
+            this._xpTipEl = null;
+        }
     },
 
     renderAttributes() {
@@ -49,14 +100,18 @@ const StatsTab = {
             const canIncrease = value < max && nextCost !== null && XPCalculator.canAfford(character, nextCost);
             const canDecrease = value > min;
 
+            const refund = canDecrease ? XPCalculator.getAttributeIncreaseCost(value - 1, value) : 0;
+            const decTip = this.xpTipText({ direction: '-', value, min, max, nextCost, refund, canAfford: canIncrease });
+            const incTip = this.xpTipText({ direction: '+', value, min, max, nextCost, refund, canAfford: canIncrease });
+
             const row = document.createElement('div');
             row.className = 'stat-row';
             row.innerHTML = `
                 <span class="stat-name">${DerivedStats.formatAttributeName(attr)}</span>
                 <div class="stat-controls">
-                    <button class="stat-btn btn-decrease" data-attr="${attr}" ${!canDecrease ? 'disabled' : ''}>-</button>
+                    <button class="stat-btn btn-decrease" data-attr="${attr}" data-xp-tip="${decTip}" ${!canDecrease ? 'disabled' : ''}>-</button>
                     <span class="stat-value">${value}</span>
-                    <button class="stat-btn btn-increase" data-attr="${attr}" ${!canIncrease ? 'disabled' : ''}>+</button>
+                    <button class="stat-btn btn-increase" data-attr="${attr}" data-xp-tip="${incTip}" ${!canIncrease ? 'disabled' : ''}>+</button>
                 </div>
                 <span class="stat-max">${max}</span>
             `;
@@ -141,6 +196,10 @@ const StatsTab = {
             const canIncrease = value < max && nextCost !== null && XPCalculator.canAfford(character, nextCost);
             const canDecrease = value > min;
 
+            const refund = canDecrease ? XPCalculator.getSkillIncreaseCost(value - 1, value) : 0;
+            const decTip = this.xpTipText({ direction: '-', value, min, max, nextCost, refund, canAfford: canIncrease });
+            const incTip = this.xpTipText({ direction: '+', value, min, max, nextCost, refund, canAfford: canIncrease });
+
             const row = document.createElement('div');
             row.className = 'stat-row';
             row.innerHTML = `
@@ -149,9 +208,9 @@ const StatsTab = {
                     <span class="stat-linked">(${DerivedStats.getAttributeAbbrev(linkedAttr)})</span>
                 </span>
                 <div class="stat-controls">
-                    <button class="stat-btn btn-decrease" data-skill="${skill}" ${!canDecrease ? 'disabled' : ''}>-</button>
+                    <button class="stat-btn btn-decrease" data-skill="${skill}" data-xp-tip="${decTip}" ${!canDecrease ? 'disabled' : ''}>-</button>
                     <span class="stat-value">${value}</span>
-                    <button class="stat-btn btn-increase" data-skill="${skill}" ${!canIncrease ? 'disabled' : ''}>+</button>
+                    <button class="stat-btn btn-increase" data-skill="${skill}" data-xp-tip="${incTip}" ${!canIncrease ? 'disabled' : ''}>+</button>
                 </div>
                 <span class="stat-total">${total}</span>
             `;

@@ -568,10 +568,27 @@ const ReferencesTab = {
         if (entry.effect) {
             html += `<div class="glossary-entry-description">${entry.effect}</div>`;
         }
+        html += this.renderTalentProfiles(entry);
         if (entry.flavor) {
             html += `<div class="ref-flavor">${entry.flavor}</div>`;
         }
         return html;
+    },
+
+    // Stat table for the weapon records a talent names in `profiles` (e.g. Improvised Weaponry)
+    renderTalentProfiles(entry) {
+        const weapons = (entry.profiles || []).map(id => DataLoader.getWeapon(id)).filter(w => w);
+        if (weapons.length === 0) return '';
+        const rows = weapons.map(w => {
+            const total = (w.damage?.base || 0) + (w.damage?.bonus || 0);
+            const damage = w.damage?.attribute === 'strength' ? `(S) +${total}` : `${total}`;
+            const range = w.range && typeof w.range === 'object' ? `${w.range.short}/${w.range.medium}/${w.range.long}` : '-';
+            return `<tr><td>${w.name}</td><td>${damage}</td><td>${w.ed}</td><td>${w.ap || '-'}</td><td>${range}</td><td>${w.salvo ?? '-'}</td><td>${(w.traits || []).join(', ') || '-'}</td></tr>`;
+        }).join('');
+        return `<div class="glossary-table-scroll"><table class="glossary-table">
+            <thead><tr><th>Name</th><th>Damage</th><th>ED</th><th>AP</th><th>Range</th><th>Salvo</th><th>Traits</th></tr></thead>
+            <tbody>${rows}</tbody>
+        </table></div>`;
     },
 
     renderWeaponBody(entry) {

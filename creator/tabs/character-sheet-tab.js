@@ -865,7 +865,10 @@ const CharacterSheetTab = {
 
         for (let i = 0; i < (character.wargear || []).length; i++) {
             const item = character.wargear[i];
-            const weapon = DataLoader.getWeapon(item.id);
+            // Improvised weapons use the base record with their Shift options applied
+            const weapon = item.improvised
+                ? ImprovisedBuilder.resolve(item, DataLoader.getWeapon(item.id), character.rank || 1)
+                : DataLoader.getWeapon(item.id);
             if (weapon) {
                 const isEquipped = State.isWeaponEquipped(i);
                 const upgrades = item.upgrades || [];
@@ -943,8 +946,10 @@ const CharacterSheetTab = {
             const apTooltip = weapon.calculatedDamage.apTooltip ? ` title="${this.escapeHtml(weapon.calculatedDamage.apTooltip)}"` : '';
             const damageTooltip = weapon.calculatedDamage.damageTooltip ? ` title="${this.escapeHtml(weapon.calculatedDamage.damageTooltip)}"` : '';
 
-            // Build description and keywords row
-            const description = weapon.description || '';
+            // Build description and keywords row (an improvised weapon shows its player details)
+            const description = weapon.improvised
+                ? this.escapeHtml(weapon.improvised.details || '')
+                : (weapon.description || '');
             const keywords = weapon.keywords?.length > 0
                 ? weapon.keywords.map(k => `<span class="sheet-mini-keyword">${k}</span>`).join(' ')
                 : '';
@@ -953,14 +958,16 @@ const CharacterSheetTab = {
 
             // Rarity display
             const rarityClass = this.getRarityClass(weapon.rarity);
-            const rarityDisplay = weapon.rarity && weapon.rarity !== 'Common'
+            const rarityDisplay = weapon.rarity && weapon.rarity !== 'Common' && weapon.rarity !== '-'
                 ? `<span class="sheet-item-rarity ${rarityClass}">${DataLoader.formatRarity(weapon.rarity)}</span>`
                 : '';
 
             // Relic weapons display under their custom name with the base weapon in parentheses
             const displayName = weapon.relic
                 ? `${this.escapeHtml(weapon.relic.name)} (${weapon.name})`
-                : weapon.name;
+                : weapon.improvised
+                    ? this.escapeHtml(ImprovisedBuilder.displayName(weapon.improvised.name, weapon.baseName))
+                    : weapon.name;
 
             const descRow = hasDescOrKeywords ? `
                 <tr class="sheet-weapon-desc-row">
@@ -1675,6 +1682,7 @@ const CharacterSheetTab = {
                     </div>
                     <div class="sheet-talent-content">
                         <div class="sheet-talent-effect">${effectText}</div>
+                        ${ImprovisedBuilder.talentProfilesHtml(talent)}
                         ${flavorHtml}
                         <div class="source-ref">${DataLoader.formatSourcePage(talent)}</div>
                     </div>
@@ -2046,6 +2054,16 @@ const CharacterSheetTab = {
                     const oddityText = oddityNames.length ? oddityNames.join(', ') : 'none';
                     lines.push(`- ${item.relic.name} (Holy Relic — ${wargear.name})`);
                     lines.push(`    Power: ${parts.powerName}${choiceText}; Oddities: ${oddityText}`);
+                } else if (item.improvised) {
+                    const resolved = ImprovisedBuilder.resolve(item, wargear, character.rank || 1);
+                    lines.push(ImprovisedBuilder.displayName(item.improvised.name, wargear.name) === wargear.name
+                        ? `- ${wargear.name} (Improvised)`
+                        : `- ${item.improvised.name.trim()} (Improvised — ${wargear.name})`);
+                    lines.push(`    ${ImprovisedBuilder.formatStatLine(resolved)}`);
+                    lines.push(`    ${ImprovisedBuilder.summary(item.improvised)}`);
+                    if (item.improvised.details) {
+                        for (const line of item.improvised.details.split(/\r?\n/)) lines.push(`    ${line}`);
+                    }
                 } else {
                     lines.push(`  ${wargear.name}`);
                 }

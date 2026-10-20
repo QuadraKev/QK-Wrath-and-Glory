@@ -675,6 +675,7 @@ const EncounterTab = {
     // Render detail content into any container (used by both desktop detail panel and mobile bottom sheet)
     _renderDetailContent(container) {
         if (!this.selectedId) return;
+        this._renderedDetailKey = this.selectionType + ':' + this.selectedId;
         if (this.selectionType === 'individual') {
             this.renderIndividualDetail(container);
         } else if (this.selectionType === 'mob') {
@@ -813,7 +814,10 @@ const EncounterTab = {
         // On mobile, update the bottom sheet if it's open; otherwise use the desktop panel
         if (window.innerWidth <= 768) {
             if (BottomSheet.isOpen() && this.selectedId) {
+                const sheet = document.getElementById('bottom-sheet-content');
+                const scroll = this._saveDetailScroll(sheet);
                 BottomSheet.updateContent(div => this._renderDetailContent(div));
+                this._restoreDetailScroll(sheet, scroll);
             }
             return;
         }
@@ -821,6 +825,7 @@ const EncounterTab = {
         const container = document.getElementById('encounter-detail');
 
         if (!this.selectedId) {
+            this._renderedDetailKey = null;
             container.innerHTML = `
                 <div class="encounter-detail-placeholder">
                     <p>Select an entry to view details</p>
@@ -829,7 +834,26 @@ const EncounterTab = {
             return;
         }
 
+        const scroll = this._saveDetailScroll(container);
         this._renderDetailContent(container);
+        this._restoreDetailScroll(container, scroll);
+    },
+
+    // Re-rendering the detail replaces its innerHTML, which resets the scroll offset of the
+    // mob member list (and can reset the panel). Keep both when the same entry is re-rendered.
+    _saveDetailScroll(container) {
+        if (this._renderedDetailKey !== this.selectionType + ':' + this.selectedId) return null;
+        const scroller = container.closest('.encounter-detail-container') || container;
+        const list = container.querySelector('.mob-members-list');
+        return { panel: scroller.scrollTop, list: list ? list.scrollTop : 0 };
+    },
+
+    _restoreDetailScroll(container, scroll) {
+        if (!scroll) return;
+        const scroller = container.closest('.encounter-detail-container') || container;
+        const list = container.querySelector('.mob-members-list');
+        scroller.scrollTop = scroll.panel;
+        if (list) list.scrollTop = scroll.list;
     },
 
     renderPlayerDetail(container) {

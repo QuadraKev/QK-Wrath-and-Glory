@@ -768,6 +768,24 @@ const State = {
         this.notifyListeners('wargear', itemId);
     },
 
+    // Add an Improvised Weaponry wargear entry (base weapon id + improvised overlay)
+    addImprovisedWargear(entry) {
+        this.character.wargear.push({ id: entry.id, isStarting: false, improvised: entry.improvised });
+        this.notifyListeners('wargear', entry.id);
+    },
+
+    // Update an improvised wargear entry in place (edit flow)
+    updateImprovisedWargear(wargearIndex, entry) {
+        if (wargearIndex < 0 || wargearIndex >= this.character.wargear.length) return;
+        const item = this.character.wargear[wargearIndex];
+        if (item.id !== entry.id) {
+            item.id = entry.id;
+            item.upgrades = [];
+        }
+        item.improvised = entry.improvised;
+        this.notifyListeners('wargear', entry.id);
+    },
+
     // Toggle weapon equipped status (for Simultaneous Strike tracking)
     // Uses array index for unique identification when same weapon appears multiple times
     toggleWeaponEquipped(wargearIndex) {
@@ -786,7 +804,10 @@ const State = {
         for (let i = 0; i < (this.character.wargear || []).length; i++) {
             const item = this.character.wargear[i];
             if (item.equipped) {
-                const weapon = DataLoader.getWeapon(item.id);
+                // Improvised weapons use the base record with their Shift options applied
+                const weapon = item.improvised
+                    ? ImprovisedBuilder.resolve(item, DataLoader.getWeapon(item.id), this.character.rank || 1)
+                    : DataLoader.getWeapon(item.id);
                 if (weapon) {
                     equipped.push({ ...weapon, wargearIndex: i });
                 }

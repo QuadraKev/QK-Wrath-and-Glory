@@ -24106,5 +24106,53 @@
     ],
     "source": "lex",
     "page": 17
+  },
+  {
+    "id": "improvised_melee_weapon",
+    "name": "Improvised Melee Weapon",
+    "type": "melee",
+    "category": "Improvised",
+    "damage": {
+      "base": 2,
+      "attribute": "strength",
+      "bonus": 0
+    },
+    "ed": 2,
+    "ap": 0,
+    "traits": [
+      "Unwieldy (2)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [],
+    "source": "redacted1",
+    "page": 65
+  },
+  {
+    "id": "improvised_simple_firearm",
+    "name": "Improvised Simple Firearm",
+    "type": "ranged",
+    "category": "Improvised",
+    "damage": {
+      "base": 6,
+      "attribute": null,
+      "bonus": 0
+    },
+    "ed": 1,
+    "ap": 0,
+    "range": {
+      "short": 6,
+      "medium": 12,
+      "long": 18
+    },
+    "salvo": "-",
+    "traits": [
+      "Unwieldy (2)"
+    ],
+    "value": "-",
+    "rarity": "-",
+    "keywords": [],
+    "source": "redacted1",
+    "page": 65
   }
 ]

@@ -245,8 +245,8 @@ State lives in `bestiary/js/encounter-state.js`; rendering in `bestiary/tabs/enc
     an entry of the same faction with `variantOf: null`; the three overrides hold (Land Speeder
     Tornado and Typhoon `value` 12, Leman Russ Vanquisher `rarity` `Rare`).
   - No string in the new data starts with `[AI-Generated]`.
-  - `vehicleTraits` has the 12 keys; `vehicleRules` has the 35 required keys of Appendix B and at
-    most 37 entries.
+  - `vehicleTraits` has the 12 keys; `vehicleRules` has the 40 required keys of Appendix B and at
+    most 42 entries.
 - Cache busting: every `?v=` tag in `bestiary/index.html` (new tab script included); every `?v=` tag
   in `creator/index.html` for the Rules Reference change; the creator data `?v=` in
   `creator/js/web-api.js` for the glossary change.
@@ -311,7 +311,7 @@ the 107 minus 86.
 
 ## Appendix B — Rules entries for `vehicleRules`
 
-One entry per key. The 35 plain keys are required. The two keys marked † exist only when the book
+One entry per key. The 40 plain keys are required. The two keys marked † exist only when the book
 prints text under that section heading before its first sub-heading; the extractor decides from the
 page. "Vehicle Weapons" (p. 60) gets no entry of its own: its other text is Workshop content. A table
 belongs to the entry under whose heading it is printed; the Example Pilot Tests table and the
@@ -329,32 +329,37 @@ printed; where the table below gives a range, the extractor records the exact pa
 | `orks_build_tuff` | Orks Build Tuff | 31 |
 | `green_wunz_only` | Green Wunz Only | 31 |
 | `interacting_with_vehicles` † | Interacting with Vehicles | 44 |
-| `embarking` | Embarking | 44 |
-| `actions_inside` | Actions Inside | 44–45 |
-| `complications` | Complications (with its table) | 44–45 |
+| `embarking` | Embarking & Disembarking | 44 |
+| `actions_inside` | Actions Inside a Vehicle | 44–45 |
+| `complications` | Vehicle Complications (with its table) | 44–45 |
+| `movement_on_a_vehicles_exterior` | Movement on a Vehicle's Exterior | 44 |
 | `vehicle_roles` | Vehicle Roles (with the Pilot, Crew and Passenger actions table) | 45–46 |
 | `vehicle_actions` † | Vehicle Actions | 46 |
 | `drive` | Drive | 46–50 |
 | `brace_for_impact` | Brace for Impact | 46–50 |
 | `breakneck_speed` | Breakneck Speed | 46–50 |
+| `xenos_tech` | Xenos Tech | 47 |
 | `emergency_repair` | Emergency Repair | 46–50 |
 | `evasive_manoeuvres` | Evasive Manoeuvres | 46–50 |
 | `line_up_the_shot` | Line Up the Shot | 46–50 |
+| `the_bigger_they_are` | Optional Rule: The Bigger They Are… | 48 |
 | `open_fire` | Open Fire | 46–50 |
 | `ram` | Ram | 46–50 |
+| `vehicle_ammo` | Vehicle Ammo | 50 |
 | `reload` | Reload | 46–50 |
 | `high_speed_tactics` | High-Speed Tactics | 50 |
 | `attacking_from_a_vehicle` | Attacking from a Vehicle | 51 |
 | `attacking_a_vehicles_occupants` | Attacking a Vehicle's Occupants | 51 |
 | `vehicle_defence` | Vehicle Defence | 52 |
 | `damaged_vehicles` | Damaged Vehicles | 52 |
-| `vehicles_and_conditions` | Vehicles and Conditions | 53 |
-| `called_shots` | Called Shots (with the two DN tables) | 53–54 |
+| `vehicles_and_conditions` | Vehicles & Conditions | 53 |
+| `out_of_control` | Out of Control | 53 |
+| `called_shots` | Called Shots against Vehicles (with the two DN tables) | 53–54 |
 | `vehicle_damage` | Vehicle Damage (the d66 table) | 54 |
 | `repairing_vehicles` | Repairing Vehicles | 55 |
 | `vehicle_explosions` | Vehicle Explosions (with its table) | 55 |
-| `crash_and_burn` | Crash and Burn | 55 |
-| `built_to_last` | Built to Last | 55 |
-| `ammo` | Ammo | 60 |
+| `crash_and_burn` | Optional Rule: Crash and Burn | 55 |
+| `built_to_last` | Optional Rule: Built to Last | 55 |
+| `ammo` | Vehicle Ammo | 60 |
 | `twin_weapons` | Twin Weapons | 60 |
 | `vehicle_characteristics` | Vehicle Characteristics (with the Influence Modifier table) | 62 |

@@ -312,40 +312,45 @@ const RULES = [
     ['orks_build_tuff', 'Orks Build Tuff', 31, 31, true],
     ['green_wunz_only', 'Green Wunz Only', 31, 31, true],
     ['interacting_with_vehicles', 'Interacting with Vehicles', 44, 44, false],
-    ['embarking', 'Embarking', 44, 44, true],
-    ['actions_inside', 'Actions Inside', 44, 45, true],
-    ['complications', 'Complications', 44, 45, true],
+    ['embarking', 'Embarking & Disembarking', 44, 44, true],
+    ['actions_inside', 'Actions Inside a Vehicle', 44, 45, true],
+    ['complications', 'Vehicle Complications', 44, 45, true],
+    ['movement_on_a_vehicles_exterior', "Movement on a Vehicle's Exterior", 44, 44, true],
     ['vehicle_roles', 'Vehicle Roles', 45, 46, true],
     ['vehicle_actions', 'Vehicle Actions', 46, 46, false],
     ['drive', 'Drive', 46, 50, true],
     ['brace_for_impact', 'Brace for Impact', 46, 50, true],
     ['breakneck_speed', 'Breakneck Speed', 46, 50, true],
+    ['xenos_tech', 'Xenos Tech', 47, 47, true],
     ['emergency_repair', 'Emergency Repair', 46, 50, true],
     ['evasive_manoeuvres', 'Evasive Manoeuvres', 46, 50, true],
     ['line_up_the_shot', 'Line Up the Shot', 46, 50, true],
+    ['the_bigger_they_are', 'Optional Rule: The Bigger They Are…', 48, 48, true],
     ['open_fire', 'Open Fire', 46, 50, true],
     ['ram', 'Ram', 46, 50, true],
+    ['vehicle_ammo', 'Vehicle Ammo', 50, 50, true],
     ['reload', 'Reload', 46, 50, true],
     ['high_speed_tactics', 'High-Speed Tactics', 50, 50, true],
     ['attacking_from_a_vehicle', 'Attacking from a Vehicle', 51, 51, true],
     ['attacking_a_vehicles_occupants', "Attacking a Vehicle's Occupants", 51, 51, true],
     ['vehicle_defence', 'Vehicle Defence', 52, 52, true],
     ['damaged_vehicles', 'Damaged Vehicles', 52, 52, true],
-    ['vehicles_and_conditions', 'Vehicles and Conditions', 53, 53, true],
-    ['called_shots', 'Called Shots', 53, 54, true],
+    ['vehicles_and_conditions', 'Vehicles & Conditions', 53, 53, true],
+    ['out_of_control', 'Out of Control', 53, 53, true],
+    ['called_shots', 'Called Shots against Vehicles', 53, 54, true],
     ['vehicle_damage', 'Vehicle Damage', 54, 54, true],
     ['repairing_vehicles', 'Repairing Vehicles', 55, 55, true],
     ['vehicle_explosions', 'Vehicle Explosions', 55, 55, true],
-    ['crash_and_burn', 'Crash and Burn', 55, 55, true],
-    ['built_to_last', 'Built to Last', 55, 55, true],
-    ['ammo', 'Ammo', 60, 60, true],
+    ['crash_and_burn', 'Optional Rule: Crash and Burn', 55, 55, true],
+    ['built_to_last', 'Optional Rule: Built to Last', 55, 55, true],
+    ['ammo', 'Vehicle Ammo', 60, 60, true],
     ['twin_weapons', 'Twin Weapons', 60, 60, true],
     ['vehicle_characteristics', 'Vehicle Characteristics', 62, 62, true]
 ];
 const ruleKeys = Object.keys(vehicleRules);
-check('Appendix B lists 35 required keys', RULES.filter(r => r[4]).length, 35);
-check('vehicleRules has the 35 required keys', RULES.filter(r => r[4] && !ruleKeys.includes(r[0])).map(r => r[0]), []);
-check('vehicleRules has at most 37 entries', ruleKeys.length <= 37, true);
+check('Appendix B lists 40 required keys', RULES.filter(r => r[4]).length, 40);
+check('vehicleRules has the 40 required keys', RULES.filter(r => r[4] && !ruleKeys.includes(r[0])).map(r => r[0]), []);
+check('vehicleRules has at most 42 entries', ruleKeys.length <= 42, true);
 check('every vehicleRules key is an Appendix B key', ruleKeys.filter(k => !RULES.some(r => r[0] === k)), []);
 check('vehicleRules names match Appendix B',
     RULES.filter(([k, name]) => k in vehicleRules && vehicleRules[k].name !== name).map(r => r[0]), []);

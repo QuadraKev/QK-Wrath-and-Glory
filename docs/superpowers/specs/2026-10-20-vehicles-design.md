@@ -43,7 +43,7 @@ A flat JSON array of 107 entries in book order, one per printed stat block.
   "faction": "Astra Militarum",
   "variantOf": null,
   "description": "The Chimera is an armoured transport with thousands of years of service vouching for its reliable, rugged design. The Astra Militarum regularly moves ground troops from fight to fight within its armoured shell, and many other vehicles are based on the venerable Chimera chassis. It is peppered in Gun Ports that allow Passengers to shoot out.",
-  "options": "All Chimera-based tanks can carry a Hunter-Killer Missile and a Dozer Blade, plus either a Storm Bolter or a Heavy Stubber. Each may exchange its Heavy Bolter for a Heavy Flamer. The baseline Chimera’s Multi-Laser can be exchanged for a Heavy Flamer, Heavy Bolter, Autocannon, or Twin Heavy Bolter.",
+  "options": "All Chimera-based tanks can carry a Hunter-Killer Missile and a Dozer Blade, plus either a Storm Bolter or a Heavy Stubber. Each may exchange its Heavy Bolter for a Heavy Flamer. The baseline Chimera's Multi-Laser can be exchanged for a Heavy Flamer, Heavy Bolter, Autocannon, or Twin Heavy Bolter.",
   "value": 10,
   "rarity": "Rare",
   "speed": 26,
@@ -70,13 +70,17 @@ A flat JSON array of 107 entries in book order, one per printed stat block.
 
 The ids in `weapons` and `wargear` above are examples. The build step resolves the real ids. A Twin
 line carries one more key, for example the Land Raider's
-`{ "text": "2 Twin Lascannons", "weaponId": "lascannon", "count": 2, "twin": true }` (p. 70).
+`{ "text": "2 Twin Lascannons", "weaponId": "lascannon", "count": 2, "twin": true }` (p. 70). A line
+whose weapon exists only as several profile records carries `profileIds` in place of a resolved
+`weaponId`, for example
+`{ "text": "Prism Cannon", "weaponId": null, "count": 1, "profileIds": ["cos_prism_cannon_focused", "cos_prism_cannon_dispersed"] }`
+(ids illustrative).
 
 ### 2.2 Field rules
 
 | Field | Rule |
 |---|---|
-| `id` | snake_case of the printed name. A variant printed without its family name gets the family prefix: `land_raider_crusader`, `leman_russ_demolisher`, `archaeopter_fusilave`. Unique across the file. |
+| `id` | snake_case of the printed name. A variant whose printed title is one word gets the family prefix: `land_raider_crusader`, `leman_russ_demolisher`, `falcon_firestorm`. A multi-word printed title stands alone: `attack_bike`, `wave_serpent`, `burna_bommer`. The Archaeopters follow their stored name: `archaeopter_fusilave`. Unique across the file. |
 | `name` | The printed heading. A variant keeps the printed short title (`Crusader`) in `name`; the card shows the family through `variantOf`. The three Archaeopter entries store `Archaeopter <printed title>`, because they have no `variantOf` to carry the family. |
 | `faction` | One of 11 fixed strings, in title case: `Imperial`, `Adepta Sororitas`, `Adeptus Astartes`, `Adeptus Mechanicus`, `Aeronautica Imperialis`, `Astra Militarum`, `Aeldari`, `Chaos Space Marines`, `Drukhari`, `Necron`, `Ork`. The book prints the section headings in capitals. If a printed heading differs in wording from this list, the extractor reports it and the list is corrected before the build. |
 | `variantOf` | The family parent's `id` for a block that has no Value/Rarity line of its own, else `null`. Exception: the Archaeopter family (p. 79) has text and a Value but no block of its own, so its three blocks are top-level entries with `variantOf: null`, each carrying the family Value, Rarity, description and options. |
@@ -88,22 +92,27 @@ line carries one more key, for example the Land Raider's
 | `keywords` | UPPERCASE strings, verbatim, including `TRANSPORTER` where printed and the `[LEGION]` and `[MARK OF CHAOS]` placeholders. |
 | `crew` | The printed Crew Complement string, verbatim. |
 | `traits` | Strings as printed, with values kept: `Turbo Boost (2)`. |
-| `weapons[]` | One item per printed line. `text` is the line verbatim. `count` is the leading quantity (`2 Heavy Bolters` → 2), else 1. `twin: true` when the word `Twin` follows the optional leading quantity (`Twin Lascannon`, `2 Twin Big Shootas`); the key is absent otherwise. `weaponId` is the resolved `weapons.json` id or `null`. An empty box (`–` or `N/A`) gives `[]`. |
+| `weapons[]` | One item per printed line. `text` is the line verbatim. `count` is the leading quantity (`2 Heavy Bolters` → 2), else 1. `twin: true` when the word `Twin` follows the optional leading quantity (`Twin Lascannon`, `2 Twin Big Shootas`); the key is absent otherwise. `weaponId` is the resolved `weapons.json` id or `null`. `profileIds`, an array of two or more `weapons.json` ids in file order, replaces a resolved `weaponId` when the printed weapon exists only as separate profile records (a Prism Cannon with a Focused and a Dispersed profile); `weaponId` is then `null`, and the key is absent otherwise. An empty box (`–` or `N/A`) gives `[]`. |
 | `wargear[]` | One item per printed line. `text` verbatim; `equipmentId` the resolved `equipment.json` id or `null`. An empty box gives `[]`. |
 | `sidebar` | `{ "title", "text" }` verbatim for a rule box inside the entry (Shokk Tunnel, p. 106), else `null`. |
 | `source` | `"church"`, the short id that the wargear and glossary files already use for this book. |
 | `page` | The printed page of the stat block. |
 
 Text rule: every prose field (`description`, `options`, `sidebar`, `crew`, `traits`, `keywords`,
-weapon and wargear `text`) holds verbatim book text. No field in this feature gets an `[AI-Generated]`
-prefix. Where the book has no text, the field is `null` or `[]`.
+weapon and wargear `text`) holds verbatim book text, with straight apostrophes and quotes as the
+existing data files use. No field in this feature gets an `[AI-Generated]` prefix. Where the book
+has no text, the field is `null` or `[]`.
 
 ### 2.3 Resolution of weapon and wargear lines
 
 The build step matches each line to a record by normalised name. Both sides are normalised the same
 way: case folded, the leading quantity removed, the `Twin ` prefix removed, a trailing plural `s`
-removed (`Saw Blades` and `Smoke Launchers` match the records `Saw Blade` and `Smoke Launcher`).
-Candidates come in tiers: first the `Vehicle - *` weapons with `source: "church"`, then `core`
+removed (`Saw Blades` and `Smoke Launchers` match the records `Saw Blade` and `Smoke Launcher`), and
+a record-name suffix `(Vehicle)`, `(Weapon)` or `(Wargear)` removed, so a printed `Blaster` matches
+the church-tier `Blaster (Vehicle)` before the infantry `Blaster`. A printed weapon that matches no
+record by name, but matches two or more records in one tier whose names are the printed name plus a
+profile label, is a profile family: the item gets `profileIds` with those ids in file order and
+`weaponId: null`. Candidates come in tiers: first the `Vehicle - *` weapons with `source: "church"`, then `core`
 records, then any other source. Heavy Bolter and Storm Bolter have no profile in this book and
 resolve to the existing records, which carry `source: "voa"`; Lascannon resolves to the `core`
 record. Two candidates with the same normalised name in one tier make an ambiguous match. Wargear
@@ -116,8 +125,8 @@ text.
 
 Two new top-level sections, shaped like the existing ones: an object keyed by entry id, each entry
 with `name`, `description`, `source: "church"` and `page`. Tables are embedded as
-`<table class="glossary-table">` inside the description, as the glossary already does. Every
-description is verbatim book text.
+`<table class='glossary-table'>` inside the description, with the single-quoted attribute the
+existing entries use. Every description is verbatim book text with straight apostrophes and quotes.
 
 - `vehicleTraits`: the 12 definitions from pp. 62–63: All-Terrain, Amphibious, Bike, Flyer, Gun
   Ports, Gyro-Stabilised, Hover, Open Topped, Reliable, Sealed, Turbo Boost (X), Walker. The key is
@@ -142,8 +151,10 @@ plain text.
 New file `bestiary/tabs/vehicles-tab.js`, global object `VehiclesTab`, modelled on `threats-tab.js`.
 
 - **Display name:** wherever a vehicle's name appears outside its own card (the list, the encounter
-  rows), a variant shows as `<name> (<family name>)`, for example `Crusader (Land Raider)`.
-  `DataLoader.getVehicleDisplayName(vehicle)` builds it.
+  rows), a variant shows as `<name> (<family name>)`, for example `Crusader (Land Raider)`. A
+  variant whose `name` already contains the family name shows the name alone: `Land Speeder
+  Tornado`, not `Land Speeder Tornado (Land Speeder)`. `DataLoader.getVehicleDisplayName(vehicle)`
+  builds it.
 - **List:** display name, faction, Value/Rarity. Search matches name, description and keywords. A
   faction select holds the 11 faction values. The Settings source toggle: the tab keeps a vehicle
   when `SettingsTab.isSourceEnabled(vehicle.source)` is true; that function already maps the short
@@ -155,8 +166,9 @@ New file `bestiary/tabs/vehicles-tab.js`, global object `VehiclesTab`, modelled 
   entry is a plain chip); Crew Complement; trait chips (popup type `vehicleTrait`; `Turbo Boost (2)`
   opens `turbo_boost`); a weapons table with columns Name (the printed text), Damage, ED, AP,
   Range/Reach, Salvo, Traits, filled from the resolved record (a melee record carries `reach`, a
-  ranged record `range`), with a "Twin" marker that opens the `twin_weapons` rule, and the printed
-  text alone when `weaponId` is `null`; a wargear list with the resolved effect text, or the printed
+  ranged record `range`), with a "Twin" marker that opens the `twin_weapons` rule, one row per
+  profile with the record's name in the Name column for a `profileIds` line, and the printed text
+  alone when neither `weaponId` nor `profileIds` resolves; a wargear list with the resolved effect text, or the printed
   text alone when unresolved; the description; the options paragraph; the sidebar box; for a variant
   whose `description` or `options` is `null`, the family's text under the family name; a "Variant
   of <family>" link; an **Add to Encounter** button.
@@ -178,7 +190,8 @@ State lives in `bestiary/js/encounter-state.js`; rendering in `bestiary/tabs/enc
   Max Wounds is the vehicle's `wounds` field. No bonus, no Shock, no mob, no Elite or Adversary
   scaling; those controls stay hidden for a vehicle. The item is destroyed when `wounds` exceeds
   Max Wounds (p. 62: "more Wounds than its Max Wounds"); the row then uses the dead-individual
-  styling. No flag is stored.
+  styling. No flag is stored. The + button stops at Max Wounds + 1. An item whose vehicle does not
+  resolve is never shown as destroyed.
 - **Functions:** `addVehicle(vehicleId)`, `removeVehicle(id)`, `updateVehicleWounds(id, delta)`,
   `setVehicleInitiative(id, value)` and `getVehicle(id)` are new. `isEmpty()`, `clearEncounter()`,
   `getEncounterData()`, `loadFromData()` and `getEncounterListItems()` include the array, and
@@ -191,9 +204,10 @@ State lives in `bestiary/js/encounter-state.js`; rendering in `bestiary/tabs/enc
   with profiles, wargear), the Wounds controls, and a link to the Vehicle Damage rule
   (`#glossary/vehicleRules-vehicle_damage`). The scroll preservation from issue #26 covers the
   panel. On mobile the BottomSheet shows the same panel.
-- **Persistence:** `getEncounterData()` writes `vehicles` beside the other arrays; `version` stays
-  1, because an added array is not a breaking change. `loadFromData()` treats a missing `vehicles`
-  as `[]`. An item whose `vehicleId` no longer resolves is kept: the row shows "Unknown vehicle"
+- **Persistence:** `getEncounterData()` writes `vehicles` beside the other arrays, and every path
+  that saves or loads an encounter (autosave, Save Encounter, Load Encounter through
+  `loadEncounterFromFile()`) carries it; `version` stays 1, because an added array is not a
+  breaking change. `loadFromData()` treats a missing `vehicles` as `[]`. An item whose `vehicleId` no longer resolves is kept: the row shows "Unknown vehicle"
   and the panel shows "Vehicle data not found", the same as a threat whose id no longer resolves.
   An older client (the frozen single-app bestiary shares this origin's `wng-bestiary-autosave`)
   ignores `vehicles` and drops it on its next autosave. Accepted: that snapshot gets no new
@@ -226,7 +240,8 @@ State lives in `bestiary/js/encounter-state.js`; rendering in `bestiary/tabs/enc
     Aeronautica Imperialis 4, Adeptus Astartes 23, Astra Militarum 18, Aeldari 10, Drukhari 4,
     Necron 6, Chaos Space Marines 4, Ork 17); `faction` in the fixed set of §2.2.
   - `size` in `Medium`, `Large`, `Huge`, `Gargantuan`.
-  - Every non-null `weaponId` and `equipmentId` resolves to a record; every `variantOf` resolves to
+  - Every non-null `weaponId` and `equipmentId` resolves to a record; every `profileIds` array has
+    two or more ids that all resolve, beside a `null` `weaponId`; every `variantOf` resolves to
     an entry of the same faction with `variantOf: null`; the three overrides hold (Land Speeder
     Tornado and Typhoon `value` 12, Leman Russ Vanquisher `rarity` `Rare`).
   - No string in the new data starts with `[AI-Generated]`.

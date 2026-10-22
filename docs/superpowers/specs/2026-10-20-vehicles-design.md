@@ -84,8 +84,8 @@ whose weapon exists only as several profile records carries `profileIds` in plac
 | `name` | The printed heading. A variant keeps the printed short title (`Crusader`) in `name`; the card shows the family through `variantOf`. The three Archaeopter entries store `Archaeopter <printed title>`, because they have no `variantOf` to carry the family. |
 | `faction` | One of 11 fixed strings, in title case: `Imperial`, `Adepta Sororitas`, `Adeptus Astartes`, `Adeptus Mechanicus`, `Aeronautica Imperialis`, `Astra Militarum`, `Aeldari`, `Chaos Space Marines`, `Drukhari`, `Necron`, `Ork`. The book prints the section headings in capitals. If a printed heading differs in wording from this list, the extractor reports it and the list is corrected before the build. |
 | `variantOf` | The family parent's `id` for a block that has no Value/Rarity line of its own, else `null`. Exception: the Archaeopter family (p. 79) has text and a Value but no block of its own, so its three blocks are top-level entries with `variantOf: null`, each carrying the family Value, Rarity, description and options. |
-| `description` | Verbatim text under the heading, before the Value line. A variant's own paragraph, where printed, goes here. A variant with no paragraph stores `null`, and the card shows the family's text instead (§4). |
-| `options` | Verbatim loadout paragraph after the Value line, or `null`. Lives on the parent only, except the Archaeopter case above. |
+| `description` | Verbatim text under the heading, before the Value line. A variant's own paragraph, where printed, goes here. A variant with no paragraph stores `null`, and the card shows the family's text instead (§4). A loadout paragraph printed before the Value line belongs to `description` by this positional rule (Chaos Predator, Nightshade Interceptor, Vyper, War Walker). |
+| `options` | Verbatim loadout paragraph after the Value line, or `null`. Lives on the parent only, except the Archaeopter case above. A paragraph that names several vehicles is printed once; the data copies it verbatim into the `options` of every top-level vehicle it names, so the reader of each named card sees it (the Rhino paragraph of p. 72 appears on six entries). A later text fix must change every copy. |
 | `value`, `rarity` | From the printed Value/Rarity line. A variant copies its family's values. Where the family prose overrides a variant (Tornado and Typhoon Value 12, Vanquisher Rare), the variant stores the override. |
 | `speed`, `manoeuvre`, `resilience`, `wounds` | Numbers from the `Spd / Man / Res / W` row. |
 | `size` | The book's own size word, from the Vehicle Characteristics rule (p. 62): `Med` → `Medium`, `Large` → `Large`, `Huge` → `Huge`, `Gtn` → `Gargantuan`. `threats.json` has no vehicle sizes, and `Medium` is not relabelled as the threat word `Average`. |
@@ -278,7 +278,7 @@ entries by the §2.2 exception.
 Imperial, pp. 64–66: Achilles Ridgerunner, Avachrus Ridgerunner (64); Dirtcycle, Goliath Truck,
 Goliath Rockgrinder (65); Tauros, Tauros Venator, Wolfquad (66). Adepta Sororitas, pp. 67–68:
 Castigator, Exorcist (67); Immolator, Repressor, Adepta Sororitas Rhino (68). Adeptus Mechanicus,
-pp. 79–81: Archaeopter Fusilave†, Archaeopter Stratoraptor†, Archaeopter Transvector† (79; the
+pp. 79–81: Archaeopter Stratoraptor†, Archaeopter Fusilave†, Archaeopter Transvector† (79, in printed column order; the
 Archaeopter family text and Value sit on the page, with no block of their own); Onager Dunecrawler,
 Skorpius Disintegrator (80); Skorpius Dunerider, Ironstrider Ballistarius, Sydonian Dragoon (81).
 Aeronautica Imperialis, pp. 82–84: Aquila Lander, Arvus Lighter, Vulture Gunship (82); Valkyrie (84).
@@ -290,8 +290,8 @@ Vindicator, Whirlwind (75); Gladiator, Gladiator Reaper*, Gladiator Valiant* (76
 ATV (77); Repulsor, Repulsor Executioner* (78).
 
 **Group 3 — Astra Militarum (18), pp. 84–91.** Chimera (84); Hellhound, Devil Dog, Bane Wolf (85);
-Basilisk, Deathstrike, Hydra (86); Manticore, Wyvern, Leman Russ (87); Demolisher*, Punisher*,
-Eradicator*, Vanquisher* (88); Scout Sentinel, Armoured Sentinel (89); Taurox, Taurox Prime (91).
+Basilisk, Deathstrike, Hydra (86); Manticore, Wyvern, Leman Russ (87); Demolisher*, Eradicator*,
+Punisher*, Vanquisher* (88, in printed column order); Scout Sentinel, Armoured Sentinel (89); Taurox, Taurox Prime (91).
 
 **Group 4 — Aeldari (10), Drukhari (4), Necron (6).** Aeldari, pp. 92–96: Aeldari Jetbike (92);
 Falcon, Fire Prism*, Firestorm*, Night Spinner* (93); Wave Serpent*, Hemlock Wraithfighter (94);

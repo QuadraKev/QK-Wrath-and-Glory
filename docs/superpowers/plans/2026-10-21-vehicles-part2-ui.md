@@ -103,7 +103,7 @@ No change: `data/*`, `scripts/test-vehicles.js`, `creator/js/glossary.js`, both 
 - Create: `scripts/test-vehicles-tab.js`
 
 **Interfaces:**
-- Consumes: the Part 1 sections of `data/glossary.json`. `vehicleTraits` has 12 keys, for example `turbo_boost`. `vehicleRules` has at least the 35 required keys, for example `twin_weapons` and `vehicle_damage`. Each entry is `{ name, description, source: "church", page }`.
+- Consumes: the Part 1 sections of `data/glossary.json`. `vehicleTraits` has 12 keys, for example `turbo_boost`. `vehicleRules` has at least the 40 required keys, for example `twin_weapons` and `vehicle_damage`. Each entry is `{ name, description, source: "church", page }`.
 - Produces:
   - `Glossary.getEntry('vehicleTrait' | 'vehicleRule', key) → entry | null`.
   - `Glossary.getTypeLabel('vehicleTrait') → 'Vehicle Trait'` and `Glossary.getTypeLabel('vehicleRule') → 'Vehicle Rule'`.
@@ -191,7 +191,7 @@ async function main() {
         const traitKeys = Object.keys(glossary.vehicleTraits || {});
         const ruleKeys = Object.keys(glossary.vehicleRules || {});
         check('Part 1 data: glossary has the 12 vehicle traits', traitKeys.length, 12);
-        check('Part 1 data: glossary has at least 35 vehicle rules', ruleKeys.length >= 35, true);
+        check('Part 1 data: glossary has at least 40 vehicle rules', ruleKeys.length >= 40, true);
 
         // The engine resolves the two new popup types by key
         const turbo = Glossary.getEntry('vehicleTrait', 'turbo_boost');

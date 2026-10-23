@@ -1,0 +1,4957 @@
+[
+  {
+    "id": "achilles_ridgerunner",
+    "name": "Achilles Ridgerunner",
+    "faction": "Imperial",
+    "variantOf": null,
+    "description": "The four-wheeled Achilles Ridgerunner is a versatile, dependable vehicle that is simple and inexpensive to build. Though it is lightly armed and armoured, its reliability, ruggedness, and expendability make it an ideal choice for exploration, reconnaissance, and transportation across inhospitable terrain. The standard model is often used in frontier settings where defensive weaponry provides necessary protection, but unarmed variants are also produced for civilian use.",
+    "options": "The Ridgerunner's Heavy Mining Laser can be replaced with either a Missile Launcher or a Heavy Mortar.",
+    "value": 6,
+    "rarity": "Common",
+    "speed": 29,
+    "manoeuvre": 4,
+    "resilience": 13,
+    "wounds": 12,
+    "size": "Large",
+    "keywords": [
+      "IMPERIUM",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot, 2 Crew",
+    "traits": [
+      "All-Terrain",
+      "Reliable"
+    ],
+    "weapons": [
+      {
+        "text": "2 Heavy Stubbers",
+        "weaponId": "heavy_stubber",
+        "count": 2
+      },
+      {
+        "text": "Heavy Mining Laser",
+        "weaponId": "cos_heavy_mining_laser",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Flare Launcher",
+        "equipmentId": "cos_flare_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 64
+  },
+  {
+    "id": "avachrus_ridgerunner",
+    "name": "Avachrus Ridgerunner",
+    "faction": "Imperial",
+    "variantOf": null,
+    "description": "Not all vehicles in the Gilead System are weapons of war. To facilitate civilian ground transportation, Avachrus's manufactorums produce a four-wheeled utility vehicle known as the Avachrus Ridgerunner, an alternate pattern of the Achilles Ridgerunner solely intended to carry passengers from place to place.",
+    "options": null,
+    "value": 5,
+    "rarity": "Common",
+    "speed": 30,
+    "manoeuvre": 4,
+    "resilience": 12,
+    "wounds": 12,
+    "size": "Large",
+    "keywords": [
+      "IMPERIUM",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 4 Passengers",
+    "traits": [
+      "Open Topped"
+    ],
+    "weapons": [],
+    "wargear": [
+      {
+        "text": "Flare Launcher",
+        "equipmentId": "cos_flare_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 64
+  },
+  {
+    "id": "dirtcycle",
+    "name": "Dirtcycle",
+    "faction": "Imperial",
+    "variantOf": null,
+    "description": "One of the most common vehicles in the Imperium, the two-wheeled Dirtcycle is lightweight, nimble, and inexpensive. Built to outlast its riders, this sturdy cycle is dependable and easy to maintain. Ill-suited for combat due to a dearth of weapons and armour, it is typically deployed in civilian and other noncombat applications.",
+    "options": null,
+    "value": 4,
+    "rarity": "Common",
+    "speed": 38,
+    "manoeuvre": 6,
+    "resilience": 10,
+    "wounds": 8,
+    "size": "Medium",
+    "keywords": [
+      "IMPERIUM",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot",
+    "traits": [
+      "All-Terrain",
+      "Bike",
+      "Open Topped",
+      "Reliable"
+    ],
+    "weapons": [],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 65
+  },
+  {
+    "id": "goliath_truck",
+    "name": "Goliath Truck",
+    "faction": "Imperial",
+    "variantOf": null,
+    "description": "A larger, more rugged cousin of the Ridgerunner, the Goliath Truck is a heavy, four-wheeled vehicle used to transport cargo, work crews, and equipment. With added firepower, it serves as the workhorse for many local militia forces as well as vile insurrectionists. Its ubiquitous use in a variety of settings means few would view an approaching wave of these vehicles as a threat until it was far too late.",
+    "options": null,
+    "value": 7,
+    "rarity": "Common",
+    "speed": 28,
+    "manoeuvre": 4,
+    "resilience": 12,
+    "wounds": 15,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 2 Crew, 10 Passengers",
+    "traits": [
+      "Open Topped",
+      "Reliable"
+    ],
+    "weapons": [
+      {
+        "text": "Heavy Stubber",
+        "weaponId": "heavy_stubber",
+        "count": 1
+      },
+      {
+        "text": "Twin Autocannon",
+        "weaponId": "autocannon",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Cache of demo charges",
+        "equipmentId": null
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 65
+  },
+  {
+    "id": "goliath_rockgrinder",
+    "name": "Goliath Rockgrinder",
+    "faction": "Imperial",
+    "variantOf": null,
+    "description": "The Rockgrinder is a popular variant of the basic Goliath Truck. It features a sealed hull, additional armour and weapons, and a forward-mounted Drilldozer Blade designed to smash through obstacles while traversing mines. Typically reserved for mining duties, the Rockgrinder is sometimes pressed into combat due to its intimidating stature and robust construction.",
+    "options": "The Goliath Rockgrinder may replace its Heavy Mining Laser with either a Clearance Incinerator or a Heavy Seismic Cannon.",
+    "value": 7,
+    "rarity": "Common",
+    "speed": 26,
+    "manoeuvre": 4,
+    "resilience": 14,
+    "wounds": 15,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 2 Crew, 6 Passengers",
+    "traits": [
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Heavy Stubber",
+        "weaponId": "heavy_stubber",
+        "count": 1
+      },
+      {
+        "text": "Heavy Mining Laser",
+        "weaponId": "cos_heavy_mining_laser",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Drilldozer Blade",
+        "equipmentId": "cos_drilldozer_blade"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 65
+  },
+  {
+    "id": "tauros",
+    "name": "Tauros",
+    "faction": "Imperial",
+    "variantOf": null,
+    "description": "The Tauros is a lightweight utility vehicle known for its rugged durability, speed, and agility. The standard model, a four-wheeled buggy intended for all-terrain scouting and reconnaissance, is equipped with light armour and a Heavy Flamer to clear its path.",
+    "options": "The Heavy Flamer on a Tauros can be substituted for a Tauros Grenade Launcher, and it can also be equipped with a Hunter-Killer Missile.",
+    "value": 7,
+    "rarity": "Uncommon",
+    "speed": 30,
+    "manoeuvre": 5,
+    "resilience": 12,
+    "wounds": 12,
+    "size": "Large",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "All-Terrain",
+      "Open Topped",
+      "Reliable"
+    ],
+    "weapons": [
+      {
+        "text": "Heavy Flamer",
+        "weaponId": "heavy_flamer",
+        "count": 1
+      }
+    ],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 66
+  },
+  {
+    "id": "tauros_venator",
+    "name": "Tauros Venator",
+    "faction": "Imperial",
+    "variantOf": null,
+    "description": "The heavier six-wheeled Venator variant of the Tauros is more purpose-built for combat, mounting heavier armour and a Twin Multi-Laser or Lascannon instead of the Heavy Flamer. The Venator is less common, however, as it is more expensive and tends to face greater hazards on the frontlines, so the standard model is more usually seen across Imperial worlds.",
+    "options": "A Venator may replace its Twin Multi-Laser with a Twin Lascannon and may carry a Hunter-Killer Missile.",
+    "value": 9,
+    "rarity": "Rare",
+    "speed": 30,
+    "manoeuvre": 6,
+    "resilience": 14,
+    "wounds": 12,
+    "size": "Large",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "All-Terrain",
+      "Open Topped",
+      "Reliable"
+    ],
+    "weapons": [
+      {
+        "text": "Twin Multi-Laser",
+        "weaponId": "cos_multi_laser",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 66
+  },
+  {
+    "id": "wolfquad",
+    "name": "Wolfquad",
+    "faction": "Imperial",
+    "variantOf": null,
+    "description": "The Wolfquad is a heavier, four-wheeled cousin to the Dirtcycle used in a variety of Imperial civilian applications. Though more cumbersome than the Dirtcycle, the Wolfquad trades speed for size and durability. This gives it sufficient space and stability for a Mining Laser and associated heavy equipment. These additions make the Wolfquad well suited for mining operations and rapid exploration across Difficult Terrain.",
+    "options": "A Wolfquad's Heavy Stubber can be replaced with either a Mining Laser or an Atalan Incinerator.",
+    "value": 5,
+    "rarity": "Common",
+    "speed": 31,
+    "manoeuvre": 5,
+    "resilience": 11,
+    "wounds": 10,
+    "size": "Large",
+    "keywords": [
+      "IMPERIUM",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot",
+    "traits": [
+      "All-Terrain",
+      "Bike",
+      "Open Topped",
+      "Reliable"
+    ],
+    "weapons": [
+      {
+        "text": "Heavy Stubber",
+        "weaponId": "heavy_stubber",
+        "count": 1
+      }
+    ],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 66
+  },
+  {
+    "id": "castigator",
+    "name": "Castigator",
+    "faction": "Adepta Sororitas",
+    "variantOf": null,
+    "description": "Like the Adepta Sororitas's other tanks, the Exorcist and Immolator, the Castigator is built on a Rhino chassis. However, laden with Gothic decoration and the iconography of the Ecclesiarchy, it bears little resemblance to its relatives. The Castigator is a holy relic and a focus of faith as much as it is a battle tank — and it's a devastatingly effective battle tank. With a wide array of weaponry, including the commonly mounted pair of Castigator Autocannons, it provides superb artillery support for Sororitas ground troops.",
+    "options": "The Castigator Autocannons can be replaced with a Castigator Battle Cannon. The Castigator battle tank can also be equipped with a Hunter-Killer Missile and a Storm Bolter.",
+    "value": 14,
+    "rarity": "Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 15,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTA SORORITAS",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "2 Castigator Autocannons",
+        "weaponId": "cos_castigator_autocannon",
+        "count": 2
+      },
+      {
+        "text": "3 Heavy Bolters",
+        "weaponId": "heavy_bolter",
+        "count": 3
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 67
+  },
+  {
+    "id": "exorcist",
+    "name": "Exorcist",
+    "faction": "Adepta Sororitas",
+    "variantOf": null,
+    "description": "The Exorcist mounts a specialised missile launcher and a Heavy Bolter atop the workhorse Rhino chassis. The multibarrelled Exorcist Missile Launcher is capable of delivering a devastating fusillade of righteous fire upon foes at Long Range. If needed, it can be replaced with a rocket launcher, which provides a wider blast effect at the cost of lessened damage.\n\nAn Exorcist's arrival on a Gilead System battlefield often heralds the snatching of victory from the jaws of defeat. The opportunity to smite the Imperium's foes with a chorus of immolation is considered a great honour among the Adepta Sororitas.",
+    "options": "The Exorcist Missile Launcher can be exchanged for an Exorcist Conflagration Rocket Launcher using the rules in Chapter 7: The Workshop. The Exorcist may carry a Hunter-Killer Missile.",
+    "value": 14,
+    "rarity": "Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 15,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTA SORORITAS",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Exorcist Missile Launcher",
+        "weaponId": "cos_exorcist_missile_launcher",
+        "count": 1
+      },
+      {
+        "text": "Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 67
+  },
+  {
+    "id": "immolator",
+    "name": "Immolator",
+    "faction": "Adepta Sororitas",
+    "variantOf": null,
+    "description": "The Immolator is both a troop transport and a platform for devastating weapons. Whether armed with anti-infantry Immolation Flamers or antitank Multi-Meltas, it's highly effective in clearing a path through the Imperium's foes and then depositing a squad of righteous Sisters of Battle in their midst.",
+    "options": "An Immolator may carry a Hunter-Killer Missile, and it may replace the Immolation Flamers with a Twin Multi-Melta or a Twin Heavy Bolter.",
+    "value": 14,
+    "rarity": "Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 15,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTA SORORITAS",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 1 Crew, 6 Passengers",
+    "traits": [
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "2 Immolation Flamers",
+        "weaponId": "cos_immolation_flamer",
+        "count": 2
+      },
+      {
+        "text": "Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 68
+  },
+  {
+    "id": "repressor",
+    "name": "Repressor",
+    "faction": "Adepta Sororitas",
+    "variantOf": null,
+    "description": "The Repressor, like the Adepta Sororitas's other vehicles, is based on a Rhino chassis. In this case, it's been adapted for use both as a suppression and crowd-control resource and as a battlefield infantry transport.",
+    "options": "The Repressor has firing points along its left and right sides, allowing up to 3 Passengers on each side to fire personal weapons that do not have the Heavy Trait. It may carry a Hunter-Killer Missile.",
+    "value": 16,
+    "rarity": "Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 16,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTA SORORITAS",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 1 Crew, 10 Passengers",
+    "traits": [
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Repressor Heavy Flamer",
+        "weaponId": "cos_repressor_heavy_flamer",
+        "count": 1
+      },
+      {
+        "text": "Storm Bolter",
+        "weaponId": "storm_bolter",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      },
+      {
+        "text": "Dozer Ram",
+        "equipmentId": "cos_dozer_ram"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 68
+  },
+  {
+    "id": "adepta_sororitas_rhino",
+    "name": "Adepta Sororitas Rhino",
+    "faction": "Adepta Sororitas",
+    "variantOf": null,
+    "description": "The venerable Rhino acts as the primary transport vehicle for the Sisters of Battle when they launch fiery retribution against the Emperor's foes. Fast, robust, and dependable, they ensure no heretic goes unpunished.",
+    "options": "An Adepta Sororitas Rhino may be equipped with a Hunter-Killer Missile.",
+    "value": 14,
+    "rarity": "Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 15,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTA SORORITAS",
+      "TANK",
+      "TRANSPORTER"
+    ],
+    "crew": "1 Pilot, 1 Crew, 10 Passengers",
+    "traits": [
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Storm Bolter",
+        "weaponId": "storm_bolter",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 68
+  },
+  {
+    "id": "assault_bike",
+    "name": "Assault Bike",
+    "faction": "Adeptus Astartes",
+    "variantOf": null,
+    "description": "Space Marine fast-attack squads ride powerful, armoured motorcycles into battle. Though lightly armed and armoured compared to larger Adeptus Astartes vehicles, Assault Bikes possess powerful engines that propel their transhuman riders at great speed to carry out sudden, vicious assaults. These bikes are much heavier and more durable than many of their counterparts, granting them superior durability as they hurtle towards the enemy.",
+    "options": "Astartes Attack Bikes and Scout Bikes use the same basic chassis, with modifications.\n\nAn Attack Bike may substitute a Multi-Melta for its Heavy Bolter. A Scout Bike may replace its Twin Boltgun with a Grenade Launcher.",
+    "value": 9,
+    "rarity": "Rare",
+    "speed": 60,
+    "manoeuvre": 5,
+    "resilience": 13,
+    "wounds": 11,
+    "size": "Large",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot",
+    "traits": [
+      "Bike",
+      "Open Topped"
+    ],
+    "weapons": [
+      {
+        "text": "Twin Boltgun",
+        "weaponId": "boltgun",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 69
+  },
+  {
+    "id": "attack_bike",
+    "name": "Attack Bike",
+    "faction": "Adeptus Astartes",
+    "variantOf": "assault_bike",
+    "description": null,
+    "options": null,
+    "value": 9,
+    "rarity": "Rare",
+    "speed": 60,
+    "manoeuvre": 5,
+    "resilience": 13,
+    "wounds": 11,
+    "size": "Large",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Bike",
+      "Open Topped"
+    ],
+    "weapons": [
+      {
+        "text": "Twin Boltgun",
+        "weaponId": "boltgun",
+        "count": 1,
+        "twin": true
+      },
+      {
+        "text": "Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1
+      }
+    ],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 69
+  },
+  {
+    "id": "scout_bike",
+    "name": "Scout Bike",
+    "faction": "Adeptus Astartes",
+    "variantOf": "assault_bike",
+    "description": null,
+    "options": null,
+    "value": 9,
+    "rarity": "Rare",
+    "speed": 60,
+    "manoeuvre": 5,
+    "resilience": 11,
+    "wounds": 11,
+    "size": "Large",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot",
+    "traits": [
+      "Bike",
+      "Open Topped"
+    ],
+    "weapons": [
+      {
+        "text": "Twin Boltgun",
+        "weaponId": "boltgun",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 69
+  },
+  {
+    "id": "land_raider",
+    "name": "Land Raider",
+    "faction": "Adeptus Astartes",
+    "variantOf": null,
+    "description": "As much a mobile fortress of ceramite and adamantium as a tracked vehicle, the Adeptus Astartes Land Raider dauntlessly carries Space Marines and incredible firepower into the thickest fighting. Its sophisticated Machine Spirit is advanced enough to operate this massive war machine independently, even in the absence of Crew. Techmarines who service and pilot these vehicles believe each powerful Land Raider Machine Spirit to be a fragment of the Omnissiah's divinity.\n\nBecause their construction is impossible on all but a precious few Forge Worlds, Land Raiders are exceptionally rare throughout the galaxy, and especially so in Gilead. Despite this scarcity, variant configurations do exist — the Crusader is the most common of the nonstandard vehicles. While the basic Land Raider is equipped to handle virtually any situation, the Crusader variant sacrifices armaments for troop space, and the Redeemer wields increased firepower but has limited utility as a troop transport.",
+    "options": "All Land Raider tanks may also carry a Hunter-Killer Missile, Storm Bolter, and Multi-Melta.",
+    "value": 18,
+    "rarity": "Unique",
+    "speed": 21,
+    "manoeuvre": 3,
+    "resilience": 19,
+    "wounds": 25,
+    "size": "Gargantuan",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "TANK",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 1 Crew, 10 Passengers",
+    "traits": [
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "2 Twin Lascannons",
+        "weaponId": "lascannon",
+        "count": 2,
+        "twin": true
+      },
+      {
+        "text": "Twin Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Awakened Machine Spirit",
+        "equipmentId": "cos_awakened_machine_spirit"
+      },
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 70
+  },
+  {
+    "id": "land_raider_crusader",
+    "name": "Crusader",
+    "faction": "Adeptus Astartes",
+    "variantOf": "land_raider",
+    "description": null,
+    "options": null,
+    "value": 18,
+    "rarity": "Unique",
+    "speed": 21,
+    "manoeuvre": 3,
+    "resilience": 19,
+    "wounds": 25,
+    "size": "Gargantuan",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "TANK",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 1 Crew, 16 Passengers",
+    "traits": [
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "2 Hurricane Bolters",
+        "weaponId": "cos_hurricane_bolter",
+        "count": 2
+      },
+      {
+        "text": "Twin Assault Cannon",
+        "weaponId": "assault_cannon",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Awakened Machine Spirit",
+        "equipmentId": "cos_awakened_machine_spirit"
+      },
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 70
+  },
+  {
+    "id": "land_raider_redeemer",
+    "name": "Redeemer",
+    "faction": "Adeptus Astartes",
+    "variantOf": "land_raider",
+    "description": null,
+    "options": null,
+    "value": 18,
+    "rarity": "Unique",
+    "speed": 21,
+    "manoeuvre": 3,
+    "resilience": 19,
+    "wounds": 25,
+    "size": "Gargantuan",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "TANK",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 1 Crew, 12 Passengers",
+    "traits": [
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "2 Flamestorm Cannons",
+        "weaponId": "cos_flamestorm_cannon",
+        "count": 2
+      },
+      {
+        "text": "Twin Assault Cannon",
+        "weaponId": "assault_cannon",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Awakened Machine Spirit",
+        "equipmentId": "cos_awakened_machine_spirit"
+      },
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 70
+  },
+  {
+    "id": "land_speeder",
+    "name": "Land Speeder",
+    "faction": "Adeptus Astartes",
+    "variantOf": null,
+    "description": "One of very few vehicles in the Imperium to use arcane antigravitic propulsion technology, the Land Speeder is a light fast-response vehicle the Adeptus Astartes use to provide reconnaissance and fire support at a moment's notice. Based on a Standard Template Construct uncovered in the 31st Millennium, the Land Speeder's advanced propulsion system is a technological marvel that has only been surpassed by older species like the Aeldari and Necrons.\n\nControversially, the Adeptus Mechanicus's Arch Magos Belisarius Cawl introduced new, hulking designs using similar technology to convey the newly created Primaris Astartes, but the small, agile Land Speeder remains the only vehicle of its kind within the Space Marine arsenal. Only the most resource-rich planets can afford to maintain and fuel Land Speeders, making them vanishingly rare in the Gilead System.",
+    "options": "The Land Speeder Tornado and Typhoon both add increased firepower (increasing their Value to 12).\n\nA Land Speeder Tornado may substitute its Heavy Bolter for a Multi-Melta and its Assault Cannon for a Heavy Flamer.\n\nA Land Speeder may substitute its Heavy Bolter for a Multi-Melta.\n\nA Land Speeder Typhoon may substitute its Heavy Bolter for a Multi-Melta.",
+    "value": 11,
+    "rarity": "Very Rare",
+    "speed": 75,
+    "manoeuvre": 6,
+    "resilience": 14,
+    "wounds": 16,
+    "size": "Large",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "FLYER"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Gyro-Stabilised",
+      "Hover",
+      "Open Topped",
+      "Turbo Boost (4)"
+    ],
+    "weapons": [
+      {
+        "text": "Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1
+      }
+    ],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 71
+  },
+  {
+    "id": "land_speeder_tornado",
+    "name": "Land Speeder Tornado",
+    "faction": "Adeptus Astartes",
+    "variantOf": "land_speeder",
+    "description": null,
+    "options": null,
+    "value": 12,
+    "rarity": "Very Rare",
+    "speed": 75,
+    "manoeuvre": 6,
+    "resilience": 14,
+    "wounds": 16,
+    "size": "Large",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "FLYER"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Gyro-Stabilised",
+      "Hover",
+      "Open Topped",
+      "Turbo Boost (4)"
+    ],
+    "weapons": [
+      {
+        "text": "Assault Cannon",
+        "weaponId": "assault_cannon",
+        "count": 1
+      },
+      {
+        "text": "Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1
+      }
+    ],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 71
+  },
+  {
+    "id": "land_speeder_typhoon",
+    "name": "Land Speeder Typhoon",
+    "faction": "Adeptus Astartes",
+    "variantOf": "land_speeder",
+    "description": null,
+    "options": null,
+    "value": 12,
+    "rarity": "Very Rare",
+    "speed": 75,
+    "manoeuvre": 6,
+    "resilience": 14,
+    "wounds": 16,
+    "size": "Large",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "FLYER"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Gyro-Stabilised",
+      "Hover",
+      "Open Topped",
+      "Turbo Boost (4)"
+    ],
+    "weapons": [
+      {
+        "text": "Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1
+      },
+      {
+        "text": "Typhoon Missile Launcher",
+        "weaponId": null,
+        "count": 1,
+        "profileIds": [
+          "cos_typhoon_missile_launcher_frag",
+          "cos_typhoon_missile_launcher_krak"
+        ]
+      }
+    ],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 71
+  },
+  {
+    "id": "land_speeder_storm",
+    "name": "Land Speeder Storm",
+    "faction": "Adeptus Astartes",
+    "variantOf": null,
+    "description": "Space Marine Scouts use the Storm-model Land Speeder. Unlike the other models of this iconic Astartes vehicle, the Land Speeder Storm is engineered to serve as a troop transport, delivering strike teams of Space Marine Scouts into the heat of battle. Such is its speed and relatively quiet engines that Scouts can arrive before their foes are prepared, leaping from the Land Speeder Storm and directly into combat.",
+    "options": null,
+    "value": 11,
+    "rarity": "Very Rare",
+    "speed": 75,
+    "manoeuvre": 6,
+    "resilience": 14,
+    "wounds": 16,
+    "size": "Large",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "FLYER"
+    ],
+    "crew": "1 Pilot, 1 Crew, 5 Passengers",
+    "traits": [
+      "Gyro-Stabilised",
+      "Hover",
+      "Open Topped",
+      "Turbo Boost (4)"
+    ],
+    "weapons": [
+      {
+        "text": "Cerberus Launcher",
+        "weaponId": "cos_cerberus_launcher",
+        "count": 1
+      },
+      {
+        "text": "Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1
+      }
+    ],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 72
+  },
+  {
+    "id": "rhino",
+    "name": "Rhino",
+    "faction": "Adeptus Astartes",
+    "variantOf": null,
+    "description": "Rhino treads have carried the Imperium's troops across battlefields throughout the galaxy for ten thousand years. Equipped with redundant systems, respectable armour, and ample troop capacity, the Rhino has accompanied the Adeptus Astartes into many battles. Such are its steadfast capabilities that even Inquisitorial forces have been known to utilise Rhinos when overt violence (or intimidation) is required.\n\nNumerous STCs have been rediscovered based on the Rhino chassis and added to the Astartes Order of Battle. The Rhino's workhorse reputation and simple design has allowed these other vehicles to easily mount specialised weapons at the expense of internal space. Many such variants exist, each aimed at filling a dedicated role with a well-proven war machine.",
+    "options": "Rhinos and other Adeptus Astartes tanks that share its chassis (such as Razorbacks, Predators, Vindicators, and Whirlwinds) may additionally carry a Hunter-Killer Missile and a Storm Bolter (allowing the basic Rhino to have two Storm Bolters).",
+    "value": 11,
+    "rarity": "Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 15,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "TANK",
+      "TRANSPORTER"
+    ],
+    "crew": "1 Pilot, 1 Crew, 10 Passengers",
+    "traits": [
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Storm Bolter",
+        "weaponId": "storm_bolter",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 72
+  },
+  {
+    "id": "razorback",
+    "name": "Razorback",
+    "faction": "Adeptus Astartes",
+    "variantOf": null,
+    "description": "Perhaps the most basic variation of the standard Rhino chassis is the Razorback. This robust tank is mounted with a twin heavy weapon platform that can support several different options. These are usually ones that Astartes also use as personal weaponry, making for easier maintenance and repair. Carrying this weapon platform means the vehicle's transport capacity is reduced, but not enough to diminish the tank's effectiveness in moving troops across battlefields.\n\nThe Razorback is often used as a rapid strike vehicle, providing long-range support for its Passengers as it quickly advances towards the frontlines. Once its marines disembark, it can then offer additional firepower against enemy infantry or vehicles, depending on its mounted weaponry.",
+    "options": "The Razorback's Twin Heavy Bolter may be replaced with a Twin Lascannon or a Twin Assault Cannon.\n\nRhinos and other Adeptus Astartes tanks that share its chassis (such as Razorbacks, Predators, Vindicators, and Whirlwinds) may additionally carry a Hunter-Killer Missile and a Storm Bolter (allowing the basic Rhino to have two Storm Bolters).",
+    "value": 11,
+    "rarity": "Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 15,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "TANK",
+      "TRANSPORTER"
+    ],
+    "crew": "1 Pilot, 1 Crew, 6 Passengers",
+    "traits": [
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Twin Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 73
+  },
+  {
+    "id": "predator_annihilator",
+    "name": "Predator Annihilator",
+    "faction": "Adeptus Astartes",
+    "variantOf": null,
+    "description": "The Predator eliminates all Passenger space in favour of sponson weaponry and a main cannon designed as a tank buster. The Annihilator is mounted with a Twin Lascannon, which, when combined with the terrifying accuracy of its Astartes Crew, is one of the deadliest guns in most combats. Annihilators typically advance at the tip of formations, picking out enemy vehicles and strongholds and punching holes through them or whatever else is in their way. Many swap out the standard Heavy Bolters on their sponsons for additional Lascannons, making them even deadlier in antitank duties.",
+    "options": "A Predator Annihilator or Destructor may exchange its 2 Heavy Bolters for 2 Lascannons.\n\nRhinos and other Adeptus Astartes tanks that share its chassis (such as Razorbacks, Predators, Vindicators, and Whirlwinds) may additionally carry a Hunter-Killer Missile and a Storm Bolter (allowing the basic Rhino to have two Storm Bolters).",
+    "value": 11,
+    "rarity": "Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 15,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Twin Lascannon",
+        "weaponId": "lascannon",
+        "count": 1,
+        "twin": true
+      },
+      {
+        "text": "2 Heavy Bolters",
+        "weaponId": "heavy_bolter",
+        "count": 2
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 74
+  },
+  {
+    "id": "predator_destructor",
+    "name": "Predator Destructor",
+    "faction": "Adeptus Astartes",
+    "variantOf": null,
+    "description": "The vehicle that most consider the primary battle tank of the Adeptus Astartes, the Predator Destructor mounts an upgunned Autocannon that is effective in a number of combat roles. With this weapon, the Destructor is ideal for eliminating light and medium armoured vehicles and huge xenos monstrosities. It can also tear apart enemy formations, especially when used in combination with the Heavy Bolters often mounted in its sponsons. If these are substituted with Lascannons, the Destructor can instead offer attacking marines serious antitank capabilities as well.",
+    "options": "A Predator Annihilator or Destructor may exchange its 2 Heavy Bolters for 2 Lascannons.\n\nRhinos and other Adeptus Astartes tanks that share its chassis (such as Razorbacks, Predators, Vindicators, and Whirlwinds) may additionally carry a Hunter-Killer Missile and a Storm Bolter (allowing the basic Rhino to have two Storm Bolters).",
+    "value": 11,
+    "rarity": "Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 15,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Predator Autocannon",
+        "weaponId": "cos_predator_autocannon",
+        "count": 1
+      },
+      {
+        "text": "2 Heavy Bolters",
+        "weaponId": "heavy_bolter",
+        "count": 2
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 74
+  },
+  {
+    "id": "vindicator",
+    "name": "Vindicator",
+    "faction": "Adeptus Astartes",
+    "variantOf": null,
+    "description": "The Vindicator is designed to support siege offensives, especially in urban settings, and is mounted with the huge Demolisher Cannon. The cannon's armaments are so massive that only a limited number can be stored within the tank, but usually only a few shells are needed for victory.\n\nThe Demolisher Cannon is devastating against fortifications, but it is relatively short-range. This means the Vindicator must move close to its target, something that would make other Rhino-based tanks vulnerable. The Vindicator, though, has defensive improvements such as greater armour to better protect itself. Most importantly, across its prow it has a massive Siege Shield, which can shrug off most enemy fire as well as allowing the tank to plough through its opponents' defensive positions.",
+    "options": "Rhinos and other Adeptus Astartes tanks that share its chassis (such as Razorbacks, Predators, Vindicators, and Whirlwinds) may additionally carry a Hunter-Killer Missile and a Storm Bolter (allowing the basic Rhino to have two Storm Bolters).",
+    "value": 11,
+    "rarity": "Rare",
+    "speed": 23,
+    "manoeuvre": 3,
+    "resilience": 16,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Demolisher Cannon",
+        "weaponId": "cos_demolisher_cannon",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Siege Shield",
+        "equipmentId": "cos_siege_shield"
+      },
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 75
+  },
+  {
+    "id": "whirlwind",
+    "name": "Whirlwind",
+    "faction": "Adeptus Astartes",
+    "variantOf": null,
+    "description": "Featuring a large, externally mounted missile rack, the Whirlwind can fire masses of long-range projectiles to saturate enemy positions and suppress their actions. Such is the speed and aggression of advancing Astartes forces that often by the time the ground has stopped shaking, they have already arrived to finish off their broken foes.\n\nUnlike many Astartes tanks, the Whirlwind operates best far behind the main forces. It can fire its deadly Vengeance or Castellan rockets in high, arcing trajectories that can hit targets that cannot be spotted directly. Like all Astartes tanks, though, the Whirlwind is fast and can quickly relocate to best support changes in the ongoing battle.",
+    "options": "The Whirlwind Vengeance Launcher may be replaced with a Whirlwind Castellan Launcher.\n\nRhinos and other Adeptus Astartes tanks that share its chassis (such as Razorbacks, Predators, Vindicators, and Whirlwinds) may additionally carry a Hunter-Killer Missile and a Storm Bolter (allowing the basic Rhino to have two Storm Bolters).",
+    "value": 11,
+    "rarity": "Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 15,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Whirlwind Vengeance Launcher",
+        "weaponId": "cos_whirlwind_vengeance_launcher",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 75
+  },
+  {
+    "id": "gladiator",
+    "name": "Gladiator",
+    "faction": "Adeptus Astartes",
+    "variantOf": null,
+    "description": "Used by Primaris battle-brothers, Gladiator vehicles are in desperately short supply in the Gilead System. When they're available, they offer outstanding fire support. The addition of a single Gladiator to any battlefield can turn the tide of even the most dire confrontation in favour of the Imperium.",
+    "options": "The Gladiator Reaper is outfitted with rapid-fire artillery to destroy enemy infantry troops, while Valiant serves as an escort vehicle, easily crossing battlefields and laying down supporting fire to cover infantry troops' advance.\n\nA Gladiator can also carry an Ironhail Heavy Stubber, Icarus Rocket Pod, and Auto Launcher. Its Storm Bolters can be replaced with 2 Fragstorm Grenade Launchers. A Reaper or Valiant can add an Ironhail Heavy Stubber, Icarus Rocket Pod, and Auto Launcher.",
+    "value": 16,
+    "rarity": "Very Rare",
+    "speed": 20,
+    "manoeuvre": 4,
+    "resilience": 19,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 3 Crew",
+    "traits": [
+      "Hover",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Lancer Laser Destroyer",
+        "weaponId": "cos_lancer_laser_destroyer",
+        "count": 1
+      },
+      {
+        "text": "2 Storm Bolters",
+        "weaponId": "storm_bolter",
+        "count": 2
+      }
+    ],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 76
+  },
+  {
+    "id": "gladiator_reaper",
+    "name": "Gladiator Reaper",
+    "faction": "Adeptus Astartes",
+    "variantOf": "gladiator",
+    "description": null,
+    "options": null,
+    "value": 16,
+    "rarity": "Very Rare",
+    "speed": 20,
+    "manoeuvre": 4,
+    "resilience": 19,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 3 Crew",
+    "traits": [
+      "Hover",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "2 Tempest Bolters",
+        "weaponId": "cos_tempest_bolter",
+        "count": 2
+      },
+      {
+        "text": "Twin Heavy Onslaught Gatling Cannon",
+        "weaponId": "cos_heavy_onslaught_gatling_cannon",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 76
+  },
+  {
+    "id": "gladiator_valiant",
+    "name": "Gladiator Valiant",
+    "faction": "Adeptus Astartes",
+    "variantOf": "gladiator",
+    "description": null,
+    "options": null,
+    "value": 16,
+    "rarity": "Very Rare",
+    "speed": 20,
+    "manoeuvre": 4,
+    "resilience": 19,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 3 Crew",
+    "traits": [
+      "Hover",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "2 Multi-Meltas",
+        "weaponId": "multi_melta",
+        "count": 2
+      },
+      {
+        "text": "Twin Las-Talon",
+        "weaponId": "cos_las_talon",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 76
+  },
+  {
+    "id": "impulsor",
+    "name": "Impulsor",
+    "faction": "Adeptus Astartes",
+    "variantOf": null,
+    "description": "The Impulsor is a lightly armoured anti-grav transport employed by Primaris Space Marines to hasten infantry to the front lines and beyond. Part of a group of questionable innovations instituted by Belisarius Cawl, the Impulsor's ventral anti-grav plate generates a Repulsor Field, allowing its vectored engines to move the vehicle across the ground at rapid speeds while its Storm Bolters clear swathes of enemies. The transport's armour and Shield Dome protect Passengers long enough to reach their destination; then, the Impulsor provides mobile cover and fire support as they deploy.",
+    "options": "The Impulsor can also carry an Ironhail Heavy Stubber and can replace its 2 Storm Bolters with 2 Fragstorm Grenade Launchers.",
+    "value": 14,
+    "rarity": "Very Rare",
+    "speed": 60,
+    "manoeuvre": 5,
+    "resilience": 15,
+    "wounds": 15,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 2 Crew, 6 Passengers",
+    "traits": [
+      "Hover"
+    ],
+    "weapons": [
+      {
+        "text": "2 Storm Bolters",
+        "weaponId": "storm_bolter",
+        "count": 2
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Repulsor Field",
+        "equipmentId": "cos_repulsor_field"
+      },
+      {
+        "text": "Shield Dome",
+        "equipmentId": "cos_shield_dome"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 77
+  },
+  {
+    "id": "invader_atv",
+    "name": "Invader ATV",
+    "faction": "Adeptus Astartes",
+    "variantOf": null,
+    "description": "The Invader ATV is a relatively light, four-wheeled vehicle designed specifically for the Primaris Space Marines. This buggy is equipped with sparing but strategically placed armour and is sturdily made, allowing it to absorb an impressive amount of punishment for its size and role. The Invader is suitable for fast-attack missions where return fire is expected, allowing the Pilot and gunner to work in tandem to skirmish with enemies while remaining on the move. This ATV is best suited for light combat and heavy-duty reconnaissance. It is an effective all-around ATV that neither excels nor falls short in any of its intended functions, but can reliably serve the Primaris at all times.",
+    "options": "The Invader ATV may replace its Onslaught Gatling Cannon with a Multi-Melta.",
+    "value": 9,
+    "rarity": "Very Rare",
+    "speed": 40,
+    "manoeuvre": 4,
+    "resilience": 13,
+    "wounds": 13,
+    "size": "Large",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "All-Terrain",
+      "Bike",
+      "Open Topped"
+    ],
+    "weapons": [
+      {
+        "text": "Onslaught Gatling Cannon",
+        "weaponId": "cos_onslaught_gatling_cannon",
+        "count": 1
+      },
+      {
+        "text": "Twin Auto Bolt Rifle",
+        "weaponId": "cos_auto_bolt_rifle",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 77
+  },
+  {
+    "id": "repulsor",
+    "name": "Repulsor",
+    "faction": "Adeptus Astartes",
+    "variantOf": null,
+    "description": "The Repulsor is the main battle tank for Primaris Space Marines. Similar in many ways to the Land Raider, the Repulsor, with its mammoth hull and near-sentient Machine Spirit, is clad in nigh-impenetrable armour and outfitted with a fearsome array of heavy weapons. Rather than treads, this tank grinds along on a heavy Repulsor Field, literally crushing the ground beneath it as it floats into battle upon crashing waves of energy.\n\nThe Repulsor is large enough to carry a squad of Primaris Marines within its fortresslike hull, so it serves a secondary purpose as an armoured personnel carrier. The expansive construction facilities required to build this armoured monstrosity render the Repulsor an extremely uncommon sight throughout the galaxy, especially in Gilead. When it does appear on the battlefield, it is impossible to ignore.",
+    "options": "The Repulsor Executioner adds plasma weaponry for even more destructive power.\n\nBoth the Repulsor and Repulsor Executioner can be customised with an array of lethal weapons.\n\nThe Repulsor can add an additional Ironhail Heavy Stubber; replace the Twin Heavy Bolter with a Twin Lascannon; replace the Heavy Onslaught Gatling Cannon with a Las-Talon; replace 1 Ironhail Heavy Stubber with an Onslaught Gatling Cannon; replace 2 Storm Bolters, its Auto Launcher, or both with 2 Fragstorm Grenade Launchers; and replace the Icarus Ironhail Heavy Stubber with a Fragstorm Grenade Launcher, Icarus Rocket Pod, or Storm Bolter.\n\nThe Repuslor Executioner can exchange its Macro Plasma Incinerator for a Heavy Laser Destroyer; it may also add an Ironhail Heavy Stubber, Icarus Rocket Pod, or both.",
+    "value": 18,
+    "rarity": "Unique",
+    "speed": 23,
+    "manoeuvre": 3,
+    "resilience": 19,
+    "wounds": 25,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS",
+      "TANK",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 2 Crew, 10 Passengers",
+    "traits": [
+      "Hover",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Heavy Onslaught Gatling Cannon",
+        "weaponId": "cos_heavy_onslaught_gatling_cannon",
+        "count": 1
+      },
+      {
+        "text": "Icarus Ironhail Heavy Stubber",
+        "weaponId": "cos_icarus_ironhail_heavy_stubber",
+        "count": 1
+      },
+      {
+        "text": "Ironhail Heavy Stubber",
+        "weaponId": "cos_ironhail_heavy_stubber",
+        "count": 1
+      },
+      {
+        "text": "2 Krakstorm Grenade Launchers",
+        "weaponId": "cos_krakstorm_grenade_launcher",
+        "count": 2
+      },
+      {
+        "text": "2 Storm Bolters",
+        "weaponId": "storm_bolter",
+        "count": 2
+      },
+      {
+        "text": "Twin Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1,
+        "twin": true
+      },
+      {
+        "text": "Hunter-Slayer Missile",
+        "weaponId": "cos_hunter_slayer_missile",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Auto Launcher",
+        "equipmentId": "cos_auto_launcher"
+      },
+      {
+        "text": "Repulsor Field",
+        "equipmentId": "cos_repulsor_field"
+      },
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 78
+  },
+  {
+    "id": "repulsor_executioner",
+    "name": "Repulsor Executioner",
+    "faction": "Adeptus Astartes",
+    "variantOf": "repulsor",
+    "description": null,
+    "options": null,
+    "value": 18,
+    "rarity": "Unique",
+    "speed": 23,
+    "manoeuvre": 3,
+    "resilience": 19,
+    "wounds": 25,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS ASTARTES",
+      "PRIMARIS",
+      "TANK",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 2 Crew, 6 Passengers",
+    "traits": [
+      "Hover",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "2 Fragstorm Grenade Launchers",
+        "weaponId": "cos_fragstorm_grenade_launcher",
+        "count": 2
+      },
+      {
+        "text": "Heavy Onslaught Gatling Cannon",
+        "weaponId": "cos_heavy_onslaught_gatling_cannon",
+        "count": 1
+      },
+      {
+        "text": "Macro Plasma Incinerator",
+        "weaponId": "cos_macro_plasma_incinerator",
+        "count": 1
+      },
+      {
+        "text": "2 Storm Bolters",
+        "weaponId": "storm_bolter",
+        "count": 2
+      },
+      {
+        "text": "Twin Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1,
+        "twin": true
+      },
+      {
+        "text": "Twin Icarus Ironhail Heavy Stubber",
+        "weaponId": "cos_icarus_ironhail_heavy_stubber",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Auto Launcher",
+        "equipmentId": "cos_auto_launcher"
+      },
+      {
+        "text": "Repulsor Field",
+        "equipmentId": "cos_repulsor_field"
+      },
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 78
+  },
+  {
+    "id": "archaeopter_stratoraptor",
+    "name": "Archaeopter Stratoraptor",
+    "faction": "Adeptus Mechanicus",
+    "variantOf": null,
+    "description": "One of the more unconventional vehicles found within the Imperium, the Archaeopter is a fixed-wing aircraft used by the Adeptus Mechanicus for a variety of functions. It incorporates transformatively adaptable vanes into its wings, providing extreme manoeuvrability. The wings give the Archaeopter a bat-like or insectoid appearance. Such a profile is unusual within the Imperium; the design originated from approved depositories of sacred and lost engineering reclaimed by intrepid Tech-Priests.\n\nThe Archaeopter has multiple variants, the most common being the Stratoraptor, armed with Heavy Phosphor Blasters to provide high-speed fire support. A bomber variant, the Fusilave, is armed with explosives that rip the battlefield apart. The Transvector removes all weapons save the Cognis Heavy Stubbers in exchange for transport capacity and comms equipment.",
+    "options": null,
+    "value": 14,
+    "rarity": "Very Rare",
+    "speed": 105,
+    "manoeuvre": 7,
+    "resilience": 13,
+    "wounds": 15,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS MECHANICUS",
+      "FLYER"
+    ],
+    "crew": "1 Pilot, 3 Crew",
+    "traits": [
+      "Flyer",
+      "Hover",
+      "Sealed",
+      "Turbo Boost (14)"
+    ],
+    "weapons": [
+      {
+        "text": "2 Heavy Phosphor Blasters",
+        "weaponId": "cos_heavy_phosphor_blaster",
+        "count": 2
+      },
+      {
+        "text": "2 Cognis Heavy Stubbers",
+        "weaponId": "cos_cognis_heavy_stubber",
+        "count": 2
+      },
+      {
+        "text": "Twin Cognis Lascannon",
+        "weaponId": "cos_cognis_lascannon",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Chaff Launcher",
+        "equipmentId": "cos_chaff_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 79
+  },
+  {
+    "id": "archaeopter_fusilave",
+    "name": "Archaeopter Fusilave",
+    "faction": "Adeptus Mechanicus",
+    "variantOf": null,
+    "description": "One of the more unconventional vehicles found within the Imperium, the Archaeopter is a fixed-wing aircraft used by the Adeptus Mechanicus for a variety of functions. It incorporates transformatively adaptable vanes into its wings, providing extreme manoeuvrability. The wings give the Archaeopter a bat-like or insectoid appearance. Such a profile is unusual within the Imperium; the design originated from approved depositories of sacred and lost engineering reclaimed by intrepid Tech-Priests.\n\nThe Archaeopter has multiple variants, the most common being the Stratoraptor, armed with Heavy Phosphor Blasters to provide high-speed fire support. A bomber variant, the Fusilave, is armed with explosives that rip the battlefield apart. The Transvector removes all weapons save the Cognis Heavy Stubbers in exchange for transport capacity and comms equipment.",
+    "options": null,
+    "value": 14,
+    "rarity": "Very Rare",
+    "speed": 105,
+    "manoeuvre": 7,
+    "resilience": 13,
+    "wounds": 15,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS MECHANICUS",
+      "FLYER"
+    ],
+    "crew": "1 Pilot, 3 Crew",
+    "traits": [
+      "Flyer",
+      "Hover",
+      "Sealed",
+      "Turbo Boost (14)"
+    ],
+    "weapons": [
+      {
+        "text": "4 Cognis Heavy Stubbers",
+        "weaponId": "cos_cognis_heavy_stubber",
+        "count": 4
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Bomb Rack",
+        "equipmentId": "cos_bomb_rack"
+      },
+      {
+        "text": "Chaff Launcher",
+        "equipmentId": "cos_chaff_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 79
+  },
+  {
+    "id": "archaeopter_transvector",
+    "name": "Archaeopter Transvector",
+    "faction": "Adeptus Mechanicus",
+    "variantOf": null,
+    "description": "One of the more unconventional vehicles found within the Imperium, the Archaeopter is a fixed-wing aircraft used by the Adeptus Mechanicus for a variety of functions. It incorporates transformatively adaptable vanes into its wings, providing extreme manoeuvrability. The wings give the Archaeopter a bat-like or insectoid appearance. Such a profile is unusual within the Imperium; the design originated from approved depositories of sacred and lost engineering reclaimed by intrepid Tech-Priests.\n\nThe Archaeopter has multiple variants, the most common being the Stratoraptor, armed with Heavy Phosphor Blasters to provide high-speed fire support. A bomber variant, the Fusilave, is armed with explosives that rip the battlefield apart. The Transvector removes all weapons save the Cognis Heavy Stubbers in exchange for transport capacity and comms equipment.",
+    "options": null,
+    "value": 14,
+    "rarity": "Very Rare",
+    "speed": 105,
+    "manoeuvre": 7,
+    "resilience": 13,
+    "wounds": 15,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS MECHANICUS",
+      "FLYER"
+    ],
+    "crew": "1 Pilot, 3 Crew, 6 Passengers",
+    "traits": [
+      "Flyer",
+      "Hover",
+      "Sealed",
+      "Turbo Boost (14)"
+    ],
+    "weapons": [
+      {
+        "text": "2 Cognis Heavy Stubbers",
+        "weaponId": "cos_cognis_heavy_stubber",
+        "count": 2
+      },
+      {
+        "text": "Twin Cognis Heavy Stubber",
+        "weaponId": "cos_cognis_heavy_stubber",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Chaff Launcher",
+        "equipmentId": "cos_chaff_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 79
+  },
+  {
+    "id": "onager_dunecrawler",
+    "name": "Onager Dunecrawler",
+    "faction": "Adeptus Mechanicus",
+    "variantOf": null,
+    "description": "The Onager Dunecrawler is an insectoid walker developed to serve as the anchor of Skitarii formations. It is slow but sure-footed, crawling across battlefields at an implacable pace. The Dunecrawler mounts ingenious weaponry and bolsters its thick armour with Emanatus Force Fields, allowing it to spit arcane death at targets while it inches ever forward towards the battle lines.",
+    "options": "The Onager Dunecrawler may replace its Eradication Beamer with one of the following: a Daedalus Missile Launcher, a Gatling Rocket Launcher, and a Twin Icarus Autocannon; a Neutron Laser and a Cognis Heavy Stubber; a Twin Onager Heavy Phosphor Blaster.",
+    "value": 14,
+    "rarity": "Very Rare",
+    "speed": 12,
+    "manoeuvre": 3,
+    "resilience": 15,
+    "wounds": 17,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS MECHANICUS",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "All-Terrain",
+      "Sealed",
+      "Walker"
+    ],
+    "weapons": [
+      {
+        "text": "Eradication Beamer",
+        "weaponId": "cos_eradication_beamer",
+        "count": 1
+      },
+      {
+        "text": "Cognis Heavy Stubber",
+        "weaponId": "cos_cognis_heavy_stubber",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Broad Spectrum Data Tether",
+        "equipmentId": "cos_broad_spectrum_data_tether"
+      },
+      {
+        "text": "Emanatus Force Field",
+        "equipmentId": "cos_emanatus_force_field"
+      },
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 80
+  },
+  {
+    "id": "skorpius_disintegrator",
+    "name": "Skorpius Disintegrator",
+    "faction": "Adeptus Mechanicus",
+    "variantOf": null,
+    "description": "Skorpius Disintegrators fill the role of heavy tanks, but their sophisticated anti-grav propulsion system allows the boxy hull to pass over broken battlefields quietly, directing firepower to support the Skitarii. A hard-wired Gunnery Servitor helps operate the tank's powerful weapons as it skims from fight to fight.",
+    "options": "The Skorpius Disintegrator's Belleros Energy Cannon can be replaced with a Ferrumite Cannon.",
+    "value": 16,
+    "rarity": "Very Rare",
+    "speed": 26,
+    "manoeuvre": 4,
+    "resilience": 16,
+    "wounds": 17,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS MECHANICUS",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 3 Crew",
+    "traits": [
+      "Hover",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Belleros Energy Cannon",
+        "weaponId": "cos_belleros_energy_cannon",
+        "count": 1
+      },
+      {
+        "text": "3 Cognis Heavy Stubbers",
+        "weaponId": "cos_cognis_heavy_stubber",
+        "count": 3
+      },
+      {
+        "text": "Disruptor Missile Launcher",
+        "weaponId": "cos_disruptor_missile_launcher",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Broad Spectrum Data Tether",
+        "equipmentId": "cos_broad_spectrum_data_tether"
+      },
+      {
+        "text": "Gunnery Servitor",
+        "equipmentId": "cos_gunnery_servitor"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 80
+  },
+  {
+    "id": "skorpius_dunerider",
+    "name": "Skorpius Dunerider",
+    "faction": "Adeptus Mechanicus",
+    "variantOf": null,
+    "description": "The Skorpius Dunerider serves as a troop transport for squads of Skitarii, trading some of the Disintegrator's toughness for carrying capacity.",
+    "options": null,
+    "value": 16,
+    "rarity": "Very Rare",
+    "speed": 26,
+    "manoeuvre": 4,
+    "resilience": 16,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS MECHANICUS",
+      "TANK",
+      "TRANSPORTER"
+    ],
+    "crew": "1 Pilot, 3 Crew, 12 Passengers",
+    "traits": [
+      "Hover",
+      "Open Topped"
+    ],
+    "weapons": [
+      {
+        "text": "2 Cognis Heavy Stubbers",
+        "weaponId": "cos_cognis_heavy_stubber",
+        "count": 2
+      },
+      {
+        "text": "Twin Cognis Heavy Stubber",
+        "weaponId": "cos_cognis_heavy_stubber",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Broad Spectrum Data Tether",
+        "equipmentId": "cos_broad_spectrum_data_tether"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 81
+  },
+  {
+    "id": "ironstrider_ballistarius",
+    "name": "Ironstrider Ballistarius",
+    "faction": "Adeptus Mechanicus",
+    "variantOf": null,
+    "description": "The distinctly shaped Ironstrider Ballistarius conveys one Pilot with the singular purpose of performing surgical strikes against priority targets. The walker's agility and speed allow it to range far behind enemy lines, seeking out prey while avoiding pursuit. To expedite this function, the Ironstrider's locomotion and stabilisation are regulated by an integrated Servitor implanted into the metal superstructure, which provides a stable firing platform for the mounted Autocannon.\n\nThe Ironstrider features a near-perpetual-motion engine within its chassis, constantly charging its own systems so long as it remains in motion. Repairs and refits are almost exclusively conducted while the vehicle is moving — the Ironstrider defaults to a forward stride unless the Pilot explicitly prevents it from doing so.",
+    "options": "The Ironstrider Ballistarius's Twin Cognis Autocannon may be replaced with a Twin Cognis Lascannon.",
+    "value": 9,
+    "rarity": "Rare",
+    "speed": 23,
+    "manoeuvre": 5,
+    "resilience": 14,
+    "wounds": 13,
+    "size": "Large",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS MECHANICUS",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot",
+    "traits": [
+      "All-Terrain",
+      "Gyro-Stabilised",
+      "Open Topped",
+      "Walker"
+    ],
+    "weapons": [
+      {
+        "text": "Twin Cognis Autocannon",
+        "weaponId": "cos_cognis_autocannon",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Broad Spectrum Data Tether",
+        "equipmentId": "cos_broad_spectrum_data_tether"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 81
+  },
+  {
+    "id": "sydonian_dragoon",
+    "name": "Sydonian Dragoon",
+    "faction": "Adeptus Mechanicus",
+    "variantOf": null,
+    "description": "The Sydonian Dragoon stands somewhere between cavalry and artillery: a platform mounted atop a tireless bipedal walker, allowing its rider to carry a variety of lethal weapons. It moves with terrifying rapidity, striking fear into the hearts of foes on battlefields across the Gilead System.",
+    "options": null,
+    "value": 9,
+    "rarity": "Very Rare",
+    "speed": 23,
+    "manoeuvre": 5,
+    "resilience": 14,
+    "wounds": 13,
+    "size": "Large",
+    "keywords": [
+      "IMPERIUM",
+      "ADEPTUS MECHANICUS",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot",
+    "traits": [
+      "All-Terrain",
+      "Gyro-Stabilised",
+      "Open Topped",
+      "Walker"
+    ],
+    "weapons": [],
+    "wargear": [
+      {
+        "text": "Broad Spectrum Data Tether",
+        "equipmentId": "cos_broad_spectrum_data_tether"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 81
+  },
+  {
+    "id": "aquila_lander",
+    "name": "Aquila Lander",
+    "faction": "Aeronautica Imperialis",
+    "variantOf": null,
+    "description": "The Aquila Lander is the vessel of choice for Gilead dignitaries when they travel between ships or make planetary landings. It is lightly armed and relies on speed to ensure the safety of its valuable passengers.",
+    "options": "The Aquila can replace its Heavy Bolter with either an Autocannon or a Multi-Laser.",
+    "value": 14,
+    "rarity": "Rare",
+    "speed": 120,
+    "manoeuvre": 7,
+    "resilience": 12,
+    "wounds": 14,
+    "size": "Gargantuan",
+    "keywords": [
+      "IMPERIUM",
+      "AERONAUTICA IMPERIALIS",
+      "FLYER"
+    ],
+    "crew": "1 Pilot, 7 Passengers",
+    "traits": [
+      "Flyer",
+      "Hover",
+      "Reliable",
+      "Sealed",
+      "Turbo Boost (6)"
+    ],
+    "weapons": [
+      {
+        "text": "Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Armoured Cockpit",
+        "equipmentId": "cos_armoured_cockpit"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 82
+  },
+  {
+    "id": "arvus_lighter",
+    "name": "Arvus Lighter",
+    "faction": "Aeronautica Imperialis",
+    "variantOf": null,
+    "description": "A small cargo shuttle, the Arvus is robust enough to double as an assault boat for infantry landings and boarding parties. Few would praise its appearance, but the vessel has become a frequent sight in warzones.",
+    "options": null,
+    "value": 10,
+    "rarity": "Uncommon",
+    "speed": 115,
+    "manoeuvre": 4,
+    "resilience": 13,
+    "wounds": 15,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "AERONAUTICA IMPERIALIS",
+      "FLYER"
+    ],
+    "crew": "1 Pilot, 12 Passengers",
+    "traits": [
+      "Flyer",
+      "Hover",
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 82
+  },
+  {
+    "id": "vulture_gunship",
+    "name": "Vulture Gunship",
+    "faction": "Aeronautica Imperialis",
+    "variantOf": null,
+    "description": "The Vulture Gunship provides heavy air support for Astra Militarum ground forces. It is relatively nimble and well-armed but is easily outrun by air-superiority fighters. Even so, its ruggedness and reliable design qualify the Vulture as one of the most heavily used combat craft in the Imperial arsenal.",
+    "options": "The Vulture can replace its Vulture Hellstrike Racks and 2 Multiple Rocket Pods with 2 Vulture Gatling Cannons.",
+    "value": 14,
+    "rarity": "Rare",
+    "speed": 115,
+    "manoeuvre": 6,
+    "resilience": 15,
+    "wounds": 15,
+    "size": "Gargantuan",
+    "keywords": [
+      "IMPERIUM",
+      "AERONAUTICA IMPERIALIS",
+      "ASTRA MILITARUM",
+      "FLYER"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Flyer",
+      "Hover",
+      "Reliable",
+      "Sealed",
+      "Turbo Boost (8)"
+    ],
+    "weapons": [
+      {
+        "text": "Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1
+      },
+      {
+        "text": "Vulture Hellstrike Racks",
+        "weaponId": "cos_vulture_hellstrike_rack",
+        "count": 1
+      },
+      {
+        "text": "2 Multiple Rocket Pods",
+        "weaponId": "cos_multiple_rocket_pod",
+        "count": 2
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Armoured Cockpit",
+        "equipmentId": "cos_armoured_cockpit"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 82
+  },
+  {
+    "id": "valkyrie",
+    "name": "Valkyrie",
+    "faction": "Aeronautica Imperialis",
+    "variantOf": null,
+    "description": "The Valkyrie serves the Imperium as a versatile and reliable aerial weapons platform. It can also deploy and extricate ground troops with ease due to its VTOL capabilities and high speed. Combining these aspects with respectable armour and easily customisable weaponry, the Valkyrie is an invaluable asset to the Imperium's military forces.\n\nThough technically under the purview of the Imperial Navy, Valkyries are usually despatched to support Imperial Guard deployments of all types, from small sorties to full-scale battles. For beleaguered ground troops, the scream of their engines is always a welcome sound.",
+    "options": "A Valkyrie may replace its Hellstrike Missiles with 2 Multiple Rocket Pods, and its Multi-Laser with a Lascannon.",
+    "value": 13,
+    "rarity": "Rare",
+    "speed": 115,
+    "manoeuvre": 6,
+    "resilience": 15,
+    "wounds": 15,
+    "size": "Gargantuan",
+    "keywords": [
+      "IMPERIUM",
+      "AERONAUTICA IMPERIALIS",
+      "ASTRA MILITARUM",
+      "FLYER"
+    ],
+    "crew": "1 Pilot, 3 Crew, 12 Passengers",
+    "traits": [
+      "Flyer",
+      "Hover",
+      "Reliable",
+      "Sealed",
+      "Turbo Boost (8)"
+    ],
+    "weapons": [
+      {
+        "text": "2 Heavy Bolters",
+        "weaponId": "heavy_bolter",
+        "count": 2
+      },
+      {
+        "text": "Hellstrike Missiles",
+        "weaponId": "cos_hellstrike_missile",
+        "count": 1
+      },
+      {
+        "text": "Multi-Laser",
+        "weaponId": "cos_multi_laser",
+        "count": 1
+      }
+    ],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 84
+  },
+  {
+    "id": "chimera",
+    "name": "Chimera",
+    "faction": "Astra Militarum",
+    "variantOf": null,
+    "description": "The Chimera is an armoured transport with thousands of years of service vouching for its reliable, rugged design. The Astra Militarum regularly moves ground troops from fight to fight within its armoured shell, and many other vehicles are based on the venerable Chimera chassis. It is peppered in Gun Ports that allow Passengers to shoot out.",
+    "options": "All Chimera-based tanks can carry a Hunter-Killer Missile and a Dozer Blade, plus either a Storm Bolter or a Heavy Stubber. Each may exchange its Heavy Bolter for a Heavy Flamer. The baseline Chimera's Multi-Laser can be exchanged for a Heavy Flamer, Heavy Bolter, Autocannon, or Twin Heavy Bolter.",
+    "value": 10,
+    "rarity": "Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 16,
+    "wounds": 15,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 2 Crew, 12 Passengers",
+    "traits": [
+      "Amphibious",
+      "Gun Ports",
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1
+      },
+      {
+        "text": "Lasgun Array (6 Lasguns)",
+        "weaponId": "cos_lasgun_array",
+        "count": 1
+      },
+      {
+        "text": "Multi-Laser",
+        "weaponId": "cos_multi_laser",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 84
+  },
+  {
+    "id": "hellhound",
+    "name": "Hellhound",
+    "faction": "Astra Militarum",
+    "variantOf": null,
+    "description": "The promethium-spewing Hellhound trades the troop capacity of the standard Chimera chassis for literal firepower. Though its primary weapon, the terrifying Inferno Cannon, has a somewhat short range, the tank is ideal for clearing entrenched infantry so that Militarum forces can confidently advance across the freshly scorched terrain.",
+    "options": "Hellhounds, Devil Dogs and Bane Wolves may also exchange their Heavy Bolter for a Multi-Melta instead of a Heavy Flamer.",
+    "value": 10,
+    "rarity": "Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 15,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 2 Crew",
+    "traits": [
+      "Amphibious",
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1
+      },
+      {
+        "text": "Inferno Cannon",
+        "weaponId": "cos_inferno_cannon",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 85
+  },
+  {
+    "id": "devil_dog",
+    "name": "Devil Dog",
+    "faction": "Astra Militarum",
+    "variantOf": null,
+    "description": "Devil Dogs are a Chimera variant that employ powerful Melta weaponry to act as lethal tank killers that can also breach bunkers and fortifications. They are especially well paired with anti-infantry Hellhounds, and few enemy forces can survive their combined attacks.",
+    "options": "Hellhounds, Devil Dogs and Bane Wolves may also exchange their Heavy Bolter for a Multi-Melta instead of a Heavy Flamer.",
+    "value": 10,
+    "rarity": "Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 15,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 2 Crew",
+    "traits": [
+      "Amphibious",
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1
+      },
+      {
+        "text": "Melta Cannon",
+        "weaponId": "cos_melta_cannon",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 85
+  },
+  {
+    "id": "bane_wolf",
+    "name": "Bane Wolf",
+    "faction": "Astra Militarum",
+    "variantOf": null,
+    "description": "Bane Wolves don't use mere promethium or superheated gasses to kill. Instead, they call on specially formulated chemical fumes that can kill any known life form. Horrifying to behold, even for veteran troopers, nothing but organic sludge remains after each shot of a Chem Cannon.",
+    "options": "Hellhounds, Devil Dogs and Bane Wolves may also exchange their Heavy Bolter for a Multi-Melta instead of a Heavy Flamer.",
+    "value": 10,
+    "rarity": "Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 15,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 2 Crew",
+    "traits": [
+      "Amphibious",
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1
+      },
+      {
+        "text": "Chem Cannon",
+        "weaponId": "cos_chem_cannon",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 85
+  },
+  {
+    "id": "basilisk",
+    "name": "Basilisk",
+    "faction": "Astra Militarum",
+    "variantOf": null,
+    "description": "Basilisks are perhaps the most well-known of the Militarum's mobile ordnance. Tougher than standard Chimeras, they pack immense long-range firepower in the form of an Earthshaker Cannon. Batteries of these tanks are part of many Militarum forces, firing from far distances and often from behind cover to destroy enemy forces wherever they are on the battlefield.",
+    "options": null,
+    "value": 10,
+    "rarity": "Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 15,
+    "wounds": 17,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 2 Crew",
+    "traits": [
+      "Amphibious",
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Earthshaker Cannon",
+        "weaponId": "cos_earthshaker_cannon",
+        "count": 1
+      },
+      {
+        "text": "Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 86
+  },
+  {
+    "id": "deathstrike",
+    "name": "Deathstrike",
+    "faction": "Astra Militarum",
+    "variantOf": null,
+    "description": "Perhaps the most devastating of Astra Militarum ordnance, Deathstrike Missiles normally need special dispensation before they can be added to an Order of Battle. This is doubly true in Gilead, where they are carefully conserved for situations where no other weapon will suffice. The missile each of these tanks carries is almost as massive as the tank itself, and it can wipe out multiple squads in a single strike.",
+    "options": null,
+    "value": 10,
+    "rarity": "Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 16,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 2 Crew",
+    "traits": [
+      "Amphibious",
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "1 Deathstrike Missile",
+        "weaponId": "cos_deathstrike_missile",
+        "count": 1
+      },
+      {
+        "text": "Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 86
+  },
+  {
+    "id": "hydra",
+    "name": "Hydra",
+    "faction": "Astra Militarum",
+    "variantOf": null,
+    "description": "The Hydra incorporates a mounted Hydra Quad Autocannon platform to eliminate airborne targets. Each of these huge guns hurls masses of flak into the air, helping to ensure ground troops remain protected from enemy bombers and other threats from the sky. No matter what menace they face, from metal aircraft to winged organic monstrosities, Hydra crews know they have a sacred duty in this role, especially when there is no Imperial air support present.",
+    "options": null,
+    "value": 10,
+    "rarity": "Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 15,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 2 Crew",
+    "traits": [
+      "Amphibious",
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1
+      },
+      {
+        "text": "Hydra Quad Autocannon",
+        "weaponId": "cos_hydra_quad_autocannon",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 86
+  },
+  {
+    "id": "manticore",
+    "name": "Manticore",
+    "faction": "Astra Militarum",
+    "variantOf": null,
+    "description": "The Manticore uses huge rockets as its primary weapon, each filled with multiple bomblets that tear apart both metal and flesh in concussive detonations.",
+    "options": null,
+    "value": 10,
+    "rarity": "Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 15,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 2 Crew",
+    "traits": [
+      "Amphibious",
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1
+      },
+      {
+        "text": "4 Storm Eagle Rockets",
+        "weaponId": "cos_storm_eagle_rocket",
+        "count": 4
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 87
+  },
+  {
+    "id": "wyvern",
+    "name": "Wyvern",
+    "faction": "Astra Militarum",
+    "variantOf": null,
+    "description": "The Wyvern boasts a powerful quad mortar that can launch furious barrages of shells onto enemy infantry.",
+    "options": null,
+    "value": 10,
+    "rarity": "Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 15,
+    "wounds": 17,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 2 Crew",
+    "traits": [
+      "Amphibious",
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1
+      },
+      {
+        "text": "Wyvern Quad Stormshard Mortar",
+        "weaponId": "cos_wyvern_quad_stormshard_mortar",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 87
+  },
+  {
+    "id": "leman_russ",
+    "name": "Leman Russ",
+    "faction": "Astra Militarum",
+    "variantOf": null,
+    "description": "Named for the fierce Primarch of the Space Wolves, the stalwart Leman Russ Battle Tank boasts thick armour, versatile armament, and dependable performance. It is one of the mainstays of the Astra Militarum's mechanised arsenal, often considered the backbone of its armies. The standard Leman Russ can weather fire with relative ease, and it mounts multiple weapons to destroy enemy armour and infantry at range. A plethora of standard variants exist, customizing the tank's arsenal to fit countless combat roles.",
+    "options": "All Leman Russ tanks have a rarity of Uncommon, save for the Vanquisher, which is Rare in the Gilead system.\n\nAll Leman Russ tank variants can replace their Heavy Bolter with either a Heavy Flamer or a Lascannon. They can carry a Hunter-Killer Missile and Dozer Blade, plus either a Heavy Stubber or Storm Bolter.\n\nUnlike vehicles with other versatile chassis, most vehicles based on the Leman Russ retain the core crew complement, armour, and other traits. The variations on this classic tank focus on providing appropriate weapons for most battlefields.\n\nDemolishers and Eradicators are built for line-breaking and close-range destruction, while Punishers remove infantry like flies.",
+    "value": 16,
+    "rarity": "Uncommon",
+    "speed": 14,
+    "manoeuvre": 3,
+    "resilience": 17,
+    "wounds": 18,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 5 Crew",
+    "traits": [
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Battle Cannon",
+        "weaponId": "cos_battle_cannon",
+        "count": 1
+      },
+      {
+        "text": "3 Heavy Bolters",
+        "weaponId": "heavy_bolter",
+        "count": 3
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 87
+  },
+  {
+    "id": "leman_russ_demolisher",
+    "name": "Demolisher",
+    "faction": "Astra Militarum",
+    "variantOf": "leman_russ",
+    "description": null,
+    "options": null,
+    "value": 16,
+    "rarity": "Uncommon",
+    "speed": 12,
+    "manoeuvre": 3,
+    "resilience": 17,
+    "wounds": 18,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 5 Crew",
+    "traits": [
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Demolisher Cannon",
+        "weaponId": "cos_demolisher_cannon",
+        "count": 1
+      },
+      {
+        "text": "3 Heavy Bolters",
+        "weaponId": "heavy_bolter",
+        "count": 3
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 88
+  },
+  {
+    "id": "leman_russ_eradicator",
+    "name": "Eradicator",
+    "faction": "Astra Militarum",
+    "variantOf": "leman_russ",
+    "description": null,
+    "options": null,
+    "value": 16,
+    "rarity": "Uncommon",
+    "speed": 12,
+    "manoeuvre": 3,
+    "resilience": 17,
+    "wounds": 18,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 5 Crew",
+    "traits": [
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Eradicator Nova Cannon",
+        "weaponId": "cos_eradicator_nova_cannon",
+        "count": 1
+      },
+      {
+        "text": "3 Heavy Bolters",
+        "weaponId": "heavy_bolter",
+        "count": 3
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 88
+  },
+  {
+    "id": "leman_russ_punisher",
+    "name": "Punisher",
+    "faction": "Astra Militarum",
+    "variantOf": "leman_russ",
+    "description": null,
+    "options": null,
+    "value": 16,
+    "rarity": "Uncommon",
+    "speed": 12,
+    "manoeuvre": 3,
+    "resilience": 17,
+    "wounds": 18,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 5 Crew",
+    "traits": [
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Punisher Gatling Cannon",
+        "weaponId": "cos_punisher_gatling_cannon",
+        "count": 1
+      },
+      {
+        "text": "3 Heavy Bolters",
+        "weaponId": "heavy_bolter",
+        "count": 3
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 88
+  },
+  {
+    "id": "leman_russ_vanquisher",
+    "name": "Vanquisher",
+    "faction": "Astra Militarum",
+    "variantOf": "leman_russ",
+    "description": "The Leman Russ Vanquisher is a rare sight in the Gilead System: the skills, technology, and patterns used to make it are long lost. The Gilead Gravediggers risk losing one of their few Vanquishers only when a battle can't be won without its long-range firepower.",
+    "options": null,
+    "value": 16,
+    "rarity": "Rare",
+    "speed": 12,
+    "manoeuvre": 3,
+    "resilience": 17,
+    "wounds": 18,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 5 Crew",
+    "traits": [
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Vanquisher Battle Cannon",
+        "weaponId": "cos_vanquisher_battle_cannon",
+        "count": 1
+      },
+      {
+        "text": "3 Heavy Bolters",
+        "weaponId": "heavy_bolter",
+        "count": 3
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 88
+  },
+  {
+    "id": "scout_sentinel",
+    "name": "Scout Sentinel",
+    "faction": "Astra Militarum",
+    "variantOf": null,
+    "description": "Sentinels are light, agile walkers that stride across all manner of terrain on articulated legs. Scout Sentinels carry only cursory armour and weapons and are relatively simple and inexpensive to produce, so they are deemed somewhat expendable. In civilian applications, they are often used for exploration and border defence in frontier zones where local fauna might pose a threat. Similarly, when deployed into combat zones by the Astra Militarum, they are used as skirmishers and scouts. They excel at locating strategic points and gathering intelligence quickly, but they are a liability in heavy combat due to their light armour and limited weaponry.",
+    "options": "A Sentinel may replace its Multi-Laser with a Heavy Flamer, Autocannon, Missile Launcher, or Lascannon. An Armoured Sentinel may also replace that weapon with a Plasma Cannon. Either may also carry a Sentinel Chainsaw and a Hunter-Killer Missile.",
+    "value": 8,
+    "rarity": "Uncommon",
+    "speed": 20,
+    "manoeuvre": 5,
+    "resilience": 14,
+    "wounds": 11,
+    "size": "Large",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot",
+    "traits": [
+      "All-Terrain",
+      "Open Topped",
+      "Walker"
+    ],
+    "weapons": [
+      {
+        "text": "Multi-Laser",
+        "weaponId": "cos_multi_laser",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 89
+  },
+  {
+    "id": "armoured_sentinel",
+    "name": "Armoured Sentinel",
+    "faction": "Astra Militarum",
+    "variantOf": null,
+    "description": "Armoured Sentinels are environmentally sealed, mount a Multi-Laser, and carry heavier armour than the lighter Scout variant. They use their speed and manoeuvrability to outflank enemy positions and penetrate their lines to capture and hold strategic objectives until more substantial ground forces can fortify the area.",
+    "options": "A Sentinel may replace its Multi-Laser with a Heavy Flamer, Autocannon, Missile Launcher, or Lascannon. An Armoured Sentinel may also replace that weapon with a Plasma Cannon. Either may also carry a Sentinel Chainsaw and a Hunter-Killer Missile.",
+    "value": 9,
+    "rarity": "Uncommon",
+    "speed": 18,
+    "manoeuvre": 4,
+    "resilience": 15,
+    "wounds": 12,
+    "size": "Large",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot",
+    "traits": [
+      "Sealed",
+      "Walker"
+    ],
+    "weapons": [
+      {
+        "text": "Multi-Laser",
+        "weaponId": "cos_multi_laser",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 89
+  },
+  {
+    "id": "taurox",
+    "name": "Taurox",
+    "faction": "Astra Militarum",
+    "variantOf": null,
+    "description": "A staple of the Astra Militarum's combat roster, the Taurox is a rugged armoured transport used to carry infantry into battle. It mounts light armour and weapons, moves quickly, and has enough room to transport a squad of soldiers. Inexpensive and simple to manufacture, the Taurox is deployed en masse when necessary, its quad-treads tearing across battlefields while its Autocannons blast away with violent staccato reports to tear apart enemy defenses.\n\nThe expected longevity of a Taurox is measured in single-digit minutes, but as with all weapons of the Imperium, the foregone conclusion of its destruction is an acceptable loss, so long as victory is the end result.",
+    "options": "Any Taurox or Taurox Prime may be equipped with a Heavy Stubber or Storm Bolter. Any Taurox Prime may replace its Taurox Battle Cannon with a Taurox Gatling Cannon or a Taurox Missile Launcher. A Taurox Prime's Hot-Shot Volley Guns may be exchanged for 2 Autocannons.",
+    "value": 9,
+    "rarity": "Common",
+    "speed": 28,
+    "manoeuvre": 4,
+    "resilience": 14,
+    "wounds": 15,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 1 Crew, 10 Passengers",
+    "traits": [
+      "All-Terrain"
+    ],
+    "weapons": [
+      {
+        "text": "2 Autocannons",
+        "weaponId": "autocannon",
+        "count": 2
+      }
+    ],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 91
+  },
+  {
+    "id": "taurox_prime",
+    "name": "Taurox Prime",
+    "faction": "Astra Militarum",
+    "variantOf": null,
+    "description": "A heavily armed variant of the Taurox, the Taurox Prime is better able to provide suppressing fire and deposit its passengers into the heat of battle. Its improved firepower makes it commensurately more rare and valuable.",
+    "options": "Any Taurox or Taurox Prime may be equipped with a Heavy Stubber or Storm Bolter. Any Taurox Prime may replace its Taurox Battle Cannon with a Taurox Gatling Cannon or a Taurox Missile Launcher. A Taurox Prime's Hot-Shot Volley Guns may be exchanged for 2 Autocannons.",
+    "value": 10,
+    "rarity": "Uncommon",
+    "speed": 28,
+    "manoeuvre": 4,
+    "resilience": 14,
+    "wounds": 15,
+    "size": "Huge",
+    "keywords": [
+      "IMPERIUM",
+      "ASTRA MILITARUM",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 1 Crew, 10 Passengers",
+    "traits": [
+      "All-Terrain"
+    ],
+    "weapons": [
+      {
+        "text": "Taurox Battle Cannon",
+        "weaponId": "cos_taurox_battle_cannon",
+        "count": 1
+      },
+      {
+        "text": "2 Hot-Shot Volley Guns",
+        "weaponId": "hot_shot_volley_gun",
+        "count": 2
+      }
+    ],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 91
+  },
+  {
+    "id": "aeldari_jetbike",
+    "name": "Aeldari Jetbike",
+    "faction": "Aeldari",
+    "variantOf": null,
+    "description": "Aeldari Jetbikes are regarded with respect, fear, and bewilderment by most who witness them in action. Capable of moving at dizzying speeds in seemingly impossible ways due to the Aeldari's mastery of gravitic technology, these sleek hover bikes are deadly without an Aeldari's reflexes and psychic connection to the vehicle. Like most Aeldari vehicles, Jetbikes are relatively fragile, lightly armoured, and limited in number — they are precious resources and deployed sparingly.\n\nIn battle, the Jetbike's blazing speed enables its Aeldari Pilot to avoid enemy fire and race ahead of their allies to execute death-defying hit-and-run manoeuvres at impossible angles while unleashing a storm of monomolecular-edged shurikens to shred their foes.",
+    "options": "Aeldari Jetbikes may exchange their Twin Shuriken Catapult for a Scatter Laser or Shuriken Cannon.",
+    "value": 10,
+    "rarity": "Rare",
+    "speed": 80,
+    "manoeuvre": 8,
+    "resilience": 11,
+    "wounds": 8,
+    "size": "Large",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot",
+    "traits": [
+      "Bike",
+      "Gyro-Stabilised",
+      "Hover",
+      "Open Topped",
+      "Turbo Boost (6)"
+    ],
+    "weapons": [
+      {
+        "text": "Twin Shuriken Catapult",
+        "weaponId": "shuriken_catapult",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 92
+  },
+  {
+    "id": "falcon",
+    "name": "Falcon",
+    "faction": "Aeldari",
+    "variantOf": null,
+    "description": "The Falcon is the main battle tank of the Craftworld Aeldari, and like most conventional tanks, it mounts an impressive array of powerful weapons. However, the similarities end there. Like other Aeldari vehicles, the Falcon grav-tank prioritises speed and grace over armour and durability. Compared to other Aeldari vehicles, the Falcon's hull is quite formidable, but it is far more fragile than tanks of most other Species. It instead relies on speed, Aeldari reflexes, and advanced technology like the dazzling Holo-Field to protect itself. Falcons are capable of full flight and can whisk a cadre of soldiers swiftly to the frontlines in its small Passenger compartment.\n\nTanks based on the Falcon display a wide array of specialised weaponry, from the Fire Prism's powerful cannon to the Firestorm's anti-aircraft weapons.",
+    "options": "A Falcon or any variant may exchange its Twin Shuriken Catapult for a Shuriken Cannon. The Falcon's Shuriken Cannon may be replaced with an Aeldari Missile Launcher, Bright Lance, Scatter Laser, or Starcannon. The Wave Serpent is highly customisable: its Twin Shuriken Cannon may be replaced with a Twin Bright Lance, Twin Scatter Laser, Twin Starcannon, or Aeldari Missile Launcher.",
+    "value": 14,
+    "rarity": "Very Rare",
+    "speed": 105,
+    "manoeuvre": 7,
+    "resilience": 15,
+    "wounds": 14,
+    "size": "Huge",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "TANK",
+      "TRANSPORTER"
+    ],
+    "crew": "1 Pilot, 1 Crew, 6 Passengers",
+    "traits": [
+      "Flyer",
+      "Gyro-Stabilised",
+      "Hover",
+      "Sealed",
+      "Turbo Boost (6)"
+    ],
+    "weapons": [
+      {
+        "text": "Pulse Laser",
+        "weaponId": "cos_pulse_laser",
+        "count": 1
+      },
+      {
+        "text": "Shuriken Cannon",
+        "weaponId": "cos_shuriken_cannon",
+        "count": 1
+      },
+      {
+        "text": "Twin Shuriken Catapult",
+        "weaponId": "shuriken_catapult",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Holo-Field",
+        "equipmentId": "cos_holo_field"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 93
+  },
+  {
+    "id": "fire_prism",
+    "name": "Fire Prism",
+    "faction": "Aeldari",
+    "variantOf": "falcon",
+    "description": null,
+    "options": null,
+    "value": 14,
+    "rarity": "Very Rare",
+    "speed": 105,
+    "manoeuvre": 7,
+    "resilience": 15,
+    "wounds": 14,
+    "size": "Huge",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Flyer",
+      "Gyro-Stabilised",
+      "Hover",
+      "Sealed",
+      "Turbo Boost (6)"
+    ],
+    "weapons": [
+      {
+        "text": "Twin Shuriken Catapult",
+        "weaponId": "shuriken_catapult",
+        "count": 1,
+        "twin": true
+      },
+      {
+        "text": "Prism Cannon",
+        "weaponId": null,
+        "count": 1,
+        "profileIds": [
+          "cos_prism_cannon_dispersed",
+          "cos_prism_cannon_focussed",
+          "cos_prism_cannon_lance"
+        ]
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Holo-Field",
+        "equipmentId": "cos_holo_field"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 93
+  },
+  {
+    "id": "falcon_firestorm",
+    "name": "Firestorm",
+    "faction": "Aeldari",
+    "variantOf": "falcon",
+    "description": null,
+    "options": null,
+    "value": 14,
+    "rarity": "Very Rare",
+    "speed": 105,
+    "manoeuvre": 7,
+    "resilience": 15,
+    "wounds": 14,
+    "size": "Huge",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "TANK",
+      "TRANSPORTER"
+    ],
+    "crew": "1 Pilot, 1 Crew, 6 Passengers",
+    "traits": [
+      "Flyer",
+      "Gyro-Stabilised",
+      "Hover",
+      "Sealed",
+      "Turbo Boost (6)"
+    ],
+    "weapons": [
+      {
+        "text": "2 Scatter Lasers",
+        "weaponId": "cos_scatter_laser",
+        "count": 2
+      },
+      {
+        "text": "Twin Shuriken Catapult",
+        "weaponId": "shuriken_catapult",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Holo-Field",
+        "equipmentId": "cos_holo_field"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 93
+  },
+  {
+    "id": "night_spinner",
+    "name": "Night Spinner",
+    "faction": "Aeldari",
+    "variantOf": "falcon",
+    "description": null,
+    "options": null,
+    "value": 14,
+    "rarity": "Very Rare",
+    "speed": 105,
+    "manoeuvre": 7,
+    "resilience": 15,
+    "wounds": 14,
+    "size": "Huge",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Flyer",
+      "Gyro-Stabilised",
+      "Hover",
+      "Sealed",
+      "Turbo Boost (6)"
+    ],
+    "weapons": [
+      {
+        "text": "Doomweaver",
+        "weaponId": "cos_doomweaver",
+        "count": 1
+      },
+      {
+        "text": "Twin Shuriken Catapult",
+        "weaponId": "shuriken_catapult",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Holo-Field",
+        "equipmentId": "cos_holo_field"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 93
+  },
+  {
+    "id": "wave_serpent",
+    "name": "Wave Serpent",
+    "faction": "Aeldari",
+    "variantOf": "falcon",
+    "description": null,
+    "options": null,
+    "value": 14,
+    "rarity": "Very Rare",
+    "speed": 105,
+    "manoeuvre": 7,
+    "resilience": 15,
+    "wounds": 14,
+    "size": "Huge",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot, 1 Crew, 6 Passengers",
+    "traits": [
+      "Flyer",
+      "Gyro-Stabilised",
+      "Hover",
+      "Sealed",
+      "Turbo Boost (6)"
+    ],
+    "weapons": [
+      {
+        "text": "Twin Shuriken Cannon",
+        "weaponId": "cos_shuriken_cannon",
+        "count": 1,
+        "twin": true
+      },
+      {
+        "text": "Twin Shuriken Catapult",
+        "weaponId": "shuriken_catapult",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Holo-Field",
+        "equipmentId": "cos_holo_field"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 94
+  },
+  {
+    "id": "hemlock_wraithfighter",
+    "name": "Hemlock Wraithfighter",
+    "faction": "Aeldari",
+    "variantOf": null,
+    "description": "This exceedingly rare vehicle is equipped with a Vehicular Spirit Stone containing the souls of dead Aeldari, representing centuries of experience.\n\nWhereas most vehicles attack armour, superstructures, and infantry, the Hemlock targets minds and souls. Its Mindshock Pod taps into the cold dread resonating within the Spirit Stone, blasting forth a psychic scream. The very nature of this craft and its soul-rending weaponry is anathema to all the Aeldari stand for, but it is undeniably effective at its purpose.",
+    "options": null,
+    "value": 17,
+    "rarity": "Unique",
+    "speed": 130,
+    "manoeuvre": 9,
+    "resilience": 13,
+    "wounds": 14,
+    "size": "Huge",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "FLYER"
+    ],
+    "crew": "1 Pilot",
+    "traits": [
+      "Flyer",
+      "Gyro-Stabilised",
+      "Hover",
+      "Sealed",
+      "Turbo Boost (20)"
+    ],
+    "weapons": [
+      {
+        "text": "2 Heavy D-Scythes",
+        "weaponId": "cos_heavy_d_scythe",
+        "count": 2
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Holo-Field",
+        "equipmentId": "cos_holo_field"
+      },
+      {
+        "text": "Mindshock Pod",
+        "equipmentId": "cos_mindshock_pod"
+      },
+      {
+        "text": "Vehicular Spirit Stone",
+        "equipmentId": "cos_vehicular_spirit_stone"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 94
+  },
+  {
+    "id": "nightshade_interceptor",
+    "name": "Nightshade Interceptor",
+    "faction": "Aeldari",
+    "variantOf": null,
+    "description": "The Nightshade Interceptor is the fastest, most agile ship in the Craftworld arsenal. As lightly armoured as any Aeldari vehicle, the Aspect Warrior who flies this prized craft strikes the killing blow before the enemy can respond, then escapes in an imperceptible blur. The Nightshade can fire its full weapons array without decelerating, making it an almost peerless air-superiority fighter, though it is also capable of singling out and despatching a ground-based armoured target at full speed.\n\nA Nightshade's 2 Bright Lances can be exchanged for 2 Starcannons.",
+    "options": null,
+    "value": 16,
+    "rarity": "Very Rare",
+    "speed": 130,
+    "manoeuvre": 9,
+    "resilience": 13,
+    "wounds": 14,
+    "size": "Huge",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "FLYER"
+    ],
+    "crew": "1 Pilot",
+    "traits": [
+      "Flyer",
+      "Gyro-Stabilised",
+      "Hover",
+      "Sealed",
+      "Turbo Boost (20)"
+    ],
+    "weapons": [
+      {
+        "text": "2 Bright Lances",
+        "weaponId": "cos_bright_lance",
+        "count": 2
+      },
+      {
+        "text": "Pulse Laser",
+        "weaponId": "cos_pulse_laser",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Holo-Field",
+        "equipmentId": "cos_holo_field"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 95
+  },
+  {
+    "id": "vyper",
+    "name": "Vyper",
+    "faction": "Aeldari",
+    "variantOf": null,
+    "description": "A larger variety of Jetbike, the hovering Vyper carries an Aeldari duo into battle to perform hit-and-run strikes with devastating weaponry and blinding speed. As with standard Jetbikes, the Vyper is somewhat fragile, but its masterful use of Aeldari technology allows it to strike at range with a Bright Lance, Scatter Laser, or Missile Launcher without slowing down. This combination of speed and firepower allows the Vyper to move wherever it is needed in a moment's notice, annihilate targets, then zip away to the next strike point before the enemy can respond.\n\nThe Vyper's armaments are designed to be swapped out. The Shuriken Cannon can be exchanged for an Aeldari Missile Launcher, Bright Lance, Scatter Laser, or Starcannon.",
+    "options": null,
+    "value": 11,
+    "rarity": "Rare",
+    "speed": 80,
+    "manoeuvre": 7,
+    "resilience": 11,
+    "wounds": 11,
+    "size": "Large",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "FLYER"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Gyro-Stabilised",
+      "Hover",
+      "Open Topped",
+      "Turbo Boost (6)"
+    ],
+    "weapons": [
+      {
+        "text": "Shuriken Cannon",
+        "weaponId": "cos_shuriken_cannon",
+        "count": 1
+      },
+      {
+        "text": "Twin Shuriken Catapult",
+        "weaponId": "shuriken_catapult",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Holo-Field",
+        "equipmentId": "cos_holo_field"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 95
+  },
+  {
+    "id": "war_walker",
+    "name": "War Walker",
+    "faction": "Aeldari",
+    "variantOf": null,
+    "description": "War Walkers are the Aeldari's iconic scout vehicles. While they lack the armour to stand front and centre in an assault, they're light and fast-moving, ideal for battlefield reconnaissance. Despite their light armour, War Walkers have significant firepower, making them an intimidating threat against Agents on foot.\n\nOne or both Shuriken Cannons may be exchanged for an Aeldari Missile Launcher, Bright Lance, Scatter Laser, or Starcannon.",
+    "options": null,
+    "value": 12,
+    "rarity": "Very Rare",
+    "speed": 11,
+    "manoeuvre": 8,
+    "resilience": 13,
+    "wounds": 6,
+    "size": "Large",
+    "keywords": [
+      "AELDARI",
+      "ASURYANI",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot",
+    "traits": [
+      "Open Topped",
+      "Walker"
+    ],
+    "weapons": [
+      {
+        "text": "2 Shuriken Cannons",
+        "weaponId": "cos_shuriken_cannon",
+        "count": 2
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Power Field",
+        "equipmentId": "cos_power_field"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 96
+  },
+  {
+    "id": "chaos_rhino",
+    "name": "Chaos Rhino",
+    "faction": "Chaos Space Marines",
+    "variantOf": null,
+    "description": "Like its Imperial counterparts, the Chaos Rhino serves as an armoured personnel carrier. Its dozer-bladed front mows down infantry, and wise foes stay back from its wicked blades. Instead of Adeptus Astartes battle-brothers, the troop compartments hold servants of the Ruinous Powers.",
+    "options": "Chaos Rhinos, Predators, and Vindicators may also be equipped with a Havoc Launcher, a Combi-Weapon with the CHAOS Keyword, or both.",
+    "value": 11,
+    "rarity": "Very Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 16,
+    "wounds": 15,
+    "size": "Huge",
+    "keywords": [
+      "ADEPTUS ASTARTES",
+      "CHAOS",
+      "[LEGION]",
+      "[MARK OF CHAOS]",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 1 Crew, 10 Passengers",
+    "traits": [
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Combi-Bolter",
+        "weaponId": null,
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 97
+  },
+  {
+    "id": "chaos_predator",
+    "name": "Chaos Predator",
+    "faction": "Chaos Space Marines",
+    "variantOf": null,
+    "description": "Predators date back to before the Horus Heresy, and they now exist only as a grim reminder of the Imperium's defeats in that long-ago era. Armed with numerous heavy Las weapons, Chaos Predators come adorned with grinning daemonic decorations and warped icons on every surface.\n\nA Chaos Predator may replace its Predator Autocannon with a Twin Lascannon; it may also be equipped with 2 Heavy Bolters or 2 Lascannons.",
+    "options": "Chaos Rhinos, Predators, and Vindicators may also be equipped with a Havoc Launcher, a Combi-Weapon with the CHAOS Keyword, or both.",
+    "value": 11,
+    "rarity": "Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 16,
+    "wounds": 15,
+    "size": "Huge",
+    "keywords": [
+      "ADEPTUS ASTARTES",
+      "CHAOS",
+      "[LEGION]",
+      "[MARK OF CHAOS]",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Predator Autocannon",
+        "weaponId": "cos_predator_autocannon",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 98
+  },
+  {
+    "id": "chaos_vindicator",
+    "name": "Chaos Vindicator",
+    "faction": "Chaos Space Marines",
+    "variantOf": null,
+    "description": "Like the Chaos Predator, the Chaos Vindicator sacrifices troop transportation for placement of a large gun, in this case a Demolisher Cannon. This makes the Vindicator an ideal siege weapon, and its reinforced chassis allows the tank to withstand enemy fire as it approaches its doomed target.",
+    "options": "Chaos Rhinos, Predators, and Vindicators may also be equipped with a Havoc Launcher, a Combi-Weapon with the CHAOS Keyword, or both.",
+    "value": 11,
+    "rarity": "Rare",
+    "speed": 26,
+    "manoeuvre": 3,
+    "resilience": 16,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "ADEPTUS ASTARTES",
+      "CHAOS",
+      "[LEGION]",
+      "[MARK OF CHAOS]",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Reliable",
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "Demolisher Cannon",
+        "weaponId": "cos_demolisher_cannon",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Siege Shield",
+        "equipmentId": "cos_siege_shield"
+      },
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 98
+  },
+  {
+    "id": "chaos_land_raider",
+    "name": "Chaos Land Raider",
+    "faction": "Chaos Space Marines",
+    "variantOf": null,
+    "description": "In the hands of the forces of Chaos, the Land Raider becomes a symbol of all that is corrupt, a mighty Space Marine vehicle turned to dark deeds. Launching canisters of choking smoke on to the battlefield to cloak its advance, it mows down foes with an array of vicious weapons.",
+    "options": "A Chaos Land Raider may also be equipped with a Havoc Launcher, a Combi-Weapon with the CHAOS Keyword, or both.",
+    "value": 18,
+    "rarity": "Unique",
+    "speed": 21,
+    "manoeuvre": 3,
+    "resilience": 19,
+    "wounds": 25,
+    "size": "Gargantuan",
+    "keywords": [
+      "ADEPTUS ASTARTES",
+      "CHAOS",
+      "[LEGION]",
+      "[MARK OF CHAOS]",
+      "TANK",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 1 Crew, 10 Passengers",
+    "traits": [
+      "Sealed"
+    ],
+    "weapons": [
+      {
+        "text": "2 Twin Lascannons",
+        "weaponId": "lascannon",
+        "count": 2,
+        "twin": true
+      },
+      {
+        "text": "Twin Heavy Bolter",
+        "weaponId": "heavy_bolter",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Daemonic Machine Spirit",
+        "equipmentId": "cos_daemonic_machine_spirit"
+      },
+      {
+        "text": "Smoke Launchers",
+        "equipmentId": "cos_smoke_launcher"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 98
+  },
+  {
+    "id": "raider",
+    "name": "Raider",
+    "faction": "Drukhari",
+    "variantOf": null,
+    "description": "The Drukhari rely on speed, brutality, and terror to make war, and the Raider transport embodies this philosophy. This jagged yet graceful skimmer mounts limited armour but is extremely quick and manoeuvrable, allowing it to glide ahead of enemy fire while it transports a cadre of bloodthirsty Drukhari. The Raider mounts a forward Dark Lance to cripple enemy vehicles, disgorging its hunters upon the wreckage. Once there, the Drukhari drag prisoners back to the Raider, ensnaring them with chains, hooks, and barbs so the Crew can enjoy the lamentations of their victims on the journey back to Commorragh. Drukhari often personalise their Raiders by adorning them with trophies cut from the victims of past raids.",
+    "options": "Each of a Raider or Ravager's Dark Lances may replaced with a Disintegrator Cannon. Either of these vehicles may be equipped with a Chain Snare, Grisly Trophies, a Phantasm Grenade Launcher, a Shock Prow, Splinter Racks, or a combination of these items.",
+    "value": 12,
+    "rarity": "Very Rare",
+    "speed": 115,
+    "manoeuvre": 8,
+    "resilience": 13,
+    "wounds": 14,
+    "size": "Huge",
+    "keywords": [
+      "AELDARI",
+      "DRUKHARI",
+      "RAIDER",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 11 Passengers",
+    "traits": [
+      "Gyro-Stabilised",
+      "Hover",
+      "Open Topped",
+      "Turbo Boost (5)"
+    ],
+    "weapons": [
+      {
+        "text": "Dark Lance",
+        "weaponId": "cos_dark_lance",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Bladevanes",
+        "equipmentId": "cos_bladevanes_wargear"
+      },
+      {
+        "text": "Night Shield",
+        "equipmentId": "cos_night_shield"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 99
+  },
+  {
+    "id": "ravager",
+    "name": "Ravager",
+    "faction": "Drukhari",
+    "variantOf": null,
+    "description": "The Ravager is a variant of the Raider, retrofitting the same chassis to mount armour and additional weapon hardpoints. The result is a hovering skimmer slightly slower but more durable than the Raider. It mounts a trio of Dark Lances at the expense of Passenger space. It plays the role of a fast-moving, damage-dealing tank similar to the Asuryani Falcon. It is often deployed alongside them, serving as their escort to ensure enemy forces are dealt with before they can mount a defence.",
+    "options": "Each of a Raider or Ravager's Dark Lances may replaced with a Disintegrator Cannon. Either of these vehicles may be equipped with a Chain Snare, Grisly Trophies, a Phantasm Grenade Launcher, a Shock Prow, Splinter Racks, or a combination of these items.",
+    "value": 13,
+    "rarity": "Very Rare",
+    "speed": 110,
+    "manoeuvre": 8,
+    "resilience": 14,
+    "wounds": 14,
+    "size": "Huge",
+    "keywords": [
+      "AELDARI",
+      "DRUKHARI",
+      "RAIDER",
+      "TANK"
+    ],
+    "crew": "1 Pilot, 3 Crew",
+    "traits": [
+      "Gyro-Stabilised",
+      "Hover",
+      "Open Topped",
+      "Turbo Boost (5)"
+    ],
+    "weapons": [
+      {
+        "text": "3 Dark Lances",
+        "weaponId": "cos_dark_lance",
+        "count": 3
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Bladevanes",
+        "equipmentId": "cos_bladevanes_wargear"
+      },
+      {
+        "text": "Night Shield",
+        "equipmentId": "cos_night_shield"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 99
+  },
+  {
+    "id": "reaver_jetbike",
+    "name": "Reaver Jetbike",
+    "faction": "Drukhari",
+    "variantOf": null,
+    "description": "The Aeldari are prone to obsession; the Reavers are both addicted to and experts in high-speed bloodshed. As they slice through the bruised skies of Commorragh on Reaver Jetbikes in brutal death races, these vainglorious racers crave nothing more than sadism and speed. Their Jetbikes reach unbelievable velocities, relying on bleeding-edge antigravitic technology and riders' inhuman Aeldari dexterity to stay ahead of the competition. Drukhari raiding parties make frequent use of Reaver Jetbikes, using them to sow terror and overwhelm opposing forces with blinding speed.\n\nThe Reaver Jetbike is devilishly quick and nimble, seemingly nothing more than a blur on the battlefield. Blink, and the Reaver Jetbike is within range with its Splinter Rifle or the Pilot's blade — that's all it takes for the Reaver to score a swift kill.",
+    "options": "The Reaver's Splinter Rifle can be exchanged for a Blaster or Heat Lance. It may also be equipped with a Grav-Talon, Cluster Caltrops, or both.",
+    "value": 10,
+    "rarity": "Rare",
+    "speed": 125,
+    "manoeuvre": 9,
+    "resilience": 10,
+    "wounds": 7,
+    "size": "Large",
+    "keywords": [
+      "AELDARI",
+      "DRUKHARI",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot",
+    "traits": [
+      "Bike",
+      "Gyro-Stabilised",
+      "Hover",
+      "Open Topped",
+      "Turbo Boost (5)"
+    ],
+    "weapons": [
+      {
+        "text": "Splinter Rifle",
+        "weaponId": "cos_splinter_rifle_vehicle",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Bladevanes",
+        "equipmentId": "cos_bladevanes_wargear"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 100
+  },
+  {
+    "id": "venom",
+    "name": "Venom",
+    "faction": "Drukhari",
+    "variantOf": null,
+    "description": "These light vehicles combine the raw speed and manoeuvrability of the fearsome Reaver Jetbike with transport capability, making them ideal for bringing deadly Drukhari fighters to their prey. They are equipped with enough firepower between their Splinter Cannon and Twin Splinter Rifle to suppress any enemy attempts to flee or prepare their defences.\n\nVenoms excel in a number of roles, especially in encircling actions to prevent any escape from Drukhari raiders. Their speed, along with the agility of their transported warriors, allows them to bring bloodshed to any corner of the battlefield. No area is safe from their predations as Drukhari nimbly leap from their Venoms to inflict cruel death on any beings they find.",
+    "options": "The Venom may replace its Twin Splinter Rifle with a Splinter Cannon, and it may be equipped with a Chain Snare and Grisly Trophies.",
+    "value": 11,
+    "rarity": "Very Rare",
+    "speed": 120,
+    "manoeuvre": 9,
+    "resilience": 11,
+    "wounds": 10,
+    "size": "Large",
+    "keywords": [
+      "AELDARI",
+      "DRUKHARI",
+      "RAIDER",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 6 Passengers",
+    "traits": [
+      "Flyer",
+      "Gyro-Stabilised",
+      "Hover",
+      "Open Topped",
+      "Turbo Boost (5)"
+    ],
+    "weapons": [
+      {
+        "text": "Splinter Cannon",
+        "weaponId": "cos_splinter_cannon",
+        "count": 1
+      },
+      {
+        "text": "Twin Splinter Rifle",
+        "weaponId": "cos_splinter_rifle_vehicle",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Bladevanes",
+        "equipmentId": "cos_bladevanes_wargear"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 100
+  },
+  {
+    "id": "catacomb_command_barge",
+    "name": "Catacomb Command Barge",
+    "faction": "Necron",
+    "variantOf": null,
+    "description": "The Catacomb Command Barge is a hover vehicle with a singular purpose: to carry Necron nobility into battle so they can command their forces from above. Command Barges allow high-ranking Necrons to close the distance and strike in close combat, should they deign to do so. Each barge boasts moderate speed and armour, but its mounted Gauss Cannon and Quantum Shielding allow the crew to dutifully protect their commanders. The limited utility of this vehicle and its reservation for only a select few commanders render this one of the rarest vehicles in the Necron arsenal.",
+    "options": "The Catacomb Command Barge's Gauss Cannon may be exchanged for a Tesla Cannon.",
+    "value": 11,
+    "rarity": "Unique",
+    "speed": 37,
+    "manoeuvre": 5,
+    "resilience": 16,
+    "wounds": 15,
+    "size": "Huge",
+    "keywords": [
+      "NECRON",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 1 Crew, 1 Passenger",
+    "traits": [
+      "Gyro-Stabilised",
+      "Hover",
+      "Open Topped"
+    ],
+    "weapons": [
+      {
+        "text": "Gauss Cannon",
+        "weaponId": "cos_gauss_cannon",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Living Metal",
+        "equipmentId": "cos_living_metal"
+      },
+      {
+        "text": "Quantum Shielding",
+        "equipmentId": "cos_quantum_shielding"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 101
+  },
+  {
+    "id": "doom_scythe",
+    "name": "Doom Scythe",
+    "faction": "Necron",
+    "variantOf": null,
+    "description": "The Doom Scythe is the Necrons' primary aerial attack craft, serving as fighter and gunship. Its unliving Pilot needs neither air nor protection from acceleration, so its cockpit is a conspicuously open space in the crescent-shaped hull. With high speed and respectable armour, it easily challenges other aircraft, and its on-board weaponry can destroy most targets.\n\nNecron Overlords dispatch Doom Scythes to harass enemy targets, establish air superiority, or provide ground support when tactical needs require it.",
+    "options": null,
+    "value": 15,
+    "rarity": "Very Rare",
+    "speed": 115,
+    "manoeuvre": 6,
+    "resilience": 15,
+    "wounds": 15,
+    "size": "Huge",
+    "keywords": [
+      "NECRON",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot, 1 Crew, 1 Passenger",
+    "traits": [
+      "Flyer",
+      "Gyro-Stabilised",
+      "Hover",
+      "Open Topped",
+      "Turbo Boost (16)"
+    ],
+    "weapons": [
+      {
+        "text": "Heavy Death Ray",
+        "weaponId": "cos_heavy_death_ray",
+        "count": 1
+      },
+      {
+        "text": "Twin Tesla Destructor",
+        "weaponId": "cos_tesla_destructor",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Living Metal",
+        "equipmentId": "cos_living_metal"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 101
+  },
+  {
+    "id": "doomsday_ark",
+    "name": "Doomsday Ark",
+    "faction": "Necron",
+    "variantOf": null,
+    "description": "The massive Doomsday Ark hovers above Necron legions as they march implacably to war. It floats gracefully at modest speed, but its Pilot can turn, pitch, and pivot the vehicle with absolute stability. While the lumbering ark is an easy target for fast-attack fighters, it is vitally important when activating its broadside Gauss Flayer Arrays or bringing the staggering power of its Doomsday Cannon to bear.\n\nIts armour and shielding provide most of its defensive capability. The Doomsday Ark is a vehicle built to transport and position massively powerful weapons: it serves no other purpose. Its arcane, resource-intensive weapons and the specialised role the vehicle fills make the Doomsday Ark an especially rare sight throughout the galaxy.",
+    "options": null,
+    "value": 16,
+    "rarity": "Unique",
+    "speed": 30,
+    "manoeuvre": 5,
+    "resilience": 15,
+    "wounds": 21,
+    "size": "Gargantuan",
+    "keywords": [
+      "NECRON",
+      "TANK"
+    ],
+    "crew": "1 Pilot",
+    "traits": [
+      "Hover",
+      "Open Topped"
+    ],
+    "weapons": [
+      {
+        "text": "Doomsday Cannon",
+        "weaponId": null,
+        "count": 1,
+        "profileIds": [
+          "cos_doomsday_cannon_high",
+          "cos_doomsday_cannon_low"
+        ]
+      },
+      {
+        "text": "2 Gauss Flayer Arrays",
+        "weaponId": "cos_gauss_flayer_array",
+        "count": 2
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Living Metal",
+        "equipmentId": "cos_living_metal"
+      },
+      {
+        "text": "Quantum Shielding",
+        "equipmentId": "cos_quantum_shielding"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 102
+  },
+  {
+    "id": "ghost_ark",
+    "name": "Ghost Ark",
+    "faction": "Necron",
+    "variantOf": null,
+    "description": "The Ghost Ark is built on the same chassis as the Doomsday Ark, but its monolithic hull is used to transport Necron infantry rather than the massive Doomsday Cannon. This change makes the Ghost Ark slightly faster, which the Necron legions utilise to control the battlefield with troop movements. Once the Ghost Ark has released its payload, it hovers overhead to release punishing fusillades of Gauss lightning against the Necrons' foes.",
+    "options": null,
+    "value": 15,
+    "rarity": "Very Rare",
+    "speed": 32,
+    "manoeuvre": 5,
+    "resilience": 15,
+    "wounds": 21,
+    "size": "Gargantuan",
+    "keywords": [
+      "NECRON",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 10 Passengers",
+    "traits": [
+      "Hover",
+      "Open Topped"
+    ],
+    "weapons": [
+      {
+        "text": "2 Gauss Flayer Arrays",
+        "weaponId": "cos_gauss_flayer_array",
+        "count": 2
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Living Metal",
+        "equipmentId": "cos_living_metal"
+      },
+      {
+        "text": "Quantum Shielding",
+        "equipmentId": "cos_quantum_shielding"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 102
+  },
+  {
+    "id": "tomb_blade",
+    "name": "Tomb Blade",
+    "faction": "Necron",
+    "variantOf": null,
+    "description": "A small, fast Necron anti-grav vehicle, the Tomb Blade interfaces with a Necron Warrior to serve as a fast-moving scout and light interceptor. A single Tomb Blade is quick and nimble with moderate weaponry and little armour. The Dynasties employ them in groups as fast-attack and reconnaissance units.\n\nThe Tomb Blade serves mostly to augment slower Necron forces, providing them with tactical flexibility and quick-response capability.",
+    "options": "The Tomb Blade's Twin Gauss Blaster may be replaced with a Particle Beamer or a Twin Tesla Carbine.",
+    "value": 10,
+    "rarity": "Very Rare",
+    "speed": 70,
+    "manoeuvre": 6,
+    "resilience": 10,
+    "wounds": 9,
+    "size": "Large",
+    "keywords": [
+      "NECRON",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot",
+    "traits": [
+      "Bike",
+      "Flyer",
+      "Gyro-Stabilised",
+      "Hover",
+      "Open Topped",
+      "Turbo Boost (4)"
+    ],
+    "weapons": [
+      {
+        "text": "Twin Gauss Blaster",
+        "weaponId": "cos_gauss_blaster",
+        "count": 1,
+        "twin": true
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Living Metal",
+        "equipmentId": "cos_living_metal"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 103
+  },
+  {
+    "id": "triarch_stalker",
+    "name": "Triarch Stalker",
+    "faction": "Necron",
+    "variantOf": null,
+    "description": "The six-legged Triarch Stalker scuttles into battle with scything forelimbs and its dangerous Heat Ray, easily outrunning infantry with its long strides and numerous legs. The Triarch Stalker excels as on-demand close-combat support to Necron infantry. Well armoured and heavily shielded, it looms over combat like a deadly, statuesque spider.",
+    "options": "The Triarch Stalker's Heat Ray may be replaced with a Particle Shredder or a Twin Heavy Gauss Cannon.",
+    "value": 12,
+    "rarity": "Rare",
+    "speed": 27,
+    "manoeuvre": 5,
+    "resilience": 15,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "NECRON",
+      "TANK"
+    ],
+    "crew": "1 Pilot",
+    "traits": [
+      "All-Terrain",
+      "Open Topped",
+      "Walker"
+    ],
+    "weapons": [
+      {
+        "text": "Heat Ray",
+        "weaponId": null,
+        "count": 1,
+        "profileIds": [
+          "cos_heat_ray_dispersed",
+          "cos_heat_ray_focussed"
+        ]
+      },
+      {
+        "text": "Stalker's Forelimbs",
+        "weaponId": "cos_stalkers_forelimbs",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Living Metal",
+        "equipmentId": "cos_living_metal"
+      },
+      {
+        "text": "Quantum Shielding",
+        "equipmentId": "cos_quantum_shielding"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 103
+  },
+  {
+    "id": "warbike",
+    "name": "Warbike",
+    "faction": "Ork",
+    "variantOf": null,
+    "description": "These light, two-wheeled motorcycles are built for the sole purpose of giving Orks a way to get more fighting in faster. They grind across the ground at dangerous speeds, bearing their hulking green riders into violent encounters with their Dakkaguns leading the way. Warbikes are occasionally used by scouts and outriders as well, but such tactics quickly devolve into streams of dakka and Ork war cries anyway, which reverts the Warbike to its primary purpose.\n\nOrk Warbikes are simple to build and beloved by many Orks for their ability to expedite violence. They are commonly found anywhere one finds Orks — virtually anywhere.",
+    "options": null,
+    "value": 9,
+    "rarity": "Common",
+    "speed": 65,
+    "manoeuvre": 5,
+    "resilience": 12,
+    "wounds": 10,
+    "size": "Large",
+    "keywords": [
+      "ORK",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot",
+    "traits": [
+      "Bike",
+      "Open Topped"
+    ],
+    "weapons": [
+      {
+        "text": "2 Dakkaguns",
+        "weaponId": "cos_dakkagun",
+        "count": 2
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Grot Riggers",
+        "equipmentId": "cos_grot_riggers"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 104
+  },
+  {
+    "id": "boomdakka_snazzwagon",
+    "name": "Boomdakka Snazzwagon",
+    "faction": "Ork",
+    "variantOf": null,
+    "description": "The Boomdakka Snazzwagon is a ramshackle dune buggy with four all-terrain tires, barely any armour, a roaring engine, and dakka-spewing weaponry. This fast-moving vehicle gulps air and fuel to send its Greenskin occupants across the battlefield at dangerous speeds while unloading a ridiculous amount of firepower. These vehicles do not take much for the Orks to construct and are largely expendable. They are a common sight on Ork battlefields.",
+    "options": null,
+    "value": 9,
+    "rarity": "Uncommon",
+    "speed": 50,
+    "manoeuvre": 5,
+    "resilience": 14,
+    "wounds": 11,
+    "size": "Large",
+    "keywords": [
+      "ORK",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot, 2 Crew",
+    "traits": [
+      "All-Terrain",
+      "Open Topped"
+    ],
+    "weapons": [
+      {
+        "text": "Big Shoota",
+        "weaponId": "big_shoota",
+        "count": 1
+      },
+      {
+        "text": "Mek Speshul",
+        "weaponId": "cos_mek_speshul",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Grot Riggers",
+        "equipmentId": "cos_grot_riggers"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 104
+  },
+  {
+    "id": "deffkilla_wartrike",
+    "name": "Deffkilla Wartrike",
+    "faction": "Ork",
+    "variantOf": null,
+    "description": "As with most Ork vehicles, the Deffkilla Wartrike emphasises speed over armour. The Ork Crew perched atop the back of the rattling contraption supply their own weaponry. This three-wheeled vehicle is simple to build and mounts a Killa Jet engine to rocket its riders towards enemies, where they can get stuck in, then blast through the wreckage and on to the next fight.",
+    "options": null,
+    "value": 9,
+    "rarity": "Uncommon",
+    "speed": 75,
+    "manoeuvre": 5,
+    "resilience": 12,
+    "wounds": 9,
+    "size": "Large",
+    "keywords": [
+      "ORK",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot, 2 Crew",
+    "traits": [
+      "All-Terrain",
+      "Bike",
+      "Open Topped",
+      "Turbo Boost (3)"
+    ],
+    "weapons": [
+      {
+        "text": "Killa Jet",
+        "weaponId": null,
+        "count": 1,
+        "profileIds": [
+          "cos_killa_jet_burna",
+          "cos_killa_jet_cutta"
+        ]
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Fuel-Mixa Grot",
+        "equipmentId": "cos_fuel_mixa_grot"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 105
+  },
+  {
+    "id": "kustom_boosta_blasta",
+    "name": "Kustom Boosta Blasta",
+    "faction": "Ork",
+    "variantOf": null,
+    "description": "The Kustom Boosta Blasta is one of the rarer Ork vehicles, often serving as a personal vehicle for Mekboyz. The buggy is hard to miss on the battlefield given the metre-long jets of flaming exhaust shooting from either side. This roaring, four-wheeled vehicle boasts precious little armour and mounts a powerful, long-range Rivet Kannon to engage targets at range. More often, the Mek driver prefers to use the vehicle's great speed to close quickly with enemies, then incinerate them with burning exhaust.",
+    "options": null,
+    "value": 11,
+    "rarity": "Rare",
+    "speed": 60,
+    "manoeuvre": 4,
+    "resilience": 14,
+    "wounds": 11,
+    "size": "Large",
+    "keywords": [
+      "ORK",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot, 2 Crew",
+    "traits": [
+      "Open Topped"
+    ],
+    "weapons": [
+      {
+        "text": "4 Burna Exhausts",
+        "weaponId": "cos_burna_exhaust",
+        "count": 4
+      },
+      {
+        "text": "Rivet Kannon",
+        "weaponId": "cos_rivet_kannon",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Grot Gunner",
+        "equipmentId": "cos_grot_gunner"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 105
+  },
+  {
+    "id": "megatrakk_scrapjet",
+    "name": "Megatrakk Scrapjet",
+    "faction": "Ork",
+    "variantOf": null,
+    "description": "The Megatrakk Scrapjet is a wheeled or tracked vehicle built from the fuselage of a wrecked aircraft and given new life as a rocket-powered land vehicle. Scrapjets blast straight ahead with wild abandon while unloading their formidable weaponry at close range. This monstrous vehicle is, in actuality, not much faster than most Imperium tanks, but it is built to run down infantry, using its forward-facing drill to demolish them in a shower of sparks and gore.\n\nFar from an efficient war machine, the Megatrakk Scrapjet is cheap and easy to build — most Orks have enough teef to afford one. This piecemeal vehicle epitomises second chances for the Orks, and they are always eager to get back into the fight.",
+    "options": null,
+    "value": 8,
+    "rarity": "Uncommon",
+    "speed": 29,
+    "manoeuvre": 4,
+    "resilience": 14,
+    "wounds": 12,
+    "size": "Large",
+    "keywords": [
+      "ORK",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Bike",
+      "Open Topped"
+    ],
+    "weapons": [
+      {
+        "text": "2 Twin Big Shootas",
+        "weaponId": "big_shoota",
+        "count": 2,
+        "twin": true
+      },
+      {
+        "text": "Rokkit Kannon",
+        "weaponId": "cos_rokkit_kannon",
+        "count": 1
+      },
+      {
+        "text": "Wing Missile",
+        "weaponId": "cos_wing_missile",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Nose Drill",
+        "equipmentId": "cos_nose_drill"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 106
+  },
+  {
+    "id": "shokkjump_dragsta",
+    "name": "Shokkjump Dragsta",
+    "faction": "Ork",
+    "variantOf": null,
+    "description": "The four-wheeled Shokkjump Dragsta is a rare sight on the battlefield because of the strange technology (strange even by Ork standards) used in its construction. Following traditional Ork design philosophy, the Dragsta carries minimal armour, but it makes up for it with bone-jarring speed, powerful ranged weaponry, and mysterious technology that generates Warp tunnels simply by moving fast enough.\n\nWhen driving forwards, the Shokkjump Dragsta can bore a tunnel into the Warp and come out elsewhere on the battlefield. This ability allows the vehicle to appear behind enemy lines and launch devastating attacks from unprotected angles as it roars by, only to jump away when the enemy reacts.",
+    "options": null,
+    "value": 13,
+    "rarity": "Very Rare",
+    "speed": 75,
+    "manoeuvre": 4,
+    "resilience": 14,
+    "wounds": 11,
+    "size": "Large",
+    "keywords": [
+      "ORK",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Open Topped",
+      "Turbo Boost (4)"
+    ],
+    "weapons": [
+      {
+        "text": "Rokkit Launcha",
+        "weaponId": "rokkit_launcha",
+        "count": 1
+      },
+      {
+        "text": "Saw Blades",
+        "weaponId": "cos_saw_blades",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Grot Gunner",
+        "equipmentId": "cos_grot_gunner"
+      },
+      {
+        "text": "Squig Mine",
+        "equipmentId": "cos_squig_mine"
+      }
+    ],
+    "sidebar": {
+      "title": "Shokk Tunnel",
+      "text": "The Shokkjump Dragsta's Shokk Tunnel is a short-range teleporter that jumps the vehicle closet to its foes. The driver can use their Action to activate the Shokk Tunnel, jumping the vehicle its full Speed directly forwards. When it jumps, the Dragsta ignores Difficult Terrain and any obstacles or hazards in its path."
+    },
+    "source": "church",
+    "page": 106
+  },
+  {
+    "id": "trukk",
+    "name": "Trukk",
+    "faction": "Ork",
+    "variantOf": null,
+    "description": "Roaring into battle at reckless speed and belching exhaust fumes, an Ork Trukk is a garish, cacophonous, ramshackle collection of wheels, looted machinery, impossible engineering, and brutality. Moderately armed and armoured, the Trukk's primary function is to deliver a throng of battle-ready Orks so they can get stuck in with as little delay as possible.\n\nShould the Trukk avoid destruction along the way, it has weapons enough for Crew and Passengers to join in the fighting ahead of their arrival. If the Passengers survive to their destination, the Trukk's driver may slow down enough to let them safely disembark. More often, Orks find themselves leaping from a burning Trukk just before it explodes.",
+    "options": "A Trukk may also be equipped with a Grabbin' Klaw or Wreckin' Ball.",
+    "value": 11,
+    "rarity": "Uncommon",
+    "speed": 30,
+    "manoeuvre": 3,
+    "resilience": 14,
+    "wounds": 16,
+    "size": "Huge",
+    "keywords": [
+      "ORK",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 1 Crew, 12 Passengers",
+    "traits": [
+      "Open Topped"
+    ],
+    "weapons": [
+      {
+        "text": "Big Shoota",
+        "weaponId": "big_shoota",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Grot Riggers",
+        "equipmentId": "cos_grot_riggers"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 107
+  },
+  {
+    "id": "rukkatrukk_squigbuggy",
+    "name": "Rukkatrukk Squigbuggy",
+    "faction": "Ork",
+    "variantOf": null,
+    "description": "Similar in construction to the iconic Ork Trukk, the Rukkatrukk Squigbuggy was originally conceived as a mobile meal trolley, blowing its horn at other Ork vehicles, catching up to them, then flinging eatin' Squigs over in exchange for teef. Though it is sometimes still used in that capacity, the Rukkatrukk Squigbuggy was quickly adapted to war, like all good Ork creations.\n\nThis huge, four-wheeled monstrosity of screeching metal and filthy cages rumbles behind faster Ork vehicles and flings many dangerous varieties of weaponised attack Squigs towards the enemy. The sight of Squigs flying through the air to land atop tanks and amid infantry could be comical if not for the gory heaps they leave behind.",
+    "options": null,
+    "value": 9,
+    "rarity": "Uncommon",
+    "speed": 28,
+    "manoeuvre": 4,
+    "resilience": 14,
+    "wounds": 12,
+    "size": "Huge",
+    "keywords": [
+      "ORK",
+      "RAIDER"
+    ],
+    "crew": "1 Pilot, 2 Crew",
+    "traits": [
+      "All-Terrain",
+      "Open Topped"
+    ],
+    "weapons": [
+      {
+        "text": "Heavy Squig Launcha",
+        "weaponId": "cos_heavy_squig_launcha",
+        "count": 1
+      },
+      {
+        "text": "Saw Blades",
+        "weaponId": "cos_saw_blades",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Grot Gunner",
+        "equipmentId": "cos_grot_gunner"
+      },
+      {
+        "text": "Squig Mine",
+        "equipmentId": "cos_squig_mine"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 107
+  },
+  {
+    "id": "wazbom_blastajet",
+    "name": "Wazbom Blastajet",
+    "faction": "Ork",
+    "variantOf": null,
+    "description": "Just as a Kustom Boosta Blasta is the personalised land vehicle of a Mekboy, the Wazbom Blastajet is its aerial counterpart. Eschewing all but basic armour, this aircraft uses brute force and arcane Ork engineering to fly at seemingly impossible speeds for such a ragged collection of parts.\n\nAs the Wazbom Blastajet roars forward, it trails burning fuel behind it in a blazing path while opening fire on whatever presents itself. Equipped with an abundance of unexpectedly advanced support equipment and terrifyingly peculiar weaponry, it is a dangerous fighter and gunship with a place in any WAAAGH!",
+    "options": "The 2 Wazbom Mega-Kannons can be replaced with 2 Tellyport Mega-Blastas, and the Stikkbomb Flinga can be replaced with a Blastajet Force Field. A Wazbom Blastajet can also be equipped with 2 Supa-Shootas.",
+    "value": 17,
+    "rarity": "Very Rare",
+    "speed": 125,
+    "manoeuvre": 5,
+    "resilience": 14,
+    "wounds": 15,
+    "size": "Huge",
+    "keywords": [
+      "ORK",
+      "FLYER"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Flyer",
+      "Gyro-Stabilised",
+      "Turbo Boost (20)"
+    ],
+    "weapons": [
+      {
+        "text": "Smasha Gun",
+        "weaponId": "cos_smasha_gun",
+        "count": 1
+      },
+      {
+        "text": "Stikkbomb Flinga",
+        "weaponId": "cos_stikkbomb_flinga",
+        "count": 1
+      },
+      {
+        "text": "2 Wazbom Mega-Kannons",
+        "weaponId": "cos_wazbom_mega_kannon",
+        "count": 2
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Grot Gunner",
+        "equipmentId": "cos_grot_gunner"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 108
+  },
+  {
+    "id": "battlewagon",
+    "name": "Battlewagon",
+    "faction": "Ork",
+    "variantOf": null,
+    "description": "Equipped with armour uncharacteristically heavy by Ork standards, the Battlewagon is equal parts heavy tank, troop transport, and dangerous behemoth. It rumbles through enemies and obstacles without slowing, blasting away with its crude, high-volume weaponry, ultimately disgorging its cargo of battle-ready Orks into the heart of the enemy's forces.\n\nLike all Ork vehicles, Battlewagons are kustom-made at individual Mekboyz' whims using whatever materials and looted vehicles are at hand. There is no standard pattern for Ork Battlewagons — each one looks different, reflecting its builder. These variations provide the Orks ample opportunity to customise both appearance and equipment to suit the battle at hand.",
+    "options": "Battlewagons and Bonebreakas can also have a Kannon, a Killkannon, or a Zzap! Gun, plus up to 4 Big Shootas, a Lobba, and either a Grabbin' Klaw, a Wreckin' Ball, or a Deff Rolla (Battlewagon only). A Killcannon reduces a Battlewagon's passenger capacity to 12.",
+    "value": 15,
+    "rarity": "Rare",
+    "speed": 22,
+    "manoeuvre": 2,
+    "resilience": 16,
+    "wounds": 23,
+    "size": "Gargantuan",
+    "keywords": [
+      "ORK",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 1 Crew, 20 Passengers",
+    "traits": [
+      "Open Topped"
+    ],
+    "weapons": [
+      {
+        "text": "2 Big Shootas",
+        "weaponId": "big_shoota",
+        "count": 2
+      },
+      {
+        "text": "Killkannon",
+        "weaponId": "cos_killkannon",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Grot Riggers",
+        "equipmentId": "cos_grot_riggers"
+      },
+      {
+        "text": "'Ard Case",
+        "equipmentId": "cos_ard_case"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 108
+  },
+  {
+    "id": "bonebreaka",
+    "name": "Bonebreaka",
+    "faction": "Ork",
+    "variantOf": null,
+    "description": "The Bonebreaka's aptly named. With a mighty Deff Rolla in front and an arsenal of dakka mounted across its thickly plated chassis, it rolls right over any troops brave or foolish enough to stand in its path. Even worse, it's got a passenger hold full of Orks ready for the fray.",
+    "options": "Battlewagons and Bonebreakas can also have a Kannon, a Killkannon, or a Zzap! Gun, plus up to 4 Big Shootas, a Lobba, and either a Grabbin' Klaw, a Wreckin' Ball, or a Deff Rolla (Battlewagon only). A Killcannon reduces a Battlewagon's passenger capacity to 12.",
+    "value": 16,
+    "rarity": "Rare",
+    "speed": 20,
+    "manoeuvre": 2,
+    "resilience": 17,
+    "wounds": 24,
+    "size": "Huge",
+    "keywords": [
+      "ORK",
+      "RAIDER",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 7 Crew, 12 Passengers",
+    "traits": [
+      "All-Terrain"
+    ],
+    "weapons": [],
+    "wargear": [
+      {
+        "text": "Deff Rolla",
+        "equipmentId": "cos_deff_rolla"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 109
+  },
+  {
+    "id": "gunwagon",
+    "name": "Gunwagon",
+    "faction": "Ork",
+    "variantOf": null,
+    "description": "The Gunwagon's the Battlewagon's more killy sibling. It bristles with places to weld on more shootas. Replace the Kannon with a Killkannon or Zzap! Gun and add up to 4 Big Shootas, a Lobba, and either a Deff Rolla, a Grabbin' Klaw, or a Wreckin' Ball.",
+    "options": "Gunwagons can mount a Kannon, a Killkannon or a Zzap! Gun, plus up to 4 Big Shootas, a Lobba, and either a Grabbin' Klaw, a Wreckin' Ball, or a Deff Rolla.",
+    "value": 16,
+    "rarity": "Rare",
+    "speed": 22,
+    "manoeuvre": 2,
+    "resilience": 15,
+    "wounds": 24,
+    "size": "Gargantuan",
+    "keywords": [
+      "ORK",
+      "TANK",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 7 Crew, 12 Passengers",
+    "traits": [
+      "All-Terrain"
+    ],
+    "weapons": [
+      {
+        "text": "Kannon",
+        "weaponId": null,
+        "count": 1,
+        "profileIds": [
+          "cos_kannon_frag",
+          "cos_kannon_shell"
+        ]
+      }
+    ],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 109
+  },
+  {
+    "id": "kill_rig",
+    "name": "Kill Rig",
+    "faction": "Ork",
+    "variantOf": null,
+    "description": "Packed with savage Orks and towed across the field by a colossal tramplasquig, the Kill Rig's a rickety, ramshackle nightmare. Along with its Crew and Passengers, ready to carve a bloody swathe through any Threat, and a plethora of vehicle-mounted weapons, the Kill Rig sports a psychic amplifier that allows a Wurrboy to unleash psychic devastation across the battlefield.",
+    "options": "Orks with the PSYKER Keyword double the range of psychic powers wielded while using the Wurrtower. One Ork at a time can use the Wurrtower.",
+    "value": 13,
+    "rarity": "Rare",
+    "speed": 24,
+    "manoeuvre": 3,
+    "resilience": 14,
+    "wounds": 22,
+    "size": "Gargantuan",
+    "keywords": [
+      "ORK",
+      "RAIDER",
+      "TRANSPORT"
+    ],
+    "crew": "1 Pilot, 7 Crew, 10 Passengers",
+    "traits": [
+      "All-Terrain",
+      "Open Topped"
+    ],
+    "weapons": [
+      {
+        "text": "'Eavy Lobba",
+        "weaponId": "cos_eavy_lobba",
+        "count": 1
+      },
+      {
+        "text": "Stikka Kannon",
+        "weaponId": "cos_stikka_kannon",
+        "count": 1
+      },
+      {
+        "text": "Savage Horns and Hooves",
+        "weaponId": "cos_savage_horns_and_hooves",
+        "count": 1
+      },
+      {
+        "text": "Saw Blades",
+        "weaponId": "cos_saw_blades",
+        "count": 1
+      },
+      {
+        "text": "Wurrtower",
+        "weaponId": "cos_wurrtower",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Grot Riggers",
+        "equipmentId": "cos_grot_riggers"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 109
+  },
+  {
+    "id": "deffkopta",
+    "name": "Deffkopta",
+    "faction": "Ork",
+    "variantOf": null,
+    "description": "Deffkoptas are twisted shells of salvaged metal held aloft by rotating blades, propelled by volatile jet engines that hiss, spit, and sputter as violent backfires punctuate their flight. Their Ork Pilots revel in the thrill of raw speed, heedless to the many dangers their own aircraft presents as it hurtles along with little separating the Pilot from enemy fire — and the ground.\n\nDeffkoptas are sometimes used for scouting missions but are most often employed as fast-attack air cavalry, augmenting and expanding the attack angles of charging Ork mobs. These aircraft are simple to make due to their especially ramshackle nature, and most Ork units have at least a few Flyboyz ready to take to the air.",
+    "options": "The Deffkopta's Kopta Rokkits may be replaced with a Kustom Mega-Blasta and 1 Big Bomb.",
+    "value": 8,
+    "rarity": "Uncommon",
+    "speed": 60,
+    "manoeuvre": 5,
+    "resilience": 13,
+    "wounds": 11,
+    "size": "Large",
+    "keywords": [
+      "ORK",
+      "FLYER"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Bike",
+      "Flyer",
+      "Hover",
+      "Open Topped",
+      "Turbo Boost (6)"
+    ],
+    "weapons": [
+      {
+        "text": "Kopta Rokkits",
+        "weaponId": "cos_kopta_rokkits",
+        "count": 1
+      },
+      {
+        "text": "Spinnin' Blades",
+        "weaponId": "cos_spinnin_blades",
+        "count": 1
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Stikkbombs",
+        "equipmentId": "stikkbombs"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 110
+  },
+  {
+    "id": "dakkajet",
+    "name": "Dakkajet",
+    "faction": "Ork",
+    "variantOf": null,
+    "description": "The Dakkajet is extremely fast, driven by powerful engines and the Ork obsession with speed, but that straightforward speed does not translate well into manoeuvrability. This makes the aircraft vulnerable, doubly so because of the constant trail of acrid smoke its crude engines dump into the sky: a dark trail leading straight to the Dakkajet.\n\nThis Ork fighter comes equipped with Supa-Shootas, allowing it to provide powerful air-to-air and air-to-ground support in the skies above a WAAAGH! Following the tried-and-true Ork philosophy of 'More Dakka!', the Dakkajet's Pilot scores kills more through volume of fire than precision.",
+    "options": null,
+    "value": 14,
+    "rarity": "Rare",
+    "speed": 125,
+    "manoeuvre": 5,
+    "resilience": 14,
+    "wounds": 15,
+    "size": "Huge",
+    "keywords": [
+      "ORK",
+      "FLYER"
+    ],
+    "crew": "1 Pilot",
+    "traits": [
+      "Flyer",
+      "Turbo Boost (20)"
+    ],
+    "weapons": [
+      {
+        "text": "2 Twin Supa-Shootas",
+        "weaponId": "cos_supa_shoota",
+        "count": 2,
+        "twin": true
+      }
+    ],
+    "wargear": [],
+    "sidebar": null,
+    "source": "church",
+    "page": 111
+  },
+  {
+    "id": "blitza_bommer",
+    "name": "Blitza-Bommer",
+    "faction": "Ork",
+    "variantOf": null,
+    "description": "The Blitza-Bommer is prized among Orks as an excellent marriage of speed and firepower. Though its speed allows it to outrun many other aircraft, few Orks would ever run from a fight. Casualties are generally high among Blitza-Bommer Pilots — they tend to fly low to the ground to better strafe slow-moving land targets, bringing their Shootas to bear against the enemy. Talented Blitza-Bommer Pilots use strafing runs to round up targets for devastating payloads of Boom Bombs.\n\nInstead of explosive Boom Bombs, the Burna-Bommer variation mounts scorching Burna Bombs to immolate foes. In any configuration, these fighter-bombers are invaluable assets. Even when these aircraft are shot down, Mekboyz are quick to build more from the wreckage so their Flyboyz can get right back into the action.",
+    "options": "Burna-Bommers can also carry Skorcha Missile Racks.",
+    "value": 14,
+    "rarity": "Rare",
+    "speed": 100,
+    "manoeuvre": 4,
+    "resilience": 14,
+    "wounds": 15,
+    "size": "Gargantuan",
+    "keywords": [
+      "ORK",
+      "FLYER"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Flyer",
+      "Turbo Boost (18)"
+    ],
+    "weapons": [
+      {
+        "text": "Big Shoota",
+        "weaponId": "big_shoota",
+        "count": 1
+      },
+      {
+        "text": "2 Supa-Shootas",
+        "weaponId": "cos_supa_shoota",
+        "count": 2
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Boom Bombs",
+        "equipmentId": null
+      },
+      {
+        "text": "Grot Gunner",
+        "equipmentId": "cos_grot_gunner"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 111
+  },
+  {
+    "id": "burna_bommer",
+    "name": "Burna-Bommer",
+    "faction": "Ork",
+    "variantOf": "blitza_bommer",
+    "description": null,
+    "options": null,
+    "value": 14,
+    "rarity": "Rare",
+    "speed": 100,
+    "manoeuvre": 4,
+    "resilience": 14,
+    "wounds": 15,
+    "size": "Gargantuan",
+    "keywords": [
+      "ORK",
+      "FLYER"
+    ],
+    "crew": "1 Pilot, 1 Crew",
+    "traits": [
+      "Flyer",
+      "Turbo Boost (18)"
+    ],
+    "weapons": [
+      {
+        "text": "Twin Big Shoota",
+        "weaponId": "big_shoota",
+        "count": 1,
+        "twin": true
+      },
+      {
+        "text": "2 Supa-Shootas",
+        "weaponId": "cos_supa_shoota",
+        "count": 2
+      }
+    ],
+    "wargear": [
+      {
+        "text": "Burna Bombs",
+        "equipmentId": null
+      },
+      {
+        "text": "Grot Gunner",
+        "equipmentId": "cos_grot_gunner"
+      }
+    ],
+    "sidebar": null,
+    "source": "church",
+    "page": 111
+  }
+]

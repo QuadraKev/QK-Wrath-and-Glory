@@ -6164,5 +6164,327 @@
       "page": 118,
       "description": "Time does not flow the same way in the warp as in reality. You weave this temporal distortion so that the target appears to move with super-human speed, as they perceive everything else to be happening in slow motion. Whilst this power is sustained, the target doubles their Speed, and can take an extra Action each Turn. This extra Action does not impose any Multi-Action penalties, and can be used to make a second attack in one Turn. A target affected by this power suffers 1 Corruption at the end of their Turn, as their mind and body is warped by existence out-of-step with reality."
     }
+  },
+  "vehicleTraits": {
+    "all_terrain": {
+      "name": "All-Terrain",
+      "source": "church",
+      "page": 62,
+      "description": "If you are piloting an All-Terrain vehicle and you fail a Pilot (A) Test to avoid hindrances caused by Difficult Terrain, you can ignore the failure and reroll the Test. You must use the results of the reroll."
+    },
+    "amphibious": {
+      "name": "Amphibious",
+      "source": "church",
+      "page": 62,
+      "description": "An Amphibious vehicle can move across deep water without sinking, though its Speed is halved while doing so."
+    },
+    "bike": {
+      "name": "Bike",
+      "source": "church",
+      "page": 62,
+      "description": "While riding a vehicle with the Bike Trait, if the vehicle moves close enough for you to Engage a target, you can use a Reflexive Action to make a melee attack against the target."
+    },
+    "flyer": {
+      "name": "Flyer",
+      "source": "church",
+      "page": 62,
+      "description": "A vehicle with the Flyer Trait can move equally well in any direction in three-dimensional space. While airborne, it must move at least half its Speed each Round or begin to fall from the sky. If it resumes moving, it immediately stops falling. Flying vehicles that also have the Hover Trait do not require movement to avoid falling, and they can take off and land vertically."
+    },
+    "gun_ports": {
+      "name": "Gun Ports",
+      "source": "church",
+      "page": 63,
+      "description": "A vehicle with Gun Ports has mounted weapons that can be operated by occupants with the PASSENGER Keyword. The vehicle's description specifies which weapons occupy the ports. Otherwise, treat these as normal vehicle-mounted weapons. Gun Ports are self-contained and do not expose or unseal the interior of a Sealed vehicle."
+    },
+    "gyro_stabilised": {
+      "name": "Gyro-Stabilised",
+      "source": "church",
+      "page": 63,
+      "description": "A Gyro-Stabilised vehicle does not count as in motion when characters on or in it make attacks."
+    },
+    "hover": {
+      "name": "Hover",
+      "source": "church",
+      "page": 63,
+      "description": "A vehicle with the Hover Trait floats above surfaces via gravitic technology or similar methods. Hover vehicles ignore ground-based Difficult Terrain such as mud or rocks and can move vertically as part of their Movement, though the GM may impose limits on the maximum altitude."
+    },
+    "open_topped": {
+      "name": "Open Topped",
+      "source": "church",
+      "page": 63,
+      "description": "Occupants of an Open Topped vehicle are visible to external observers, but this allows all occupants of the vehicle to attack targets outside the vehicle using their personal weapons. Occupants of Open Topped vehicles can be caught in the radius of Blast weapons and are typically not very well protected against Called Shots (see Attacking a Vehicle's Occupants, on page 51)."
+    },
+    "reliable": {
+      "name": "Reliable",
+      "source": "church",
+      "page": 63,
+      "description": "The Reliable Trait applies to vehicles as it does to weapons. You can ignore the first Complication related to this vehicle each scene. Tests made to repair or maintain Reliable vehicles are made with +1 bonus die."
+    },
+    "sealed": {
+      "name": "Sealed",
+      "source": "church",
+      "page": 63,
+      "description": "A Sealed vehicle has airtight doors and hatches. Occupants of a Sealed vehicle are immune to toxic gas and airborne diseases, and they cannot be caught in the radius of a Blast weapon while the vehicle's hatches and ports are closed. Occupants of Sealed vehicles are typically well protected against Called Shots if they are targetable at all (see Attacking a Vehicle's Occupants, page 51).<br><br>Any vehicle seals, such as hatches, ports, or doors, can usually be opened with a Simple Action."
+    },
+    "turbo_boost": {
+      "name": "Turbo Boost (X)",
+      "source": "church",
+      "page": 63,
+      "description": "A vehicle with the Turbo Boost Trait can move extraordinarily quickly when travelling. When using Breakneck Speed, multiply the vehicle's Speed by its Turbo Boost rating instead of doubling it."
+    },
+    "walker": {
+      "name": "Walker",
+      "source": "church",
+      "page": 63,
+      "description": "Walkers use articulated legs to traverse the ground. While piloting a walker, you are able to attack by stomping with its legs. To do so, make a Ram attack (see page 50) against a target, ignoring the Movement requirement if you are already adjacent to the target. If the attack succeeds, your vehicle only takes half the usual damage."
+    }
+  },
+  "vehicleRules": {
+    "benevolence_of_the_omnissiah": {
+      "name": "Benevolence of the Omnissiah",
+      "source": "church",
+      "page": 29,
+      "description": "Members of the Adeptus Mechanicus are so in tune with the Omnissiah and his Machine Spirits that when they cry out for his protection in moments of crisis, a properly anointed vehicle may be spared from harm. While such intervention is indisputably miraculous, it's channelled through Tech-Priests' complex augmetic systems, which are as much a part of the Cult Mechanicus as prayers and rituals.<br><br>The first time in a round (or scene if not in combat) that a vehicle with the ADEPTUS MECHANICUS Keyword suffers a Wound, one of its Pilot, Crew, or Passengers belonging to the Adeptus Mechanicus can use a Reflexive Action to force an extra roll on the Vehicle Damage table (see page 54). That character chooses which result takes effect. If the chosen result is a 12 — the Omnissiah's sacred number — the vehicle suffers no effect from the Vehicle Damage table and restores 1 Wound."
+    },
+    "masters_of_machines": {
+      "name": "Masters of Machines",
+      "source": "church",
+      "page": 29,
+      "description": "The Adeptus Mechanicus are unrivalled in their understanding of Machine Spirits and how to interact with them. To their minds, vehicles are beasts of burden and warriors clad in steel and ceramite. With patience, attention, and appeasement, any such beast can be enlisted to serve the Cult Mechanicus.<br><br>If a member of the Adeptus Mechanicus spends a full day in communion with the Machine Spirit of a vehicle with the IMPERIUM Keyword, that vehicle gains the ADEPTUS MECHANICUS Keyword."
+    },
+    "miraculum_mobili": {
+      "name": "Miraculum Mobili",
+      "source": "church",
+      "page": 29,
+      "description": "Be it a heat-scarred Immolator adorned with holy simulacra and braziers of sacred incense, a steadfast Rhino ferrying Sisters of Battle to their wars of faith, or a purpose-built Exorcist replete with meteoric armaments befitting the Emperor's wrath, the war machines of the Ecclesiarchy are blessed extensions of their colossal cathedrals.<br><br>A vehicle with the ADEPTUS MINISTORUM Keyword has a number of Faith points equal to the Tier of the game. This pool of Faith points can be used by anyone touching the vehicle to activate their own Faith Talents. The vehicle's pool of Faith points is refreshed whenever a member of the Ecclesiarchy spends a full day praying to the Emperor on or within the vehicle."
+    },
+    "bleeding_edge_technology": {
+      "name": "Bleeding-Edge Technology",
+      "source": "church",
+      "page": 30,
+      "description": "The Drukhari are prone to obsession, apt to spend lifetimes iterating and improving upon designs that were already unimaginably sophisticated before Humanity even existed. Years of perfectionism intersect with pathological cruelty to suit the Drukhari's dark predilections with deadly efficiency. When a Drukhari character is inside or on a vehicle with the DRUKHARI Keyword while it is moving, Breakneck Speed does not add additional Wrath Dice to their pool for Attack Tests."
+    },
+    "wraithbone": {
+      "name": "Wraithbone",
+      "source": "church",
+      "page": 30,
+      "description": "Not only are Asuryani vehicles built with ultra-advanced systems and weapons, they rely on psychoactive wraithbone to link Pilots to their vehicles. This connection allows preternatural speed, grace, and precision that is virtually impossible for other Species to duplicate. If an Asuryani character piloting a vehicle with the ASURYANI Keyword has a Psychic Mastery (Wil) Rating, they may add half of that Rating as bonus dice to any Pilot (A or I) Test. An Asuryani without Psychic Mastery adds 1 to the Test."
+    },
+    "orks_build_tuff": {
+      "name": "Orks Build Tuff",
+      "source": "church",
+      "page": 31,
+      "description": "The gestalt psychic consciousness of the Orks exerts an uncanny force that ensures their technology functions despite having little valid mechanical basis. Ork vehicles, whether they're armoured or not, are deceptively robust. Simply idling their cacophonous engines should shake them apart, but they remain intact even despite catastrophic damage because brutally cunning Ork engineering, the determination of Meks, and maybe a dash of collective Ork belief literally hold their vehicles together against all odds.<br><br>When an Ork pilots a vehicle with the ORK Keyword, add the Pilot's Willpower to the vehicle's Max Wounds. Increase this bonus by 1 for every 5 Orks in Crew or Passenger roles. If the vehicle's Max Wounds ever fall below its current Wounds, it is immediately destroyed and collapses into a pile of scrap."
+    },
+    "green_wunz_only": {
+      "name": "Green Wunz Only",
+      "source": "church",
+      "page": 31,
+      "description": "Through the power of the WAAAGH!, any Ork can get behind the controls of an Ork vehicle and operate it, even if it is only a ramshackle assembly of scrap cobbled together and dubbed a vehicle by a Mek. Humiez and other lesser beings just don't understand them. If a non-Ork character attempts a Vehicle Action using a vehicle with the ORK Keyword, the character must replace 2 additional dice in their pool with Wrath Dice. All Wrath Dice must roll 6s to trigger a Wrath Critical. Any result of 1 on a Wrath Die means the vehicle does not respond, and the Action is wasted."
+    },
+    "interacting_with_vehicles": {
+      "name": "Interacting with Vehicles",
+      "source": "church",
+      "page": 44,
+      "description": "The Agents and Threats do not always begin a scene in a vehicle or might not want to take vehicle-specific Actions."
+    },
+    "embarking": {
+      "name": "Embarking & Disembarking",
+      "source": "church",
+      "page": 44,
+      "description": "Characters can normally embark or disembark from a vehicle as part of their Movement. If a vehicle requires a Test to enter, such as convincing its cantankerous Machine Spirit to release a lock with a Tech (Int) Test, that Test requires an Action."
+    },
+    "actions_inside": {
+      "name": "Actions Inside a Vehicle",
+      "source": "church",
+      "page": 44,
+      "description": "While inside a vehicle, characters may take Actions as normal unless being inside the vehicle would prohibit such an Action. Characters can also take specific vehicle-related Actions depending on their Vehicle Role.<br><br><strong>Example:</strong> Alexi is in the fully sealed passenger compartment of a Rhino transport. It is not feasible for Alexi to fire their Lasgun at a target outside the Rhino because they have no line of sight to the target, but Alexi could use their Action to treat Wounds, reload their weapon, or use a Vox Caster to request reinforcements. If the rear hatch of the passenger compartment were open, Alexi would be able to fire their Lasgun.<br><br><strong>Wild Rider</strong><br>Vehicles can add unpredictable variables to any encounter, and the desperate and daring characters of the 41st Millennium are liable to use anything and everything available to ensure their survival. During your games of Wrath &amp; Glory, there may be situations that the narrative-focused rules presented in this book do not cover. Together with the player involved, decide what an appropriate Test would be for the narrative, and make sure the rules never get in the way of the storytelling.<br><br>Any unusual action taken whilst driving a vehicle is likely covered by the Pilot (A) Skill, as detailed in Vehicle Actions, on page 46. Vehicle Combat is also detailed in its own section, on page 50.<br><br>Jumping on to or between vehicles is usually covered by the Athletics (S) Skill. Breaking into vehicles and forcing them to start can be covered by the Cunning (Fel) or Tech (Int) Skills, depending on their complexity.<br><br>When considering DNs for Tests, keep in mind that any occupants of vehicles going at Breakneck Speed must replace 3 dice in their pool with Wrath Dice instead of the normal 1 Wrath Die (see page 46)."
+    },
+    "complications": {
+      "name": "Vehicle Complications",
+      "source": "church",
+      "page": 44,
+      "description": "As always, it's up to you how a Complication manifests in your game, even when vehicles are involved. If you aren't sure what the results of a Complication might be on a roll or you don't want to interrupt the flow of a scene to decide how it affects a vehicle, you can roll on the Interacting with Vehicles table, on page 45.<br><br><div class='glossary-table-scroll'><table class='glossary-table'><caption>Interacting with Vehicles</caption><tr><th>Action</th><th>Test</th></tr><tr><td>Jumping into the passenger seat of a moving Avachrus Ridgerunner</td><td>DN 3 Athletics (S) Test</td></tr><tr><td>Leaping from the back of a moving Chimera on to the bed of a moving Ork Trukk</td><td>DN 5 Athletics (S) Test</td></tr><tr><td>Leaping from the seat of a flying Land Speeder on to the deck of a flying Drukhari Raider</td><td>DN 7 Athletics (S) Test</td></tr><tr><td>Pushing the driver of a moving Wolfquad out of their seat and replacing them</td><td>DN 4 Athletics (S) Test, followed by a successful Opposed Strength Test</td></tr><tr><td>Maintaining your balance on the hull of a flying Falcon whilst duelling with an enemy Aeldari</td><td>DN 5 Agility Test</td></tr><tr><td>Jump starting an Imperial vehicle of a familiar pattern without the ignition key</td><td>DN 4 Tech (Int) or Cunning (Fel) Test</td></tr><tr><td>Jump starting an unfamiliar Aeldari vehicle</td><td>DN 8 Tech (Int) Test</td></tr><tr><td>Installing an Augmetic Eye in the passenger compartment of a moving Taurox</td><td>DN 9 Tech (Int) Test</td></tr></table></div>"
+    },
+    "movement_on_a_vehicles_exterior": {
+      "name": "Movement on a Vehicle's Exterior",
+      "source": "church",
+      "page": 44,
+      "description": "As the GM, you may determine that a vehicle is large enough for a character to stand on or to move across its exterior. If a character attempts to move on a vehicle while it is in motion, all Tests they attempt while doing so replace 1 die in their dice pool with an extra Wrath Die. Any 1 on a Wrath Die triggers a Complication, but all Wrath Dice must roll 6s to trigger a Wrath Critical. If the vehicle's exterior is particularly ill-suited for movement, you may also consider it Difficult Terrain."
+    },
+    "vehicle_roles": {
+      "name": "Vehicle Roles",
+      "source": "church",
+      "page": 45,
+      "description": "Vehicles in the 41st Millennium often have Pilots or drivers, Crew to operate the vehicle's weapons and other systems, and compartments for Passengers. When a character enters a vehicle, they pick which position they would like to occupy. This determines their Vehicle Role, which in turn determines what they can do while in the vehicle.<br><br>A vehicle cannot accommodate more characters in any single role than what is listed in its Crew Complement entry. Similarly, a character cannot occupy more than one role at a time, but they can move into an empty role with a Movement Action. If they intend to move into a role that is already occupied and the character occupying that role agrees, they can swap roles. In this case, they use their Movement Action to change roles as normal, and the character they swap with isn't able to take a Movement Action on their next Turn.<br><br><strong>Example:</strong> Ludovica, Reiner, Malgrim, and Iolaus are inside a Rhino transport. Ludovica is the Pilot, Reiner is the Crew, and Malgrim and Iolaus are Passengers. As they valiantly charge the enemy lines through Ludovica's deft piloting, Reiner decides to swap roles with Malgrim, as Malgrim is a better shot with the Rhino's Storm Bolter, and Reiner is better served trying to patch up Iolaus's grievous wounds. On his Turn, Reiner uses his Movement Action to swap roles with Malgrim. When Malgrim's next Turn comes up, he will not be able to take a Movement Action.<br><br>As with all aspects of Wrath &amp; Glory, the primary function of the rules is to support the story. The GM and players are encouraged to narrate the action to describe the scene as it plays out. You and your players might describe how Reiner shakes his head in disgust at his own terrible aim before dropping down through the gunnery hatch. Grabbing Malgrim's shoulder and pushing him up toward the guns, Reiner might slide past him to kneel over Iolaus's broken body, muttering prayers to the Emperor as he reaches for the Medkit. Malgrim settles in behind the Storm Bolter and greets it like an old friend. Let the rules help you tell the story.<br><br>As long as a character occupies a role in a vehicle, they temporarily gain the Keyword relevant to that role, as detailed on page 46. Those Keywords give them access to additional Actions they can take while occupying the vehicle.<br><br><div class='glossary-table-scroll'><table class='glossary-table'><caption>Vehicle Roles</caption><tr><th>Role</th><th>Vehicle Actions</th></tr><tr><td>Pilot</td><td>Brace for Impact, Breakneck Speed, Drive, Emergency Repair, Evasive Manoeuvres, Line Up the Shot, Open Fire, Ram, Reload</td></tr><tr><td>Crew</td><td>Brace for Impact, Emergency Repair, Open Fire, Reload</td></tr><tr><td>Passenger</td><td>Brace for Impact</td></tr></table></div><br><br><strong>Pilot</strong><br>You occupy a piloting or driving position in the vehicle cockpit or command centre. You gain the PILOT Keyword until you are no longer in the Pilot role.<br><br><strong>Crew</strong><br>You occupy a crew position somewhere within the crew compartment of the vehicle. You gain the CREW Keyword until you are no longer in the Crew role.<br><br><strong>Passenger</strong><br>You occupy a passenger position somewhere within the passenger compartment of the vehicle. You gain the PASSENGER Keyword until you are no longer in the Passenger role."
+    },
+    "drive": {
+      "name": "Drive",
+      "source": "church",
+      "page": 46,
+      "description": "Use your Movement Action to move the vehicle up to its Speed value. No Test is required to move, change direction, or slow down unless the GM decides that the situation warrants it, in which case they should call for a Pilot (A) Test where the DN is determined by the situation. Difficult Terrain (see the Wrath &amp; Glory Rulebook, page 181) affects vehicles as if they were characters. The GM may determine that vehicles are subject to additional hazards, such as becoming stuck in certain terrains. Most hazards can be avoided or resolved with a DN 4 Pilot (A) Test.<br><br><strong>Example:</strong> An Ork Nob may be frustrated by his Trukk's reduced movement through some mud, but the vehicle merely slows down, at first. If it spends too long in the muck, it becomes mired and immobile. The driver can free the vehicle with a successful DN 4 Pilot (A) Test, or perhaps the Orks use it as a brutally cunning trap."
+    },
+    "brace_for_impact": {
+      "name": "Brace for Impact",
+      "source": "church",
+      "page": 46,
+      "description": "You can use your Reflexive Action when the vehicle you are in suffers Wounds from a physical impact. Make a Strength Test with a DN equal to the number of Wounds the vehicle just suffered. If successful, you ignore the Resolve Test normally required when a vehicle takes damage (see Attacking a Vehicle's Occupants, on page 51). Additionally, if you use the Optional Rule: Crash and Burn (see page 55), you may ignore 1 Mortal Wound if you succeeded on the Brace for Impact Test. Ignore 1 additional Mortal Wound for each Shift."
+    },
+    "breakneck_speed": {
+      "name": "Breakneck Speed",
+      "source": "church",
+      "page": 46,
+      "description": "Use your Movement Action to move the vehicle up to double its Speed value, but any Tests made by characters inside or on the vehicle until the end of the Round replace a total of 3 dice in their pool with Wrath Dice. Any result of 1 on a Wrath Die triggers a Complication, but all Wrath Dice must roll 6s to trigger a Wrath Critical.<br><br>As with the Drive Action, no Test is required to move, change direction, or brake unless the GM decides that the situation warrants it, in which case they should call for a Pilot (A) Test with a DN determined by the situation. The DN should not increase over what would normally be assigned to the Test; the added risk is instead represented by the increased number of Wrath Dice.<br><br><strong>Example:</strong> Livia is driving her warband's Chimera as they give chase to a suspected Genestealer Cultist in a customised Achilles Ridgerunner. To make sure she catches up with the suspected Cultist, she uses her Movement Action to travel at Breakneck Speed, allowing the Chimera to move up to 52 metres instead of the normal 26 metres.<br><br><div class='glossary-table-scroll'><table class='glossary-table'><caption>Example Pilot Tests</caption><tr><th>DN</th><th>Test</th></tr><tr><td>3</td><td>Performing a wheelie on a Dirtcycle. Making a sharp turn in a Hemlock Wraithfighter.</td></tr><tr><td>5</td><td>Making a handbrake turn amidst a muddy battlefield in a Taurox. Driving an Invader ATV up the sharp incline of a shrine roof to ramp over to the next building.</td></tr><tr><td>7</td><td>Driving a Taurox APC on two wheels (skiing) to navigate through a narrow hive alley at high speed. Flying an Avenger Strike Fighter sideways between two closely packed hive spires.</td></tr><tr><td>9</td><td>Piloting a Leman Russ Battle Tank over a ramp to jump a chemical river. Performing a defensive spiral in a Thunderbolt Heavy Fighter during a dogfight.</td></tr></table></div><br><br>A ridged purple skull pops out from the firing hatch of the Achilles Ridgerunner and opens fire on the approaching Chimera with a Heavy Mining Laser! Livia immediately attempts Evasive Manoeuvres with her Pilot (A) dice pool of 5. As the Chimera is travelling at Breakneck Speed, 3 of the dice in her pool are Wrath Dice, and she rolls the following: 1, 3, 4, 4, 5.<br><br>Livia successfully fishtails the Chimera, weaving around the shots from the Genestealer Cultist. Unfortunately, she rolls a 4 on the Vehicle Complications table, causing a Scrape — the Chimera takes 1 Mortal Wound as Livia's evasive driving scrapes its hull on the rockcrete wall of a hab block.<br><br>Livia's companion Thaddeus grumbles about her driving aptitude as he moves into the firing seat of the Chimera's Multi-Laser. He fires at the Achilles Ridgerunner in the same turn the Chimera travelled at Breakneck Speed, so he must replace 3 of the dice in his Ballistic Skill (A) pool of 7 with Wrath Dice, and rolls the following.: 1, 2, 4, 4, 6, 6, 6. A Critical Hit!<br><br><div class='glossary-table-scroll'><table class='glossary-table'><caption>Vehicle Complications</caption><tr><th>d6</th><th>Complication</th></tr><tr><td>1</td><td><strong>Spin Out:</strong> The vehicle goes Out of Control (page 53).</td></tr><tr><td>2</td><td><strong>Hard Knock:</strong> Roll once on the Vehicle Damage table (page 54).</td></tr><tr><td>3</td><td><strong>Engine Stall:</strong> The vehicle's Speed becomes 0 at the beginning of the next Round, then returns to normal at the end of that Round.</td></tr><tr><td>4</td><td><strong>Scrape:</strong> The vehicle suffers 1 Mortal Wound.</td></tr><tr><td>5</td><td><strong>Hung Up:</strong> The vehicle's Manoeuvrability is reduced by half until the end of the next Round.</td></tr><tr><td>6</td><td><strong>Tumble:</strong> All occupants suffer 1 Shock.</td></tr></table></div>"
+    },
+    "xenos_tech": {
+      "name": "Xenos Tech",
+      "source": "church",
+      "page": 47,
+      "description": "Each Species in the Gilead System has its own unique technology that operates on equally unique principles. The Imperium relies on appeasing Machine Spirits to ensure the proper function of their technology. The Aeldari control their vehicles through inhuman dexterity and psychic connection. Ork technology is said to function simply because they believe it will, regardless of the mechanics involved.<br><br>If you do not share any Keywords with a vehicle you are attempting to pilot, the DN for all Tests you make involving that vehicle is increased by +3. The GM may reduce this penalty over time as you gain familiarity with the vehicle, but you are unlikely to ever completely overcome the barriers of alien technology. Likewise, the GM may rule that some functions of a vehicle simply do not work for you if you do not share the requisite Keyword — and indeed, what right-thinking Imperial citizen would even wish to lay hands on a heretical alien device?"
+    },
+    "emergency_repair": {
+      "name": "Emergency Repair",
+      "source": "church",
+      "page": 48,
+      "description": "Use a Full-Round Action to attempt a quick, temporary field repair on your vehicle. If you have the relevant tools and materials available, make a Tech (Int) Test to remove 1 Wound from the vehicle or to repair one of its damaged components. The GM assigns the DN depending on the complexity of the repair, which by default is equal to the vehicle's Rarity +2. The GM may allow you +1 bonus dice to the Test for each Keyword you share.<br><br>A component repaired in this way breaks again after 1 hour or if it is damaged again. Repaired Wounds are not temporary, but the GM is free to limit the total number of Wounds that can be removed before materials run out or the vehicle's structure is simply too compromised to support further repairs. See page 55 for additional information on repairing vehicles."
+    },
+    "evasive_manoeuvres": {
+      "name": "Evasive Manoeuvres",
+      "source": "church",
+      "page": 48,
+      "description": "Use both your Combat and Simple Actions to make a DN 3 Pilot (A) Test to gain +1 Defence until the end of the Round. Each Shifted Exalted Icon adds +1 additional Defence. You can also use Evasive Manoeuvres as a Reflexive Action if the vehicle has the Flyer, Hover, or Bike Trait. In either case, the vehicle must have moved during the round before you can use Evasive Manoeuvres."
+    },
+    "line_up_the_shot": {
+      "name": "Line Up the Shot",
+      "source": "church",
+      "page": 48,
+      "description": "Use both your Combat and Simple Actions to make a DN 3 Pilot (A) Test. You gain +1 bonus die to Attack Tests made by anyone in or on the vehicle until the end of the Round. Each Shifted Exalted Icon adds +1 additional bonus die to each Attack Test. The vehicle must have moved during this round before you can use the Line Up the Shot Action."
+    },
+    "the_bigger_they_are": {
+      "name": "Optional Rule: The Bigger They Are…",
+      "source": "church",
+      "page": 48,
+      "description": "In most circumstances, the specific design of a vehicle isn't important for the narrative. However, a Space Marine in Terminator Armour takes up much more room than your average Human, and the stark discrepancy in size between a Ratling and an Ogryn may mean that there are some inconsistencies in vehicle rules for your games of Wrath &amp; Glory.<br><br>As a general rule, the values of a vehicle's Crew Complement are based on their intended occupants and cannot accommodate anyone larger than that.<br><br>For example, a Land Raider's 10 Passengers can be Adeptus Astartes or anything smaller (Human, Ratling, even Aeldari), but anything larger takes up two spaces. A Chimera could carry 12 Human Passengers, but only 6 Astartes. A Land Raider could carry 10 Astartes or 10 Ratlings, but only 5 Ogryns — if they could be coerced into ignoring the hereditary claustrophobia of their Species, that is."
+    },
+    "open_fire": {
+      "name": "Open Fire",
+      "source": "church",
+      "page": 50,
+      "description": "Use your Combat Action to fire any one vehicle-mounted weapon. You cannot fire a weapon that has already been fired by another character this Round."
+    },
+    "ram": {
+      "name": "Ram",
+      "source": "church",
+      "page": 50,
+      "description": "The vehicle must have moved during this Round before you can use the Ram Action. If the vehicle physically intercepts a target while moving, you can use your Combat Action to make a Pilot (A) Test to attempt to Ram the target. The DN for the Test is equal to the target's Defence. If the Test is successful, the target takes damage as if hit by a melee weapon with a Damage Value equal to the vehicle's Max Wounds. You can Shift Exalted Icons to add +1 ED per Shifted Icon. If you Ram while using Breakneck Speed, add +5 ED to the damage.<br><br>The Ramming vehicle also takes damage as if hit by a melee weapon with a Damage Value equal to the target's Max Wounds, adding +5 ED if the Ramming vehicle was using Breakneck Speed. Shifted Exalted Icons do not add to the damage inflicted on the Ramming vehicle.<br><br>Regardless of whether the Test succeeds or fails, the vehicle ends its Movement for the Round if the target is not destroyed. If the target is destroyed, the vehicle can continue to move through the target up to its remaining Speed for the Round, though the GM may rule that the vehicle's remaining Speed that Round is reduced, if appropriate.<br><br>If either vehicle suffers 3 or more Wounds as a result of the Ram attack, rather than rolling on the Vehicle Damage table, it is automatically Shaken, as described in the Vehicle Damage table on page 54.<br><br><strong>Example:</strong> Livia and her warband are still in hot pursuit of the Genestealer Cult, but nearly all their weapons are out of Ammo and their Multi-Laser has been disabled. She decides to Ram the Achilles Ridgerunner with the Chimera to ensure the vile xenos do not escape.<br><br>The Achilles Ridgerunner has a Manoeuvrability of 4, and the driver's Initiative is 5, so the DN of Livia's Pilot (A) Test is 4. She rolls the following: 2, 3, 4, 5, 5. A success! The Achilles Ridgerunner takes 15 Wounds (the maximum Wounds of the Chimera) and is destroyed. The Chimera takes 12 Wounds (the maximum Wounds of the Achilles Ridgerunner) and is badly battered, but not destroyed.<br><br>As the Ram attack dealt 3 or more Wounds, the Chimera is Jolted, meaning Livia must make an impossible DN 12 Pilot (A) Test! The GM rules that the vehicle continues to careen forward at ramming speed, and the warband are still in peril!<br><br>Ramming a stationary object is treated as above, and its Defence is 1. The GM determines the object's Resilience and Wounds using the Resilience bonuses given on page 189 of the Wrath &amp; Glory Rulebook as guidance."
+    },
+    "vehicle_ammo": {
+      "name": "Vehicle Ammo",
+      "source": "church",
+      "page": 50,
+      "description": "Vehicles have their own Ammo points. A vehicle has storage for 10 points of Ammo for each of its weapons, and these stores can be replenished in the same ways in which Agents can replenish their personal Ammo stores. Normally Vehicle Ammo cannot be used to reload personal weapons, though the GM should use their discretion."
+    },
+    "reload": {
+      "name": "Reload",
+      "source": "church",
+      "page": 50,
+      "description": "A Simple Action is needed to reload a vehicle-mounted weapon."
+    },
+    "high_speed_tactics": {
+      "name": "High-Speed Tactics",
+      "source": "church",
+      "page": 50,
+      "description": "Quick-moving vehicles of any Faction are wise to use their Speed to outmanoeuvre and outrun their enemies. Their Speed allows them to move swiftly into weapons range, strike the enemy, then move away to cover or beyond before the enemy can even respond. Indeed, Aeldari Pilots in particular pride themselves on their expedient hit-and-run tactics, exploiting their superior Speed and Manoeuvrability to completely blindside their enemies, then zoom away as quickly as they arrived.<br><br>This can be frustrating, especially when playing on a tactical grid, as some of the faster-moving vehicles can easily cover enough distance in a Turn to take them off the map, possibly well beyond a weapon's range. In these cases, when the disparity in vehicle Speeds is so drastically different, the Crew of the slower vehicle can hold their Actions to reflexively open fire on the enemy vehicle once it moves within range.<br><br>This is perhaps not the most proactive approach to combat, but when the enemy commands the battlefield, the cunning warrior must adapt. If characters cannot outrun their enemies, then they'd best hope they can outgun them when the opportunity arrives. The same holds true for infantry engaged with fast-moving vehicles. A squad of Space Marines is likely to seek cover and wait for Aeldari Jetbikes to make another pass, then unleash a storm of holy Bolter fire. As the GM, if you are presenting a scenario with vastly different Speeds due to vehicles, it is recommended you take a moment and point this out to your players so that the engagement doesn't seem impossible."
+    },
+    "attacking_from_a_vehicle": {
+      "name": "Attacking from a Vehicle",
+      "source": "church",
+      "page": 51,
+      "description": "When attacking from a vehicle in motion, add +2 to the DN of the Attack Test, or +1 for vehicle-mounted weapons. A vehicle is in motion if it moved during the previous or current Turn without specifically coming to a stop at the end of its Movement.<br><br>When a character fires vehicle-mounted weapons, ranged attack options (see the Wrath &amp; Glory Rulebook, page 189) can be applied as normal unless otherwise noted. Vehicle-mounted weapons do not suffer the penalty from the Heavy Weapon Trait."
+    },
+    "attacking_a_vehicles_occupants": {
+      "name": "Attacking a Vehicle's Occupants",
+      "source": "church",
+      "page": 51,
+      "description": "The GM determines if targets within a vehicle are visible from the outside based on its structure and your relative position to the target. If you are visible to external threats, you can be targeted by attacks and other effects as normal, though the GM may require a Called Shot. The Called Shots against Vehicle Occupants table, page 53, provides guidance on how different situations might affect the DN of the a Called Shot. You cannot see targets within a vehicle with the Sealed Trait if its hatches and ports are closed. Characters in a vehicle with the Open Topped Trait are always at least partially visible.<br><br>If a vehicle is hit by a weapon with the Blast or Flamer Trait, its occupants are also targets of the attack (even if they are out of sight) unless the vehicle has the Sealed Trait and its hatches and ports are closed. Resolve this attack using your Defence, Resilience, and other statistics as normal."
+    },
+    "vehicle_defence": {
+      "name": "Vehicle Defence",
+      "source": "church",
+      "page": 52,
+      "description": "While in motion, the vehicle's Defence score is equal to the Pilot's Initiative or the vehicle's Manoeuvrability, whichever is lower. A skilled Pilot can make even the clunkiest machine more agile up to a limit, but a slim, fast-moving Jetbike is almost always a harder target to hit than a super heavy tank.<br><br>A vehicle's Defence can be further modified by other factors, such as environmental conditions and Wargear. A vehicle's Manoeuvrability while stationary is 1. When attacked, a vehicle's Pilot can use their Reflexive Action to make Evasive Manoeuvres, potentially increasing their Defence (see page 48).<br><br><strong>Example:</strong> Cassandra's Aeldari Corsair, Kylesa, has amazing reflexes, as represented by her Initiative score of 6. Her Jetbike has a Manoeuvrability score of 8, indicating that the vehicle has massive potential for avoiding harm, even beyond what Kylesa can hope to achieve while piloting it. Kylesa's reflexes aren't prodigious enough to utilise the Jetbike's full potential, however, so the vehicle's Defence is 6, as her Initiative is the lower of the two values. When not moving, the vehicle's Defence defaults to 1.<br><br>Alternatively, if Cliff's Human Missionary with an Initiative of 4 pilots a Rhino transport with a Manoeuvrability of 3, the vehicle's Defence is 3 while moving, as the vehicle's Manoeuvrability is the lower of the two values. While stationary, the Rhino's Defence defaults to 1."
+    },
+    "damaged_vehicles": {
+      "name": "Damaged Vehicles",
+      "source": "church",
+      "page": 52,
+      "description": "How you tackle that Ork Battlewagon bearing down on you is largely decided by whether you're on foot or behind the blessed steel of a Leman Russ. If you're unlucky enough to face off against a vehicle while on foot, the goal is typically to disable the vehicle and force its Crew out, where you surely have the advantage, or to eliminate the Crew. When two war machines go head-to-head, however, nothing is left other than the blasted hull of the loser. In Wrath &amp; Glory, this is achieved through infantry typically targeting the Crew (see page 51) or taking difficult Called Shots (see page 53) against vehicles, while vehicle-on-vehicle combat tends to opt for an explosive finale by inflicting Wounds.<br><br>Vehicles incur damage the same way characters do, except vehicles do not suffer Shock Damage and cannot use Determination. Arc and Melta weapons inflict additional damage to vehicles, though other weapon types may also have special effects when damaging vehicles. See Chapter 10: Wargear in the Wrath &amp; Glory Rulebook for more information.<br><br>If you score a Wrath Critical when attacking a vehicle, add +1 ED rather than any other Critical Effect. For each Glory you spend on the Critical, add +2 additional ED.<br><br>Whenever you inflict at least 1 Wound to a vehicle, roll once on the Vehicle Damage table (page 54) to determine if any other effects occur. After rolling, you can spend any number of Glory. Roll again once for each Glory spent, then choose one of the rolled results.<br><br>Once a vehicle suffers more Wounds than its Max Wounds, it is destroyed. For each Wound it suffers in excess of its Max Wounds, roll 1d6. If any die rolls a 6, the vehicle explodes as though it were the epicentre of a Blast weapon's attack. See the Vehicle Explosions table (page 55) to determine the blast size and Damage.<br><br>Riding in a vehicle while it is under fire can be a traumatic experience, especially when it begins to violently come apart or you are thrown around inside from impacts. When a vehicle suffers any number of Wounds, all of its occupants must make a Resolve Test with a DN equal to that number of Wounds. If you fail the Test, you are Hindered (1d3) and suffer 1d3 Shock."
+    },
+    "vehicles_and_conditions": {
+      "name": "Vehicles & Conditions",
+      "source": "church",
+      "page": 53,
+      "description": "Vehicles are immune to all but the following Conditions:<br><br><strong>Hindered</strong><br>Vehicles can become Hindered by Interaction Attacks using the Tech (Int) Skill, certain Wargear, the environment, or some of the rules in this chapter. When a vehicle is Hindered, all Tests made involving it have a DN penalty of +1 per Hindered Condition.<br><br><strong>On Fire</strong><br>Sealed vehicles with their hatches and ports closed fill with smoke at the beginning of the next Round. Characters not protected from smoke are Hindered until the smoke is vented (such as by opening hatches).<br><br><strong>Restrained</strong><br>Vehicles can become Restrained by certain Wargear and the environment. When a vehicle is Restrained, it cannot move and its Defence is reduced by 2. This decrease can affect the vehicle's Manoeuvrability.<br><br><strong>Vulnerable</strong><br>Vehicles can be made Vulnerable by Interaction Attacks using the Tech (Int) Skill, certain Wargear, the environment, or some of the rules in this chapter. While a vehicle is Vulnerable, it has −1 Defence. This does not decrease the vehicle's Manoeuvrability."
+    },
+    "out_of_control": {
+      "name": "Out of Control",
+      "source": "church",
+      "page": 53,
+      "description": "When a vehicle goes Out of Control, the Pilot cannot control the vehicle's Movement for the remainder of the Round. Roll 1d6 and consult the Scatter diagram (see the Wrath &amp; Glory Rulebook, page 186) to determine which direction the vehicle moves.<br><br>The vehicle moves half its Speed in that direction (regardless of how far it may have moved this Round). If the vehicle intercepts a Large-sized object or smaller, it Rams the object. If the Scatter die rolls a 1, the vehicle's Speed instead becomes 0 for the remainder of the Round."
+    },
+    "called_shots": {
+      "name": "Called Shots against Vehicles",
+      "source": "church",
+      "page": 53,
+      "description": "You can make a Called Shot to attack a specific component (including weapons) you can see on a vehicle. The DN of the Attack Test is determined by the target vehicle's Defence, but the GM should increase the DN by an amount appropriate for how difficult it is to hit the specific component (see the Vehicle Called Shot Difficulty table, page 54, for examples).<br><br>Called Shots against vehicles do not provide +ED unless the GM decides that the component is exceptionally vulnerable or fragile. The target uses the vehicle's normal Resilience. If you would normally inflict at least 1 Wound, you instead inflict no Wounds to the vehicle, but the component is damaged and rendered inoperable until it is repaired or replaced. If the component was already damaged, it is instead destroyed and must be replaced.<br><br>Because a vehicle itself does not suffer Wounds from a Called Shot, Agents should choose wisely when deciding between disabling a specific part of an enemy vehicle or dealing raw, indiscriminate damage.<br><br><div class='glossary-table-scroll'><table class='glossary-table'><caption>Called Shots against Vehicle Occupants</caption><tr><th>DN</th><th>Target</th></tr><tr><td>+1</td><td>Occupant less than half-concealed; riding in an Open Topped vehicle or in the passenger compartment of a transport with the boarding ramp down.</td></tr><tr><td>+2</td><td>Occupant half-concealed; standing up out of an open hatch or crewing a fortified, externally mounted weapon.</td></tr><tr><td>+3</td><td>Occupant mostly concealed; sitting in the interior, but visible through an open hatch.</td></tr><tr><td>+4</td><td>Occupant nearly completely concealed; only visible through a narrow porthole or gun port.</td></tr><tr><td>+5</td><td>Occupant virtually invisible; only visible through a hole in the vehicle's armour left by a lucky Autogun round.</td></tr></table></div><br><br><div class='glossary-table-scroll'><table class='glossary-table'><caption>Vehicle Called Shot Difficulty</caption><tr><th>DN</th><th>Target (Examples from Leman Russ Battle Tank)</th></tr><tr><td>+1</td><td>Battle Cannon, tracks on one side</td></tr><tr><td>+3</td><td>Top hatch, Vox Caster array, Searchlight, Smoke Launcher</td></tr><tr><td>+5</td><td>Coolant vent, engine exhaust pipe, Pilot's viewport</td></tr></table></div>"
+    },
+    "vehicle_damage": {
+      "name": "Vehicle Damage",
+      "source": "church",
+      "page": 54,
+      "description": "<div class='glossary-table-scroll'><table class='glossary-table'><caption>Vehicle Damage</caption><tr><th>d66 Roll</th><th>Effect</th></tr><tr><td>11–16</td><td>The vehicle suffers no additional effects.</td></tr><tr><td>21–22</td><td><strong>Shaken:</strong> The vehicle rocks dangerously. The Pilot must succeed on a Pilot (A) Test with a DN equal to the number of Wounds inflicted by the effect that caused this result. If the Test fails, the vehicle is Out of Control (see page 53).</td></tr><tr><td>23–24</td><td><strong>Crippled:</strong> One of the vehicle's legs, wheels, tracks, thrusters, or other means of locomotion is damaged until it is repaired or replaced. This reduces the vehicle's Speed and Manoeuvrability by half and increases the DN of all Pilot (A) Tests by +2. If this result occurs a second time, the vehicle is immobilized, though it is at the GM's discretion whether one component is destroyed outright or if all of the locomotive components have merely been damaged.</td></tr><tr><td>25–26</td><td><strong>Steering Malfunction:</strong> The vehicle's steering system is damaged and must be repaired, increasing the DN of all Pilot (A) Tests by +1 and reducing its Manoeuvrability by 1. If this result occurs a second time, the penalty increases to 3. If it occurs a third time, the vehicle cannot be steered and can only move in a straight line.</td></tr><tr><td>31–33</td><td><strong>Ammo Destroyed:</strong> The Ammo for one of the vehicle's weapons is destroyed or otherwise lost.</td></tr><tr><td>34–41</td><td><strong>Fuel Leak:</strong> The vehicle runs out of fuel in 1 hour. If this result occurs a second time, the vehicle runs out of fuel immediately and is immobilized. The leak persists until it is repaired. If the vehicle is On Fire or exposed to any source of flame, a Minor Explosion occurs (see below).</td></tr><tr><td>42–45</td><td><strong>Armour Breach:</strong> The vehicle's armour is partially compromised until it is repaired. Reduce its Resilience by 1 each time this result occurs.</td></tr><tr><td>44–51</td><td><strong>Fire:</strong> The vehicle becomes On Fire. Sealed vehicles with their hatches and ports closed also fill with smoke at the beginning of the next Round. Characters not protected from smoke are Hindered until the smoke is vented (such as by opening hatches). If the vehicle is also leaking fuel (see above), a Minor Explosion occurs (see below), and 1d3 of the vehicle's occupants (determined randomly or by the GM) must succeed on a DN 3 Initiative Test or become On Fire.</td></tr><tr><td>52–56</td><td><strong>Power Failure:</strong> Roll 1d6 at the beginning of each Round until the Power Failure is repaired. If the result is a 1, the vehicle loses power for the remainder of the Round. All Wargear, weapons, and components depending on the vehicle's power source are inoperable until power is restored.</td></tr><tr><td>61–63</td><td><strong>Weapon Damaged:</strong> One of the vehicle's weapons (determined randomly or by the GM) is rendered inoperable until it is repaired or replaced. If this result occurs a second time for a weapon that is already damaged, the weapon is destroyed.</td></tr><tr><td>64–65</td><td><strong>Minor Explosion:</strong> A small explosion occurs. The vehicle suffers 1 Mortal Wound.</td></tr><tr><td>66</td><td><strong>Major Explosion:</strong> A large explosion occurs. The vehicle suffers 2d3 Mortal Wounds.</td></tr></table></div>"
+    },
+    "repairing_vehicles": {
+      "name": "Repairing Vehicles",
+      "source": "church",
+      "page": 55,
+      "description": "While the Emergency Repair Action is an option to keep a vehicle functioning in combat, it is not an effective long-term solution. Given the proper tools and materials and at least 1 hour with a stationary vehicle, you can make a Tech (Int) Test to perform a permanent repair on a damaged vehicle component. The GM assigns the DN depending on the complexity of the repair and the system involved. Alternatively, you can instead make a DN 3 Tech (Int) Test to remove 1 Wound from the vehicle, removing 1 additional Wound for each Shift.<br><br>If a component is destroyed outright, it cannot be repaired and must instead be replaced. Replacing a component requires access to a garage, motor pool, or similar repair facility. At the GM's discretion, particularly well-stocked facilities can add 1 or 2 bonus dice to repair Tests. More information on repairs can be found in Chapter 7: The Workshop."
+    },
+    "vehicle_explosions": {
+      "name": "Vehicle Explosions",
+      "source": "church",
+      "page": 55,
+      "description": "<div class='glossary-table-scroll'><table class='glossary-table'><caption>Vehicle Explosions</caption><tr><th>Vehicle Size</th><th>Blast Size</th><th>Damage</th></tr><tr><td>Medium</td><td>Small</td><td>8</td></tr><tr><td>Large</td><td>Medium</td><td>10</td></tr><tr><td>Huge</td><td>Large</td><td>10 +2 ED</td></tr><tr><td>Gargantuan</td><td>Very Large</td><td>10 +4 ED</td></tr></table></div>"
+    },
+    "crash_and_burn": {
+      "name": "Optional Rule: Crash and Burn",
+      "source": "church",
+      "page": 55,
+      "description": "If a vehicle collides with an object or the ground while Out of Control, you can have the occupants each take at least 1 Mortal Wound (see the Wrath &amp; Glory Rulebook, page 193), depending on the severity of the crash. Likewise, if a Ram attack successfully inflicts Wounds on a vehicle, you may have that vehicle's occupants suffer at least 1 Mortal Wound, depending on the severity of the crash."
+    },
+    "built_to_last": {
+      "name": "Optional Rule: Built to Last",
+      "source": "church",
+      "page": 55,
+      "description": "Vehicles in Wrath &amp; Glory are undoubtedly useful and often powerful, but this utility is balanced by the fact that they are machines, and machines can break, especially when they are actively being torn apart by threats.<br><br>If you prefer vehicles in your game to be more reliable and less dangerous for their occupants, you can use this optional rule to ignore the Vehicle Damage table (page 54) and simply track Wounds. You may also choose to disallow Called Shots against specific vehicle components. In either case, a vehicle functions normally until it exceeds its Max Wounds, at which point it is disabled or destroyed. You may also elect to remove the chance for a destroyed vehicle to explode."
+    },
+    "ammo": {
+      "name": "Vehicle Ammo",
+      "source": "church",
+      "page": 60,
+      "description": "Vehicles have their own Ammo points. For each weapon, a vehicle can carry 10 points of Ammo, replenishable in the same ways Agents replenish their personal Ammo stores (Wrath &amp; Glory Rulebook, page 229).<br><br>Normally Vehicle Ammo cannot be used to reload personal weapons, though the GM should use their discretion. For example, a Leman Russ tank has Heavy Bolters, so ammo from this weapon might be useful to a Space Marine armed with a Heavy Bolter."
+    },
+    "twin_weapons": {
+      "name": "Twin Weapons",
+      "source": "church",
+      "page": 60,
+      "description": "Twin weapons consist of a pair of identical weapons linked to each other by a common targeting and firing system, and they are usually physically attached to each other. The result is twice the firepower without reducing accuracy.<br><br>When firing a twin weapon with a Salvo rating of 0–1, you make a Simultaneous Strike (Wrath &amp; Glory Rulebook, page 139) with the weapons even if they are not pistols, and even if you do not possess the Simultaneous Strike Talent.<br><br>When firing a twin weapon in which one of the weapons has a Salvo rating greater than 1, fire it as though you were firing the singular version of the weapon, but double its Salvo rating.<br><br><strong>Example:</strong> If Malcolm is firing his Land Raider's Twin Lascannon, he is able to Simultaneous Strike with the weapon, but the Salvo rating remains 1 (because a Lascannon has a Salvo rating less than 2). When James is firing a Twin Supa-Shoota on his Dakkajet, however, it is treated as a single Supa-Shoota with Salvo 8 (because a single Supa-Shoota has a Salvo rating greater than 1).<br><br>In either case, when assembling your dice pool for the Ballistic Skill (A) Test to hit, replace 1 additional die with a Wrath Die. A Wrath Critical is scored if at least 1 of the Wrath Dice results in a 6, and a Complication occurs if at least 1 of the Wrath Dice results in a 1. You cannot generate more than one Wrath Critical or Complication during your turn in this way. Reloading a twin-linked weapon array requires only a single Reload Action but consumes 2 Ammo.<br><br>• <strong>Salvo Rating 2+:</strong> Double the weapon's Salvo rating.<br>• <strong>Salvo Rating 0 or 1:</strong> If you succeed on your attack, double the weapon's Extra Damage (ED) Dice.<br><br>The statistics for twin weapons in later chapters take these changes into account."
+    },
+    "vehicle_characteristics": {
+      "name": "Vehicle Characteristics",
+      "source": "church",
+      "page": 62,
+      "description": "Vehicles in Wrath &amp; Glory have the following Attributes:<br><br><strong>Crew Complement:</strong> The number of available roles in the vehicle.<br><br><strong>Keywords:</strong> Descriptors of the vehicle's classification and function, and the Factions associated with it. A character must share at least one Keyword in common with a vehicle to make an Influence Test to requisition it. For every extra matching Keyword, the character gains +1 bonus die to their Influence Test.<br><br><strong>Manoeuvrability (Man):</strong> A measure of how manoeuvrable the vehicle is. This is used when determining the vehicle's Defence.<br><br><strong>Max Wounds (W):</strong> A measure of the vehicle's overall structural integrity. A vehicle is destroyed when it accumulates more Wounds than its Max Wounds. This functions like a character's Wounds.<br><br><strong>Rarity:</strong> How common a vehicle is. Rarity acts as a DN modifier on Influence Tests to acquire vehicles and on Tech (Int) Tests to install custom parts.<br><br><div class='glossary-table-scroll'><table class='glossary-table'><caption>Influence Modifier</caption><tr><th>Rarity</th><th>Description</th></tr><tr><td>1</td><td>Common</td></tr><tr><td>2</td><td>Uncommon</td></tr><tr><td>3</td><td>Rare</td></tr><tr><td>4</td><td>Very Rare</td></tr><tr><td>5</td><td>Unique</td></tr></table></div><br><br><strong>Resilience (Res):</strong> Like characters, vehicles have Resilience, which represents their ability to withstand damage. For most vehicles, this is a representation of their armoured exteriors.<br><br><strong>Size:</strong> The vehicle's Size category. Size mostly provides a sense of scale, but it is also a factor in determining the DN to hit the vehicle with an attack and the damage it causes during an explosion. Size categories are Medium (Med) for some bikes; Large, for Sentinels, War Walkers, and trucks; Huge for most tanks; and Gargantuan (Gtn) for the largest tanks.<br><br><strong>Speed (Spd):</strong> The standard speed of the vehicle in combat. This measures how far the vehicle can move in a Round without using Breakneck Speed, Turbo Boost, or similar options.<br><br><strong>Traits:</strong> Like weapons and armour, vehicles have Traits that grant situational abilities, benefits, and penalties.<br><br><strong>Value:</strong> How much the vehicle costs to acquire, or how much leverage is needed to requisition it. Value determines the base DN of an Influence Test to acquire a vehicle. See page 205 of the Wrath &amp; Glory Rulebook for more on requisitioning Wargear, including vehicles.<br><br><strong>Weapons:</strong> Any weapons mounted to the vehicle that can be operated by the occupants."
+    }
   }
 }

@@ -84,8 +84,8 @@ whose weapon exists only as several profile records carries `profileIds` in plac
 | `name` | The printed heading. A variant keeps the printed short title (`Crusader`) in `name`; the card shows the family through `variantOf`. The three Archaeopter entries store `Archaeopter <printed title>`, because they have no `variantOf` to carry the family. |
 | `faction` | One of 11 fixed strings, in title case: `Imperial`, `Adepta Sororitas`, `Adeptus Astartes`, `Adeptus Mechanicus`, `Aeronautica Imperialis`, `Astra Militarum`, `Aeldari`, `Chaos Space Marines`, `Drukhari`, `Necron`, `Ork`. The book prints the section headings in capitals. If a printed heading differs in wording from this list, the extractor reports it and the list is corrected before the build. |
 | `variantOf` | The family parent's `id` for a block that has no Value/Rarity line of its own, else `null`. Exception: the Archaeopter family (p. 79) has text and a Value but no block of its own, so its three blocks are top-level entries with `variantOf: null`, each carrying the family Value, Rarity, description and options. |
-| `description` | Verbatim text under the heading, before the Value line. A variant's own paragraph, where printed, goes here. A variant with no paragraph stores `null`, and the card shows the family's text instead (§4). |
-| `options` | Verbatim loadout paragraph after the Value line, or `null`. Lives on the parent only, except the Archaeopter case above. |
+| `description` | Verbatim text under the heading, before the Value line. A variant's own paragraph, where printed, goes here. A variant with no paragraph stores `null`, and the card shows the family's text instead (§4). A loadout paragraph printed before the Value line belongs to `description` by this positional rule (Chaos Predator, Nightshade Interceptor, Vyper, War Walker). |
+| `options` | Verbatim loadout paragraph after the Value line, or `null`. Lives on the parent only, except the Archaeopter case above. A paragraph that names several vehicles is printed once; the data copies it verbatim into the `options` of every top-level vehicle it names, so the reader of each named card sees it (the Rhino paragraph of p. 72 appears on six entries). A later text fix must change every copy. |
 | `value`, `rarity` | From the printed Value/Rarity line. A variant copies its family's values. Where the family prose overrides a variant (Tornado and Typhoon Value 12, Vanquisher Rare), the variant stores the override. |
 | `speed`, `manoeuvre`, `resilience`, `wounds` | Numbers from the `Spd / Man / Res / W` row. |
 | `size` | The book's own size word, from the Vehicle Characteristics rule (p. 62): `Med` → `Medium`, `Large` → `Large`, `Huge` → `Huge`, `Gtn` → `Gargantuan`. `threats.json` has no vehicle sizes, and `Medium` is not relabelled as the threat word `Average`. |
@@ -245,8 +245,8 @@ State lives in `bestiary/js/encounter-state.js`; rendering in `bestiary/tabs/enc
     an entry of the same faction with `variantOf: null`; the three overrides hold (Land Speeder
     Tornado and Typhoon `value` 12, Leman Russ Vanquisher `rarity` `Rare`).
   - No string in the new data starts with `[AI-Generated]`.
-  - `vehicleTraits` has the 12 keys; `vehicleRules` has the 35 required keys of Appendix B and at
-    most 37 entries.
+  - `vehicleTraits` has the 12 keys; `vehicleRules` has the 40 required keys of Appendix B and at
+    most 42 entries.
 - Cache busting: every `?v=` tag in `bestiary/index.html` (new tab script included); every `?v=` tag
   in `creator/index.html` for the Rules Reference change; the creator data `?v=` in
   `creator/js/web-api.js` for the glossary change.
@@ -278,7 +278,7 @@ entries by the §2.2 exception.
 Imperial, pp. 64–66: Achilles Ridgerunner, Avachrus Ridgerunner (64); Dirtcycle, Goliath Truck,
 Goliath Rockgrinder (65); Tauros, Tauros Venator, Wolfquad (66). Adepta Sororitas, pp. 67–68:
 Castigator, Exorcist (67); Immolator, Repressor, Adepta Sororitas Rhino (68). Adeptus Mechanicus,
-pp. 79–81: Archaeopter Fusilave†, Archaeopter Stratoraptor†, Archaeopter Transvector† (79; the
+pp. 79–81: Archaeopter Stratoraptor†, Archaeopter Fusilave†, Archaeopter Transvector† (79, in printed column order; the
 Archaeopter family text and Value sit on the page, with no block of their own); Onager Dunecrawler,
 Skorpius Disintegrator (80); Skorpius Dunerider, Ironstrider Ballistarius, Sydonian Dragoon (81).
 Aeronautica Imperialis, pp. 82–84: Aquila Lander, Arvus Lighter, Vulture Gunship (82); Valkyrie (84).
@@ -290,8 +290,8 @@ Vindicator, Whirlwind (75); Gladiator, Gladiator Reaper*, Gladiator Valiant* (76
 ATV (77); Repulsor, Repulsor Executioner* (78).
 
 **Group 3 — Astra Militarum (18), pp. 84–91.** Chimera (84); Hellhound, Devil Dog, Bane Wolf (85);
-Basilisk, Deathstrike, Hydra (86); Manticore, Wyvern, Leman Russ (87); Demolisher*, Punisher*,
-Eradicator*, Vanquisher* (88); Scout Sentinel, Armoured Sentinel (89); Taurox, Taurox Prime (91).
+Basilisk, Deathstrike, Hydra (86); Manticore, Wyvern, Leman Russ (87); Demolisher*, Eradicator*,
+Punisher*, Vanquisher* (88, in printed column order); Scout Sentinel, Armoured Sentinel (89); Taurox, Taurox Prime (91).
 
 **Group 4 — Aeldari (10), Drukhari (4), Necron (6).** Aeldari, pp. 92–96: Aeldari Jetbike (92);
 Falcon, Fire Prism*, Firestorm*, Night Spinner* (93); Wave Serpent*, Hemlock Wraithfighter (94);
@@ -311,7 +311,7 @@ the 107 minus 86.
 
 ## Appendix B — Rules entries for `vehicleRules`
 
-One entry per key. The 35 plain keys are required. The two keys marked † exist only when the book
+One entry per key. The 40 plain keys are required. The two keys marked † exist only when the book
 prints text under that section heading before its first sub-heading; the extractor decides from the
 page. "Vehicle Weapons" (p. 60) gets no entry of its own: its other text is Workshop content. A table
 belongs to the entry under whose heading it is printed; the Example Pilot Tests table and the
@@ -329,32 +329,37 @@ printed; where the table below gives a range, the extractor records the exact pa
 | `orks_build_tuff` | Orks Build Tuff | 31 |
 | `green_wunz_only` | Green Wunz Only | 31 |
 | `interacting_with_vehicles` † | Interacting with Vehicles | 44 |
-| `embarking` | Embarking | 44 |
-| `actions_inside` | Actions Inside | 44–45 |
-| `complications` | Complications (with its table) | 44–45 |
+| `embarking` | Embarking & Disembarking | 44 |
+| `actions_inside` | Actions Inside a Vehicle | 44–45 |
+| `complications` | Vehicle Complications (with its table) | 44–45 |
+| `movement_on_a_vehicles_exterior` | Movement on a Vehicle's Exterior | 44 |
 | `vehicle_roles` | Vehicle Roles (with the Pilot, Crew and Passenger actions table) | 45–46 |
 | `vehicle_actions` † | Vehicle Actions | 46 |
 | `drive` | Drive | 46–50 |
 | `brace_for_impact` | Brace for Impact | 46–50 |
 | `breakneck_speed` | Breakneck Speed | 46–50 |
+| `xenos_tech` | Xenos Tech | 47 |
 | `emergency_repair` | Emergency Repair | 46–50 |
 | `evasive_manoeuvres` | Evasive Manoeuvres | 46–50 |
 | `line_up_the_shot` | Line Up the Shot | 46–50 |
+| `the_bigger_they_are` | Optional Rule: The Bigger They Are… | 48 |
 | `open_fire` | Open Fire | 46–50 |
 | `ram` | Ram | 46–50 |
+| `vehicle_ammo` | Vehicle Ammo | 50 |
 | `reload` | Reload | 46–50 |
 | `high_speed_tactics` | High-Speed Tactics | 50 |
 | `attacking_from_a_vehicle` | Attacking from a Vehicle | 51 |
 | `attacking_a_vehicles_occupants` | Attacking a Vehicle's Occupants | 51 |
 | `vehicle_defence` | Vehicle Defence | 52 |
 | `damaged_vehicles` | Damaged Vehicles | 52 |
-| `vehicles_and_conditions` | Vehicles and Conditions | 53 |
-| `called_shots` | Called Shots (with the two DN tables) | 53–54 |
+| `vehicles_and_conditions` | Vehicles & Conditions | 53 |
+| `out_of_control` | Out of Control | 53 |
+| `called_shots` | Called Shots against Vehicles (with the two DN tables) | 53–54 |
 | `vehicle_damage` | Vehicle Damage (the d66 table) | 54 |
 | `repairing_vehicles` | Repairing Vehicles | 55 |
 | `vehicle_explosions` | Vehicle Explosions (with its table) | 55 |
-| `crash_and_burn` | Crash and Burn | 55 |
-| `built_to_last` | Built to Last | 55 |
-| `ammo` | Ammo | 60 |
+| `crash_and_burn` | Optional Rule: Crash and Burn | 55 |
+| `built_to_last` | Optional Rule: Built to Last | 55 |
+| `ammo` | Vehicle Ammo | 60 |
 | `twin_weapons` | Twin Weapons | 60 |
 | `vehicle_characteristics` | Vehicle Characteristics (with the Influence Modifier table) | 62 |

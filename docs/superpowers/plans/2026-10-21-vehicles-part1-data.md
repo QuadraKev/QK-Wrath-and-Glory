@@ -101,7 +101,7 @@ Part 2 reads exactly these paths and shapes. Task 1.15 commits them.
 **`data/glossary.json`** gets two new top-level sections after `psychicPowers`:
 
 - `vehicleTraits`: exactly 12 keys, in this order: `all_terrain`, `amphibious`, `bike`, `flyer`, `gun_ports`, `gyro_stabilised`, `hover`, `open_topped`, `reliable`, `sealed`, `turbo_boost`, `walker`.
-- `vehicleRules`: the 35 required keys of spec Appendix B, plus `interacting_with_vehicles` and `vehicle_actions` when the book prints text under those headings, in Appendix B order. Part 2 deep-links `vehicle_damage` and `twin_weapons`.
+- `vehicleRules`: the 40 required keys of spec Appendix B, plus `interacting_with_vehicles` and `vehicle_actions` when the book prints text under those headings, in Appendix B order. Part 2 deep-links `vehicle_damage` and `twin_weapons`.
 - Every entry is `{ name, source: "church", page, description }`. The `description` is HTML in the glossary convention: `<br><br>`, `<strong>`, `<em>`, `&amp;`, and `<table class='glossary-table'>` inside `<div class='glossary-table-scroll'>`.
 
 **Trait chip key.** A trait string opens `vehicleTraits[traitKey(text)]`. The test makes sure that every trait of every vehicle has an entry under this rule:
@@ -551,9 +551,9 @@ const RULES = [
     ['vehicle_characteristics', 'Vehicle Characteristics', 62, 62, true]
 ];
 const ruleKeys = Object.keys(vehicleRules);
-check('Appendix B lists 35 required keys', RULES.filter(r => r[4]).length, 35);
-check('vehicleRules has the 35 required keys', RULES.filter(r => r[4] && !ruleKeys.includes(r[0])).map(r => r[0]), []);
-check('vehicleRules has at most 37 entries', ruleKeys.length <= 37, true);
+check('Appendix B lists 40 required keys', RULES.filter(r => r[4]).length, 40);
+check('vehicleRules has the 40 required keys', RULES.filter(r => r[4] && !ruleKeys.includes(r[0])).map(r => r[0]), []);
+check('vehicleRules has at most 42 entries', ruleKeys.length <= 42, true);
 check('every vehicleRules key is an Appendix B key', ruleKeys.filter(k => !RULES.some(r => r[0] === k)), []);
 check('vehicleRules names match Appendix B',
     RULES.filter(([k, name]) => k in vehicleRules && vehicleRules[k].name !== name).map(r => r[0]), []);
@@ -2002,7 +2002,7 @@ If git reports `index.lock`, another task is committing at the same time. Run th
 
 **Interfaces:**
 - Consumes: the renders and `build/check-fragment.js` (Task 1.2).
-- Produces: `fragments/vehicle-rules.json`, an object of 35 to 37 entries `{ name, source, page, description }`, keyed by the keys of Step 4. The build (Task 1.10) writes it as `glossary.vehicleRules`.
+- Produces: `fragments/vehicle-rules.json`, an object of 40 to 42 entries `{ name, source, page, description }`, keyed by the keys of Step 4. The build (Task 1.10) writes it as `glossary.vehicleRules`.
 
 The executor sends this whole task to the agent as its brief.
 
@@ -2129,7 +2129,7 @@ Rules for this table:
 - An entry holds the text under its heading. It ends at the next heading that this table lists as a key, or at the next heading of the same or a higher level, whichever comes first.
 - A heading of that level that this table does not list (for example another section on pp. 29 to 31) belongs to no entry. Leave out that heading and its text, and report the heading with its page.
 - A lower-level sub-heading inside an entry that this table does not list stays in the entry as a `<strong>` sub-heading.
-- The 35 keys without a note "conditional" are required.
+- The 40 keys without a note "conditional" are required.
 - Write a conditional key only when the book prints text (or a table) under that section heading before its first sub-heading. Report your decision for each of the two.
 - A table belongs to the entry under whose heading it is printed. The Example Pilot Tests table and the Vehicle Complications d6 table (pp. 46 to 50) go to the action entry that they sit under, or to `vehicle_actions` when they sit under the section heading itself.
 - "Vehicle Weapons" (p. 60) gets no entry of its own. Transcribe only its "Ammo" and "Twin Weapons" parts, as `ammo` and `twin_weapons`. The rest of p. 60 is Workshop content; leave it out. The Workshop chapter (pp. 56 to 59) is out of scope.
@@ -2141,7 +2141,7 @@ Rules for this table:
 
 Run: `wsl -e bash -c 'cd /root/projects/.QK-Wrath-and-Glory-reference/work/vehicles && node build/check-fragment.js fragments/vehicle-rules.json'`
 
-Expected: `Entries: 35`, `36` or `37`, then the `Keys in order:` line, then `PROBLEMS: none`. Fix each problem and run the checker again.
+Expected: `Entries: 40`, `41` or `42`, then the `Keys in order:` line, then `PROBLEMS: none`. Fix each problem and run the checker again.
 
 - [ ] **Step 6: Report**
 
@@ -2984,7 +2984,7 @@ The page is the truth; the data is the suspect. Do not guess. Edit no file excep
 
 Run: `wsl -e bash -c 'cd /root/projects/.QK-Wrath-and-Glory-reference/work/vehicles && tail -q -n 1 build/verify-*.md'`
 
-Expected: six lines of the form `Checked <N> entries, <M> mismatches.` N is 25, 23, 18, 20 and 21 for the groups. N is 47 to 49 for the glossary (12 traits and 35 to 37 rules).
+Expected: six lines of the form `Checked <N> entries, <M> mismatches.` N is 25, 23, 18, 20 and 21 for the groups. N is 52 to 54 for the glossary (12 traits and 40 to 42 rules).
 
 - [ ] **Step 4: Commit the reports to the work repo**
 

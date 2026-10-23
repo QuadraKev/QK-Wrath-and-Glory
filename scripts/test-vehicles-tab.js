@@ -282,7 +282,7 @@ async function main() {
         check('a stale weapon id counts as unresolved',
             VehiclesTab.buildWeaponRows({ text: 'Old Gun', weaponId: 'no_such_weapon', count: 1 })[0].resolved, false);
         check('an empty weapons box shows a dash and no table',
-            [VehiclesTab.renderWeaponsTable([]).includes('<table'), VehiclesTab.renderWeaponsTable([]).includes('-')], [false, true]);
+            [VehiclesTab.renderWeaponsTable([]).includes('<table'), VehiclesTab.renderWeaponsTable([]).includes('vehicle-none">-</div>')], [false, true]);
 
         // Wargear lines
         const smoke = DataLoader.getAllEquipment().find(e => e.id === 'cos_smoke_launcher');

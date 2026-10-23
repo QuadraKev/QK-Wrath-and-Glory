@@ -149,6 +149,50 @@ async function main() {
             [filtered.length, filtered.every(e => e.category === 'vehicleRules')], [ruleKeys.length, true]);
     }
 
+    // --- Data loader: vehicles.json and its accessors (Task 2.2) ---
+    {
+        bestiary.window = { api: { loadGameData: async (filename) => readJson(`data/${filename}`) } };
+        const gameData = await DataLoader.loadAll();
+        const fileVehicles = readJson('data/vehicles.json');
+        check('loadAll maps vehicles.json to gameData.vehicles', gameData.vehicles.length, fileVehicles.length);
+        check('the vehicles keep the file order', gameData.vehicles[0].id, fileVehicles[0].id);
+        check('the injuries file keeps its slot', Array.isArray(gameData.injuriesCorruption.mutations), true);
+        check('getVehicles returns the 107 cached vehicles', DataLoader.getVehicles().length, 107);
+        check('getVehicle finds the Chimera', DataLoader.getVehicle('chimera').name, 'Chimera');
+        check('getVehicle returns undefined for an unknown id', DataLoader.getVehicle('no_such_vehicle'), undefined);
+
+        const crusader = DataLoader.getVehicle('land_raider_crusader');
+        check('a variant shows its family in the display name', DataLoader.getVehicleDisplayName(crusader), 'Crusader (Land Raider)');
+        check('a top-level vehicle shows its own name', DataLoader.getVehicleDisplayName(DataLoader.getVehicle('chimera')), 'Chimera');
+        check('an Archaeopter block is top-level and keeps its stored name',
+            DataLoader.getVehicleDisplayName(DataLoader.getVehicle('archaeopter_fusilave')), 'Archaeopter Fusilave');
+        check('a variant whose name contains the family name shows the name alone',
+            DataLoader.getVehicleDisplayName(DataLoader.getVehicle('land_speeder_tornado')), 'Land Speeder Tornado');
+        check('a variant whose name lacks the family name shows the family',
+            DataLoader.getVehicleDisplayName(DataLoader.getVehicle('attack_bike')), 'Attack Bike (Assault Bike)');
+        const wrongNames = DataLoader.getVehicles()
+            .filter(v => v.variantOf)
+            .filter(v => {
+                const familyName = DataLoader.getVehicle(v.variantOf).name;
+                const expected = v.name.includes(familyName) ? v.name : `${v.name} (${familyName})`;
+                return DataLoader.getVehicleDisplayName(v) !== expected;
+            })
+            .map(v => v.id);
+        check('every variant follows the display-name rule', wrongNames, []);
+        check('a variant with a missing family falls back to its own name',
+            DataLoader.getVehicleDisplayName({ name: 'Crusader', variantOf: 'no_such_family' }), 'Crusader');
+        check('a missing vehicle has an empty display name', DataLoader.getVehicleDisplayName(undefined), '');
+
+        const sources = DataLoader.getAllSources();
+        check('getAllSources lists Church of Steel once', sources.filter(s => s === 'Church of Steel').length, 1);
+        check('getAllSources never lists the short id', sources.includes('church'), false);
+        const allThreats = DataLoader.cache['threats.json'];
+        DataLoader.cache['threats.json'] = allThreats.filter(t => t.source !== 'Church of Steel');
+        check('the Church of Steel button stays without the Church of Steel threat',
+            DataLoader.getAllSources().includes('Church of Steel'), true);
+        DataLoader.cache['threats.json'] = allThreats;
+    }
+
     // --- end of checks ---
 }
 

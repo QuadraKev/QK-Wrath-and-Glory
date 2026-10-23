@@ -153,6 +153,81 @@ async function main() {
             [{ id: 'v-old', vehicleId: 'retired_vehicle', wounds: 4, initiative: 4 }]);
     }
 
+    // --- Encounter rows and detail panel (Task 2.5) ---
+    {
+        // escapeHtml() needs document.createElement; the panel renderers need a container
+        sandbox.document = {
+            createElement() {
+                let text = '';
+                return {
+                    set textContent(value) { text = String(value); },
+                    get innerHTML() { return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+                };
+            }
+        };
+        const makeContainer = () => ({ innerHTML: '', querySelector: () => null, querySelectorAll: () => [] });
+        DataLoader.cache['glossary.json'] = readJson('data/glossary.json');
+        DataLoader.cache['weapons.json'] = readJson('data/weapons.json');
+        DataLoader.cache['equipment.json'] = readJson('data/equipment.json');
+        load('bestiary/js/glossary.js');
+        load('bestiary/tabs/vehicles-tab.js');
+        load('bestiary/tabs/encounter-tab.js');
+        vm.runInContext('Glossary', sandbox).data = DataLoader.cache['glossary.json'];
+        const EncounterTab = vm.runInContext('EncounterTab', sandbox);
+        const chimera = DataLoader.getVehicle('chimera');
+        const max = chimera.wounds;
+        const rowFor = (id) => EncounterState.getEncounterListItems().find(item => item.id === id);
+
+        // List row
+        EncounterState.clearEncounter();
+        const rowId = EncounterState.addVehicle('chimera');
+        let html = EncounterTab.renderEncounterItem(rowFor(rowId));
+        check('a vehicle row renders through renderEncounterItem', html.includes('data-type="vehicle"'), true);
+        check('the row shows the display name', html.includes(DataLoader.getVehicleDisplayName(chimera)), true);
+        check('the row shows damage taken over Max Wounds', html.includes(`>0/${max}<`), true);
+        check('the row has a - and a + wound button', (html.match(/class="vehicle-wound-btn"/g) || []).length, 2);
+        check('the row has the initiative input and the remove button',
+            html.includes('class="initiative-input"') && html.includes('data-type="vehicle" title="Remove"'), true);
+        check('the row has no bonus, shock, ruin or duplicate control', /bonus-select|shock-btn|ruin-btn|duplicate-btn/.test(html), false);
+        EncounterState.updateVehicleWounds(rowId, max + 1);
+        html = EncounterTab.renderEncounterItem(rowFor(rowId));
+        check('a destroyed vehicle row uses the dead styling', /class="encounter-item vehicle-item[^"]*\bdead\b/.test(html), true);
+
+        EncounterState.loadFromData({ vehicles: [{ id: 'v-gone', vehicleId: 'retired_vehicle', wounds: 2, initiative: null }] });
+        html = EncounterTab.renderEncounterItem(rowFor('v-gone'));
+        check('an unknown vehicle row says Unknown vehicle', html.includes('Unknown vehicle'), true);
+        check('an unknown vehicle row shows no Max Wounds', html.includes('>2/-<'), true);
+
+        // Detail panel
+        EncounterTab.selectedId = 'v-gone';
+        EncounterTab.selectionType = 'vehicle';
+        let panel = makeContainer();
+        EncounterTab._renderDetailContent(panel);
+        check('an unknown vehicle panel says Vehicle data not found', panel.innerHTML.includes('Vehicle data not found'), true);
+
+        EncounterState.clearEncounter();
+        const panelId = EncounterState.addVehicle('chimera');
+        EncounterTab.selectedId = panelId;
+        panel = makeContainer();
+        EncounterTab._renderDetailContent(panel);
+        check('the panel names the vehicle', panel.innerHTML.includes(`<h3>${DataLoader.getVehicleDisplayName(chimera)}</h3>`), true);
+        check('the panel has the Wounds controls', (panel.innerHTML.match(/vehicle-detail-wound-btn/g) || []).length, 2);
+        check('the panel shows damage over Max Wounds', panel.innerHTML.includes(`0 / ${max}`), true);
+        check('the panel links the Vehicle Damage rule', panel.innerHTML.includes('href="#glossary/vehicleRules-vehicle_damage"'), true);
+        check('the panel holds the compressed card', panel.innerHTML.includes('Vehicle Stats') && panel.innerHTML.includes('vehicle-stat-strip'), true);
+        EncounterState.updateVehicleWounds(panelId, max + 1);
+        panel = makeContainer();
+        EncounterTab._renderDetailContent(panel);
+        check('a destroyed vehicle panel shows DESTROYED', panel.innerHTML.includes('DESTROYED'), true);
+
+        // The list's remove button clears the selection
+        EncounterTab.renderEncounterList = () => {};
+        EncounterTab.renderDetail = () => {};
+        EncounterTab.handleDelete(panelId, 'vehicle');
+        check('handleDelete removes the vehicle', EncounterState.getVehicle(panelId), undefined);
+        check('handleDelete clears the selection', [EncounterTab.selectedId, EncounterTab.selectionType], [null, null]);
+    }
+
     // --- end of checks ---
 }
 

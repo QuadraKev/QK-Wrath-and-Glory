@@ -261,11 +261,26 @@ const Glossary = {
             armorTrait: 'armorTraits',
             characterTerm: 'characterTerms',
             psychicPower: 'psychicPowers',
-            keyword: 'keywords'
+            keyword: 'keywords',
+            vehicleTrait: 'vehicleTraits',
+            vehicleRule: 'vehicleRules'
         };
         const category = typeToCategory[type];
         const block = category && this.data[category];
         return block && block[key] ? block[key] : null;
+    },
+
+    // Open the popup for one entry by type + key, pinned as a clicked term is. Card chips
+    // (keywords, vehicle traits, the Twin marker) use it: vehicleTraits and vehicleRules are not
+    // in buildTermMap, so no inline term exists for them. The caller's click handler must call
+    // e.stopPropagation(), or the document click handler closes the popup at once.
+    showEntryPopup(type, key, anchorElement) {
+        const entry = this.getEntry(type, key);
+        if (!entry) return false;
+        this.closeAllPopups();
+        this._pinned = true;
+        this.showPopup([{ ...entry, type, key }], anchorElement, key);
+        return true;
     },
 
     // Human-readable label for a span/category type. Single source of truth for
@@ -284,6 +299,8 @@ const Glossary = {
         if (type === 'equipment') return 'Equipment';
         if (type === 'archetype') return 'Archetype';
         if (type === 'species') return 'Species';
+        if (type === 'vehicleTrait') return 'Vehicle Trait';
+        if (type === 'vehicleRule') return 'Vehicle Rule';
         return 'Term';
     },
 

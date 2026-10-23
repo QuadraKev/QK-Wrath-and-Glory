@@ -72,7 +72,11 @@ const GlossaryTab = {
             { key: 'terms', name: 'Game Rule', pluralName: 'Game Rules and Terms' },
             { key: 'weaponTraits', name: 'Weapon Trait', pluralName: 'Weapon Traits' },
             { key: 'armorTraits', name: 'Armor Trait', pluralName: 'Armor Traits' },
-            { key: 'keywords', name: 'Keyword', pluralName: 'Keywords' }
+            { key: 'keywords', name: 'Keyword', pluralName: 'Keywords' },
+            // Some vehicle keys repeat older keys (flyer is also a keyword, reliable a weapon trait),
+            // so these ids carry the section prefix, in the bestiary's `<section>-<key>` form.
+            { key: 'vehicleTraits', name: 'Vehicle Trait', pluralName: 'Vehicle Traits', prefixId: true },
+            { key: 'vehicleRules', name: 'Vehicle Rule', pluralName: 'Vehicle Rules', prefixId: true }
         ];
 
         for (const cat of categories) {
@@ -80,7 +84,7 @@ const GlossaryTab = {
             if (categoryData) {
                 for (const [id, entry] of Object.entries(categoryData)) {
                     this.allEntries.push({
-                        id: id,
+                        id: cat.prefixId ? `${cat.key}-${id}` : id,
                         name: entry.name,
                         description: entry.description,
                         source: entry.source || null,
@@ -177,7 +181,7 @@ const GlossaryTab = {
     // Group entries by category
     groupByCategory(entries) {
         const groups = new Map();
-        const categoryOrder = ['characterTerms', 'conditions', 'combatTerms', 'terms', 'weaponTraits', 'armorTraits', 'keywords'];
+        const categoryOrder = ['characterTerms', 'conditions', 'combatTerms', 'terms', 'weaponTraits', 'armorTraits', 'keywords', 'vehicleTraits', 'vehicleRules'];
 
         for (const entry of entries) {
             if (!groups.has(entry.category)) {

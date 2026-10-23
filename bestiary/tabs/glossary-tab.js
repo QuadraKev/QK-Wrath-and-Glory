@@ -74,7 +74,9 @@ const GlossaryTab = {
             'weaponTraits': 'Weapon Traits',
             'armorTraits': 'Armor Traits',
             'keywords': 'Keywords',
-            'characterTerms': 'Character Terms'
+            'characterTerms': 'Character Terms',
+            'vehicleTraits': 'Vehicle Traits',
+            'vehicleRules': 'Vehicle Rules'
         };
         return labels[category] || category;
     },
@@ -90,7 +92,7 @@ const GlossaryTab = {
 
         // Get categories to display
         const categories = this.currentCategory === 'all'
-            ? ['characterTerms', 'conditions', 'combatTerms', 'terms', 'weaponTraits', 'armorTraits', 'keywords']
+            ? ['characterTerms', 'conditions', 'combatTerms', 'terms', 'weaponTraits', 'armorTraits', 'keywords', 'vehicleTraits', 'vehicleRules']
             : [this.currentCategory];
 
         // Build entry map and ordered entries

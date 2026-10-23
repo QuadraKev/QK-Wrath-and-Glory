@@ -328,7 +328,6 @@ const RULES = [
     ['the_bigger_they_are', 'Optional Rule: The Bigger They Are…', 48, 48, true],
     ['open_fire', 'Open Fire', 46, 50, true],
     ['ram', 'Ram', 46, 50, true],
-    ['vehicle_ammo', 'Vehicle Ammo', 50, 50, true],
     ['reload', 'Reload', 46, 50, true],
     ['high_speed_tactics', 'High-Speed Tactics', 50, 50, true],
     ['attacking_from_a_vehicle', 'Attacking from a Vehicle', 51, 51, true],
@@ -348,8 +347,8 @@ const RULES = [
     ['vehicle_characteristics', 'Vehicle Characteristics', 62, 62, true]
 ];
 const ruleKeys = Object.keys(vehicleRules);
-check('Appendix B lists 40 required keys', RULES.filter(r => r[4]).length, 40);
-check('vehicleRules has the 40 required keys', RULES.filter(r => r[4] && !ruleKeys.includes(r[0])).map(r => r[0]), []);
+check('Appendix B lists 39 required keys', RULES.filter(r => r[4]).length, 39);
+check('vehicleRules has the 39 required keys', RULES.filter(r => r[4] && !ruleKeys.includes(r[0])).map(r => r[0]), []);
 check('vehicleRules has at most 42 entries', ruleKeys.length <= 42, true);
 check('every vehicleRules key is an Appendix B key', ruleKeys.filter(k => !RULES.some(r => r[0] === k)), []);
 check('vehicleRules names match Appendix B',

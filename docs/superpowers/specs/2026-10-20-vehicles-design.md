@@ -345,7 +345,6 @@ printed; where the table below gives a range, the extractor records the exact pa
 | `the_bigger_they_are` | Optional Rule: The Bigger They Are… | 48 |
 | `open_fire` | Open Fire | 46–50 |
 | `ram` | Ram | 46–50 |
-| `vehicle_ammo` | Vehicle Ammo | 50 |
 | `reload` | Reload | 46–50 |
 | `high_speed_tactics` | High-Speed Tactics | 50 |
 | `attacking_from_a_vehicle` | Attacking from a Vehicle | 51 |
@@ -363,3 +362,5 @@ printed; where the table below gives a range, the extractor records the exact pa
 | `ammo` | Vehicle Ammo | 60 |
 | `twin_weapons` | Twin Weapons | 60 |
 | `vehicle_characteristics` | Vehicle Characteristics (with the Influence Modifier table) | 62 |
+
+The page 50 sidebar "Vehicle Ammo" restates the page 60 rule in a shorter form, so it has no entry of its own. Decision of 2026-10-23, after Part 2 shipped. The page 60 entry `ammo` is the single "Vehicle Ammo" entry.

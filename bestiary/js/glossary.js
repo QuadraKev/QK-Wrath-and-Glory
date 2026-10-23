@@ -235,7 +235,7 @@ const Glossary = {
         // Prevent duplicate popup for the same term (iOS fires both mouseenter and click)
         const alreadyOpen = this.popupStack.some(popupId => {
             const p = document.getElementById(popupId);
-            return p && p.dataset.glossaryKey === key;
+            return p && (p.dataset.glossaryKey === key || p.dataset.glossaryKey === `${type}-${key}`);
         });
         if (alreadyOpen) return;
 

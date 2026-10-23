@@ -227,8 +227,8 @@ const EncounterTab = {
         if (items.length === 0) {
             container.innerHTML = `
                 <div class="encounter-list-empty">
-                    <p>No threats in encounter</p>
-                    <p class="text-muted">Add threats from the Threats tab</p>
+                    <p>No threats or vehicles in encounter</p>
+                    <p class="text-muted">Add threats from the Threats tab or vehicles from the Vehicles tab</p>
                 </div>
             `;
             this.renderSelectionToolbar();
@@ -1189,6 +1189,7 @@ const EncounterTab = {
         // Open the rule with a direct call: a second click on a plain hash link fires no
         // hashchange, because the hash does not change.
         container.querySelector('.vehicle-damage-link')?.addEventListener('click', (e) => {
+            if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
             e.preventDefault();
             App.switchTab('glossary');
             GlossaryTab.navigateToEntry('vehicleRules-vehicle_damage');

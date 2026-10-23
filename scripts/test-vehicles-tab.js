@@ -342,6 +342,13 @@ async function main() {
         check('the compressed card leaves out the Add button', mini.includes('vehicle-add-btn'), false);
     }
 
+    // --- Cache busting guard (Task 2.6) ---
+    {
+        const creatorHtml = readSource('creator/index.html');
+        check('every ?v= in the creator page has one number', new Set([...creatorHtml.matchAll(/\?v=(\d+)/g)].map(m => m[1])).size, 1);
+        check('the creator fetches data with a ?v= number', /'\?v=\d+'/.test(readSource('creator/js/web-api.js')), true);
+    }
+
     // --- end of checks ---
 }
 

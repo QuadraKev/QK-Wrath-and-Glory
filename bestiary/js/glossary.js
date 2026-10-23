@@ -279,7 +279,7 @@ const Glossary = {
         if (!entry) return false;
         this.closeAllPopups();
         this._pinned = true;
-        this.showPopup([{ ...entry, type, key }], anchorElement, key);
+        this.showPopup([{ ...entry, type, key }], anchorElement, `${type}-${key}`);
         return true;
     },
 

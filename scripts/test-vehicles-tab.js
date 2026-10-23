@@ -94,7 +94,7 @@ async function main() {
             shown.length === 1 && Array.isArray(shown[0].definitions)
                 ? [shown[0].definitions.length, shown[0].definitions[0].type, shown[0].definitions[0].key, shown[0].termKey]
                 : null,
-            [1, 'vehicleTrait', 'turbo_boost', 'turbo_boost']);
+            [1, 'vehicleTrait', 'turbo_boost', 'vehicleTrait-turbo_boost']);
         check('showEntryPopup keeps the entry name for the title', shown[0] && shown[0].definitions[0].name, turbo && turbo.name);
         check('showEntryPopup pins the popup', Glossary._pinned, true);
         check('showEntryPopup refuses an unknown key', Glossary.showEntryPopup('vehicleRule', 'no_such_rule', {}), false);

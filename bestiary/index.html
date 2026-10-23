@@ -37,6 +37,7 @@
         <nav class="tab-nav">
             <div class="tab-nav-tabs">
                 <button class="tab-btn active" data-tab="threats">THREATS</button>
+                <button class="tab-btn" data-tab="vehicles">VEHICLES</button>
                 <button class="tab-btn" data-tab="builder">THREAT BUILDER</button>
                 <button class="tab-btn" data-tab="encounter">ENCOUNTER BUILDER</button>
                 <button class="tab-btn" data-tab="glossary">RULES REFERENCE</button>
@@ -104,6 +105,47 @@
                             <div id="threat-detail" class="threat-detail">
                                 <div class="threat-detail-placeholder">
                                     <p>Select a threat from the list to view details</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <!-- Vehicles Tab -->
+            <div id="tab-vehicles" class="tab-content">
+                <!-- Left Sidebar - Filters -->
+                <aside class="sidebar">
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Filters</h3>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <label class="filter-label" for="vehicle-search-input">Search</label>
+                        <input type="text" id="vehicle-search-input" class="search-input" placeholder="Search vehicles...">
+                    </div>
+
+                    <div class="sidebar-section">
+                        <label class="filter-label" for="vehicle-faction-filter">Faction</label>
+                        <select id="vehicle-faction-filter" class="filter-select">
+                            <option value="all">All Factions</option>
+                        </select>
+                    </div>
+                </aside>
+
+                <!-- Vehicle List and Detail -->
+                <main class="content">
+                    <div class="content-split">
+                        <div class="threat-list-container">
+                            <div id="vehicle-list" class="threat-list">
+                                <!-- Vehicle list items populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="threat-detail-container">
+                            <div id="vehicle-detail" class="threat-detail">
+                                <div class="threat-detail-placeholder">
+                                    <p>Select a vehicle from the list to view details</p>
                                 </div>
                             </div>
                         </div>
@@ -358,6 +400,7 @@
     <script src="js/threat-builder-state.js?v=92"></script>
     <script src="tabs/settings-tab.js?v=92"></script>
     <script src="tabs/threats-tab.js?v=92"></script>
+    <script src="tabs/vehicles-tab.js?v=92"></script>
     <script src="tabs/glossary-tab.js?v=92"></script>
     <script src="tabs/references-tab.js?v=92"></script>
     <script src="tabs/encounter-tab.js?v=92"></script>

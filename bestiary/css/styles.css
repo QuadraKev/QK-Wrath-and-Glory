@@ -4539,3 +4539,199 @@ body {
         font-size: 10px;
     }
 }
+
+/* ===== Vehicles Tab ===== */
+#tab-vehicles {
+    flex-direction: row;
+}
+
+.vehicle-list-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.vehicle-list-item:hover {
+    border-color: var(--accent-gold);
+}
+
+.vehicle-list-item.selected {
+    border-color: var(--accent-gold);
+    background: var(--bg-tertiary);
+}
+
+.vehicle-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 4px;
+}
+
+.vehicle-list-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.vehicle-list-value {
+    flex-shrink: 0;
+    padding: 2px 8px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-gold);
+}
+
+.vehicle-list-faction {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.vehicle-link {
+    display: inline-block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    color: var(--accent-gold);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--accent-gold);
+}
+
+.vehicle-link:hover {
+    border-bottom-style: solid;
+}
+
+.vehicle-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.vehicle-card-faction {
+    font-weight: 600;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.vehicle-meta-label {
+    color: var(--text-muted);
+}
+
+.vehicle-chip {
+    display: inline-block;
+    padding: 3px 10px;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
+}
+
+.vehicle-chip-keyword {
+    text-transform: uppercase;
+}
+
+/* A chip with a glossary entry opens it */
+.vehicle-chip[data-popup-type] {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+    cursor: pointer;
+}
+
+.vehicle-chip[data-popup-type]:hover {
+    background: var(--accent-gold);
+    color: var(--bg-primary);
+}
+
+.vehicle-twin-marker {
+    color: var(--accent-gold);
+    cursor: pointer;
+    border-bottom: 1px dotted var(--accent-gold);
+}
+
+.vehicle-twin-marker:hover {
+    border-bottom-style: solid;
+}
+
+/* The weapons table scrolls inside its box on a narrow screen, never the page */
+.vehicle-table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.vehicle-weapons-table {
+    min-width: 560px;
+}
+
+.vehicle-weapons-table td {
+    font-size: 13px;
+}
+
+.vehicle-weapons-table .vehicle-weapon-name,
+.vehicle-weapons-table .vehicle-weapon-traits {
+    text-align: left;
+}
+
+.vehicle-weapons-table .vehicle-weapon-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.vehicle-sidebar-box {
+    margin-bottom: 15px;
+    padding: 12px 0;
+    background: var(--bg-secondary);
+    border: 1px solid var(--accent-gold);
+    border-radius: var(--radius-sm);
+}
+
+.vehicle-sidebar-title {
+    padding: 0 12px 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.vehicle-family-section .threat-text-section + .threat-text-section {
+    margin-top: 10px;
+}
+
+.vehicle-none {
+    color: var(--text-muted);
+}
+
+/* Vehicle prose keeps the data's paragraph breaks (\n\n) */
+.vehicle-card .threat-card-description {
+    white-space: pre-line;
+}
+
+@media (max-width: 1024px) {
+    #tab-vehicles .content-split {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .vehicle-card .threat-card-header {
+        text-align: center;
+    }
+
+    .vehicle-card-meta {
+        justify-content: center;
+    }
+}

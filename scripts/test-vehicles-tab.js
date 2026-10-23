@@ -193,6 +193,155 @@ async function main() {
         DataLoader.cache['threats.json'] = allThreats;
     }
 
+    // --- Vehicles tab: wiring and pure helpers (Task 2.4) ---
+    {
+        const html = readSource('bestiary/index.html');
+        check('the tab bar has a Vehicles button', html.includes('<button class="tab-btn" data-tab="vehicles">VEHICLES</button>'), true);
+        check('the page has the Vehicles tab container', html.includes('<div id="tab-vehicles" class="tab-content">'), true);
+        check('the page loads the Vehicles tab script', /<script src="tabs\/vehicles-tab\.js\?v=\d+"><\/script>/.test(html), true);
+        check('every ?v= in the bestiary page has one number', new Set([...html.matchAll(/\?v=(\d+)/g)].map(m => m[1])).size, 1);
+
+        load('bestiary/tabs/vehicles-tab.js');
+        const VehiclesTab = get('VehiclesTab');
+        const vehicles = DataLoader.getVehicles();
+        const byId = (id) => DataLoader.getVehicle(id);
+        check('the data loader has the vehicles cached', vehicles.length, 107);
+
+        // Filters: faction list, sort order, faction, search, source toggle
+        check('the faction select lists the 11 factions, sorted', VehiclesTab.getFactions(),
+            ['Adepta Sororitas', 'Adeptus Astartes', 'Adeptus Mechanicus', 'Aeldari', 'Aeronautica Imperialis',
+                'Astra Militarum', 'Chaos Space Marines', 'Drukhari', 'Imperial', 'Necron', 'Ork']);
+        VehiclesTab.filters = { search: '', faction: 'all' };
+        const listed = VehiclesTab.getFilteredVehicles();
+        check('with no filter the list holds all 107 vehicles', listed.length, 107);
+        const listedNames = listed.map(v => DataLoader.getVehicleDisplayName(v));
+        check('the list is sorted by display name', listedNames, [...listedNames].sort((a, b) => a.localeCompare(b)));
+        VehiclesTab.filters.faction = 'Ork';
+        const orks = VehiclesTab.getFilteredVehicles();
+        check('the faction select keeps only that faction',
+            [orks.length, orks.every(v => v.faction === 'Ork')], [vehicles.filter(v => v.faction === 'Ork').length, true]);
+        VehiclesTab.filters.faction = 'all';
+        VehiclesTab.filters.search = 'land raider';
+        check('search finds a variant by its family name', VehiclesTab.getFilteredVehicles().some(v => v.id === 'land_raider_crusader'), true);
+        const keyword = vehicles.find(v => v.keywords.length > 0).keywords[0];
+        VehiclesTab.filters.search = keyword.toLowerCase();
+        const keywordHits = new Set(VehiclesTab.getFilteredVehicles().map(v => v.id));
+        check(`search matches keywords (${keyword})`, vehicles.filter(v => v.keywords.includes(keyword)).every(v => keywordHits.has(v.id)), true);
+        const described = vehicles.find(v => v.description && v.description.length > 40);
+        VehiclesTab.filters.search = described.description.slice(10, 30).toUpperCase();
+        check('search matches description text in any case', VehiclesTab.getFilteredVehicles().some(v => v.id === described.id), true);
+        VehiclesTab.filters.search = '   ';
+        check('a blank search keeps every vehicle', VehiclesTab.getFilteredVehicles().length, 107);
+        VehiclesTab.filters.search = '';
+        SettingsTab.excludedSources.add('Church of Steel');
+        check('Church of Steel off hides every vehicle', VehiclesTab.getFilteredVehicles().length, 0);
+        SettingsTab.excludedSources.clear();
+
+        // Chip keys: a trait drops its value; a keyword matches by name
+        check('a trait with a value opens the base trait', VehiclesTab.findTraitKey('Turbo Boost (2)'), 'turbo_boost');
+        check('trait matching ignores case and hyphens',
+            [VehiclesTab.findTraitKey('open-topped') !== null, VehiclesTab.findTraitKey('open-topped') === VehiclesTab.findTraitKey('Open Topped')],
+            [true, true]);
+        check('every vehicleTraits name maps back to its own key',
+            Object.entries(glossary.vehicleTraits).filter(([key, entry]) => VehiclesTab.findTraitKey(entry.name) !== key).map(([key]) => key), []);
+        check('every printed vehicle trait opens a vehicleTraits entry',
+            [...new Set(vehicles.flatMap(v => v.traits))].filter(t => !VehiclesTab.findTraitKey(t)), []);
+        check('an unknown trait has no key', VehiclesTab.findTraitKey('No Such Trait'), null);
+        check('a keyword resolves to its glossary key by name', VehiclesTab.findKeywordKey('[LEGION]'), 'legion');
+        check('a keyword without an entry has no key', VehiclesTab.findKeywordKey('NOT A KEYWORD'), null);
+        const chips = VehiclesTab.renderKeywordChips(['IMPERIUM', 'NOT A KEYWORD']);
+        check('a linked keyword chip carries the keyword popup type', chips.includes('data-popup-type="keyword" data-popup-key="imperium"'), true);
+        check('a keyword without an entry is a plain chip', chips.includes('<span class="vehicle-chip vehicle-chip-keyword">NOT A KEYWORD</span>'), true);
+
+        // Weapons table rows from the resolved weapons.json records
+        check('a ranged row takes its profile from the record',
+            plain(VehiclesTab.buildWeaponRows({ text: 'Lascannon', weaponId: 'lascannon', count: 1 })),
+            [{ text: 'Lascannon', twin: false, resolved: true, damage: '18', ed: 3, ap: -3, rangeReach: '24/48/72', salvo: 1, traits: 'Heavy (8), Reliable' }]);
+        const [klaw] = VehiclesTab.buildWeaponRows({ text: "Grabbin' Klaw", weaponId: 'cos_grabbin_klaw', count: 1 });
+        check('a melee row shows its reach and no salvo', [klaw.damage, klaw.rangeReach, klaw.salvo], ['14', 5, '-']);
+        check('a melee record without reach shows a dash',
+            VehiclesTab.buildWeaponRows({ text: 'Sentinel Chainsaw', weaponId: 'cos_sentinel_chainsaw', count: 1 })[0].rangeReach, '-');
+        const [twinRow] = VehiclesTab.buildWeaponRows({ text: '2 Twin Lascannons', weaponId: 'lascannon', count: 2, twin: true });
+        check('a Twin line keeps its printed text and its flag', [twinRow.text, twinRow.twin, twinRow.damage], ['2 Twin Lascannons', true, '18']);
+        const prismIds = ['cos_prism_cannon_dispersed', 'cos_prism_cannon_focussed', 'cos_prism_cannon_lance'];
+        const prismRows = VehiclesTab.buildWeaponRows({ text: 'Prism Cannon', weaponId: null, count: 1, profileIds: prismIds });
+        check('a profileIds line gives one row per profile, named by the record',
+            prismRows.map(r => [r.text, r.resolved]), prismIds.map(id => [DataLoader.getWeapon(id).name, true]));
+        check('a profile row takes the numbers of its own record',
+            [prismRows[1].ed, prismRows[1].ap], [DataLoader.getWeapon(prismIds[1]).ed, DataLoader.getWeapon(prismIds[1]).ap]);
+        check('a profileIds line with no known id shows the printed text alone',
+            plain(VehiclesTab.buildWeaponRows({ text: 'Prism Cannon', weaponId: null, count: 1, profileIds: ['no_such_a', 'no_such_b'] })),
+            [{ text: 'Prism Cannon', twin: false, resolved: false }]);
+        check('the word Twin becomes the marker', VehiclesTab.renderWeaponName(twinRow),
+            '2 <span class="vehicle-twin-marker" data-popup-type="vehicleRule" data-popup-key="twin_weapons">Twin</span> Lascannons');
+        check('a Twin line without the word still gets the marker', VehiclesTab.renderWeaponName({ text: 'Paired guns', twin: true }),
+            'Paired guns <span class="vehicle-twin-marker" data-popup-type="vehicleRule" data-popup-key="twin_weapons">Twin</span>');
+        check('a plain line keeps its text', VehiclesTab.renderWeaponName({ text: 'Heavy Bolter', twin: false }), 'Heavy Bolter');
+        check('an unresolved line shows the printed text alone',
+            plain(VehiclesTab.buildWeaponRows({ text: 'Mystery Gun', weaponId: null, count: 1 })), [{ text: 'Mystery Gun', twin: false, resolved: false }]);
+        check('a stale weapon id counts as unresolved',
+            VehiclesTab.buildWeaponRows({ text: 'Old Gun', weaponId: 'no_such_weapon', count: 1 })[0].resolved, false);
+        check('an empty weapons box shows a dash and no table',
+            [VehiclesTab.renderWeaponsTable([]).includes('<table'), VehiclesTab.renderWeaponsTable([]).includes('-')], [false, true]);
+
+        // Wargear lines
+        const smoke = DataLoader.getAllEquipment().find(e => e.id === 'cos_smoke_launcher');
+        check('a resolved wargear line shows the record effect',
+            plain(VehiclesTab.buildWargearRow({ text: 'Smoke Launchers', equipmentId: 'cos_smoke_launcher' })), { text: 'Smoke Launchers', effect: smoke.effect });
+        check('an unresolved wargear line shows the printed text alone',
+            plain(VehiclesTab.buildWargearRow({ text: 'Dozer Blade', equipmentId: null })), { text: 'Dozer Blade', effect: null });
+
+        // The card holds every element of spec section 4
+        const chimera = byId('chimera');
+        const card = VehiclesTab.renderVehicleCard(chimera);
+        check('the card names the vehicle and its faction', card.includes('>Chimera</h2>') && card.includes(chimera.faction), true);
+        check('the card shows Value and Rarity',
+            card.includes(`Value:</span> ${chimera.value}`) && card.includes(DataLoader.formatRarity(chimera.rarity)), true);
+        check('the card shows the source and page', card.includes(DataLoader.formatSourcePage(chimera)), true);
+        check('the card has the stat strip', ['>Spd<', '>Man<', '>Res<', '>W<', '>Size<'].every(s => card.includes(s)), true);
+        check('the card shows the crew complement', card.includes('Crew Complement:') && card.includes(chimera.crew), true);
+        const rowCount = (v) => v.weapons.reduce((n, w) => n + (Array.isArray(w.profileIds) ? w.profileIds.length : 1), 0);
+        check('every card has one row per weapon line or profile', vehicles.filter(v =>
+            (VehiclesTab.renderVehicleCard(v).match(/class="vehicle-weapon-name"/g) || []).length !== rowCount(v)).map(v => v.id), []);
+        const profileVehicle = vehicles.find(v => v.weapons.some(w => Array.isArray(w.profileIds)));
+        check('Part 1 data: a vehicle has a profileIds line', !!profileVehicle, true);
+        check('a card with a profileIds line names each profile', !!profileVehicle && profileVehicle.weapons
+            .filter(w => Array.isArray(w.profileIds))
+            .every(w => w.profileIds.every(id => VehiclesTab.renderVehicleCard(profileVehicle).includes(DataLoader.getWeapon(id).name))), true);
+        check('the card has an Add to Encounter button', card.includes('vehicle-add-btn') && card.includes('Add to Encounter'), true);
+        check('a top-level card has no variant link', card.includes('vehicle-variant-link'), false);
+        const missingProse = vehicles.filter(v => {
+            const c = VehiclesTab.renderVehicleCard(v);
+            return (v.description && !c.includes(v.description)) || (v.options && !c.includes(v.options));
+        }).map(v => v.id);
+        check('every card shows its own description and options', missingProse, []);
+        const crusaderCard = VehiclesTab.renderVehicleCard(byId('land_raider_crusader'));
+        check('a variant card links to its family',
+            crusaderCard.includes('data-vehicle-id="land_raider"') && crusaderCard.includes('Variant of Land Raider'), true);
+        const missingFamilyText = vehicles.filter(v => v.variantOf).filter(v => {
+            const family = byId(v.variantOf);
+            const c = VehiclesTab.renderVehicleCard(v);
+            return (v.description == null && family.description && !c.includes(family.description)) ||
+                (v.options == null && family.options && !c.includes(family.options));
+        }).map(v => v.id);
+        check('every variant card shows the family text it lacks', missingFamilyText, []);
+        const withSidebar = vehicles.filter(v => v.sidebar);
+        check('the sidebar box shows its title and text', withSidebar.length > 0 && withSidebar.every(v => {
+            const c = VehiclesTab.renderVehicleCard(v);
+            return c.includes(v.sidebar.title) && c.includes(v.sidebar.text);
+        }), true);
+        const twinVehicle = vehicles.find(v => v.weapons.some(w => w.twin));
+        check('a card with a Twin line has the Twin marker', VehiclesTab.renderVehicleCard(twinVehicle).includes('data-popup-key="twin_weapons"'), true);
+        const traitVehicle = vehicles.find(v => v.traits.length > 0);
+        check('trait chips carry the vehicleTrait popup type', VehiclesTab.renderVehicleCard(traitVehicle).includes('data-popup-type="vehicleTrait"'), true);
+
+        // The compressed card for the Encounter Builder
+        const mini = VehiclesTab.renderVehicleCardMini(chimera);
+        check('the compressed card keeps the stat block',
+            ['Vehicle Stats', 'vehicle-stat-strip', 'Weapons', 'Wargear', 'Crew Complement'].every(s => mini.includes(s)), true);
+        check('the compressed card leaves out the Add button', mini.includes('vehicle-add-btn'), false);
+    }
+
     // --- end of checks ---
 }
 

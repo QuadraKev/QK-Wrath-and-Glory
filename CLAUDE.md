@@ -35,7 +35,7 @@ apps with no sync step. Files:
 - Shared (used by both): archetypes, armor, ascension-packages, equipment, glossary,
   injuries-corruption, psychic-powers, species, talents, weapon-upgrades, weapons.
 - Creator-only: backgrounds, keyword-categories.
-- Bestiary-only: threats, threat-weapons.
+- Bestiary-only: threats, threat-weapons, vehicles.
 
 Data conventions: IDs snake_case (Apocrypha IDs use `_aaa` for threats, `_aoa` for talents);
 traits/keywords are arrays

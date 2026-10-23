@@ -69,7 +69,8 @@ const DataLoader = {
             'ascension-packages.json',
             'archetypes.json',
             'species.json',
-            'injuries-corruption.json'
+            'injuries-corruption.json',
+            'vehicles.json'
         ];
 
         const results = await Promise.all(files.map(f => this.loadFile(f)));
@@ -87,7 +88,8 @@ const DataLoader = {
             ascensionPackages: results[9] || [],
             archetypes: results[10] || [],
             species: results[11] || [],
-            injuriesCorruption: results[12] || {}
+            injuriesCorruption: results[12] || {},
+            vehicles: results[13] || []
         };
 
         console.log('[DataLoader] All data loaded. Summary:', {
@@ -112,6 +114,26 @@ const DataLoader = {
     getThreat(id) {
         const threats = this.getAllThreats();
         return threats.find(t => t.id === id);
+    },
+
+    // Get all vehicles (Church of Steel stat blocks, in book order)
+    getVehicles() {
+        return this.cache['vehicles.json'] || [];
+    },
+
+    // Get vehicle by ID
+    getVehicle(id) {
+        return this.getVehicles().find(v => v.id === id);
+    },
+
+    // Name of a vehicle outside its own card: a variant shows its family, e.g.
+    // "Crusader (Land Raider)", unless its name already contains the family name
+    // ("Land Speeder Tornado"). A variant whose family is missing shows its own name.
+    getVehicleDisplayName(vehicle) {
+        if (!vehicle) return '';
+        const family = vehicle.variantOf ? this.getVehicle(vehicle.variantOf) : null;
+        if (!family || vehicle.name.includes(family.name)) return vehicle.name;
+        return `${vehicle.name} (${family.name})`;
     },
 
     // Get all threat weapons
@@ -490,13 +512,20 @@ const DataLoader = {
         return source;
     },
 
-    // Get all unique source values from threats (sorted), with Apocrypha sources combined
+    // Get all unique source values from threats and vehicles (sorted), with Apocrypha sources combined.
+    // Vehicles store the short id "church". Add the name that isSourceEnabled() maps it to, so the
+    // Church of Steel button does not depend on the single Church of Steel threat.
     getAllSources() {
         const threats = this.getAllThreats();
         const sourceSet = new Set();
         threats.forEach(threat => {
             if (threat.source) {
                 sourceSet.add(this.normalizeSource(threat.source));
+            }
+        });
+        this.getVehicles().forEach(vehicle => {
+            if (vehicle.source) {
+                sourceSet.add(SettingsTab._glossaryIdToNormalized[vehicle.source] || this.normalizeSource(vehicle.source));
             }
         });
         return Array.from(sourceSet).sort();

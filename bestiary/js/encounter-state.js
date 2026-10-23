@@ -18,6 +18,9 @@ const EncounterState = {
     // Player Characters for initiative tracking
     playerCharacters: [],
 
+    // Vehicles: { id, vehicleId, wounds (damage taken), initiative }
+    vehicles: [],
+
     // Manual ordering for encounter list (array of {type, id} objects)
     // When set, this overrides initiative-based sorting
     encounterOrder: null,
@@ -53,7 +56,7 @@ const EncounterState = {
 
     // Check if encounter is empty (nothing to save)
     isEmpty() {
-        return this.individuals.length === 0 && this.mobs.length === 0 && this.playerCharacters.length === 0;
+        return this.individuals.length === 0 && this.mobs.length === 0 && this.playerCharacters.length === 0 && this.vehicles.length === 0;
     },
 
     // Generate a unique ID
@@ -554,6 +557,64 @@ const EncounterState = {
         return this.playerCharacters.find(p => p.id === id);
     },
 
+    // ===== Vehicle Management =====
+
+    // Add one vehicle. `wounds` is the damage taken; Max Wounds is the vehicle record's `wounds`.
+    addVehicle(vehicleId) {
+        if (!DataLoader.getVehicle(vehicleId)) return null;
+
+        const entry = {
+            id: this.generateId(),
+            vehicleId: vehicleId,
+            wounds: 0,
+            initiative: null
+        };
+        this.vehicles.push(entry);
+        this.markDirty();
+        return entry.id;
+    },
+
+    // Remove a vehicle
+    removeVehicle(id) {
+        this.vehicles = this.vehicles.filter(v => v.id !== id);
+        this.markDirty();
+    },
+
+    // Change the damage taken (delta can be positive or negative). The floor is 0. The ceiling is
+    // Max Wounds + 1, the first value that destroys the vehicle. An entry whose vehicle record no
+    // longer resolves has no ceiling.
+    updateVehicleWounds(id, delta) {
+        const entry = this.vehicles.find(v => v.id === id);
+        if (!entry) return;
+        const vehicle = DataLoader.getVehicle(entry.vehicleId);
+        const ceiling = vehicle ? vehicle.wounds + 1 : Infinity;
+        entry.wounds = Math.max(0, Math.min(ceiling, entry.wounds + delta));
+        this.markDirty();
+    },
+
+    // Set initiative for a vehicle
+    setVehicleInitiative(id, value) {
+        const entry = this.vehicles.find(v => v.id === id);
+        if (entry) {
+            entry.initiative = value === '' || value === null ? null : parseInt(value);
+            this.markDirty();
+        }
+    },
+
+    // Get a vehicle entry by ID
+    getVehicle(id) {
+        return this.vehicles.find(v => v.id === id);
+    },
+
+    // A vehicle is destroyed when it has more Wounds than its Max Wounds (Church of Steel p. 62).
+    // An entry whose vehicle record no longer resolves is never destroyed.
+    isVehicleDestroyed(id) {
+        const entry = this.getVehicle(id);
+        if (!entry) return false;
+        const vehicle = DataLoader.getVehicle(entry.vehicleId);
+        return !!vehicle && entry.wounds > vehicle.wounds;
+    },
+
     // ===== Manual Ordering =====
 
     // Set the manual order of encounter items
@@ -792,6 +853,20 @@ const EncounterState = {
             });
         });
 
+        // Add vehicles
+        this.vehicles.forEach(entry => {
+            const vehicle = DataLoader.getVehicle(entry.vehicleId);
+            items.push({
+                type: 'vehicle',
+                id: entry.id,
+                name: vehicle ? DataLoader.getVehicleDisplayName(vehicle) : 'Unknown vehicle',
+                initiative: entry.initiative,
+                isDead: this.isVehicleDestroyed(entry.id),
+                maxWounds: vehicle ? vehicle.wounds : null,
+                data: entry
+            });
+        });
+
         // Add player characters
         this.playerCharacters.forEach(pc => {
             items.push({
@@ -876,6 +951,7 @@ const EncounterState = {
             individuals: [...this.individuals],
             mobs: [...this.mobs],
             playerCharacters: [...this.playerCharacters],
+            vehicles: [...this.vehicles],
             encounterOrder: this.encounterOrder ? [...this.encounterOrder] : null,
             customThreats: this._collectCustomThreats()
         };
@@ -911,6 +987,7 @@ const EncounterState = {
             this.individuals = parsed.individuals || [];
             this.mobs = parsed.mobs || [];
             this.playerCharacters = parsed.playerCharacters || [];
+            this.vehicles = parsed.vehicles || [];
             this.encounterOrder = parsed.encounterOrder || null;
             this.markClean(); // Just loaded, so no unsaved changes
         }
@@ -929,6 +1006,7 @@ const EncounterState = {
         this.individuals = data.individuals || [];
         this.mobs = data.mobs || [];
         this.playerCharacters = data.playerCharacters || [];
+        this.vehicles = data.vehicles || [];
         this.encounterOrder = data.encounterOrder || null;
     },
 
@@ -938,6 +1016,7 @@ const EncounterState = {
         this.individuals = [];
         this.mobs = [];
         this.playerCharacters = [];
+        this.vehicles = [];
         this.encounterOrder = null;
         this.markClean(); // Fresh encounter has no unsaved changes
         this.clearAutoSave();

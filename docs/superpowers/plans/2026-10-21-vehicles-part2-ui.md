@@ -107,7 +107,7 @@ No change: `data/*`, `scripts/test-vehicles.js`, `creator/js/glossary.js`, both 
 - Produces:
   - `Glossary.getEntry('vehicleTrait' | 'vehicleRule', key) → entry | null`.
   - `Glossary.getTypeLabel('vehicleTrait') → 'Vehicle Trait'` and `Glossary.getTypeLabel('vehicleRule') → 'Vehicle Rule'`.
-  - `Glossary.showEntryPopup(type, key, anchorElement) → boolean`. It closes open popups, pins, and calls `showPopup([{ ...entry, type, key }], anchorElement, key)`. For a missing entry it opens nothing and returns `false`. The caller's click handler must call `e.stopPropagation()`.
+  - `Glossary.showEntryPopup(type, key, anchorElement) → boolean`. It closes open popups, pins, and calls ``showPopup([{ ...entry, type, key }], anchorElement, `${type}-${key}`)``. For a missing entry it opens nothing and returns `false`. The caller's click handler must call `e.stopPropagation()`.
   - Rules Reference entry ids in both apps: `vehicleTraits-<key>` and `vehicleRules-<key>`. Deep link: `#glossary/vehicleRules-vehicle_damage`.
   - `scripts/test-vehicles-tab.js` with an async `main()` that holds one block per task. Later tasks insert their block above the line `    // --- end of checks ---`.
 
@@ -220,7 +220,7 @@ async function main() {
             shown.length === 1 && Array.isArray(shown[0].definitions)
                 ? [shown[0].definitions.length, shown[0].definitions[0].type, shown[0].definitions[0].key, shown[0].termKey]
                 : null,
-            [1, 'vehicleTrait', 'turbo_boost', 'turbo_boost']);
+            [1, 'vehicleTrait', 'turbo_boost', 'vehicleTrait-turbo_boost']);
         check('showEntryPopup keeps the entry name for the title', shown[0] && shown[0].definitions[0].name, turbo && turbo.name);
         check('showEntryPopup pins the popup', Glossary._pinned, true);
         check('showEntryPopup refuses an unknown key', Glossary.showEntryPopup('vehicleRule', 'no_such_rule', {}), false);
@@ -329,7 +329,7 @@ with:
         if (!entry) return false;
         this.closeAllPopups();
         this._pinned = true;
-        this.showPopup([{ ...entry, type, key }], anchorElement, key);
+        this.showPopup([{ ...entry, type, key }], anchorElement, `${type}-${key}`);
         return true;
     },
 ```
@@ -1327,7 +1327,7 @@ In `scripts/test-vehicles-tab.js`, insert this block above the line `    // --- 
         check('a stale weapon id counts as unresolved',
             VehiclesTab.buildWeaponRows({ text: 'Old Gun', weaponId: 'no_such_weapon', count: 1 })[0].resolved, false);
         check('an empty weapons box shows a dash and no table',
-            [VehiclesTab.renderWeaponsTable([]).includes('<table'), VehiclesTab.renderWeaponsTable([]).includes('-')], [false, true]);
+            [VehiclesTab.renderWeaponsTable([]).includes('<table'), VehiclesTab.renderWeaponsTable([]).includes('vehicle-none">-</div>')], [false, true]);
 
         // Wargear lines
         const smoke = DataLoader.getAllEquipment().find(e => e.id === 'cos_smoke_launcher');

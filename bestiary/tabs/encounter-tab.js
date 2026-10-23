@@ -227,8 +227,8 @@ const EncounterTab = {
         if (items.length === 0) {
             container.innerHTML = `
                 <div class="encounter-list-empty">
-                    <p>No threats in encounter</p>
-                    <p class="text-muted">Add threats from the Threats tab</p>
+                    <p>No threats or vehicles in encounter</p>
+                    <p class="text-muted">Add threats from the Threats tab or vehicles from the Vehicles tab</p>
                 </div>
             `;
             this.renderSelectionToolbar();
@@ -286,6 +286,8 @@ const EncounterTab = {
                     EncounterState.setPlayerCharacterInitiative(id, e.target.value);
                     // Also update the sidebar input
                     this.renderPlayerCharacterInputs();
+                } else if (type === 'vehicle') {
+                    EncounterState.setVehicleInitiative(id, e.target.value);
                 }
                 this.renderEncounterList();
             });
@@ -298,6 +300,18 @@ const EncounterTab = {
                 const id = btn.dataset.id;
                 const delta = parseInt(btn.dataset.delta);
                 EncounterState.updateWounds(id, delta);
+                this.renderEncounterList();
+                if (this.selectedId === id) {
+                    this.renderDetail();
+                }
+            });
+        });
+
+        container.querySelectorAll('.vehicle-wound-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = btn.dataset.id;
+                EncounterState.updateVehicleWounds(id, parseInt(btn.dataset.delta));
                 this.renderEncounterList();
                 if (this.selectedId === id) {
                     this.renderDetail();
@@ -521,6 +535,8 @@ const EncounterTab = {
             return this.renderMobItem(item);
         } else if (item.type === 'player') {
             return this.renderPlayerItem(item);
+        } else if (item.type === 'vehicle') {
+            return this.renderVehicleItem(item);
         }
         return '';
     },
@@ -651,6 +667,43 @@ const EncounterTab = {
         `;
     },
 
+    renderVehicleItem(item) {
+        const entry = item.data;
+        const isSelected = this.selectedId === item.id && this.selectionType === 'vehicle';
+        const deadClass = item.isDead ? 'dead' : '';
+        const woundPercent = item.maxWounds ? Math.min(100, (entry.wounds / item.maxWounds) * 100) : 0;
+
+        return `
+            <div class="encounter-item vehicle-item ${isSelected ? 'selected' : ''} ${deadClass}"
+                 data-id="${item.id}" data-type="vehicle" draggable="true">
+                <div class="encounter-item-header">
+                    <span class="drag-handle" title="Drag to reorder">&#x2630;</span>
+                    <input type="number" class="initiative-input" value="${item.initiative ?? ''}"
+                           data-id="${item.id}" data-type="vehicle" placeholder="Init"
+                           min="0" max="99">
+                    <span class="encounter-item-name">${this.escapeHtml(item.name)}</span>
+                    <span class="vehicle-badge">VEHICLE</span>
+                </div>
+                <div class="encounter-item-stats">
+                    <div class="stat-tracker wounds-tracker">
+                        <span class="stat-label">W:</span>
+                        <button class="vehicle-wound-btn" data-id="${item.id}" data-delta="-1">-</button>
+                        <span class="stat-value">${entry.wounds}/${item.maxWounds ?? '-'}</span>
+                        <button class="vehicle-wound-btn" data-id="${item.id}" data-delta="1">+</button>
+                        <div class="stat-bar">
+                            <div class="stat-bar-fill wounds-bar" style="width: ${woundPercent}%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="encounter-item-actions">
+                    <button class="delete-btn" data-id="${item.id}" data-type="vehicle" title="Remove">
+                        <span>&times;</span>
+                    </button>
+                </div>
+            </div>
+        `;
+    },
+
     selectItem(id, type) {
         this.selectedId = id;
         this.selectionType = type;
@@ -682,6 +735,8 @@ const EncounterTab = {
             this.renderMobDetail(container);
         } else if (this.selectionType === 'player') {
             this.renderPlayerDetail(container);
+        } else if (this.selectionType === 'vehicle') {
+            this.renderVehicleDetailPanel(container);
         }
     },
 
@@ -1066,6 +1121,79 @@ const EncounterTab = {
         // Bind events
         this.bindMobDetailEvents();
         Glossary.enhanceDescriptions(container);
+    },
+
+    renderVehicleDetailPanel(container) {
+        const entry = EncounterState.getVehicle(this.selectedId);
+        if (!entry) {
+            container.innerHTML = '<p>Entry not found</p>';
+            return;
+        }
+
+        const vehicle = DataLoader.getVehicle(entry.vehicleId);
+        if (!vehicle) {
+            container.innerHTML = '<p>Vehicle data not found</p>';
+            return;
+        }
+
+        const isDestroyed = EncounterState.isVehicleDestroyed(entry.id);
+        const woundPercent = vehicle.wounds > 0 ? Math.min(100, (entry.wounds / vehicle.wounds) * 100) : 0;
+
+        container.innerHTML = `
+            <div class="encounter-detail-content">
+                <div class="detail-header">
+                    <h3>${this.escapeHtml(DataLoader.getVehicleDisplayName(vehicle))}</h3>
+                    <span class="vehicle-badge">VEHICLE</span>
+                    ${isDestroyed ? '<span class="status-badge dead-badge">DESTROYED</span>' : ''}
+                </div>
+
+                <div class="wound-shock-trackers">
+                    <div class="large-tracker wounds-large">
+                        <div class="tracker-label">Wounds</div>
+                        <div class="tracker-controls">
+                            <button class="tracker-btn vehicle-detail-wound-btn" data-delta="-1">-</button>
+                            <span class="tracker-value">${entry.wounds} / ${vehicle.wounds}</span>
+                            <button class="tracker-btn vehicle-detail-wound-btn" data-delta="1">+</button>
+                        </div>
+                        <div class="tracker-bar">
+                            <div class="tracker-bar-fill wounds-bar" style="width: ${woundPercent}%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <a class="vehicle-link vehicle-damage-link" href="#glossary/vehicleRules-vehicle_damage">Vehicle Damage rule</a>
+
+                <div class="threat-card-mini">
+                    ${VehiclesTab.renderVehicleCardMini(vehicle)}
+                </div>
+            </div>
+        `;
+
+        this.bindVehicleDetailEvents(container);
+        VehiclesTab.bindCardPopups(container);
+    },
+
+    // Controls are found inside the container, so the desktop panel and the bottom sheet never
+    // share element ids.
+    bindVehicleDetailEvents(container) {
+        const id = this.selectedId;
+
+        container.querySelectorAll('.vehicle-detail-wound-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                EncounterState.updateVehicleWounds(id, parseInt(btn.dataset.delta));
+                this.renderEncounterList();
+                this.renderDetail();
+            });
+        });
+
+        // Open the rule with a direct call: a second click on a plain hash link fires no
+        // hashchange, because the hash does not change.
+        container.querySelector('.vehicle-damage-link')?.addEventListener('click', (e) => {
+            if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
+            e.preventDefault();
+            App.switchTab('glossary');
+            GlossaryTab.navigateToEntry('vehicleRules-vehicle_damage');
+        });
     },
 
     renderMobMemberItem(individual, threat) {
@@ -1872,6 +2000,8 @@ const EncounterTab = {
             EncounterState.removeIndividual(id);
         } else if (type === 'mob') {
             EncounterState.removeMob(id);
+        } else if (type === 'vehicle') {
+            EncounterState.removeVehicle(id);
         }
         if (this.selectedId === id) {
             this.selectedId = null;

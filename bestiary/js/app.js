@@ -110,6 +110,7 @@ const App = {
         // Initialize tab modules
         SettingsTab.init();
         ThreatsTab.init();
+        VehiclesTab.init();
         GlossaryTab.init();
         ReferencesTab.init();
         EncounterTab.init();
@@ -143,6 +144,9 @@ const App = {
         if (section === 'threats' && id) {
             this.switchTab('threats');
             ThreatsTab.selectThreat(id);
+        } else if (section === 'vehicles' && id) {
+            this.switchTab('vehicles');
+            VehiclesTab.selectVehicle(id);
         } else if (section === 'glossary' && id) {
             this.switchTab('glossary');
             GlossaryTab.navigateToEntry(id);
@@ -193,6 +197,8 @@ const App = {
             GlossaryTab.refresh();
         } else if (tabName === 'threats') {
             ThreatsTab.refresh();
+        } else if (tabName === 'vehicles') {
+            VehiclesTab.refresh();
         } else if (tabName === 'builder') {
             ThreatBuilderTab.refresh();
         } else if (tabName === 'encounter') {

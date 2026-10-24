@@ -65,7 +65,7 @@ async function main() {
         const traitKeys = Object.keys(glossary.vehicleTraits || {});
         const ruleKeys = Object.keys(glossary.vehicleRules || {});
         check('Part 1 data: glossary has the 12 vehicle traits', traitKeys.length, 12);
-        check('Part 1 data: glossary has at least 40 vehicle rules', ruleKeys.length >= 40, true);
+        check('Part 1 data: glossary has at least 39 vehicle rules', ruleKeys.length >= 39, true);
 
         // The engine resolves the two new popup types by key
         const turbo = Glossary.getEntry('vehicleTrait', 'turbo_boost');

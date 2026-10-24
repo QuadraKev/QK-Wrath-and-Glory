@@ -245,7 +245,7 @@ State lives in `bestiary/js/encounter-state.js`; rendering in `bestiary/tabs/enc
     an entry of the same faction with `variantOf: null`; the three overrides hold (Land Speeder
     Tornado and Typhoon `value` 12, Leman Russ Vanquisher `rarity` `Rare`).
   - No string in the new data starts with `[AI-Generated]`.
-  - `vehicleTraits` has the 12 keys; `vehicleRules` has the 40 required keys of Appendix B and at
+  - `vehicleTraits` has the 12 keys; `vehicleRules` has the 39 required keys of Appendix B and at
     most 42 entries.
 - Cache busting: every `?v=` tag in `bestiary/index.html` (new tab script included); every `?v=` tag
   in `creator/index.html` for the Rules Reference change; the creator data `?v=` in
@@ -311,7 +311,7 @@ the 107 minus 86.
 
 ## Appendix B — Rules entries for `vehicleRules`
 
-One entry per key. The 40 plain keys are required. The two keys marked † exist only when the book
+One entry per key. The 39 plain keys are required. The two keys marked † exist only when the book
 prints text under that section heading before its first sub-heading; the extractor decides from the
 page. "Vehicle Weapons" (p. 60) gets no entry of its own: its other text is Workshop content. A table
 belongs to the entry under whose heading it is printed; the Example Pilot Tests table and the

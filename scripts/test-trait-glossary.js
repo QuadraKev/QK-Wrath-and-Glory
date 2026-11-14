@@ -78,5 +78,30 @@ check('stripRating keeps a name without a rating', stripRating('Paired'), 'Paire
 checkList('weapons.json', 'weaponTraits', WEAPON_ALLOWLIST);
 checkList('armor.json', 'armorTraits', ARMOUR_ALLOWLIST);
 
+// The creator's Rules Reference uses the raw key as the entry id for these sections
+// (creator/tabs/glossary-tab.js), so a trait key that another section also holds makes one
+// entry replace the other. The vehicle sections get a prefixed id, so they cannot collide.
+const UNPREFIXED_SECTIONS = ['characterTerms', 'conditions', 'combatTerms', 'terms',
+    'weaponTraits', 'armorTraits', 'keywords'];
+const KEY_COLLISION_ALLOWLIST = {
+    'weaponTraits.arc': 'older collision, not part of #33',
+    'weaponTraits.melta': 'older collision, not part of #33',
+    'weaponTraits.rad': 'older collision, not part of #33',
+    'weaponTraits.two_handed': 'older collision, not part of #33',
+    'armorTraits.powered': 'older collision, not part of #33'
+};
+const collisions = [];
+for (const traitSection of ['weaponTraits', 'armorTraits']) {
+    for (const key of Object.keys(glossary[traitSection])) {
+        const clash = UNPREFIXED_SECTIONS.some(s => s !== traitSection && glossary[s]
+            && Object.prototype.hasOwnProperty.call(glossary[s], key));
+        if (clash) collisions.push(`${traitSection}.${key}`);
+    }
+}
+check('no trait key repeats a key of another Rules Reference section, except the allowlist',
+    collisions.filter(c => !KEY_COLLISION_ALLOWLIST[c]), []);
+check('every key collision allowlist entry is still a collision',
+    Object.keys(KEY_COLLISION_ALLOWLIST).filter(c => !collisions.includes(c)), []);
+
 console.log(failures === 0 ? '\nAll trait glossary checks passed.' : `\n${failures} check(s) failed.`);
 process.exit(failures === 0 ? 0 : 1);

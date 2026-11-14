@@ -2994,7 +2994,7 @@
       "name": "Void",
       "source": "apocrypha",
       "page": 398,
-      "description": "A number of types of armour listed in this section have the Void trait. A character with Void armour reduces the AP of incoming attacks by one step (i.e., from AP -1 to 0, or from AP -3 to -2). Void armour also benefits from the Built-in Tech rule (page 235 of the Wrath & Glory Core Rulebook)."
+      "description": "A number of types of armour listed in this section have the Void trait. A character with Void armour reduces the AP of incoming attacks by one step (i.e., from AP -1 to 0, or from AP -3 to -2). Void armour also benefits from the Built-in Tech rule."
     }
   },
   "weaponTraits": {
@@ -3106,7 +3106,7 @@
       "page": 326,
       "description": "A Gas weapon deploys clouds of aerosolised or gaseous chemical agents. To use a Gas weapon, make a Ballistic Skill test to target a specific location; if it hits, that is where the gas emerges, filling the blast area and affecting creatures within. The gas dissipates over time, reducing the Blast Rating by 2 at the end of each round. Strong winds may make the gas dissipate more quickly, at GM's discretion. Characters wearing a rebreather or a void suit, or armour which includes such features, automatically succeed at any tests required to resist Gas weapon's effects, as are creatures which do not need to breathe, such as unliving automata, NECRONS, or DAEMONS, or creatures impervious to chemical weapons like TYRANIDS."
     },
-    "grav": {
+    "grav_weapon": {
       "name": "Grav",
       "source": "apocrypha",
       "page": 326,
@@ -3122,7 +3122,7 @@
       "name": "Guided",
       "source": "Abundant Apocryphal Adversaries: The T'au Empire (Apocrypha)",
       "page": 6,
-      "description": "The weapon can be fired automatically in response to a markerlight signal. When the Marked condition is placed on a target, you may spend 1 Ruin to allow a single weapon with this Trait to be fired as a Free Action, making an immediate attack with a Ballistic Skill of 10 (which includes the +2 for the target being Marked)."
+      "description": "The weapon can be fired automatically in response to a markerlight signal. When the Marked condition is placed on a target, you may spend 1 Ruin to allow a single weapon with this Trait to be fired as a Free Action, making an immediate attack with a Ballistic Skill of 10 (which includes the +2 for the target being Marked."
     },
     "haywire": {
       "name": "Haywire",
@@ -3298,7 +3298,7 @@
       "page": 327,
       "description": "The weapon rips and tears at their enemies, inflicting horrific wounds. When you roll for damage with this weapon, you may re-roll any number of ED."
     },
-    "tesla": {
+    "tesla_weapon": {
       "name": "Tesla",
       "source": "apocrypha",
       "page": 327,

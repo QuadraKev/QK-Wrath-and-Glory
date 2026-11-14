@@ -645,3 +645,79 @@ git commit --author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github
 4. **Review Focus.** Each of the five lines has its check in the owning task (Tasks 2, 3, 4, 7) or browser step (Task 9 step 3); the focus-while-typing line is covered by the browser step only.
 6. **Amendment (2026-11-14), changed tasks re-checked.** Base is `main`; `?v=` values are read from the file (Task 2 tag at the current value, Task 9 current + 1); no data version pinned. Task 7: `bind()` is one name, called once from `buildModal`; `render()` = `bodyHtml` + `refresh()`; the preview shows only for a valid form; number fields are `type="text" inputmode="numeric"`. Fixtures: Task 2 produces `CW`, `F`, the five forms and records and the two `…WithId` records; Task 5 produces `sctx`, `EVIL`, `SAFE`, `SAFE_UPPER`, `RAW_TAG`; every later use names its source in Consumes.
 5. **Proportion.** The plan is about 1.3 times the length of the spec; code blocks are test assertions and exact strings only.
+
+---
+
+## Review record (2026-11-14)
+
+The nine tasks ran one after the other on the branch `custom-wargear`, each with a task review. A review of the full branch followed, with one fix wave and one re-review. This section holds the rulings that the controller made during the run and the review items that were deferred.
+
+### Rulings
+
+- Ruling: no controller conflict table — two reviewer passes checked the interfaces, the green-after-each-task rule and about 45 line references — a cross-task conflict that both missed shows first in a task review.
+- Ruling: the branch was cut before the data branch glossary-missing-traits merged — Task 1 touches only creator/js/data-loader.js and the new test file — main merges into custom-wargear before Task 2; a conflict in creator/index.html is then mine to resolve.
+- Ruling: main (f360243: glossary traits, popup fixes, creator ?v=122) merged into custom-wargear before Task 2, as planned in pre-flight — no conflict.
+- Ruling: Task 2 finding 1 gets the cleaner fix (one owner of the per-kind record shape, plus a fixed-point check for the five fixtures) — the smaller fix (a test tie only) leaves two copies that Tasks 3-8 build on — costs one more change inside Task 2 if the single owner changes a public result.
+- Ruling: Task 2 Minor findings 2, 3, 4 go with fix round 1 (same code, same test section) — they are checks that cannot fail today — no cost if wrong beyond the round.
+- Ruling: Task 5 concern 1 (talents-tab `.replace` with a string replacement expands `$&` in a custom name) is a correctness defect inside spec §5, so it goes back to the implementer BEFORE the review (SDD: a correctness concern is settled before review) — costs one resume; if wrong, the reviewer sees one more small commit.
+- Ruling: main (719a07f) must merge into custom-wargear after the Task 6 review and before Task 7 — creator/index.html will conflict (34 tags at 123 on main, the Task 2 tag at 122 on the branch); resolution: take main's lines and set the custom-wargear.js tag to ?v=123; Task 9 then bumps to 124.
+- Ruling: Task 6 finding 1 ("Salvo 0" shows on 81 book ranged weapons whose record stores salvo 0, while 77 records that store "-" show no Salvo line; core has 12 zeros, church 44 dashes, apocrypha 40 zeros and 26 dashes) — the code stands as the spec §4.1 says (a number prints, "-" hides): 0 and "-" are what each book prints, and the data is verbatim — costs one line in weaponSalvoText and one test flip if the owner wants 0 hidden; the owner is told and can rule before the ship.
+- Ruling: Task 7 concern 2 (inputmode="numeric" gives some phones a keypad with no minus key; AP and the bonus value take negatives) goes back to the implementer BEFORE the review; it amends the plan's "every number field is type=text inputmode=numeric" — a field whose LIMITS range has min < 0 gets no inputmode, the others keep it — costs one resume; if wrong, a phone player types AP on a full keyboard.
+- Ruling: Task 7 Minor findings 2 (focus to body in two cases), 3 (save() ignores a false from updateCustomItem), 4 (duplicate check against non-normalized chip text) go with fix round 1 — same code, small — no cost beyond the round.
+- Ruling: Task 9 gets no separate task reviewer — its diff is the version bump only (35 lines in creator/index.html); the gate is the controller's checks (35 tags at one value, web-api.js unchanged against the merge base, no change under bestiary/data/shared, 15 scripts pass, 392 PASS lines in the feature test, 19 PASS rows in the step table) and the whole-branch review that follows at once — costs nothing if wrong, because the final review reads the same diff.
+- Ruling: the Task 6 Salvo ruling is OVERTURNED — the sheet prints the Salvo line only for a salvo above 0 (or a non-numeric text such as "1d3"); the premise "0 is what the book prints" was false for at least six core records. formatStatLine keeps "Salvo 0" for a custom ranged weapon (it reads back what the player typed in the preview and the list). The data correction (0 to "-") is a separate data task for the owner — cost if wrong: one line and one test flip.
+- Ruling: F3 gets the stronger fix — open() stores the entry id; save() finds the entry by id again and updates at its current index; if the entry is gone, the form closes and saves nothing — the reviewer's smaller fix (close without saving when the id differs) loses a valid edit after a mere index shift.
+- Ruling: F4 goes into this fix wave although the live site has it today and the spec did not ask for it — it is a script-injection path through a shared character file, and each fix is one escape call — cost if wrong: none.
+- Ruling: F6 comes OUT of the fix wave — min-width:0 with overflow-wrap:anywhere on .wargear-info shrinks the info column of a custom row to 61px at 360px, so the Custom badge breaks into "CUSTO / M" and the stat line breaks inside words; the cure for a name of 80 letters with no space made every custom row on a phone worse (defect of the controller's brief). The finding is parked: real, deferred; the right fix is a narrow-screen row layout (buttons below the text), for the owner — cost if wrong: a silly long name hides its row's buttons at 360px until the layout task.
+
+### Deferred review items
+
+- Task 1: minor (deferred): resolver test section sits at file scope, not in a block (names rctx, DL, RS, ID, noState) — carried to Task 2 dispatch as a first step
+- Task 1: minor (deferred): getCustomRecord accepts an array as entry.custom (data-loader.js:107); getters reject it by kind
+- Task 1: minor (deferred): no check can fail on the "never search the data cache for a custom_ id" rule (plan-mandated checks)
+- Task 1: minor (deferred): "an Other item adds nothing" passes also when the Other item does not resolve
+- Task 1: minor (deferred): no check for falsy State.character, non-array wargear, null entry in getCustomRecord
+- Task 1: minor (deferred): the custom_ prefix test is in four places in data-loader.js
+- Task 1: minor (deferred): canon has no check of its own
+- Task 1: minor (deferred): report line 13 names the wrong check as the extra red one (report only)
+- Task 2: minor (deferred): report claim "on a valid form only the keywords change" is false — buildRecord also normalizes trait spelling, drops duplicate/blank traits, cuts a typed trait at 60 chars and a keyword at 40 after upper case (ß doubles), with no message; validateForm checks only the trait count
+- Task 2: minor (deferred): an invalid form now builds a normal-looking record (blank name → "Unnamed custom item", clamps) instead of null numbers; the precondition comment stays — a caller that skips validateForm saves a silently changed record
+- Task 2: minor (deferred): four more "returns true" checks pass vacuously (test-custom-wargear.js :307-309, :311-312) — use withId
+- Task 3: minor (deferred): test name "ranged stat line with AP -1 and two traits" has one trait (test-custom-wargear.js:365)
+- Task 3: minor (deferred): `this.BONUS_LABELS[key] || key` fallback that no clean record reaches (custom-wargear.js:109)
+- Task 3: minor (deferred): the glossary removal/restore is in two test sections; the Task 2 copy has no finally
+- Task 4: minor (deferred): updateCustomItem with a string index ('0') puts the entry's own id into usedIds and changes the id (state.js:848); callers parseInt today; fix: filter by `w !== entry`
+- Task 4: minor (deferred): no test remaps an armor_owned choice onto a kept custom armour (the code works per the reviewer's probe)
+- Task 4: minor (deferred): no test that addCustomItem/updateCustomItem notify 'wargear' (autosave depends on it)
+- Task 4: minor (deferred): no test for "no CustomWargear reference when no entry qualifies" with book entries present
+- Task 4: reading for the final review: a load schedules no save, so a repaired save stays unrepaired in storage until the next edit; each restore gives a new random id and logs the warning again (talent choices hold indices, so nothing breaks)
+- Task 5: minor (deferred): the tooltip check at test-custom-wargear.js:587 can never fail (the regex always ends on a quote)
+- Task 5: minor (deferred): no render check for the two attribute sites of spec §5 item 4 (Resilience/Defence tooltip with the armour name, attribute tooltip with the augmetic source); only the escapeHtml unit check protects them
+- Task 5: minor (deferred): safeAll check is imprecise ("holds the escaped name" passes when any field is escaped; the effect parameter is unused)
+- Task 5: reading for the final review and the owner: older raw sites that a custom item cannot reach but an IMPORTED file can: an unknown upgrade id (wargear-tab.js:161), a talent choice that resolves to no item (talents-tab.js:315, character-sheet-tab.js:1647), catalog cards and upgrade names (book data only)
+- Task 6: minor (deferred): no check covers the escape of the Salvo line (character-sheet-tab.js:920; book data has a string salvo "1d3")
+- Task 6: minor (deferred): the class sheet-weapon-salvo is a third exception to the custom-item- prefix rule; the plan's exception list does not name it (plan text; the code is right)
+- Task 6: minor (deferred): the copy test replaces sctx.navigator.clipboard.writeText and never restores it; the wargear reset is not in a finally
+- Task 7: minor (deferred): a refused edit keeps the modal open but shows no reason (custom-wargear.js:430); not reachable until Task 8 adds the Edit caller, and then only if State refuses
+- Task 7: minor (deferred, out of scope): the modal has no focus trap; if the player Tabs out and removes an earlier item while the Edit form is open, editIndex points at the next entry, and a custom item of the same kind there gets overwritten (state.js:839-852)
+- Task 8: minor (deferred): the entry field and the Edit bind are checked only by a search of the source text; no test runs renderCurrentWargear with a custom entry; only the weapon Edit index is checked
+- Task 8: minor (deferred): the Edit class and the info line choose between relic, improvised and custom in different orders (wargear-tab.js:181, :206); not reachable, because normalizeEntry deletes relic and improvised on a custom entry
+- Task 9: concern for the final review and the owner: after a wargear removal, a stored talent choice (Trademark Weapon, Armour-Monger) keeps its old index, so it shows a wrong item or a bare number (existing behavior of removeWargearByIndex, out of scope by spec §2.7); the sheet showed "(5)" for Armour-Monger after step 18
+- F5 Minor: a multi-line description shows as one line on the sheet and in print (white-space: pre-line would also change 43 book records) — for the owner, NOT in the wave
+- F6 Minor: a long unbroken name pushes Edit and Remove off screen at 360px (.wargear-info) — in the wave
+- F7 Minor: on open the focus stays behind the modal, no focus trap; the sheet prints "rank Resilience" where the list prints "+Rank Resilience" — initial focus in the wave; the trap and the wording wait
+
+### Wave table
+
+| Task | Model | Dispatches | Send-backs | Gate |
+|---|---|---|---|---|
+| Task 1 | sonnet | 1 | 0 | Approved |
+| Task 2 | opus | 1 | 1 | Approved after fix round 1 |
+| Task 3 | sonnet | 1 | 0 | Approved |
+| Task 4 | opus | 1 | 0 | Approved |
+| Task 5 | sonnet | 1 | 0 (1 pre-review fix on a self-reported concern) | Approved |
+| Task 6 | sonnet | 1 | 0 | Approved after ruling |
+| Task 7 | opus | 1 | 1 (plus 1 pre-review fix on a self-reported concern) | Approved after fix round 1 |
+| Task 8 | sonnet | 1 | 0 | Approved |
+| Task 9 | sonnet | 1 | 0 | Controller gate + final review |
+| Fix wave | opus | 1 | 1 (F6 taken out) | Re-review: all addressed |

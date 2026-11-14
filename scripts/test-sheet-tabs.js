@@ -300,7 +300,7 @@ function tabsSection() {
             { type: 'archetype', archetypeId: 'missing', targetTier: 5 }] });
         const html = sheet.renderDetails(ch, { name: 'Human' }, { name: 'Warrior' });
         check('Details has the title', titlesIn(html), ['Details']);
-        check('Details carries the print-hide class', html.includes('sheet-details-section'), true);
+        check('Details carries the sheet-details-section class (the print rules use it)', html.includes('sheet-details-section'), true);
         check('Details rows', ['<strong>Name:</strong> Kaelen', '<strong>Species:</strong> Human', '<strong>Archetype:</strong> Warrior → Veteran (Tier 3)', '<strong>Tier:</strong> 3', '<strong>Rank:</strong> 2'].map(s => html.replace(/\s+/g, ' ').includes(s)), [true, true, true, true, true]);
         check('Details skips an unresolved ascension archetype', html.includes('Tier 5'), false);
         const plain = sheet.renderDetails(makeCharacter({ name: '', rank: undefined }), null, null).replace(/\s+/g, ' ');
@@ -505,15 +505,58 @@ function tabsSection() {
         }
     }
 
-    // Traits keeps the trait grid, Faith and Wealth only
+    // Traits keeps the trait grid and Faith only. The Wealth counter is in Details (owner, 2026-11-14)
     {
         const env = sheetSandbox();
         const html = env.sheet.renderTraits(DERIVED, {});
-        check('Traits has no boxes, no Wrath, has Wealth, no Faith',
-            [html.includes('tracking-box'), html.includes('data-type="wrath"'), html.includes('data-type="wealth"'), html.includes('data-type="faith"')],
-            [false, false, true, false]);
+        check('Traits with no Faith has no boxes, no Wrath, no Wealth, no Faith, no tracking section',
+            [html.includes('tracking-box'), html.includes('data-type="wrath"'), html.includes('data-type="wealth"'), html.includes('data-type="faith"'), html.includes('sheet-tracking-section')],
+            [false, false, false, false, false]);
         env.state.maxFaith = 2;
-        check('Traits has Faith when the max Faith is above 0', env.sheet.renderTraits(DERIVED, {}).includes('data-type="faith"'), true);
+        const faithHtml = env.sheet.renderTraits(DERIVED, {});
+        check('Traits with Faith has Faith, one tracking section, no Wealth',
+            [faithHtml.includes('data-type="faith"'), count(faithHtml, /sheet-tracking-section/g), faithHtml.includes('data-type="wealth"')],
+            [true, 1, false]);
+    }
+
+    // The Wealth counter in Details (owner, 2026-11-14)
+    {
+        const env = sheetSandbox();
+        const wealthOf = (html) => [count(html, /tracker-minus" data-type="wealth"/g), count(html, /tracker-plus" data-type="wealth"/g)];
+        env.state.wealth = 3;
+        const html = env.sheet.renderDetails(makeCharacter(), null, null);
+        check('Details has one Wealth minus and one Wealth plus button', wealthOf(html), [1, 1]);
+        check('Details shows the Wealth value', /tracker-label">Wealth<[\s\S]*?tracker-value">3</.test(html), true);
+        // Nesting: at the start of the tracking section, the card and the tracking section are open, and nothing else
+        const beforeSection = html.slice(0, html.indexOf('sheet-tracking-section'));
+        check('the Wealth counter is inside the Details card, after the background rows',
+            [html.indexOf('sheet-background-content') < html.indexOf('sheet-tracking-section'), count(html, /sheet-tracking-section/g), count(beforeSection, /<div/g) - count(beforeSection, /<\/div>/g)],
+            [true, 1, 2]);
+        env.state.wealth = 0;
+        check('Details shows a Wealth of 0 as 0', /tracker-label">Wealth<[\s\S]*?tracker-value">0</.test(env.sheet.renderDetails(makeCharacter(), null, null)), true);
+        env.state.wealth = '<img src=x onerror=alert(1)>';
+        const evilHtml = env.sheet.renderDetails(makeCharacter(), null, null);
+        check('a hostile Wealth value is escaped', [evilHtml.includes('<img'), evilHtml.includes('&lt;img src=x onerror=alert(1)&gt;')], [false, true]);
+
+        // The panes: Wealth buttons in the Character pane only
+        const { sheet } = sheetSandbox();
+        const realDetails = sheet.renderDetails, realTraits = sheet.renderTraits;
+        const restore = stubBlocks(sheet);
+        try {
+            sheet.renderDetails = realDetails;
+            sheet.renderTraits = realTraits;
+            const ctx = { character: makeCharacter(), species: null, archetype: null, keywords: [], derivedStats: DERIVED, breakdowns: { resilience: null, defence: null } };
+            check('Wealth buttons: 2 in the Character pane, 0 in the Stats pane',
+                [count(sheet.renderPane('character', ctx), /data-type="wealth"/g), count(sheet.renderPane('stats', ctx), /data-type="wealth"/g)], [2, 0]);
+        } finally {
+            restore();
+        }
+
+        // CSS: one line above the Faith counter, none from the row
+        const css = readSource('creator/css/styles.css');
+        const baseRow = (css.match(/^\.tracker-row-horizontal\s*\{([^}]*)\}/m) || [])[1] || '';
+        check('the base .tracker-row-horizontal rule exists and has no border-top, padding-top or margin-top', [baseRow.length > 0, /border-top/.test(baseRow), /padding-top/.test(baseRow), /margin-top/.test(baseRow)], [true, false, false, false]);
+        check('no print selector for .tracker-row-horizontal', css.includes('body.print-light-theme .tracker-row-horizontal'), false);
     }
 
     // Box clicks (spec §10.1 case 5)
@@ -1018,7 +1061,32 @@ function tabsSection() {
     check('print block exists', print.length > 0, true);
     check('hidden panes print', /display:\s*block\s*!important/.test((print.match(rule('.sheet-pane[hidden]')) || [])[1] || ''), true);
     check('tab bar does not print', /display:\s*none\s*!important/.test((print.match(rule('.sheet-tabbar')) || [])[1] || ''), true);
-    check('Details does not print', /display:\s*none\s*!important/.test((print.match(rule('.sheet-details-section')) || [])[1] || ''), true);
+    // Of the Details block, only the Wealth line prints, under the Wrath line of the strip (controller ruling, 2026-11-14)
+    {
+        const detailsRule = (sel) => printRules(print).filter(r => r.sels.includes(sel)).map(r => r.body).join('\n');
+        check('print: the Details card itself is not hidden', /display:\s*none/.test(detailsRule('.sheet-details-section')), false);
+        check('print: the Details title and rows are hidden',
+            ['.sheet-details-section .sheet-section-title', '.sheet-details-section .sheet-background-content'].map(sel => /display:\s*none\s*!important/.test(detailsRule(sel))),
+            [true, true]);
+        check('print: the Details card has no border and no background, in both looks',
+            ['.sheet-details-section', 'body.print-light-theme .sheet-details-section'].map(sel => [/border:\s*none\s*!important/.test(detailsRule(sel)), /background:\s*none\s*!important/.test(detailsRule(sel))]),
+            [[true, true], [true, true]]);
+        const wealthLine = detailsRule('.sheet-details-section .sheet-tracking-section');
+        check('print: the Wealth line has no border-top, margin-top or padding-top',
+            [/border-top:\s*none\s*!important/.test(wealthLine), /margin-top:\s*0\s*!important/.test(wealthLine), /padding-top:\s*0\s*!important/.test(wealthLine)],
+            [true, true, true]);
+        check('print: the Wealth line is one left-aligned row like the Wrath row',
+            [/flex-direction:\s*row/.test(detailsRule('.sheet-details-section .tracker-column')), /text-align:\s*left/.test(detailsRule('.sheet-details-section .tracker-label')), /text-align:\s*left/.test(detailsRule('.sheet-details-section .tracker-value')), /justify-content:\s*flex-start/.test(detailsRule('.sheet-details-section .tracker-row-horizontal'))],
+            [true, true, true, true]);
+        // The Wealth label holds a hidden copy of the widest strip label, so that its width follows the font
+        const labelRule = detailsRule('.sheet-details-section .tracker-label'), afterRule = detailsRule('.sheet-details-section .tracker-label::after');
+        check('print: the Wealth label holds a hidden copy of the Wounds label, with no fixed width',
+            [/content:\s*'Wounds'/.test(afterRule), /height:\s*0/.test(afterRule), /visibility:\s*hidden/.test(afterRule), /display:\s*flex/.test(labelRule), /flex-direction:\s*column/.test(labelRule), /min-width/.test(labelRule), /51px/.test(print)],
+            [true, true, true, true, true, false, false]);
+        // A rule of the tabs print block that names a tracker class must name the Details card or the strip
+        const trackerSels = printRules(print).flatMap(r => r.sels).filter(x => /\.tracker-|\.sheet-tracking-section/.test(x));
+        check('print: each tracker rule is scoped to the Details card or the strip', [trackerSels.length > 0, trackerSels.every(x => /\.sheet-details-section|\.sheet-strip-trackers/.test(x))], [true, true]);
+    }
     check('strip is static and block in print', [/\.sheet-strip,\s*\.sheet-strip-bar\s*\{[^}]*position:\s*static\s*!important/.test(print), /display:\s*block\s*!important/.test((print.match(rule('.sheet-strip')) || [])[1] || '')], [true, true]);
     check('trackers stay on one page', /page-break-inside:\s*avoid/.test((print.match(rule('.sheet-strip-trackers')) || [])[1] || ''), true);
     check('light theme clears the strip background', /body\.print-light-theme \.sheet-strip,[\s\S]*?background:\s*transparent/.test(print), true);

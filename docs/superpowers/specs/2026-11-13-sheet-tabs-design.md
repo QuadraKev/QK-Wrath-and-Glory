@@ -36,8 +36,9 @@ Goals:
 Non-goals:
 
 - No change to any block's content, except the move of Mutations out of Injuries & Corruption
-  (§3.2), the move of the Wounds, Shock and Wrath trackers from Traits to the strip (§4.3), and the
-  new Details block (§3.1).
+  (§3.2), the move of the Wounds, Shock and Wrath trackers from Traits to the strip (§4.3), the
+  move of the Wealth counter from Traits to the Character tab (§4.3) **[Owner, 2026-11-14]**, and
+  the new Details block (§3.1).
 - No markup change inside the blocks that #33 owns or that this feature only moves: `renderWeapons`,
   `renderArmor`, `renderAugmetics`, `renderEquipment`, `renderHolyRelics`, `renderFollowers` and
   `renderFollower` (§5.2, §9).
@@ -187,7 +188,7 @@ Desktop, full mode (1000–1399px; `.character-sheet` max-width 900px as today):
 │ └────────────────────────┘ │                              │ │
 │ ┌ Traits ────────────────┐ │                              │ │
 │ │ Defence 3  Resil. 6 …  │ │                              │ │
-│ │ Faith [−] 1 [+]  Wealth [−] 2 [+]                       │ │
+│ │ Faith [−] 1 [+]                                         │ │
 │ └────────────────────────┘ └──────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────┘
 ```
@@ -314,7 +315,10 @@ their signatures.
 The owner's list for Character repeats name, race, Tier, Rank and class, which the strip already
 shows. The Character tab shows them again as a labelled **Details** block **[Designer, new]**, because
 the owner listed them and a labelled form reads more clearly than the strip's bullet line. The
-Details block has no trackers and no keyword chips.
+Details block has no Wounds, Shock or Wrath tracker and no keyword chips. It ends with the Wealth
+counter. The owner moved the counter to the Character tab **[Owner, 2026-11-14]**. Its place at
+the foot of the Details block is a ruling **[Controller ruling, 2026-11-14; the owner can reverse
+it]**.
 
 `renderDetails(character, species, archetype)` returns a `.sheet-section` titled "Details" with these
 rows, in a `<dl>` or the existing `.sheet-background-item` form:
@@ -329,7 +333,8 @@ rows, in a `<dl>` or the existing `.sheet-background-item` form:
 - **Tier**: `State.getEffectiveTier()`, as in the strip.
 - **Rank**: `character.rank || 1`.
 
-The Details block does not print (§7), because the printed strip carries the same facts.
+Of the Details block, only the Wealth line prints (§7). The title and the rows do not print,
+because the printed strip carries the same facts **[Controller ruling, 2026-11-14]**.
 
 ### 3.2 Mutations block
 
@@ -371,8 +376,9 @@ editor.
 ### 4.1 Content
 
 Identity part: name, subtitle (species • archetype • Tier • Rank), keyword chips, as `renderHeader`
-gives them today **[Owner]**. Tracker part: Wounds, Shock and Wrath **[Owner]**. Faith and Wealth
-stay in Stats **[Owner]**.
+gives them today **[Owner]**. Tracker part: Wounds, Shock and Wrath **[Owner]**. Faith stays
+in Stats **[Owner]**. The Wealth counter is in the Character tab **[Owner, 2026-11-14]**, in the
+Details block (§3.1).
 
 ### 4.2 Tracker forms
 
@@ -404,9 +410,12 @@ the re-render (§5.2). Faith and Wealth counters do not change.
 
 ### 4.3 What Traits shows
 
-`renderTraits` keeps the static trait grid and the Faith (only when `State.getMaxFaith() > 0`) and
-Wealth counters. It no longer renders the Wounds row, the Shock row or the Wrath counter. The boxes
-and the Wrath counter exist once in the page, in the strip.
+`renderTraits` keeps the static trait grid. It has a tracking section only when `State.getMaxFaith()
+> 0`: one line, then the Faith counter **[Controller ruling, 2026-11-14]**. The owner asked for
+the removal of the empty lines of the Traits card **[Owner, 2026-11-14]**. It has no Wealth
+counter, because the Wealth counter is in the Character tab **[Owner, 2026-11-14]** (§3.1). It no
+longer renders the Wounds row, the Shock row or the Wrath counter. The boxes and the Wrath counter
+exist once in the page, in the strip.
 
 ## 5. Behaviour
 
@@ -480,8 +489,9 @@ click while the Notes tab is open re-renders the textarea from state, as today.
 - The view state also holds the `scrollTop` of the Notes box, when the box exists. The restore sets
   it on the new box, with or without the focus, after the caret. Reason: a tracker click while the
   Notes tab is open re-renders the box, and the box went back to its first line.
-- The strip and the Details block escape the Wrath value, the Rank and the target tier of an
-  ascension, because a character file can come from another person.
+- The strip and the Details block escape the Wrath value, the Wealth value of the Details block,
+  the Rank and the target tier of an ascension, because a character file can come from another
+  person **[Controller ruling, 2026-11-14, for the Wealth value]**.
 
 ### 5.3 Tab switch
 
@@ -552,7 +562,11 @@ Print shows the whole sheet, whichever tab is selected **[Designer]**:
 - The tab bar does not print.
 - Every pane prints, in tab order: `@media print { .sheet-pane[hidden] { display: block !important; } }`.
   Each block keeps its own `<h2>`; no pane title is added.
-- The Details block does not print (§3.1).
+- Of the Details block, only the Wealth line prints, directly under the Wrath line of the strip, in
+  the same form: the label, then the value, on one row. The title, the rows and the card frame do
+  not print (§3.1). The print rules for `.sheet-details-section` set this. The Wealth label holds a
+  hidden copy of the "Wounds" label (the widest label of the strip), so that the two values line up
+  in any font **[Controller ruling, 2026-11-14]**.
 - The existing print rules keep working because the block classes do not change. Remove the print
   rule for `.sheet-body` (it no longer exists, §8). Keep `.sheet-header-section { page-break-after:
   avoid }`, and add `page-break-inside: avoid` for `.sheet-strip-trackers`.
@@ -628,7 +642,8 @@ composition without game data. Cases:
    `.tracker-btn` pair and the Wrath value. The trackers and the tab bar are inside
    `.sheet-strip-bar`, and the identity part is outside it.
    The whole sheet HTML has these boxes and the Wrath pair once; Traits has no `.tracking-box` and
-   no Wrath button, but has `wealth` (and `faith` only when `getMaxFaith() > 0`). With max 50 the
+   no Wrath button and no `wealth` button, and has `faith` only when `getMaxFaith() > 0`
+   **[Owner, 2026-11-14]**. With max 50 the
    strip has 50 Wounds boxes.
 5. **Box clicks**: with stub box elements (class list, `dataset`, captured click listener) passed
    through `bindSessionTrackingControls`, and `render` stubbed: a click on empty Wounds box 4 calls
@@ -679,8 +694,9 @@ about 50 Wounds and 35 Shock.
   rows wrap and never cause a horizontal page scroll, the pane layouts of §2.3, the tab bar scrolls
   sideways in compact mode.
 - A glossary popup and a breakdown popup close on a tab switch and show above the pinned part.
-- Print preview from the Wargear tab: strip with the box rows and the Wrath value, no tab bar, no
-  Details block, all blocks in tab order, light theme.
+- Print preview from the Wargear tab: strip with the box rows and the Wrath value, the Wealth value
+  under the strip, no tab bar, no Details title and rows, all blocks in tab order, light theme
+  **[Controller ruling, 2026-11-14]**.
 - Copy Summary output is the same as before the change.
 - New character and Load: the selected tab stays when the new character has it.
 
@@ -706,7 +722,9 @@ bump. No `data/` file changes, so the creator data `?v=` in `creator/js/web-api.
 
 - **Strip content**: name, species, archetype, Tier, Rank and keyword chips, plus the Wounds, Shock
   and Wrath trackers, so that "a player on the Wargear tab can then mark a wound with no tab change".
-  Faith and Wealth stay in Stats.
+  Faith stays in Stats. The Wealth counter is in the Character tab **[Owner, 2026-11-14]**:
+  "Wealth counter should probably be moved to Character tab". Its place in the Details block is a
+  controller ruling.
 - **Tracker forms**: "For wounds and shock specifically, I prefer the boxes to the counters. This
   allows the user to visualize their remaining wounds/shock. We can use counters for the other
   values." Wounds and Shock are box rows at every width; Wrath, Faith and Wealth are counters.

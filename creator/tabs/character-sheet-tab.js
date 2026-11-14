@@ -525,14 +525,24 @@ const CharacterSheetTab = {
                 <div class="sheet-background-content">
                     ${rows.map(([label, value]) => `<p class="sheet-background-item"><strong>${label}:</strong> ${value}</p>`).join('')}
                 </div>
+                <div class="sheet-tracking-section">
+                    <div class="tracker-row-horizontal">
+                        <div class="tracker-column">
+                            <span class="tracker-label">Wealth</span>
+                            <div class="tracker-controls">
+                                <button class="tracker-btn tracker-minus" data-type="wealth">−</button>
+                                <span class="tracker-value">${this.escapeHtml(String(State.getCurrentWealth()))}</span>
+                                <button class="tracker-btn tracker-plus" data-type="wealth">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         `;
     },
 
     // Render traits (formerly derived stats) in compact 2-column grid
     renderTraits(stats, breakdowns = {}) {
-        const currentWealth = State.getCurrentWealth();
-
         // Build tooltip text from breakdown
         const buildTooltip = (breakdown) => {
             if (!breakdown || !breakdown.breakdown) return '';
@@ -585,30 +595,17 @@ const CharacterSheetTab = {
             </div>
         ` : '';
 
-        // Wealth tracker
-        const wealthTracker = `
-            <div class="tracker-column">
-                <span class="tracker-label">Wealth</span>
-                <div class="tracker-controls">
-                    <button class="tracker-btn tracker-minus" data-type="wealth">−</button>
-                    <span class="tracker-value">${currentWealth}</span>
-                    <button class="tracker-btn tracker-plus" data-type="wealth">+</button>
-                </div>
-            </div>
-        `;
-
         return `
             <div class="sheet-section sheet-derived-section">
                 <h2 class="sheet-section-title">Traits</h2>
                 <div class="sheet-compact-grid sheet-traits-grid">
                     ${staticItems}
                 </div>
-                <div class="sheet-tracking-section">
+                ${maxFaith > 0 ? `<div class="sheet-tracking-section">
                     <div class="tracker-row-horizontal">
                         ${faithTracker}
-                        ${wealthTracker}
                     </div>
-                </div>
+                </div>` : ''}
             </div>
         `;
     },

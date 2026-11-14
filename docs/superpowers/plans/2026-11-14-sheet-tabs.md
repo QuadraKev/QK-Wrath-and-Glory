@@ -573,3 +573,156 @@ git commit --author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github
 3. **Type consistency.** `renderPane(tabId, ctx)` and `ctx` defined in Task 2 and used in Tasks 3 and 6; `renderStrip(ctx, visibleIds)` gains `renderTabBar(visibleIds)` in Task 3; `_pinnedElement(container)` and `_scrollActiveTabIntoBar(container)` take `#character-sheet-content`, and Task 4 makes `.sheet-tabbar` their `offsetParent`; `_nextSheetTabId` returns `null` for an unknown id and `handleSheetTabKeydown` ignores a target outside `.sheet-tab-btn`; `_captureViewState()` returns `{ scrollTop, focusKey }`, consumed by `_restoreViewState(state)`; `_FOCUS_SELECTOR` is the one selector list; the strip labels carry `sheet-strip-label tracker-label` in Task 2 and Task 4 gives `.sheet-strip-label` no colour. `makeDom`'s `scroller` and `body` are `stubEl`s, and `sheetSandbox` reads the module with `vm.runInContext(src + '\n;CharacterSheetTab;', ctx)`. Task order 1, 2, 3, 4 (strip CSS), 5 (removal), 6 (re-render), 7 (print), 8; every cross-reference uses these numbers.
 4. **Review Focus.** Zero-max strip → Task 2 check; escaped player text → Task 1 checks; vanished tab → Task 3 fallback checks; narrow print → Task 4 `screen`-only sticky check and Task 7 print checks; keys in the Notes textarea → Task 3 textarea check and Task 8 step 8.
 5. **Proportion.** The plan is about 1.6 times the length of the spec (about 9,450 words against 5,835); the excess is the shared test-helper contract and the browser checklists. Code blocks are test assertions and exact strings only.
+
+---
+
+## Review record (2026-11-14)
+
+The eight tasks ran one after the other on the branch `sheet-tabs`, cut from the base commit `30d996e`. Each task had a task review, except Task 8 (see ruling 12). One review of the full branch followed, with one fix wave. This section holds the rulings that the controller made without the owner, the items that were deferred, and the wave table. The final head of the branch is `d57cbfe`. The merge commit on `main` is `f99d2b1`. The creator assets are at `?v=125`.
+
+### Rulings
+
+An item that starts with "Owner can reverse:" is a ruling that the owner is most likely to want to see.
+
+1. Ruling: the `.tracker-row` CSS (`creator/css/styles.css`, about :3141-3146 and its print rule about :5064-5066) became unused when Task 2 moved the trackers. It joined the removal list of Task 5, because the change made it unused. The spec §8 list does not name it, because the rule is older than the render split. If this is wrong, a later use brings the rule back. It costs nothing.
+2. Ruling: Task 4 showed content in a band of 20, 15 and 10px above the pinned strip. The scroller `#tab-character-sheet` has a top padding, and the browser pins the strip inside it. The controller sent this visible defect back to the implementer before the review. The scroller top padding moved into the sheet for the Character Sheet tab only, inside `@media screen`. The spec `top: 0` stays, because the spec did not foresee the padding. If this is wrong, the space above the Copy and Print buttons differs by a few px.
+3. Owner can reverse: a third layout mode, low mode. In `@media screen and (max-height: 480px)`, only the tab bar stays pinned, and the tracker rows scroll with the page. Windows of 481px to 600px keep compact mode, and `_pinnedElement` returns the tab bar in low mode. The reason: at 740x360 the scroller is 230px high, because the app chrome takes 130px. The pinned bar then left 80px (typical character) and 2px (largest character) for the pane. The spec figures ignored the app chrome. The owner decision about narrow viewports covers width only, and it stays. If this is wrong, a wound needs one scroll up on a landscape phone. To pin the boxes in low mode too, remove one media block. The spec §2.2 now holds the mode and the measured numbers. The limit is by viewport height only, so a 360x560 phone stays in compact mode (see F4 in the deferred items).
+4. Ruling: Minor findings 2, 3 and 4 of the Task 4 review (Wrath column 112px, missing CSS checks, the "Full mode" comment) went with fix round 1. They were in the same file, and each one was small.
+5. Owner can reverse: the Notes box gets the focus key `notes` with its selection range. The cause was the re-render at the end of the threat-data load. It took the focus and the caret from the Notes box, one time per session, during the fetch of a 2.6 MB file. This adds one row to the spec §5.2 table. If this is wrong, it costs nothing. The rule that typing never causes a re-render stays.
+6. Ruling: a fallback to Stats sets the captured scroll to 0. Before, the fallback restored the scroll of the old pane. F6 shows one hole in this rule (see the deferred items).
+7. Ruling: an older raw site went with Task 6 fix round 1. `renderFollower` printed `data-follower-id` with no escape, and the id can come from an imported file. This is the same class as the F4 safety fix of the custom wargear wave. The fix is one escape call. The other saved-character values in `renderFollower` and `renderFollowers` got the same check. The follower id, `livingCount` and the counts are now escaped, with `String()` first.
+8. Owner can reverse: three print items of Task 7 went back to the implementer before the review. Print changed more than the feature needed. (1) Each tracker printed as a stacked block (the label on one line, the boxes centered on the next), because the strip grid is screen-only. Print got its own rule, so that a label and its boxes are one row. (2) The injury subheads printed pale on white and the Mutation card printed dark. Main has the same pale text and dark card, so these are older defects of the light print theme. They now print dark text on a light background. (3) The dark band at the page edges is the `#tab-character-sheet` background. Main prints it too, so it stays unchanged. If this is wrong, the print of injuries and mutations differs from main by color only.
+9. Owner can reverse: three more older print defects that main has too were fixed before the Task 7 review. They are: the Ascension card prints dark, the Follower threat card prints dark, and the "EFFECT" label overlaps the item names of Augmetics and Equipment. The limits were: print-only rules, no markup change, and a stop at an item that needs more than about ten rules. The implementer wrote 9 print-only rules. Print thus changed more than the feature needed. Both Important findings of the Task 7 review came from these added rules (a page split in Attributes, Traits and Skills, and low contrast in the Follower and Mutation cards). Fix round 1 closed both. If this is wrong, the print of those three blocks differs from main.
+10. Ruling: the equipment group print rule stays outside the light print theme and outside the Sheet tabs block. It corrects a layout defect of every print, and it must follow the old rule that it overrides. A comment says so. The final review found that the reason in the comment was wrong: specificity decides ((0,2,0) against (0,1,1)), not the order. The fix wave corrected the comment (F9). The rule did not move.
+11. Ruling: two readings joined Task 7 fix round 1. The printed tracker rows get the inset of the cards, because the rows are new with this branch. The 1400px two-column rule of Task 4 gets the `screen` qualifier, because a very wide printed page would get two columns.
+12. Owner can reverse: Task 8 got no separate task review. Its diff is 35 mechanical lines that the controller checked: one `35 ?v=125` line, one file in the commit, a clean tree. Its browser report went to the final review as unverified claims, with a sample re-run. If this is wrong, a wrong row of the browser table reaches the final review, which has the browser. The final review reproduced every sampled row. Task 8 did not see F2, because it looked with Notes selected.
+13. Ruling: F1 gets the design of the reviewer. One delegated `focusin` listener puts a keyboard-focused target in `.sheet-panes` under the bottom of `_pinnedElement()`. It stores no height and uses no CSS. Guards cover the scroll restore, mouse use and pinned controls. The mechanism is a flag that a Tab keydown sets (a 0ms timer clears it), plus a restore guard. The helper `_keepBelowPinned` serves `focusin` and `selectSheetTab`. `scroll-padding-top` is not a fix, because a focus on a pinned control then scrolls the page. If this is wrong, remove one listener.
+14. Owner can reverse: F2 gets an edge cue on a one-row tab bar. A fade shows on each side that has more tabs. The alternative is two rows of tabs. The approved sketch (spec §2.3) shows one row with a cut pill and an arrow, and two rows cost about 38px of pinned height on a phone. Two rows is on the owner's list as the alternative. If this is wrong, replace one CSS block and one helper. The mechanism is a sticky `::before` and `::after` flex item with a net width of 0, so the tab offsets and `scrollWidth` do not change.
+15. Ruling: F3 is fixed now, by the same bar as ruling 7. The four sites escape with `String()` first (the Wrath value in the strip, `Rank` in `renderHeader`, the ascension `targetTier` and `Rank` in `renderDetails`). Each field has one check with the `EVIL` string. `String()` first is necessary, because `escapeHtml(0)` returns an empty string, and a Wrath of 0 must print `0`. F3 is not a regression: main runs the same payloads.
+16. Owner can reverse: some Minor items joined the fix wave, because the wave edits the same code or the cost is one line. They are F5 (the resize update that F2 needs also calls `_scrollActiveTabIntoBar`), F7, F8, F9, F10, and from F11 the four green mutations and the hostile-field checks. F7 puts the scroll of the Notes box in the view state, because the strip makes the flow "click a tracker while in Notes" common. If this is wrong, the Notes box returns to line 1 on each re-render, as on main. The view state keeps the Notes box scroll also after a load of another character (the page scroll does the same). F8 gives the pane a gold ring and the tab ring no animation of `outline`. Four older ledger items closed in the same wave: the Notes restore check that passed for any selector, the comment "caret at the end", the comment "must come after", and `STYLE_GUIDE.md:119`.
+17. Ruling: these items are left for the owner and not fixed: F4 (mode by measured room, or a cap of the chip rows), F6, F12, F13, the gap "no real `render()` on real data" of F11, and the reviewer's "Declined to judge" list. They are in the deferred items below.
+18. Owner can reverse: the F2 cue gets a chevron on each side that has more tabs. The fade alone was too weak at 360x740 at the start position, because the fifth pill starts at the bar edge. The fade then sits on the end of the Wargear pill. The approved sketch of spec §2.3 shows an arrow. The controller sent this back to the implementer before the re-review (commit `91cf5c4`). If this is wrong, remove one `content` declaration.
+
+### Plan lines that no longer match the code
+
+The spec on the branch (`docs/superpowers/specs/2026-11-13-sheet-tabs-design.md`) is the authority. The plan stays as written, and these lines differ from the code:
+
+- The plan lines that name the old focus selector and the old view-state shape of Task 6 stay as written. The code adds the `notes` focus key, `.sheet-notes-input` in the selector, and the Notes scroll in the view state (spec §5.2).
+- The plan and the first spec text give pinned heights of "about 135px" and "about 390px". They ignored the app chrome. Spec §2.2 holds the measured numbers and the low mode.
+- The plan has no top padding rule for the scroller. The code moves it into the sheet (ruling 2).
+- The spec §8 removal list does not name `.tracker-row`. The code removes it (ruling 1).
+- The fix wave added behavior that the plan does not have: the escape of `rank`, `targetTier` and the Wrath value (spec §5.2); the handler for a Tab focus under the pinned part, the edge cue of the compact tab bar and the `resize` handler (spec §2.3 and §6); the gold ring of the pane and a transition of named properties on the tab button (spec §6).
+- The spec text for 800x800 says 22-23 boxes per row and 3 rows. The test browser (overlay scrollbars) shows 25 boxes per row and 2 rows. The ledger records no amendment for this text.
+- The spec sentence "A larger value only adds a row; nothing breaks" does not hold at some sizes (F4).
+- The plan-mandated `rule()` regex in the test fails on a grouped selector. This gives a false FAIL only.
+
+### Deferred items
+
+#### Layout and modes
+
+| Item | Where it came from | Why it was left |
+|---|---|---|
+| The pinned part has no limit against the room that is left (769x601 with 30 chips; 360x560 with 50/35 leaves 72px) | Final review F4 | Only extreme characters are hit. The fix is an owner decision: mode by measured room, or a cap of the chip rows. |
+| A render while the sheet is hidden uses up the scroll reset of a fallback | Final review F6 | The window is narrow: the threat load must end between a removal and the return. The fix is to keep the reset for the next visible render. |
+| At 1280x481, compact mode leaves 149px for the largest character | Task 4 | The ruling limit allows it. The owner decides. |
+| The low-mode tab bar has a padding of 8px 16px, not 4px | Task 4 | The buttons start at the same x in both modes. The focus ring is not clipped. |
+| At 740x360 and scroll 0, the tab bar is below the first screen (46px under the fold) | Task 4 | Compact mode does the same. One flick shows it. |
+| At 800x800, the test browser shows Wounds in 2 rows. The spec text says 3 rows. A classic Windows scrollbar was not in the run. | Task 4, Task 8 | The result is better than the spec text. The owner checks it on Windows Chrome with classic scrollbars. |
+| The compact tab bar with a visible scrollbar adds to its height | Task 4 | No classic scrollbar in the run. The owner checks it. |
+| The Notes box scroll stays after a load of another character | Fix wave concern | The page scroll acts the same way. |
+
+#### Keyboard and accessibility
+
+| Item | Where it came from | Why it was left |
+|---|---|---|
+| The Faith, Wealth and mob buttons have no `aria-label` (Faith and Wealth also have no `type="button"`) | Final review F12 | The markup is older, in a function that this branch edited. |
+| The Tab flag listens on `#character-sheet-content` only | Fix wave concern | The first tab stop from above is pinned in full mode and compact mode. No case hid a control. |
+| Alt+ArrowLeft and Ctrl+Home on a focused tab still select a tab | Task 3 | The WAI-ARIA example does the same. |
+| The Wounds and Shock boxes have no role, name or key access | Final review, declined to judge | This is a non-goal of spec §1. Main is the same. |
+
+#### Print
+
+| Item | Where it came from | Why it was left |
+|---|---|---|
+| Older print polish: pale gold text on white (glossary terms, skill totals, the Multi-Target badge, the Potency label, the other cards), near-invisible `.ability-name` text in the follower card, low-contrast rarity and severity badges, page splits inside Traits, Skills and the follower card, an unlabeled "+1 Strength" line in the Augmetic card | Task 7 | Main is the same or worse. This is older print polish. |
+| Armour prints its AR and Traits beside the name in one row | Task 7 | The cause is the same as for equipment. Main is the same, and it is readable. |
+| Paper cost at margin 0: A4, the full character takes 7 pages on the branch and 6 on main. The largest empty area at a page foot is 135mm (main 117mm). | Task 7 | The cause is the older `.sheet-section { page-break-inside: avoid }` rule. At 10mm margins, both take 8 pages. |
+| A minimal character puts an empty Notes block alone on page 3 | Task 7 | Main has 3 pages too (10mm margins). The cause was not traced. |
+| With 10mm margins the A4 page is under 768px wide, so Stats prints in one column | Task 7 | An older rule. Main is the same. |
+| A pane that has the focus at print time shows the browser ring in print | Fix wave concern | This was so before the wave. In a normal print the Print button has the focus. |
+
+#### Imported-file safety
+
+| Item | Where it came from | Why it was left |
+|---|---|---|
+| Older raw output sites that an imported file reaches: the Wealth and Faith values, the injury side, language ids, the tier, attribute and skill values (12 sites), and the weapon damage cells | Final review F13 | Main has the same sites. The durable fix is a type check in `State.loadCharacter`, which is outside this branch. |
+| The Ascension card prints `targetTier` raw, so a hostile file still runs script there | Fix wave concern | This is a part of F13. It is on the owner's list with the type check. |
+
+#### Tests
+
+| Item | Where it came from | Why it was left |
+|---|---|---|
+| No committed check runs the real `render()` on real data. Every `render()` check replaces the 19 block renderers with stubs. | Final review F11 | The reviewers did it by hand. The owner decides if a test is necessary. |
+| The class check `sheet-keyword` also matches `sheet-keywords` | Task 1 | The plan mandated the check. Another check counts the exact class. |
+| Three `DataLoader` overrides in the test have no `finally` restore | Task 1 | Each sandbox ends with its block. |
+| `makeDom` returns a new stub for `btn-print` and `btn-copy-summary` on each call | Task 1 | A test detail. |
+| Two checks cannot fail for what they name (`test-sheet-tabs.js:635`, `:650`) | Task 3 | The checks beside them pin the behavior. |
+| A repeated line in the Task 2 hunk (`test-sheet-tabs.js:419`) | Task 3 | No effect. |
+| The named-color check has gaps (a value with no semicolon, compound names such as `darkred`, a fallback inside `var()`) | Task 4 | The section has no raw color. |
+| The sandbox still supplies a no-op `MutationObserver` | Task 5 | The plan defines it. No effect. |
+| The tracker-grid print check misses a grid rule in a nested `@media` or `@supports` block. It reads `screen, print` as screen-only. | Task 7 | No such block exists. |
+| The check at `test-sheet-tabs.js:781` does not fail if an unqualified 1400px block is added | Task 7 | No such block exists. |
+| The `rule()` regex fails on a grouped selector | Task 7 | It gives a false FAIL only. |
+
+#### Older code seen and not changed
+
+| Item | Where it came from | Why it was left |
+|---|---|---|
+| `const tier` is dead code from before Task 1 | Task 1 | The rule is to mention dead code, not to delete it. |
+| At 320px the Psychic Powers pane overflows by 27px at `.sheet-power-range` (clipped) | Task 4 | Older rules. |
+| `.wargear-tab-btn` renders in Arial (no `font-family: inherit`) | Task 4 | Older code, outside the sheet. |
+| A character file with `skills: {}` shows "NaN / 500 XP" in the footer | Task 8 | Older, test data only. |
+
+#### Not checked in this run
+
+| Item | Where it came from | Why it was left |
+|---|---|---|
+| Firefox and Safari: sticky with `display: contents`, `scrollTop` across `display: none`, focus scroll, the edge cue | Final review; fix wave concern | Only Chromium was available. |
+| Windows classic scrollbars (box wrap at 800x800, tab bar height in compact mode) | Final review | The test browser has overlay scrollbars. |
+| The on-screen keyboard of a phone with the pinned bar | Final review | It cannot be emulated. |
+| Screen reader speech | Final review | The reviewer checked roles, names and states only. |
+| Find in page (Ctrl+F) does not find text in the six hidden panes | Final review | This is a result of the tabs design. `hidden="until-found"` is an option for the owner. |
+| 18px boxes (22px pitch) in full mode on a touch tablet in landscape | Final review | Same size as main. |
+| The real print dialog and the sheet scroll after it | Final review | The run used print emulation and `page.pdf`. |
+| Wide screens: the Wrath counter is 1024px (1440) to 2144px (2560) to the right of the last box of a typical character | Final review | This is the grid of spec §2.2. |
+| A 90-character name with no space makes the sheet scroll sideways | Final review | Same on main. |
+| A deploy window of up to 10 minutes in which a cached `index.html` mixes old and new files | Final review | It is part of the cache scheme of the app. |
+| `docs/` and `scripts/` go to Pages with the site | Final review | Same on main. |
+| Console errors from the Turnstile frame of Cloudflare when the feedback modal opens | Final review | This is not app code. |
+
+### Wave table
+
+| Task | Model | Dispatches | Send-backs | Gate |
+|---|---|---|---|---|
+| Task 1 | sonnet | 1 | 0 | Approved |
+| Task 2 | opus | 1 | 0 | Approved |
+| Task 3 | sonnet | 1 | 0 | Approved |
+| Task 4 | opus | 1 | 1 (plus 1 pre-review fix on a self-reported concern) | Approved after fix round 1 |
+| Task 5 | sonnet | 1 | 0 | Approved |
+| Task 6 | opus | 1 | 1 | Approved, then fix round 1 on two Minor items and one older raw site |
+| Task 7 | sonnet | 1 | 3 (2 pre-review rulings, 1 fix round) | Needs fixes (2 Important), then addressed in round 1 |
+| Task 8 | sonnet | 1 | 0 | Controller gate (ruling); 1 keyboard finding carried to the final fix wave |
+| Final review | fable, xhigh | 1 | 0 | Ready to merge with fixes (0 Critical, 3 Important, 10 Minor) |
+| Fix wave | opus | 1 | 1 (the arrow on the edge cue) | Re-review: all 9 items addressed, 3 Minor parked (below) |
+
+### Result of the last re-review
+
+The scoped re-review of the fix wave (commits `cc1f242..91cf5c4`, with the browser) found all nine items addressed and no new Critical or Important breakage. It found 3 Minor items. A comparison of the computed styles of 828 elements against `cc1f242` showed these differences only: at 360x740 the two cue pseudo-elements and the tab `transition`; in full mode and in print the tab `transition`. 33 of 38 mutations fail a check.
+
+19. Owner can reverse: the three Minor items of the last re-review are parked, not fixed. The process has one fix wave and one re-review, and none of the three is a regression. If this is wrong, a keyboard user who goes backward from the footer into a pane can have the focus on one hidden control.
+
+| Item | Why it was left |
+|---|---|
+| The Tab flag listens on `#character-sheet-content` only. Shift+Tab from the footer into a pane control that is under the pinned part gets no scroll (steps: Wargear at scroll 994, click the footer XP text, Shift+Tab, Space). | A narrow entry path. A `keydown` listener on the document closes it. Spec §6 states the limit (commit `d57cbfe`). |
+| A hidden Notes box reads `scrollTop` 0. Notes scrolled, then another tab, then a tracker click, then Notes: the box shows line 1. | The same as before the fix wave. |
+| Five mutations stay green: the -30px margins of the cue pseudo-elements (two forms), a Tab flag with no Shift+Tab, a transition with no `border-color`, a left tolerance of `> 0`. | Test gaps only. The browser checks cover the behavior. |

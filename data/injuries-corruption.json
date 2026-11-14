@@ -98,7 +98,7 @@
     {
       "level": 2,
       "name": "Contaminated",
-      "min": 11,
+      "min": 12,
       "max": 15,
       "dnModifier": 2
     },

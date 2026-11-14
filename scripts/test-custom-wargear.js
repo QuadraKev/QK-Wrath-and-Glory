@@ -754,5 +754,119 @@ for (const rel of ['character-sheet-tab.js', 'wargear-tab.js', 'talents-tab.js']
     }
 }
 
+// --- builder form: form operations, bodyHtml, the Wargear tab card ---
+{
+    const f = CW.emptyForm();
+    check('a list trait with a rating is stored as Name (rating)', [CW.addListTrait(f, 'Rad', ' 2 '), f.weaponTraits], [null, ['Rad (2)']]);
+    check('an exact duplicate trait is not added', [CW.addListTrait(f, 'Rad', '2') !== null, f.weaponTraits.length], [true, 1]);
+    check('a typed trait matching a list name takes the list spelling', [CW.addTypedTrait(f, 'agonising'), f.weaponTraits[1]], [null, 'Agonising']);
+    check('a typed custom trait is kept as typed', [CW.addTypedTrait(f, 'Xenos Venom (2)'), f.weaponTraits[2]], [null, 'Xenos Venom (2)']);
+    check('armour traits go to their own list', (() => { const a = { ...CW.emptyForm(), kind: 'armor' }; CW.addTypedTrait(a, 'shield'); return [a.armorTraits, a.weaponTraits]; })(), [['Shield'], []]);
+    check('keywords are trimmed, upper-cased and not duplicated', (() => { CW.addKeyword(f, ' xenos '); CW.addKeyword(f, 'Xenos'); return f.keywords; })(), ['XENOS']);
+    check('a used bonus key is not offered again', (() => { const g = { ...CW.emptyForm(), kind: 'augmetic', bonuses: [{ key: 'strength', value: '1' }, { key: '', value: '1' }] }; return CW.availableBonusKeys(g, 1).includes('strength'); })(), false);
+
+    // Refusals: each one returns a message and changes nothing, so that Save never changes a chip.
+    const refused = (form, list, op) => { const before = JSON.stringify(form[list]); const msg = op(); return [typeof msg === 'string' && msg.length > 0, JSON.stringify(form[list]) === before]; };
+    check('a list trait with no trait selected is refused', refused(f, 'weaponTraits', () => CW.addListTrait(f, '', '')), [true, true]);
+    check('a list trait that is not in the list is refused', refused(f, 'weaponTraits', () => CW.addListTrait(f, 'Xenos Venom', '')), [true, true]);
+    check('a rating of 31 characters is refused', refused(f, 'weaponTraits', () => CW.addListTrait(f, 'Rending', 'x'.repeat(31))), [true, true]);
+    check('a rating of 30 characters is added', [CW.addListTrait(f, 'Rending', 'x'.repeat(30)), f.weaponTraits.includes(`Rending (${'x'.repeat(30)})`)], [null, true]);
+    check('a blank typed trait is refused', refused(f, 'weaponTraits', () => CW.addTypedTrait(f, '   ')), [true, true]);
+    check('a typed trait of 61 characters is refused', refused(f, 'weaponTraits', () => CW.addTypedTrait(f, 'y'.repeat(61))), [true, true]);
+    check('a typed trait of 60 characters is added', [CW.addTypedTrait(f, 'y'.repeat(60)), f.weaponTraits.includes('y'.repeat(60))], [null, true]);
+    check('a typed trait that repeats a trait after normalizeTrait is refused', refused(f, 'weaponTraits', () => CW.addTypedTrait(f, ' rad (2)')), [true, true]);
+    check('a typed trait that repeats a list trait name is refused', refused(f, 'weaponTraits', () => CW.addTypedTrait(f, 'AGONISING')), [true, true]);
+    check('the 21st trait is refused', (() => {
+        const g = F({ weaponTraits: Array.from({ length: 20 }, (_, i) => `T${i}`) });
+        return [...refused(g, 'weaponTraits', () => CW.addTypedTrait(g, 'Another')), ...refused(g, 'weaponTraits', () => CW.addListTrait(g, 'Rad', ''))];
+    })(), [true, true, true, true]);
+    check('a blank keyword is refused', refused(f, 'keywords', () => CW.addKeyword(f, '  ')), [true, true]);
+    check('a keyword that repeats another in a different case is refused with a message', refused(f, 'keywords', () => CW.addKeyword(f, 'xEnOs')), [true, true]);
+    check('a keyword of 41 characters is refused', refused(f, 'keywords', () => CW.addKeyword(f, 'k'.repeat(41))), [true, true]);
+    check('a keyword whose upper-case form is longer than 40 characters is refused', refused(f, 'keywords', () => CW.addKeyword(f, 'ß'.repeat(21))), [true, true]);
+    check('a keyword of 40 characters is added', [CW.addKeyword(f, 'k'.repeat(40)), f.keywords.includes('K'.repeat(40))], [null, true]);
+    check('the 21st keyword is refused', (() => {
+        const g = F({ keywords: Array.from({ length: 20 }, (_, i) => `K${i}`) });
+        return refused(g, 'keywords', () => CW.addKeyword(g, 'NEW'));
+    })(), [true, true]);
+    check('Save keeps every trait and keyword chip of the form as it shows', (() => {
+        const record = CW.buildRecord({ ...f, name: 'Chips' });
+        return [record.traits, record.keywords];
+    })(), [f.weaponTraits, f.keywords]);
+
+    check('removeTrait removes the chip of the selected kind', (() => {
+        const g = F({ weaponTraits: ['A', 'B', 'C'], armorTraits: ['Shield'] });
+        CW.removeTrait(g, 1);
+        const a = F({ kind: 'armor', weaponTraits: ['A'], armorTraits: ['Shield', 'Bulk (1)'] });
+        CW.removeTrait(a, 0);
+        return [g.weaponTraits, g.armorTraits, a.armorTraits, a.weaponTraits];
+    })(), [['A', 'C'], ['Shield'], ['Bulk (1)'], ['A']]);
+    check('removeKeyword removes one keyword', (() => { const g = F({ keywords: ['A', 'B'] }); CW.removeKeyword(g, 0); return g.keywords; })(), ['B']);
+
+    check('addBonusRow adds an empty row with the value 1', (() => { const g = F({ kind: 'augmetic' }); return [CW.addBonusRow(g), g.bonuses]; })(), [null, [{ key: '', value: '1' }]]);
+    check('the 11th bonus row is refused', (() => {
+        const g = F({ kind: 'augmetic', bonuses: CW.BONUS_KEYS.map(key => ({ key, value: '1' })) });
+        return refused(g, 'bonuses', () => CW.addBonusRow(g));
+    })(), [true, true]);
+    check('removeBonusRow removes one row', (() => {
+        const g = F({ kind: 'augmetic', bonuses: [{ key: 'strength', value: '1' }, { key: 'agility', value: '-1' }] });
+        CW.removeBonusRow(g, 0);
+        return g.bonuses;
+    })(), [{ key: 'agility', value: '-1' }]);
+    check('availableBonusKeys keeps the key of its own row and the BONUS_KEYS order', (() => {
+        const g = F({ kind: 'augmetic', bonuses: [{ key: 'agility', value: '1' }, { key: 'strength', value: '1' }] });
+        return [CW.availableBonusKeys(g, 1), CW.availableBonusKeys(g, 0).length];
+    })(), [CW.BONUS_KEYS.filter(k => k !== 'agility'), 9]);
+
+    // Edit prefill: the text shows exactly as stored, and a Save with no change stores the same record.
+    const tricky = CW.buildRecord(F({ name: 'a"b\'c</textarea>$&', description: '</textarea><b>x</b>', weaponTraits: ['Rad (2)'], keywords: ['XENOS'] }));
+    const editHtml = CW.bodyHtml({ ...CW.formFromRecord(tricky), editIndex: 0 });
+    check('the edit prefill escapes the name in its value attribute', editHtml.includes('a&quot;b&#39;c&lt;/textarea&gt;$&amp;'), true);
+    check('the edit prefill escapes the description in the textarea body', editHtml.includes('&lt;/textarea&gt;&lt;b&gt;x&lt;/b&gt;'), true);
+    check('the edit prefill holds no raw </textarea><b>', editHtml.includes('</textarea><b>'), false);
+    check('buildRecord(formFromRecord(record)) is the record', canon(CW.buildRecord(CW.formFromRecord(tricky))), canon(tricky));
+    check('a chip shows its text escaped', CW.bodyHtml(F({ weaponTraits: [EVIL], keywords: [EVIL.toUpperCase()] })).includes(SAFE) &&
+        !RAW_TAG.test(CW.bodyHtml(F({ weaponTraits: [EVIL], keywords: [EVIL.toUpperCase()] }))), true);
+
+    const kindSelect = html => (html.match(/<select[^>]*data-field="kind"[^>]*>/) || [''])[0];
+    check('the kind selector of an edit form is disabled', /\bdisabled\b/.test(kindSelect(editHtml)), true);
+    check('the kind selector of a create form is not disabled', [kindSelect(CW.bodyHtml(CW.emptyForm())) !== '', /\bdisabled\b/.test(kindSelect(CW.bodyHtml(CW.emptyForm())))], [true, false]);
+
+    const otherHtml = CW.bodyHtml(other), weaponHtml = CW.bodyHtml(xenotech);
+    const pickerParts = ['data-field="keywordInput"', 'data-field="traitPick"', 'data-field="typedTrait"'];
+    check('a weapon form has the keyword input and the trait picker', pickerParts.map(p => weaponHtml.includes(p)), [true, true, true]);
+    check('an Other form has no keyword input and no trait picker', pickerParts.map(p => otherHtml.includes(p)), [false, false, false]);
+    check('the rating box shows only for a rated trait', [CW.bodyHtml(F({ traitPick: 'Rad' })).includes('data-field="traitRating"'),
+        CW.bodyHtml(F({ traitPick: 'Agonising' })).includes('data-field="traitRating"')], [true, false]);
+    check('the trait picker of an armour form offers the armour list', CW.bodyHtml(armour).includes('<option value="Shield"'), true);
+    check('a weapon form shows the melee labels', [weaponHtml.includes('Damage: S +'), weaponHtml.includes('Range (m)'), weaponHtml.includes('e.g. -2')], [true, true, true]);
+    check('a ranged form shows Short, Medium, Long and Salvo, and no melee range',
+        ['data-field="rangeShort"', 'data-field="rangeMedium"', 'data-field="rangeLong"', 'data-field="salvo"', 'data-field="reach"'].map(p => CW.bodyHtml(ranged).includes(p)),
+        [true, true, true, true, false]);
+    check('an augmetic form has the effect, the bonus rows and no trait picker',
+        ['data-field="effect"', 'data-bonus-index="1"', 'data-field="traitPick"'].map(p => CW.bodyHtml(spine).includes(p)), [true, true, false]);
+    check('a bonus row in Rank mode has no value box', (() => {
+        const html = CW.bodyHtml(F({ kind: 'augmetic', bonuses: [{ key: 'resilience', value: 'rank' }] }));
+        return [html.includes('data-bonus-part="value"'), /<option value="rank" selected>/.test(html)];
+    })(), [false, true]);
+    for (const [label, form] of [['xenotech', xenotech], ['ranged', ranged], ['spine', spine]]) {
+        const html = CW.bodyHtml(form);
+        check(`bodyHtml of ${label} uses inputmode="numeric" and no type="number"`, [html.includes('inputmode="numeric"'), html.includes('type="number"')], [true, false]);
+    }
+    check('every data-field of a ranged form has an error span or is a picker box', (() => {
+        const html = CW.bodyHtml(ranged);
+        const fields = ['name', 'damage', 'ed', 'ap', 'range', 'salvo', 'traits', 'keywords', 'description', 'value', 'rarity'];
+        return fields.filter(field => !html.includes(`data-error-for="${field}"`));
+    })(), []);
+    check('the preview element is in the body', weaponHtml.includes('id="custom-item-preview"'), true);
+
+    // The Wargear tab card and its button.
+    const tab = readSource('creator/tabs/wargear-tab.js');
+    check('the Wargear tab sets CustomWargear.onSaved', tab.includes('CustomWargear.onSaved = () => this.render();'), true);
+    check('the Wargear tab has the Custom Wargear card after the Improvised card',
+        [tab.includes('id="btn-build-custom"'), tab.indexOf('${improvisedCtaHtml}') < tab.indexOf('${customCtaHtml}')], [true, true]);
+    check('the card button opens the builder', tab.includes('CustomWargear.open()'), true);
+}
+
 console.log(failures === 0 ? '\nAll custom wargear checks passed.' : `\n${failures} custom wargear check(s) FAILED.`);
 process.exit(failures === 0 ? 0 : 1);

@@ -35,6 +35,456 @@ const CustomWargear = {
         bonus: { min: -10, max: 10 }
     },
 
+    // --- State ---
+
+    // Optional callback set by the wargear tab to re-render after save
+    onSaved: null,
+
+    // The open form, in the shape of emptyForm, or null
+    form: null,
+
+    // ratedTraits per kind, computed one time per open of the modal (it reads every book record)
+    _rated: null,
+
+    // --- Lifecycle ---
+
+    // Open the builder. null = create; the wargear index of a custom entry = edit, prefilled.
+    open(wargearIndex = null) {
+        this.buildModal();
+        this._rated = null;
+        const entry = wargearIndex !== null ? State.getCharacter().wargear[wargearIndex] : null;
+        this.form = entry && entry.custom
+            ? { ...this.formFromRecord(entry.custom), editIndex: wargearIndex }
+            : this.emptyForm();
+        this.render();
+        document.getElementById('custom-item-modal').classList.remove('hidden');
+    },
+
+    close() {
+        const modal = document.getElementById('custom-item-modal');
+        if (modal) modal.classList.add('hidden');
+    },
+
+    // Build the modal shell and bind its listeners one time, then reuse it
+    buildModal() {
+        if (document.getElementById('custom-item-modal')) return;
+
+        const modal = document.createElement('div');
+        modal.id = 'custom-item-modal';
+        modal.className = 'modal hidden';
+        modal.innerHTML = `
+            <div class="modal-content modal-large">
+                <div class="modal-header">
+                    <h3 id="custom-item-title">Create Custom Wargear</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body" id="custom-item-body"></div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" id="custom-item-cancel">Cancel</button>
+                    <button class="btn-primary" id="custom-item-save">Add Wargear</button>
+                </div>
+            </div>
+        `;
+
+        // Modal containers must live inside #app for the stacking context
+        (document.getElementById('app') || document.body).appendChild(modal);
+
+        modal.querySelector('.modal-close').addEventListener('click', () => this.close());
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) this.close();
+        });
+        document.getElementById('custom-item-cancel').addEventListener('click', () => this.close());
+        document.getElementById('custom-item-save').addEventListener('click', () => this.save());
+        this.bind();
+    },
+
+    // --- Rendering ---
+
+    // Replace the body content (the body element stays, so its listeners stay bound one time)
+    render() {
+        const editing = this.form.editIndex !== null;
+        document.getElementById('custom-item-title').textContent = editing ? 'Edit Custom Wargear' : 'Create Custom Wargear';
+        document.getElementById('custom-item-save').textContent = editing ? 'Save Changes' : 'Add Wargear';
+
+        const body = document.getElementById('custom-item-body');
+        const focus = this._focusSelector(document.activeElement, body);
+        const scrollTop = body.scrollTop;
+        body.innerHTML = this.bodyHtml(this.form);
+        body.scrollTop = scrollTop;
+        const control = focus && body.querySelector(focus);
+        if (control) control.focus();
+        this.refresh();
+    },
+
+    // The form body for the selected kind and weapon type. No DOM: tests call it directly.
+    bodyHtml(form) {
+        const kind = form.kind;
+        const melee = form.weaponType !== 'ranged';
+        const kindOptions = [['weapon', 'Weapon'], ['armor', 'Armor'], ['augmetic', 'Augmetic'], ['other', 'Other']];
+        const rarityOptions = [['', '-'], ...this.RARITIES.map(r => [r, r])];
+
+        let stats = '';
+        if (kind === 'weapon') {
+            stats = `
+                <div class="custom-item-grid">
+                    ${this._inputHtml(form, 'damage', melee ? 'Damage: S +' : 'Damage', { numeric: true })}
+                    ${this._inputHtml(form, 'ed', 'ED', { numeric: true })}
+                    ${this._inputHtml(form, 'ap', 'AP', { numeric: true, placeholder: 'e.g. -2' })}
+                    ${melee
+                        ? this._inputHtml(form, 'reach', 'Range (m)', { numeric: true, placeholder: 'Optional' })
+                        : this._inputHtml(form, 'salvo', 'Salvo', { numeric: true })}
+                </div>
+                ${melee ? '' : `
+                <div class="form-group">
+                    <label>Range (m)</label>
+                    <div class="custom-item-grid">
+                        ${this._inputHtml(form, 'rangeShort', 'Short', { numeric: true, error: false })}
+                        ${this._inputHtml(form, 'rangeMedium', 'Medium', { numeric: true, error: false })}
+                        ${this._inputHtml(form, 'rangeLong', 'Long', { numeric: true, error: false })}
+                    </div>
+                    ${this._errorHtml('range')}
+                </div>`}
+                ${this._traitsHtml(form)}
+            `;
+        } else if (kind === 'armor') {
+            stats = `
+                <div class="custom-item-grid">${this._inputHtml(form, 'ar', 'AR', { numeric: true })}</div>
+                ${this._traitsHtml(form)}
+            `;
+        } else if (kind === 'augmetic') {
+            stats = `
+                <div class="form-group">
+                    <label for="custom-item-effect">Effect</label>
+                    <textarea id="custom-item-effect" data-field="effect" rows="2">${this.escapeHtml(form.effect)}</textarea>
+                    ${this._errorHtml('effect')}
+                </div>
+                ${this._bonusesHtml(form)}
+            `;
+        }
+
+        return `
+            <div class="custom-item-grid">
+                ${this._selectHtml(form, 'kind', 'Kind', kindOptions, form.editIndex !== null)}
+                ${kind === 'weapon' ? this._selectHtml(form, 'weaponType', 'Type', [['melee', 'Melee'], ['ranged', 'Ranged']]) : ''}
+            </div>
+            ${this._inputHtml(form, 'name', 'Name')}
+            ${stats}
+            ${kind === 'other' ? '' : this._keywordsHtml(form)}
+            <div class="form-group">
+                <label for="custom-item-description">Description</label>
+                <textarea id="custom-item-description" data-field="description" rows="3">${this.escapeHtml(form.description)}</textarea>
+                ${this._errorHtml('description')}
+            </div>
+            <div class="custom-item-grid">
+                ${this._inputHtml(form, 'value', 'Value', { numeric: true, placeholder: 'Optional' })}
+                ${this._selectHtml(form, 'rarity', 'Rarity', rarityOptions)}
+            </div>
+            <div class="relic-summary-block">
+                <div class="relic-summary-label">Preview</div>
+                <div id="custom-item-preview" class="relic-summary-stat"></div>
+            </div>
+        `;
+    },
+
+    // Validation messages, the Save state and the preview, with no re-render of the inputs
+    refresh() {
+        const errors = this.validateForm(this.form);
+        const valid = Object.keys(errors).length === 0;
+        document.querySelectorAll('#custom-item-body [data-error-for]').forEach(span => {
+            span.textContent = errors[span.dataset.errorFor] || '';
+        });
+        document.getElementById('custom-item-save').disabled = !valid;
+        // buildRecord assumes a valid form
+        document.getElementById('custom-item-preview').textContent = valid ? this.formatStatLine(this.buildRecord(this.form)) : '';
+    },
+
+    _errorHtml(field) {
+        return `<span class="custom-item-error" data-error-for="${field}"></span>`;
+    },
+
+    // A text input bound to form[key]. A number field is a text box, so validateForm sees the typed text.
+    _inputHtml(form, key, label, options = {}) {
+        const numeric = options.numeric ? ' inputmode="numeric"' : '';
+        const placeholder = options.placeholder ? ` placeholder="${this.escapeAttr(options.placeholder)}"` : '';
+        return `
+            <div class="form-group">
+                <label for="custom-item-${key}">${label}</label>
+                <input type="text" id="custom-item-${key}" class="search-input" data-field="${key}"${numeric}${placeholder} value="${this.escapeAttr(form[key])}">
+                ${options.error === false ? '' : this._errorHtml(key)}
+            </div>`;
+    },
+
+    // A select bound to form[key]; options is a list of [value, label]
+    _selectHtml(form, key, label, options, disabled = false) {
+        const items = options.map(([value, text]) =>
+            `<option value="${this.escapeAttr(value)}"${form[key] === value ? ' selected' : ''}>${this.escapeHtml(text)}</option>`).join('');
+        return `
+            <div class="form-group">
+                <label for="custom-item-${key}">${label}</label>
+                <select id="custom-item-${key}" data-field="${key}"${disabled ? ' disabled' : ''}>${items}</select>
+                ${this._errorHtml(key)}
+            </div>`;
+    },
+
+    // Removable chips; each chip is a button, so the keyboard can reach it
+    _chipsHtml(list, action, emptyText) {
+        if (!list.length) return `<div class="custom-item-chips"><span class="text-muted">${emptyText}</span></div>`;
+        const chips = list.map((text, i) => `
+            <button type="button" class="custom-item-chip" data-action="${action}" data-index="${i}" aria-label="Remove ${this.escapeAttr(text)}">
+                ${this.escapeHtml(text)}<span class="custom-item-chip-remove" aria-hidden="true">&times;</span>
+            </button>`).join('');
+        return `<div class="custom-item-chips">${chips}</div>`;
+    },
+
+    // An empty span for the message of a refused add; refresh does not clear it
+    _addErrorHtml(action) {
+        return `<span class="custom-item-error" data-add-error="${action}"></span>`;
+    },
+
+    _traitsHtml(form) {
+        const names = this.traitNames(form.kind);
+        const rated = this._ratedFor(form.kind).includes(form.traitPick);
+        const options = names.map(name =>
+            `<option value="${this.escapeAttr(name)}"${form.traitPick === name ? ' selected' : ''}>${this.escapeHtml(name)}</option>`).join('');
+        const picker = names.length ? `
+            <div class="custom-item-add">
+                <select data-field="traitPick" aria-label="Trait from the list"><option value="">Select a trait</option>${options}</select>
+                ${rated ? `<input type="text" class="search-input custom-item-rating" data-field="traitRating" placeholder="Rating" aria-label="Rating" value="${this.escapeAttr(form.traitRating)}">` : ''}
+                <button type="button" class="btn-small" data-action="add-list-trait">Add</button>
+            </div>
+            ${this._addErrorHtml('add-list-trait')}` : '';
+        return `
+            <div class="relic-option-group">
+                <h4>Traits</h4>
+                ${this._chipsHtml(form.kind === 'armor' ? form.armorTraits : form.weaponTraits, 'remove-trait', 'No traits')}
+                ${picker}
+                <div class="custom-item-add">
+                    <input type="text" class="search-input" data-field="typedTrait" placeholder="Custom trait, e.g. Xenos Venom (2)" aria-label="Custom trait" value="${this.escapeAttr(form.typedTrait)}">
+                    <button type="button" class="btn-small" data-action="add-typed-trait">Add</button>
+                </div>
+                ${this._addErrorHtml('add-typed-trait')}
+                ${this._errorHtml('traits')}
+            </div>`;
+    },
+
+    _keywordsHtml(form) {
+        return `
+            <div class="relic-option-group">
+                <h4>Keywords</h4>
+                ${this._chipsHtml(form.keywords, 'remove-keyword', 'No keywords')}
+                <div class="custom-item-add">
+                    <input type="text" class="search-input" data-field="keywordInput" placeholder="Keyword, e.g. IMPERIUM" aria-label="Keyword" value="${this.escapeAttr(form.keywordInput)}">
+                    <button type="button" class="btn-small" data-action="add-keyword">Add</button>
+                </div>
+                ${this._addErrorHtml('add-keyword')}
+                ${this._errorHtml('keywords')}
+            </div>`;
+    },
+
+    // Bonus rows: a stat select, a Number / Rank / Double Rank select, and a value box in Number mode
+    _bonusesHtml(form) {
+        const rows = form.bonuses.map((row, i) => {
+            const mode = row.value === 'rank' || row.value === 'doubleRank' ? row.value : 'number';
+            const keys = this.availableBonusKeys(form, i).map(key =>
+                `<option value="${key}"${row.key === key ? ' selected' : ''}>${this.BONUS_LABELS[key]}</option>`).join('');
+            const modes = [['number', 'Number'], ['rank', 'Rank'], ['doubleRank', 'Double Rank']].map(([value, text]) =>
+                `<option value="${value}"${mode === value ? ' selected' : ''}>${text}</option>`).join('');
+            return `
+                <div class="custom-item-bonus-row">
+                    <select data-bonus-index="${i}" data-bonus-part="key" aria-label="Stat"><option value="">Select a stat</option>${keys}</select>
+                    <select data-bonus-index="${i}" data-bonus-part="mode" aria-label="Bonus type">${modes}</select>
+                    ${mode === 'number' ? `<input type="text" class="search-input" inputmode="numeric" data-bonus-index="${i}" data-bonus-part="value" aria-label="Bonus value" value="${this.escapeAttr(row.value)}">` : ''}
+                    <button type="button" class="btn-small" data-action="remove-bonus" data-index="${i}" aria-label="Remove bonus">&times;</button>
+                </div>`;
+        }).join('');
+        return `
+            <div class="relic-option-group">
+                <h4>Bonuses</h4>
+                ${rows}
+                <button type="button" class="btn-small" data-action="add-bonus">Add bonus</button>
+                ${this._addErrorHtml('add-bonus')}
+                ${this._errorHtml('bonuses')}
+            </div>`;
+    },
+
+    _ratedFor(kind) {
+        if (!this._rated) this._rated = {};
+        if (!this._rated[kind]) this._rated[kind] = this.ratedTraits(kind);
+        return this._rated[kind];
+    },
+
+    // A selector for the same control after a render, so that the focus stays on it; or null
+    _focusSelector(element, body) {
+        if (!element || !body.contains(element)) return null;
+        const d = element.dataset;
+        if (d.field) return `[data-field="${d.field}"]`;
+        if (d.bonusPart) return `[data-bonus-index="${d.bonusIndex}"][data-bonus-part="${d.bonusPart}"]`;
+        if (d.action) return d.index !== undefined ? `[data-action="${d.action}"][data-index="${d.index}"]` : `[data-action="${d.action}"]`;
+        return null;
+    },
+
+    // --- Event handlers ---
+
+    // Delegated listeners on the body, bound one time; they read this.form at event time.
+    // Typing calls refresh only, so the field keeps the focus and the caret.
+    bind() {
+        const body = document.getElementById('custom-item-body');
+        const renderFields = ['kind', 'weaponType', 'traitPick'];
+        const enterActions = { traitRating: 'add-list-trait', typedTrait: 'add-typed-trait', keywordInput: 'add-keyword' };
+
+        body.addEventListener('input', (e) => {
+            const el = e.target;
+            if (el.dataset.bonusPart === 'value') {
+                this.form.bonuses[Number(el.dataset.bonusIndex)].value = el.value;
+                this.refresh();
+            } else if (el.dataset.field && el.tagName !== 'SELECT') {
+                this.form[el.dataset.field] = el.value;
+                this.refresh();
+            }
+        });
+        body.addEventListener('change', (e) => {
+            const el = e.target;
+            if (el.tagName !== 'SELECT') return;
+            const part = el.dataset.bonusPart;
+            if (part === 'key') {
+                this.form.bonuses[Number(el.dataset.bonusIndex)].key = el.value;
+                this.render();
+            } else if (part === 'mode') {
+                this.form.bonuses[Number(el.dataset.bonusIndex)].value = el.value === 'number' ? '1' : el.value;
+                this.render();
+            } else if (el.dataset.field) {
+                this.form[el.dataset.field] = el.value;
+                if (renderFields.includes(el.dataset.field)) this.render();
+                else this.refresh();
+            }
+        });
+        body.addEventListener('click', (e) => {
+            const button = e.target.closest('button[data-action]');
+            if (button) this.runAction(button.dataset.action, Number(button.dataset.index));
+        });
+        // Enter in an add box acts as its Add button and does not submit or close
+        body.addEventListener('keydown', (e) => {
+            const action = e.key === 'Enter' && enterActions[e.target.dataset.field];
+            if (!action) return;
+            e.preventDefault();
+            this.runAction(action);
+        });
+    },
+
+    // A refused add shows its message next to its box; any other action re-renders the body
+    runAction(action, index) {
+        const f = this.form;
+        let message = null;
+        if (action === 'add-list-trait') {
+            message = this.addListTrait(f, f.traitPick, this._ratedFor(f.kind).includes(f.traitPick) ? f.traitRating : '');
+            if (!message) {
+                f.traitPick = '';
+                f.traitRating = '';
+            }
+        } else if (action === 'add-typed-trait') {
+            message = this.addTypedTrait(f, f.typedTrait);
+            if (!message) f.typedTrait = '';
+        } else if (action === 'add-keyword') {
+            message = this.addKeyword(f, f.keywordInput);
+            if (!message) f.keywordInput = '';
+        } else if (action === 'add-bonus') {
+            message = this.addBonusRow(f);
+        } else if (action === 'remove-trait') {
+            this.removeTrait(f, index);
+        } else if (action === 'remove-keyword') {
+            this.removeKeyword(f, index);
+        } else if (action === 'remove-bonus') {
+            this.removeBonusRow(f, index);
+        } else {
+            return;
+        }
+        if (message) {
+            const span = document.querySelector(`#custom-item-body [data-add-error="${action}"]`);
+            if (span) span.textContent = message;
+        } else {
+            this.render();
+        }
+    },
+
+    save() {
+        const f = this.form;
+        if (Object.keys(this.validateForm(f)).length) return;
+        const record = this.buildRecord(f);
+        if (f.editIndex !== null) {
+            State.updateCustomItem(f.editIndex, record);
+        } else {
+            State.addCustomItem(record);
+        }
+        this.close();
+        if (this.onSaved) this.onSaved();
+    },
+
+    // --- Form operations (no DOM) ---
+    // An add refuses bad input with a message and changes nothing, so that Save (through
+    // _cleanRecord) never changes or drops a chip that the player sees. null = added.
+
+    // A trait from the glossary list of the kind, with an optional rating: "Name (rating)" or "Name"
+    addListTrait(form, name, rating) {
+        const L = this.LIMITS;
+        if (!this.traitNames(form.kind).includes(name)) return 'Select a trait from the list.';
+        const text = String(rating || '').trim();
+        if (text.length > L.traitRating) return `Use a rating of ${L.traitRating} characters or fewer.`;
+        return this._pushTrait(form, text ? `${name} (${text})` : name);
+    },
+
+    // A typed trait; a name part that matches a list name takes the list spelling
+    addTypedTrait(form, text) {
+        const L = this.LIMITS;
+        const trimmed = String(text || '').trim();
+        if (trimmed.length < 1 || trimmed.length > L.typedTrait) return `Enter a trait of 1 to ${L.typedTrait} characters.`;
+        return this._pushTrait(form, this.normalizeTrait(trimmed, form.kind));
+    },
+
+    _pushTrait(form, trait) {
+        const L = this.LIMITS;
+        const list = form.kind === 'armor' ? form.armorTraits : form.weaponTraits;
+        if (trait.length > L.typedTrait) return `Use a trait of ${L.typedTrait} characters or fewer.`;
+        if (list.includes(trait)) return 'That trait is already on the item.';
+        if (list.length >= L.traits) return `Use ${L.traits} traits or fewer.`;
+        list.push(trait);
+        return null;
+    },
+
+    removeTrait(form, index) {
+        (form.kind === 'armor' ? form.armorTraits : form.weaponTraits).splice(index, 1);
+    },
+
+    // Trimmed and upper-cased; the length limit applies to the upper-case form
+    addKeyword(form, text) {
+        const L = this.LIMITS;
+        const keyword = String(text || '').trim().toUpperCase();
+        if (keyword.length < 1 || keyword.length > L.keyword) return `Enter a keyword of 1 to ${L.keyword} characters.`;
+        if (form.keywords.includes(keyword)) return 'That keyword is already on the item.';
+        if (form.keywords.length >= L.keywords) return `Use ${L.keywords} keywords or fewer.`;
+        form.keywords.push(keyword);
+        return null;
+    },
+
+    removeKeyword(form, index) {
+        form.keywords.splice(index, 1);
+    },
+
+    // The keys that the row can use: BONUS_KEYS minus the keys of the other rows
+    availableBonusKeys(form, rowIndex) {
+        const used = form.bonuses.filter((row, i) => i !== rowIndex).map(row => row.key);
+        return this.BONUS_KEYS.filter(key => !used.includes(key));
+    },
+
+    addBonusRow(form) {
+        if (form.bonuses.length >= this.LIMITS.bonusRows) return `Use ${this.LIMITS.bonusRows} bonuses or fewer.`;
+        form.bonuses.push({ key: '', value: '1' });
+        return null;
+    },
+
+    removeBonusRow(form, index) {
+        form.bonuses.splice(index, 1);
+    },
+
     // --- Pure helpers (no DOM) ---
 
     // Integers only: surrounding spaces and a leading + or - are accepted, nothing else.

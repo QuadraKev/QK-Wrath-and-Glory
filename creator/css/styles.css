@@ -6435,3 +6435,96 @@ textarea {
 .improvised-preview-meta {
     margin-top: 8px;
 }
+
+/* ===== Custom Wargear Builder ===== */
+.custom-item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0 12px;
+}
+
+.custom-item-error {
+    display: block;
+    font-size: 12px;
+    color: var(--accent-red);
+    margin-top: 4px;
+}
+
+.custom-item-error:empty {
+    display: none;
+}
+
+.custom-item-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.custom-item-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    padding: 4px 10px;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--accent-gold);
+    border-radius: var(--radius-lg);
+    font-size: 13px;
+    text-align: left;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+}
+
+.custom-item-chip-remove {
+    color: var(--text-muted);
+    font-size: 16px;
+    line-height: 1;
+}
+
+.custom-item-chip:hover .custom-item-chip-remove,
+.custom-item-chip:focus-visible .custom-item-chip-remove {
+    color: var(--accent-red);
+}
+
+.custom-item-chip:focus-visible {
+    outline: 2px solid var(--accent-gold);
+    outline-offset: 2px;
+}
+
+.custom-item-add,
+.custom-item-bonus-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.custom-item-add select,
+.custom-item-add input,
+.custom-item-bonus-row select {
+    flex: 1 1 140px;
+    min-width: 0;
+}
+
+.custom-item-add .custom-item-rating,
+.custom-item-bonus-row input {
+    flex: 0 0 80px;
+    min-width: 0;
+}
+
+.custom-item-add .btn-small,
+.custom-item-bonus-row .btn-small {
+    flex: 0 0 auto;
+}
+
+.custom-item-bonus-row + .btn-small {
+    margin-top: 8px;
+}
+
+#custom-item-save:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

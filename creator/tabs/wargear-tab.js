@@ -10,6 +10,7 @@ const WargearTab = {
         this.initUpgradeModal();
         RelicWizard.onSaved = () => this.render();
         ImprovisedBuilder.onSaved = () => this.render();
+        CustomWargear.onSaved = () => this.render();
         this.render();
     },
 
@@ -356,11 +357,23 @@ const WargearTab = {
             </div>
         ` : '';
 
+        // Custom Wargear entry card (issue #33): always shown, it needs no source book and no talent
+        const customCtaHtml = `
+            <div class="holy-relic-cta">
+                <div class="holy-relic-cta-text">
+                    <h4>Custom Wargear</h4>
+                    <p>Make your own weapon, armor, augmetic or other item, with its own stats, traits and keywords.</p>
+                </div>
+                <button class="btn-primary" id="btn-build-custom">Create Custom Wargear</button>
+            </div>
+        `;
+
         container.innerHTML = `
             ${startingGearHtml}
             ${ascensionGearHtml}
             ${holyRelicCtaHtml}
             ${improvisedCtaHtml}
+            ${customCtaHtml}
             <div class="wargear-browser">
                 <div class="wargear-browser-controls">
                     <input type="text" id="wargear-search" class="search-input" placeholder="Search wargear..." value="${this.escapeHtml(this.searchQuery)}">
@@ -390,6 +403,12 @@ const WargearTab = {
         if (document.getElementById('btn-build-improvised')) {
             document.getElementById('btn-build-improvised').addEventListener('click', () => {
                 ImprovisedBuilder.open();
+            });
+        }
+
+        if (document.getElementById('btn-build-custom')) {
+            document.getElementById('btn-build-custom').addEventListener('click', () => {
+                CustomWargear.open();
             });
         }
 

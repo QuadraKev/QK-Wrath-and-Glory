@@ -252,10 +252,11 @@ const ThreatsTab = {
         Glossary.enhanceDescriptions(el);
 
         // Attach keyword click handlers
-        el.querySelectorAll('.threat-keyword').forEach(kw => {
+        el.querySelectorAll('.threat-keyword[data-popup-key]').forEach(kw => {
             kw.addEventListener('click', (e) => {
-                const keyword = e.target.textContent;
-                this.showKeywordPopup(keyword, e.target);
+                // The document click handler closes every popup, so the click stops here
+                e.stopPropagation();
+                Glossary.showEntryPopup(kw.dataset.popupType, kw.dataset.popupKey, kw);
             });
         });
 
@@ -364,10 +365,13 @@ const ThreatsTab = {
         // Build tier/threat table
         const tierThreatTable = this.renderTierThreatTable(threat.tierThreat);
 
-        // Build keywords row
-        const keywordsHtml = (threat.keywords || []).map(kw =>
-            `<span class="threat-keyword" tabindex="0" role="button">${kw}</span>`
-        ).join('');
+        // Build keywords row. A keyword with a glossary entry opens it; a keyword without one is a plain chip
+        const keywordsHtml = (threat.keywords || []).map(kw => {
+            const key = this.findKeywordKey(kw);
+            return key
+                ? `<span class="threat-keyword" data-popup-type="keyword" data-popup-key="${key}" tabindex="0" role="button">${kw}</span>`
+                : `<span class="threat-keyword">${kw}</span>`;
+        }).join('');
 
         // Build attributes table
         const attributesTable = this.renderAttributesTable(threat.attributes);
@@ -798,18 +802,11 @@ const ThreatsTab = {
         return lines.join('\n');
     },
 
-    showKeywordPopup(keyword, anchorElement) {
-        // Try to find the keyword in the glossary
-        const glossaryData = DataLoader.getGlossary();
-        if (glossaryData && glossaryData.keywords) {
-            const keywordKey = keyword.toLowerCase().replace(/\s+/g, '_');
-            const keywordData = Object.values(glossaryData.keywords).find(
-                k => k.name.toLowerCase() === keyword.toLowerCase()
-            );
-
-            if (keywordData) {
-                Glossary.showPopup(keywordData, anchorElement, 'keyword');
-            }
-        }
+    // Glossary keyword key for a printed keyword (a name match in any case), or null
+    findKeywordKey(keyword) {
+        const keywords = DataLoader.getGlossary().keywords || {};
+        const target = keyword.toLowerCase();
+        const hit = Object.entries(keywords).find(([, entry]) => entry.name.toLowerCase() === target);
+        return hit ? hit[0] : null;
     }
 };

@@ -92,13 +92,85 @@ async function main() {
 
     // --- (2) Threat card keywords and glossary terms ---
     {
-        const threat = DataLoader.getAllThreats().find(t => (t.keywords || []).length > 1);
+        Glossary.data = DataLoader.cache['glossary.json'];
+        const threat = { ...DataLoader.getAllThreats().find(t => (t.keywords || []).length > 1), keywords: ['IMPERIUM', 'NOT A KEYWORD'] };
         const card = ThreatsTab.renderThreatCard(threat);
         const keywordTags = spanTags(card, /class="threat-keyword"/);
-        check('the threat card has its keyword chips', keywordTags.length, threat.keywords.length);
-        check('every threat keyword chip is a keyboard button', keywordTags.filter(t => !isKeyboardButton(t)), []);
+        check('the threat card has its keyword chips', keywordTags.length, 2);
+        check('a threat keyword chip with an entry is a keyboard button',
+            [isKeyboardButton(keywordTags[0]), keywordTags[0].includes('data-popup-type="keyword" data-popup-key="imperium"')], [true, true]);
+        check('a threat keyword chip without an entry is a plain chip',
+            card.includes('<span class="threat-keyword">NOT A KEYWORD</span>'), true);
 
-        Glossary.data = DataLoader.cache['glossary.json'];
+        // Render the card into a stand-in container, then activate its keyword chips
+        const chipFromSpan = ([, tag, text]) => ({
+            listeners: [],
+            textContent: text,
+            dataset: {
+                popupType: (tag.match(/data-popup-type="([^"]+)"/) || [])[1],
+                popupKey: (tag.match(/data-popup-key="([^"]+)"/) || [])[1]
+            },
+            addEventListener(type, handler) { this.listeners.push({ type, handler }); },
+            matches(selector) { return /role="button"/.test(tag) && selector.includes('[role="button"]'); },
+            click() {
+                const event = { target: this, stopped: false, stopPropagation() { this.stopped = true; } };
+                this.listeners.filter(l => l.type === 'click').forEach(l => l.handler(event));
+                this.lastClick = event;
+            }
+        });
+        let chips = [];
+        const container = {
+            set innerHTML(html) {
+                chips = [...html.matchAll(/(<span class="threat-keyword"[^>]*>)([^<]*)<\/span>/g)].map(chipFromSpan);
+            },
+            querySelectorAll(selector) {
+                if (!selector.startsWith('.threat-keyword')) return [];
+                return selector.includes('[data-popup-key]') ? chips.filter(c => c.dataset.popupKey) : chips;
+            },
+            querySelector() { return null; }
+        };
+        const realThreat = DataLoader.getThreat;
+        DataLoader.getThreat = () => threat;
+        ThreatsTab.renderThreatDetail('any', container);
+        DataLoader.getThreat = realThreat;
+        check('the linked threat keyword chip has a click listener', chips[0].listeners.filter(l => l.type === 'click').length, 1);
+        check('the plain threat keyword chip has no listener', chips[1].listeners.length, 0);
+
+        const shown = [];
+        const realShowPopup = Glossary.showPopup;
+        Glossary.showPopup = (definitions, anchorElement, termKey) => shown.push({ definitions, anchorElement, termKey });
+        const activate = (key) => {
+            Glossary._pinned = false;
+            shown.length = 0;
+            const event = keyEvent(key, chips[0]);
+            let error = null;
+            try {
+                if (key === 'click') chips[0].click(); else Glossary.handleActivationKey(event);
+            } catch (e) {
+                error = e.message;
+            }
+            const popup = shown[0];
+            return {
+                error,
+                popups: shown.length,
+                definitionIsList: !!popup && Array.isArray(popup.definitions),
+                typeAndKey: popup && Array.isArray(popup.definitions) ? [popup.definitions[0].type, popup.definitions[0].key] : null,
+                termKey: popup && popup.termKey,
+                anchorIsChip: !!popup && popup.anchorElement === chips[0],
+                pinned: Glossary._pinned,
+                stopped: !!chips[0].lastClick && chips[0].lastClick.stopped
+            };
+        };
+        const expected = {
+            error: null, popups: 1, definitionIsList: true, typeAndKey: ['keyword', 'imperium'],
+            termKey: 'keyword-imperium', anchorIsChip: true, pinned: true, stopped: true
+        };
+        check('a click on a threat keyword chip opens the pinned keyword popup through showEntryPopup', activate('click'), expected);
+        check('Enter on a threat keyword chip opens the same popup', activate('Enter'), expected);
+        check('Space on a threat keyword chip opens the same popup', activate(' '), expected);
+        Glossary.showPopup = realShowPopup;
+        Glossary._pinned = false;
+
         Glossary.termMap = new Map();
         Glossary.buildTermMap();
         const conditionName = Object.values(Glossary.data.conditions)[0].name;

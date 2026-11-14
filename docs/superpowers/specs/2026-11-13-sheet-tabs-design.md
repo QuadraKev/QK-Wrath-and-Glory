@@ -145,10 +145,21 @@ trackers, a 32px Wrath row, a 40px tab bar and 16px of vertical padding. "Typica
 | 740×360 (landscape phone) | 1 + 1 | about 145px (40%) | 3 + 2 | about 225px (62%) |
 | 1280×560 | 1 + 1 | about 145px (26%) | 2 + 2 | about 200px (36%) |
 
-No special case for a short window **[Designer, new]**: the owner accepted more rows "if needed".
-The worst case in a landscape phone leaves about 135px for the pane, and the worst case on a 360px
-phone leaves about 390px. The player can turn the phone upright. Only a Tier 5, Rank 5 character with
-the largest bonuses reaches the worst case.
+**Low mode [Controller ruling, 2026-11-14; the owner can reverse it].** The first version of this
+section had no special case for a short window and said that the worst case in a landscape phone
+leaves about 135px for the pane. That figure was wrong: it did not count the app header, the tab
+navigation and the footer (130px). Measured at 740×360, the scroller is 230px high, and the pinned
+part of compact mode left 80px for a typical character and 2px for the worst case. So a third mode
+exists: in `@media screen and (max-height: 480px)` the tracker rows are not pinned and scroll with
+the page, and only the tab bar stays pinned (48px), which leaves 182px for the pane at 740×360.
+Windows from 481px to 600px high keep compact mode. The owner's decision for a narrow viewport
+(the boxes stay pinned and fill more rows) does not change. `_pinnedElement` returns the strip in
+full mode, the strip bar in compact mode and the tab bar in low mode. The 740×360 row of the table
+above describes compact mode and does not apply any more.
+
+Measured room for the pane (pinned height / room): 360×740 typical 176 / 434px, worst case
+358 / 252px; 1280×560 typical 150 / 280px, worst case 202 / 228px; 1280×481 worst case
+202 / 149px. Only a Tier 5, Rank 5 character with the largest bonuses reaches the worst case.
 
 Size targets (browser check, §10.2), each with a tolerance of 20px for fonts and borders:
 

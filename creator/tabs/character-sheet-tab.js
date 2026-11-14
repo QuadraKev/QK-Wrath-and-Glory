@@ -921,7 +921,7 @@ const CharacterSheetTab = {
 
             // Build upgrade names display (each name is a glossary term with a popout)
             const upgradeNames = weapon.upgradeDetails.map(u =>
-                `<span class="glossary-term" data-term-key="${u.id}" data-term-type="weaponUpgrade">${u.name}</span>`
+                `<span class="glossary-term" data-term-key="${this.escapeHtml(u.id)}" data-term-type="weaponUpgrade">${this.escapeHtml(u.name)}</span>`
             ).join(', ');
             const upgradesDisplay = upgradeNames
                 ? `<div class="sheet-weapon-upgrades">${upgradeNames}</div>`
@@ -1050,12 +1050,13 @@ const CharacterSheetTab = {
         return typeof value === 'number' || /^\d+$/.test(value) ? `${value}m` : String(value);
     },
 
-    // Plain text of the Salvo line: a ranged weapon with a number or a string other than "-".
+    // Plain text of the Salvo line: a ranged weapon with a number above 0, or a string other than "", "-" or zeros.
+    // The book prints "-" for a salvo of 0, so the sheet shows no Salvo line for it.
     weaponSalvoText(weapon) {
         if (weapon.type !== 'ranged') return '';
         const salvo = weapon.salvo;
-        if (typeof salvo === 'number') return `Salvo ${salvo}`;
-        return typeof salvo === 'string' && salvo !== '' && salvo !== '-' ? `Salvo ${salvo}` : '';
+        if (typeof salvo === 'number') return salvo > 0 ? `Salvo ${salvo}` : '';
+        return typeof salvo === 'string' && salvo !== '' && salvo !== '-' && !/^0+$/.test(salvo) ? `Salvo ${salvo}` : '';
     },
 
     // Check if weapon is compatible with Simultaneous Strike
@@ -1665,7 +1666,7 @@ const CharacterSheetTab = {
             if (!talent) return '';
 
             // For weapon_owned/armor_owned choices, convert wargear index to item name
-            let choiceDisplay = choice;
+            let choiceDisplay = this.escapeHtml(choice);
             if (choice !== null && choice !== undefined && (talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned')) {
                 const wargearIndex = parseInt(choice, 10);
                 if (!isNaN(wargearIndex) && character.wargear[wargearIndex]) {

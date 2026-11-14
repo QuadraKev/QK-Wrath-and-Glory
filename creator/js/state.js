@@ -845,7 +845,7 @@ const State = {
             entry.upgrades = [];
         }
         entry.custom = record;
-        const usedIds = new Set(this.character.wargear.filter((w, index) => w && index !== wargearIndex).map(w => w.id));
+        const usedIds = new Set(this.character.wargear.filter(w => w && w !== entry).map(w => w.id));
         CustomWargear.normalizeEntry(entry, usedIds);
         this.notifyListeners('wargear', entry.id);
         return true;

@@ -312,7 +312,7 @@ const TalentsTab = {
             let displayName = talent.name;
             if (talentChoice !== null && talentChoice !== undefined) {
                 // For weapon_owned choices, convert wargear index to weapon name
-                let choiceDisplay = talentChoice;
+                let choiceDisplay = this.escapeHtml(String(talentChoice));
                 if (talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned') {
                     const wargearIndex = parseInt(talentChoice, 10);
                     if (!isNaN(wargearIndex) && character.wargear[wargearIndex]) {

@@ -49,15 +49,17 @@ const CustomWargear = {
     // --- Lifecycle ---
 
     // Open the builder. null = create; the wargear index of a custom entry = edit, prefilled.
+    // The edit keeps the id of the entry too, because the list can change while the form is open.
     open(wargearIndex = null) {
         this.buildModal();
         this._rated = null;
         const entry = wargearIndex !== null ? State.getCharacter().wargear[wargearIndex] : null;
         this.form = entry && entry.custom
-            ? { ...this.formFromRecord(entry.custom), editIndex: wargearIndex }
+            ? { ...this.formFromRecord(entry.custom), editIndex: wargearIndex, editId: entry.id }
             : this.emptyForm();
         this.render();
         document.getElementById('custom-item-modal').classList.remove('hidden');
+        document.getElementById('custom-item-name').focus();
     },
 
     close() {
@@ -90,8 +92,14 @@ const CustomWargear = {
         (document.getElementById('app') || document.body).appendChild(modal);
 
         modal.querySelector('.modal-close').addEventListener('click', () => this.close());
+        // Close on the backdrop only when the press also started there, so that a text selection
+        // that starts in a field and ends outside the modal box does not close the form.
+        let pressOnBackdrop = false;
+        modal.addEventListener('mousedown', (e) => {
+            pressOnBackdrop = e.target === modal;
+        });
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) this.close();
+            if (e.target === modal && pressOnBackdrop) this.close();
         });
         document.getElementById('custom-item-cancel').addEventListener('click', () => this.close());
         document.getElementById('custom-item-save').addEventListener('click', () => this.save());
@@ -421,13 +429,15 @@ const CustomWargear = {
         }
     },
 
-    // A refused edit (updateCustomItem returns false) keeps the modal open and does not call onSaved
+    // A refused edit (updateCustomItem returns false) keeps the modal open and does not call onSaved.
+    // An edit finds its entry by id at its current index. If the entry is gone, Save closes and saves nothing.
     save() {
         const f = this.form;
         if (Object.keys(this.validateForm(f)).length) return;
         const record = this.buildRecord(f);
         if (f.editIndex !== null) {
-            if (!State.updateCustomItem(f.editIndex, record)) return;
+            const index = State.getCharacter().wargear.findIndex(w => w && w.id === f.editId);
+            if (index !== -1 && !State.updateCustomItem(index, record)) return;
         } else {
             State.addCustomItem(record);
         }

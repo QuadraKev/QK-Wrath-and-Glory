@@ -698,7 +698,7 @@ for (const rel of ['character-sheet-tab.js', 'wargear-tab.js', 'talents-tab.js']
     check('lasgun salvo', CS.weaponSalvoText(DL.getWeapon('lasgun')), 'Salvo 2');
     check('a "-" salvo prints nothing', CS.weaponSalvoText({ type: 'ranged', salvo: '-' }), '');
     check('a string salvo prints', CS.weaponSalvoText({ type: 'ranged', salvo: '2' }), 'Salvo 2');
-    check('a zero salvo prints', CS.weaponSalvoText({ type: 'ranged', salvo: 0 }), 'Salvo 0');
+    check('a zero salvo prints nothing', CS.weaponSalvoText({ type: 'ranged', salvo: 0 }), '');
     check('an empty salvo prints nothing', CS.weaponSalvoText({ type: 'ranged', salvo: '' }), '');
     check('no salvo prints nothing', CS.weaponSalvoText({ type: 'ranged' }), '');
     check('a melee weapon has no salvo line', CS.weaponSalvoText({ type: 'melee', salvo: 2 }), '');
@@ -904,13 +904,14 @@ for (const rel of ['character-sheet-tab.js', 'wargear-tab.js', 'talents-tab.js']
     const saveRun = updateResult => {
         const calls = { closed: false, saved: false, update: 0, add: 0 };
         const ctx = creatorSandbox({
-            State: { updateCustomItem: () => { calls.update++; return updateResult; }, addCustomItem: () => { calls.add++; return 0; } },
+            State: { updateCustomItem: () => { calls.update++; return updateResult; }, addCustomItem: () => { calls.add++; return 0; },
+                getCharacter: () => ({ wargear: [{ id: 'custom_k3v9q2xa' }] }) },
             document: { getElementById: () => ({ classList: { add: () => { calls.closed = true; } } }) }
         });
         load(ctx, 'creator/js/custom-wargear.js');
         const M = get(ctx, 'CustomWargear');
         M.onSaved = () => { calls.saved = true; };
-        M.form = { ...xenotech, editIndex: 0 };
+        M.form = { ...xenotech, editIndex: 0, editId: 'custom_k3v9q2xa' };
         M.save();
         return calls;
     };
@@ -979,6 +980,181 @@ for (const rel of ['character-sheet-tab.js', 'wargear-tab.js', 'talents-tab.js']
     const tabSource = readSource('creator/tabs/wargear-tab.js');
     check('the owned entry carries the custom field', tabSource.includes('custom: item.custom'), true);
     check('the Edit button opens the builder at its index', tabSource.includes("CustomWargear.open(parseInt(btn.dataset.index, 10))"), true);
+}
+
+// --- final review fixes ---
+{
+    const CS = get(sctx, 'CharacterSheetTab'), WT = get(sctx, 'WargearTab'), SDL = get(sctx, 'DataLoader');
+
+    // F1: the sheet shows a Salvo line only for a salvo above 0 (the stat line of a custom item still reads back 0).
+    check('a text salvo "0" prints nothing', CS.weaponSalvoText({ type: 'ranged', salvo: '0' }), '');
+    check('a number salvo 2 prints', CS.weaponSalvoText({ type: 'ranged', salvo: 2 }), 'Salvo 2');
+    check('a text salvo "1d3" prints', CS.weaponSalvoText({ type: 'ranged', salvo: '1d3' }), 'Salvo 1d3');
+    {
+        const zero = DATA['weapons.json'].filter(w => w.type === 'ranged' && w.salvo === 0);
+        check('no book ranged weapon with salvo 0 gets a Salvo line', [zero.length > 0, zero.filter(w => CS.weaponSalvoText(w) !== '').map(w => w.id)], [true, []]);
+        sheetCharacter.wargear = [{ id: 'frag_grenade', isStarting: false }, { id: 'lasgun', isStarting: false }];
+        const html = CS.renderWeapons(sheetCharacter);
+        sheetCharacter.wargear = [];
+        check('the sheet shows Salvo 2 for the lasgun and no Salvo line for the Frag Grenade',
+            [(html.match(/sheet-weapon-salvo">[^<]*</g) || []), html.includes('Salvo 0')], [['sheet-weapon-salvo">Salvo 2<'], false]);
+        check('the stat line of a custom ranged weapon still reads back Salvo 0',
+            CW.formatStatLine(CW.buildRecord({ ...ranged, salvo: '0' })).includes('Salvo 0'), true);
+    }
+
+    // F4: a value from the character file goes through escapeHtml one time at the three older sites.
+    const IMG = '<img src=x onerror=1>', IMG_SAFE = '&lt;img src=x onerror=1&gt;';
+    // [holds the escaped text, holds a raw tag, holds a text escaped two times]
+    const safeFor = (html, payload) => payload === EVIL
+        ? [html.includes(SAFE), RAW_TAG.test(html), html.includes('&amp;lt;')]
+        : [html.includes(IMG_SAFE), /<img/i.test(html), html.includes('&amp;lt;')];
+    const bothSafe = render => [EVIL, IMG].map(payload => safeFor(render(payload), payload));
+    const SAFE_BOTH = [[true, false, false], [true, false, false]];
+    const withUpgradeName = (name, fn) => {
+        const upgrade = SDL.getWeaponUpgrade('ammo_drum');
+        const saved = upgrade.name;
+        upgrade.name = name;
+        try { return fn(); } finally { upgrade.name = saved; }
+    };
+    const ownedLasgun = upgrades => WT.renderOwnedWeapon({ ...SDL.getWeapon('lasgun'), wargearIndex: 0, isStarting: false, upgrades });
+    check('the Wargear tab upgrades line escapes an unknown upgrade id', bothSafe(p => ownedLasgun([p])), SAFE_BOTH);
+    check('the Wargear tab upgrades line escapes an upgrade name', bothSafe(p => withUpgradeName(p, () => ownedLasgun(['ammo_drum']))), SAFE_BOTH);
+    check('the Wargear tab upgrades line shows a book upgrade as before', ownedLasgun(['ammo_drum']).includes('<div class="wargear-upgrades">Upgrades: Ammo Drum</div>'), true);
+
+    const sheetLasgun = upgrades => {
+        sheetCharacter.wargear = [{ id: 'lasgun', isStarting: false, upgrades }];
+        try { return CS.renderWeapons(sheetCharacter); } finally { sheetCharacter.wargear = []; }
+    };
+    check('the sheet upgrades line escapes an unknown upgrade id', bothSafe(p => sheetLasgun([p])).map(([, raw, twice]) => [raw, twice]), [[false, false], [false, false]]);
+    check('the sheet upgrades line escapes an upgrade name', bothSafe(p => withUpgradeName(p, () => sheetLasgun(['ammo_drum']))), SAFE_BOTH);
+    check('the sheet upgrades line shows a book upgrade as before',
+        sheetLasgun(['ammo_drum']).includes('<div class="sheet-weapon-upgrades"><span class="glossary-term" data-term-key="ammo_drum" data-term-type="weaponUpgrade">Ammo Drum</span></div>'), true);
+
+    const sheetTalents = talents => {
+        sheetCharacter.talents = talents;
+        try { return CS.renderTalents(sheetCharacter); } finally { sheetCharacter.talents = []; }
+    };
+    check('the sheet escapes a talent choice that resolves to no item', bothSafe(p => sheetTalents([{ id: 'trademark_weapon', choice: p }])), SAFE_BOTH);
+    check('the sheet shows a normal talent choice as before', (() => {
+        const html = sheetTalents([{ id: 'acute_sense', choice: 'Sight' }]);
+        return [html.includes('<span class="sheet-talent-name">Acute Sense (Sight)</span>'), html.includes('<strong class="sheet-talent-choice">Chosen: Sight</strong>. ')];
+    })(), [true, true]);
+
+    // TalentsTab.renderSelected builds DOM nodes, so run it against a minimal document stub (as in the text safety section).
+    const talentsHtml = talents => {
+        const stub = () => ({ className: '', style: {}, children: [], dataset: {}, set innerHTML(v) { this._html = v; }, get innerHTML() { return this._html || ''; },
+            appendChild(c) { this.children.push(c); }, addEventListener() {}, querySelector: () => stub(), querySelectorAll: () => [], setAttribute() {}, classList: { add() {}, remove() {} } });
+        const container = stub();
+        const character = { ...sheetCharacter, talents, wargear: [] };
+        const ctx = creatorSandbox({
+            State: { character, getCharacter: () => character },
+            ImprovisedBuilder: { talentProfilesHtml: () => '' },
+            Glossary: { enhanceElement() {}, enhance() {} },
+            document: { getElementById: () => container, createElement: stub }
+        });
+        load(ctx, 'creator/tabs/talents-tab.js');
+        get(ctx, 'TalentsTab').renderSelected();
+        return container.children.map(c => c.innerHTML).join('');
+    };
+    check('the Talents tab escapes a talent choice that resolves to no item', bothSafe(p => talentsHtml([{ id: 'trademark_weapon', choice: p }])), SAFE_BOTH);
+    check('the Talents tab shows a normal talent choice as before',
+        talentsHtml([{ id: 'acute_sense', choice: 'Sight' }]).includes('<span class="selected-talent-name">Acute Sense (Sight) </span>'), true);
+    check('the Talents tab still shows a choice 0 that resolves to no item',
+        talentsHtml([{ id: 'trademark_weapon', choice: 0 }]).includes('<span class="selected-talent-name">Trademark Weapon (0) </span>'), true);
+
+    // F2, F3, F5, F7: the builder modal in a fake DOM with the real State.
+    // An element records its listeners; fire() calls them with a fake event.
+    const doc = { activeElement: null, els: {} };
+    const element = id => {
+        const hidden = new Set();
+        return {
+            id, dataset: {}, textContent: '', innerHTML: '', scrollTop: 0, disabled: false, listeners: {},
+            classList: { add: c => hidden.add(c), remove: c => hidden.delete(c), contains: c => hidden.has(c) },
+            addEventListener(type, fn) { (this.listeners[type] = this.listeners[type] || []).push(fn); },
+            fire(type, target) { (this.listeners[type] || []).forEach(fn => fn({ type, target })); },
+            appendChild(child) { if (child.id) doc.els[child.id] = child; },
+            querySelector: () => element(),
+            contains: () => false,
+            focus() { doc.activeElement = this; }
+        };
+    };
+    Object.assign(doc, {
+        getElementById(id) {
+            if (!(id in doc.els) && id !== 'custom-item-modal') doc.els[id] = element(id);
+            return doc.els[id] || null;
+        },
+        createElement: () => element(),
+        querySelectorAll: () => [],
+        querySelector: () => null
+    });
+    const store = {};
+    const mctx = creatorSandbox({
+        document: doc,
+        localStorage: { getItem: k => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } },
+        setTimeout: () => 0,
+        clearTimeout: () => {}
+    });
+    load(mctx, 'creator/js/followers.js');
+    load(mctx, 'creator/js/custom-wargear.js');
+    load(mctx, 'creator/js/state.js');
+    const MS = get(mctx, 'State'), M = get(mctx, 'CustomWargear');
+    let savedCalls = 0;
+    M.onSaved = () => { savedCalls++; };
+    const names = () => MS.character.wargear.map(w => w.custom.name);
+    const threeItems = () => {
+        MS.character = MS.createNewCharacter();
+        for (const name of ['A', 'B', 'C']) MS.addCustomItem(M.buildRecord(F({ name })));
+        return MS.character.wargear.map(w => w.id);
+    };
+
+    // F7: the focus goes to the Name field when the modal opens.
+    threeItems();
+    doc.activeElement = null;
+    M.open();
+    const modal = doc.els['custom-item-modal'];
+    check('the modal shows when it opens', modal.classList.contains('hidden'), false);
+    check('the focus is in the Name field when the modal opens', doc.activeElement && doc.activeElement.id, 'custom-item-name');
+
+    // F2: a press that starts in the form and ends on the backdrop does not close the modal.
+    modal.fire('mousedown', doc.els['custom-item-body']);
+    modal.fire('click', modal);
+    check('a drag from a field to the backdrop keeps the modal open', modal.classList.contains('hidden'), false);
+    modal.fire('mousedown', modal);
+    modal.fire('click', modal);
+    check('a click on the backdrop closes the modal', modal.classList.contains('hidden'), true);
+
+    // F3: the edit finds its entry by id, so a removal while the form is open changes no other item.
+    {
+        const ids = threeItems();
+        M.open(1);
+        M.form.name = 'B edited';
+        MS.removeWargearByIndex(0);
+        savedCalls = 0;
+        M.save();
+        check('after a removal, Save changes the item that was opened and keeps the other one',
+            [names(), MS.character.wargear.map(w => w.id), savedCalls, modal.classList.contains('hidden')], [['B edited', 'C'], [ids[1], ids[2]], 1, true]);
+    }
+    {
+        const ids = threeItems();
+        M.open(1);
+        M.form.name = 'B edited';
+        MS.removeWargearByIndex(1);
+        savedCalls = 0;
+        M.save();
+        check('when the opened item is gone, Save changes nothing, closes the modal and calls onSaved',
+            [names(), MS.character.wargear.map(w => w.id), savedCalls, modal.classList.contains('hidden')], [['A', 'C'], [ids[0], ids[2]], 1, true]);
+    }
+
+    // F5: a text index finds the same entry and keeps its id.
+    {
+        const ids = threeItems();
+        check('updateCustomItem with the text index "0" keeps the id',
+            [MS.updateCustomItem('0', M.buildRecord(F({ name: 'A2' }))), MS.character.wargear[0].id, names()], [true, ids[0], ['A2', 'B', 'C']]);
+    }
+
+    // F6: a long name with no spaces wraps, so the row buttons stay in view.
+    const infoRule = (readSource('creator/css/styles.css').match(/\n\.wargear-info \{[^}]*\}/) || [''])[0];
+    check('the .wargear-info rule lets a long name wrap', [/min-width: 0;/.test(infoRule), /overflow-wrap: anywhere;/.test(infoRule)], [true, true]);
 }
 
 console.log(failures === 0 ? '\nAll custom wargear checks passed.' : `\n${failures} custom wargear check(s) FAILED.`);

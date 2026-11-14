@@ -165,7 +165,7 @@ const WargearTab = {
     renderOwnedWeapon(weapon) {
         const upgradeNames = weapon.upgrades.map(id => {
             const upgrade = DataLoader.getWeaponUpgrade(id);
-            return upgrade ? upgrade.name : id;
+            return this.escapeHtml(upgrade ? upgrade.name : id);
         });
 
         const upgradeText = upgradeNames.length > 0

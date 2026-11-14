@@ -269,6 +269,11 @@ const Glossary = {
         const definitions = this.gatherDefinitionsByName(clickedEntry.name);
         if (definitions.length === 0) return;
 
+        // The definition of the clicked kind comes first (the GRAV keyword shows the Keyword
+        // first, the Grav trait the Weapon Trait). The other definitions keep their order.
+        const clickedIndex = definitions.findIndex(def => def.type === type && def.key === key);
+        if (clickedIndex > 0) definitions.unshift(...definitions.splice(clickedIndex, 1));
+
         this.showPopup(definitions, termElement, key);
     },
 

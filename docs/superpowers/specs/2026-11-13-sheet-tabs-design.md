@@ -11,12 +11,17 @@ spec. Line references are to the tree at commit `079c581` and are evidence only.
 Wargear) and the `issues-31-32` branch merge first and move lines in `character-sheet-tab.js`, so
 every requirement names functions, classes and selectors, not lines.
 
+**Print is retired [Owner, 2026-11-14].** The owner decided: "Printing is a feature we can
+deprecate and retire. Let's keep this exclusively a web app." The creator has no Print button, no
+print styles and no print copy of the notes. Each statement about print in this document (§7 and
+the print lines of other sections) describes the design before that decision and no longer applies.
+
 ## 1. Goal and scope
 
 Today the Character Sheet is one long page: a header, then a left column (stats, powers, abilities,
 background, notes) and a right column (wargear, followers). In play, the player scrolls to find a
 block. This design splits the sheet into tabs, so that each block a player needs is one click away,
-and keeps the character identity and the three combat trackers at the top of every tab.
+and keeps the character identity and the combat trackers at the top of every tab.
 
 The owner's reasons **[Owner]**: players look at Attributes, Traits and Skills "when rolling tests";
 they look at Wargear "often since combat is a common part of the game"; they "need to reference
@@ -73,7 +78,7 @@ selected-tab storage (9) §5.1; Custom Wargear (10) §9.
 ├── div.sheet-strip                        ← pinned in full mode; display: contents in compact mode
 │   ├── div.sheet-section.sheet-header-section   ← identity: name, subtitle, keyword chips
 │   └── div.sheet-strip-bar                ← pinned in compact mode
-│       ├── div.sheet-strip-trackers       ← Wounds boxes, Shock boxes, Wrath counter
+│       ├── div.sheet-strip-trackers       ← Wounds and Shock groups, Wrath and Faith counters (§2.4)
 │       └── div.sheet-tabbar[role=tablist]
 │           └── button.sheet-tab-btn[role=tab] × visible tabs
 └── div.sheet-panes
@@ -93,6 +98,11 @@ sheet-header-section`, `sheet-character-name`, `sheet-subtitle`, `sheet-keywords
 `sheet-keyword`, so that the glossary enhancement and the existing print rules still apply.
 
 ### 2.2 The two modes, box sizes, and the pinned height
+
+**[Controller ruling, 2026-11-14]** §2.4 replaces the identity part and the tracker part of full mode
+and of compact mode in this section, the 600px limit of compact mode, and the sketches of §2.3. The
+box counts and the low mode stay. **[Controller ruling, 2026-11-14]** A window wider than 768px and
+481px to 600px high pins the whole strip, as full mode does.
 
 **Box counts to design for.** `calculateMaxWounds` (`creator/js/derived-stats.js:305-324`) is
 2 × Tier + Toughness + species `woundBonus` + background bonuses + Uncanny (Wounds) and Feel No Pain
@@ -146,6 +156,10 @@ trackers, a 32px Wrath row, a 40px tab bar and 16px of vertical padding. "Typica
 | 740×360 (landscape phone) | 1 + 1 | about 145px (40%) | 3 + 2 | about 225px (62%) |
 | 1280×560 | 1 + 1 | about 145px (26%) | 2 + 2 | about 200px (36%) |
 
+**[Controller ruling, 2026-11-14]** The table gives the design values from before the trackers moved
+into the name card (§2.4). The row gap is now 10px, the counts part has the card padding, and a
+character with Faith has one more row. The measured values below are the current ones.
+
 **Low mode [Controller ruling, 2026-11-14; the owner can reverse it].** The first version of this
 section had no special case for a short window and said that the worst case in a landscape phone
 leaves about 135px for the pane. That figure was wrong: it did not count the app header, the tab
@@ -153,21 +167,24 @@ navigation and the footer (130px). Measured at 740×360, the scroller is 230px h
 part of compact mode left 80px for a typical character and 2px for the worst case. So a third mode
 exists: in `@media screen and (max-height: 480px)` the tracker rows are not pinned and scroll with
 the page, and only the tab bar stays pinned (48px), which leaves 182px for the pane at 740×360.
-Windows from 481px to 600px high keep compact mode. The owner's decision for a narrow viewport
-(the boxes stay pinned and fill more rows) does not change. `_pinnedElement` returns the strip in
-full mode, the strip bar in compact mode and the tab bar in low mode. The 740×360 row of the table
-above describes compact mode and does not apply any more.
+Windows 768px wide or less and from 481px to 600px high keep compact mode. The owner's decision for
+a narrow viewport (the boxes stay pinned and fill more rows) does not change. `_pinnedElement`
+returns the strip in full mode, the strip bar in compact mode and the tab bar in low mode. The
+740×360 row of the table above describes compact mode and does not apply any more.
 
-Measured room for the pane (pinned height / room): 360×740 typical 176 / 434px, worst case
-358 / 252px; 1280×560 typical 150 / 280px, worst case 202 / 228px; 1280×481 worst case
-202 / 149px. Only a Tier 5, Rank 5 character with the largest bonuses reaches the worst case.
+Measured room for the pane (pinned height / room) at 360×740 with the trackers in the name card
+(2026-11-14): typical 198 / 412px with no Faith and 240 / 370px with Faith; worst case
+380 / 230px with no Faith and 422 / 188px with Faith. Before 2026-11-14: 360×740 typical
+176 / 434px, worst case 358 / 252px; compact mode in a 1280px wide window: 1280×560 typical
+150 / 280px, worst case 202 / 228px; 1280×481 worst case 202 / 149px. Only a Tier 5, Rank 5
+character with the largest bonuses reaches the worst case.
 
 Size targets (browser check, §10.2), each with a tolerance of 20px for fonts and borders:
 
 - Full mode at 1280×800, eight keyword chips, 30 Wounds or fewer and 20 Shock or fewer: the pinned
   part is at most 240px tall.
 - Full mode worst case at 800×800, two rows of chips, 50 Wounds and 35 Shock: at most 300px.
-- Compact mode: the heights of the table above.
+- Compact mode: the measured values above (the table is the design before 2026-11-14).
 
 ### 2.3 Sketches and pane layout per width
 
@@ -289,6 +306,51 @@ selected tab is scrolled into view inside the bar without a vertical scroll of t
 - A window resize (for example a rotate) also scrolls the selected tab into view. The resize does
   nothing while the sheet is not displayed.
 
+### 2.4 The trackers in the name card
+
+**[Owner, 2026-11-14]** The trackers (Wounds, Shock, Wrath and Faith) are inside the name card. The
+owner chose the layout from mockups for laptop and tablet windows: "I prefer E2 the most." In layout
+E2, the identity (name, subtitle, keyword chips) is left-aligned in the left part of the card. A
+vertical divider separates it from the tracker grid in the right part. In the grid, the Wrath counter
+is above the Faith counter, and the Wounds group is above the Shock group. In a narrow window, the
+counts are in the name card below a horizontal divider, with a little more space between them.
+
+**[Controller ruling, 2026-11-14]**
+
+- The width selects the layout: E2 in a window wider than 768px, and the counts below the identity in
+  a window 768px wide or less.
+- The divider is at the middle of the card when the tracker grid fits in the right half. When the
+  grid needs more width, the right part grows to 58% of the card at most, and the divider moves left.
+  The left part keeps the remaining width, and the name and the chips wrap in it.
+- In a window wider than 768px, when the boxes of a group need more than one row, the rows have the
+  same count, or the first rows have one box more. A row with one box alone does not occur, unless
+  the group has one box.
+- At 768px or less, the row gap between the counts is 10px (it was 6px).
+- A window wider than 768px and higher than 480px pins the whole strip: the card and the tab bar. At
+  768px or less, compact mode pins the counts part and the tab bar, and the identity scrolls away.
+  The pinned counts part keeps the card look, and the divider is its top edge. Low mode (480px high
+  or less) pins only the tab bar, at any width.
+- At 768px or less, the Faith counter comes after the Wrath counter, in the same row and in the same
+  form. When the two do not fit in one row, the Faith counter goes to the next row.
+
+**How one markup gives the two layouts [Designer, new; accepted by controller ruling, 2026-11-14]:**
+
+- `.sheet-strip-trackers` holds a `.sheet-strip-group` for Wounds and for Shock (a label and its
+  boxes), then `.sheet-strip-counters` with the Wrath counter and the Faith counter.
+- Wide: the identity and the trackers are two flex items in one row with one height. In full mode the
+  row is `.sheet-strip`; in low mode it is `#character-sheet-content`, so that the tab bar can pin.
+  Each part draws its half of the card. The gradient is as wide as the card (`100cqi`, with
+  `#character-sheet-content` as the size container) and starts at the left edge of the card in each
+  part, so the two parts join with no step. The divider is a 1px line in `var(--border-light)`, 11px
+  from the top and from the bottom of the card.
+- Narrow: the identity is the top of the card and the counts are the bottom. The two parts have the
+  same horizontal gradient, so they join with no step at any height.
+- Even rows: the markup gives the box count of each group (`--n`) and the index of each box (`--i`).
+  Each layout sets the count that fits in one row (`--box-max`), and CSS math gives each box its
+  column. A browser with no support for this math keeps the natural wrap. The even rows also apply
+  at 768px or less **[Designer, new; accepted by controller ruling, 2026-11-14; the owner can
+  reverse it]**.
+
 ## 3. Block-to-tab mapping
 
 **[Designer]**, with the Details block and the Mutations split as **[Designer, new]**:
@@ -376,9 +438,10 @@ editor.
 ### 4.1 Content
 
 Identity part: name, subtitle (species • archetype • Tier • Rank), keyword chips, as `renderHeader`
-gives them today **[Owner]**. Tracker part: Wounds, Shock and Wrath **[Owner]**. Faith stays
-in Stats **[Owner]**. The Wealth counter is in the Character tab **[Owner, 2026-11-14]**, in the
-Details block (§3.1).
+gives them today **[Owner]**. Tracker part: Wounds, Shock and Wrath **[Owner]**, and Faith with
+them **[Owner, 2026-11-14]** (§2.4). The Faith counter shows only when `State.getMaxFaith() > 0`
+**[Controller ruling, 2026-11-14]**. The Wealth counter is in the Character tab
+**[Owner, 2026-11-14]**, in the Details block (§3.1).
 
 ### 4.2 Tracker forms
 
@@ -393,6 +456,10 @@ user to visualize their remaining wounds/shock. We can use counters for the othe
 - **Wrath** is a counter: the existing markup, `.tracker-btn tracker-minus` and `.tracker-btn
   tracker-plus` with `data-type="wrath"`, and `.tracker-value`. The `aria-label`s are "Remove Wrath"
   and "Add Wrath" **[Designer, new]**.
+- **Faith** is a counter in the same form as Wrath: `type="button"`, `data-type="faith"`, and the
+  `aria-label`s "Remove Faith" and "Add Faith". The value is
+  `escapeHtml(String(State.getCurrentFaith()))`, because an imported file can hold any value. The
+  focus order is Wrath −, Wrath +, Faith −, Faith + **[Controller ruling, 2026-11-14]**.
 
 The click handler for the player's boxes stays as it is: the `.tracking-box:not(.follower-box)` loop
 in `bindSessionTrackingControls`. It now serves the boxes in the strip. What a click does, as today:
@@ -406,13 +473,13 @@ in `bindSessionTrackingControls`. It now serves the boxes in the strip. What a c
 
 The Wrath buttons are never `disabled` **[Designer, new]**; `State.setCurrentWrath` clamps at 0 and
 has no maximum, so a click at 0 on "−" is a no-op. Reason: a disabled button cannot keep focus after
-the re-render (§5.2). Faith and Wealth counters do not change.
+the re-render (§5.2). The Wealth counter does not change. The Faith counter is in the strip (§2.4).
 
 ### 4.3 What Traits shows
 
-`renderTraits` keeps the static trait grid. It has a tracking section only when `State.getMaxFaith()
-> 0`: one line, then the Faith counter **[Controller ruling, 2026-11-14]**. The owner asked for
-the removal of the empty lines of the Traits card **[Owner, 2026-11-14]**. It has no Wealth
+`renderTraits` renders the static trait grid only. It has no tracking section and no Faith
+counter, because the Faith counter is in the strip **[Owner, 2026-11-14]** (§2.4). The owner asked
+for the removal of the empty lines of the Traits card **[Owner, 2026-11-14]**. It has no Wealth
 counter, because the Wealth counter is in the Character tab **[Owner, 2026-11-14]** (§3.1). It no
 longer renders the Wounds row, the Shock row or the Wrath counter. The boxes and the Wrath counter
 exist once in the page, in the strip.
@@ -551,6 +618,9 @@ Use the WAI-ARIA Tabs pattern with automatic activation (a switch is cheap, §5.
 
 ## 7. Print
 
+**Retired [Owner, 2026-11-14].** Refer to the note at the head of this document. The text below is
+a record.
+
 Print shows the whole sheet, whichever tab is selected **[Designer]**:
 
 - The strip prints first as a static block (`position: static`, `display: block` for `.sheet-strip`
@@ -642,8 +712,8 @@ composition without game data. Cases:
    `.tracker-btn` pair and the Wrath value. The trackers and the tab bar are inside
    `.sheet-strip-bar`, and the identity part is outside it.
    The whole sheet HTML has these boxes and the Wrath pair once; Traits has no `.tracking-box` and
-   no Wrath button and no `wealth` button, and has `faith` only when `getMaxFaith() > 0`
-   **[Owner, 2026-11-14]**. With max 50 the
+   no Wrath button, no `wealth` button and no `faith` button **[Owner, 2026-11-14]**. The strip has
+   the Faith pair once when `getMaxFaith() > 0`, and no Faith pair when it is 0. With max 50 the
    strip has 50 Wounds boxes.
 5. **Box clicks**: with stub box elements (class list, `dataset`, captured click listener) passed
    through `bindSessionTrackingControls`, and `render` stubbed: a click on empty Wounds box 4 calls
@@ -683,10 +753,11 @@ about 50 Wounds and 35 Shock.
 - Click an equip checkbox: the tab, the scroll and the focus stay. Click a follower mob button: the
   tab and the scroll stay; the focus stays unless the button became `disabled` (0 living or the full
   count), where the focus is lost.
-- Compact mode (360×740, 768×1024, 740×360 and 1280×560), on Wargear, scrolled down: the identity
+- Compact mode (360×740, 768×1024 and 740×360; since 2026-11-14 a 1280×560 window pins the whole
+  strip), on Wargear, scrolled down: the identity
   part has scrolled away; the boxes, the Wrath counter and the tab bar stay pinned; tap a box, the
   value changes, the tab and the scroll stay. With the worst-case character the box rows wrap and
-  the pinned heights match the table of §2.2.
+  the pinned heights match the measured values of §2.2.
 - Type in Notes; the caret stays; switch tabs and back; the text is there.
 - Keyboard only: Tab to the bar, arrows, Home, End, Tab into the pane; the focus ring shows on the tabs
   and the Wrath buttons.
@@ -722,9 +793,9 @@ bump. No `data/` file changes, so the creator data `?v=` in `creator/js/web-api.
 
 - **Strip content**: name, species, archetype, Tier, Rank and keyword chips, plus the Wounds, Shock
   and Wrath trackers, so that "a player on the Wargear tab can then mark a wound with no tab change".
-  Faith stays in Stats. The Wealth counter is in the Character tab **[Owner, 2026-11-14]**:
-  "Wealth counter should probably be moved to Character tab". Its place in the Details block is a
-  controller ruling.
+  Faith is in the strip with the other trackers **[Owner, 2026-11-14]** (§2.4). The Wealth counter
+  is in the Character tab **[Owner, 2026-11-14]**: "Wealth counter should probably be moved to
+  Character tab". Its place in the Details block is a controller ruling.
 - **Tracker forms**: "For wounds and shock specifically, I prefer the boxes to the counters. This
   allows the user to visualize their remaining wounds/shock. We can use counters for the other
   values." Wounds and Shock are box rows at every width; Wrath, Faith and Wealth are counters.

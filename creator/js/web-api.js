@@ -174,12 +174,6 @@
             }
         },
 
-        // PDF export - use browser print
-        exportPDF: async () => {
-            window.print();
-            return { success: true };
-        },
-
         // Native dialog replacements
         showConfirm: async (message) => {
             return confirm(message);

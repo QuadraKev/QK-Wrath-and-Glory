@@ -3213,7 +3213,7 @@ textarea {
     border-color: var(--accent-red);
 }
 
-/* Horizontal tracker row for Faith and Wealth. The line above it comes from .sheet-tracking-section. */
+/* Horizontal tracker row for Wealth. The line above it comes from .sheet-tracking-section. */
 .tracker-row-horizontal {
     display: flex;
     justify-content: center;
@@ -4030,23 +4030,10 @@ textarea {
     color: var(--text-primary);
 }
 
-/* Notes */
-.sheet-notes {
-    font-size: 14px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    white-space: pre-wrap;
-}
-
-/* Notes are editable on screen; the plain-text copy is what prints, because a
-   textarea clips anything past its visible height on paper. */
+/* Notes are editable on screen. */
 .sheet-notes-input {
     min-height: 160px;
     line-height: 1.6;
-}
-
-.sheet-notes-print {
-    display: none;
 }
 
 /* The Notes builder step is a full page, so give it a taller box than the form default */
@@ -4749,619 +4736,6 @@ textarea {
 @keyframes autosave-slide-out {
     from { max-height: 60px; opacity: 1; }
     to { max-height: 0; opacity: 0; padding-top: 0; padding-bottom: 0; border-bottom-width: 0; }
-}
-
-/* ===== Print Styles ===== */
-@media print {
-    /* Hide app chrome */
-    .app-header,
-    .tab-nav,
-    .sidebar,
-    .app-footer,
-    .sheet-actions,
-    .autosave-banner {
-        display: none !important;
-    }
-
-    /* Reset layout */
-    html, body {
-        height: auto;
-        overflow: visible;
-    }
-
-    #app {
-        position: static;
-        display: block;
-        height: auto;
-    }
-
-    .main-container {
-        display: block;
-    }
-
-    .content {
-        padding: 0;
-        overflow: visible;
-    }
-
-    .tab-content {
-        display: none !important;
-    }
-
-    #tab-character-sheet {
-        display: block !important;
-    }
-
-    .sheet-section {
-        page-break-inside: avoid;
-    }
-
-    /* Keep header and columns together on first page */
-    .sheet-header-section {
-        page-break-after: avoid;
-    }
-
-    .sheet-columns {
-        page-break-before: avoid;
-        page-break-inside: auto;
-    }
-
-    .sheet-column {
-        page-break-inside: auto;
-    }
-
-    /* Allow Attributes + Traits to share a page within columns */
-    .sheet-column .sheet-section {
-        page-break-inside: auto;
-    }
-
-    .sheet-column .sheet-compact-item {
-        page-break-inside: avoid;
-    }
-
-    .sheet-tracking-section {
-        page-break-inside: avoid;
-    }
-
-    /* Full width */
-    .character-sheet {
-        max-width: 100% !important;
-    }
-
-    /* Hide glossary popups in print */
-    .glossary-popup {
-        display: none !important;
-    }
-
-    /* Hide equip checkboxes in print */
-    .weapon-equip-checkbox {
-        display: none !important;
-    }
-
-    .sheet-weapon-equip,
-    .sheet-weapon-equip-header {
-        display: none !important;
-    }
-
-    /* Hide tracker +/- buttons in print */
-    .tracker-btn,
-    .follower-living-btn {
-        display: none !important;
-    }
-
-    /* Weapon cards: 2-column layout for print */
-    .sheet-weapons-table .sheet-weapon-group {
-        width: 50% !important;
-        box-sizing: border-box !important;
-        padding: 8px 10px !important;
-        border-bottom: 1px solid #ddd !important;
-    }
-
-    /* Remove tooltip underline decoration in print */
-    .sheet-weapons-table .sheet-weapon-dice[title],
-    .sheet-weapons-table .sheet-weapon-damage[title],
-    .sheet-weapons-table .sheet-weapon-ed[title],
-    .sheet-weapons-table .sheet-weapon-ap[title] {
-        text-decoration: none !important;
-    }
-
-    /* Compact card spacing for print */
-    .sheet-weapons-table .sheet-weapon-group td {
-        font-size: 11px !important;
-    }
-
-    .sheet-weapons-table .sheet-weapon-group td::before {
-        font-size: 8px !important;
-    }
-
-    .sheet-weapons-table .sheet-weapon-name {
-        font-size: 12px !important;
-        padding-bottom: 3px !important;
-        margin-bottom: 1px !important;
-    }
-
-    .sheet-weapons-table .sheet-weapon-group {
-        gap: 3px 10px !important;
-    }
-
-    .sheet-weapons-table .sheet-weapon-traits {
-        font-size: 10px !important;
-        padding-top: 1px !important;
-        margin-top: 1px !important;
-    }
-
-    /* Armor cards: 2-column layout for print */
-    .sheet-armor-table {
-        display: flex !important;
-        flex-wrap: wrap !important;
-    }
-
-    .sheet-armor-table tbody {
-        display: contents !important;
-    }
-
-    .sheet-armor-table tbody tr {
-        width: 50% !important;
-        box-sizing: border-box !important;
-        padding: 8px 10px !important;
-        gap: 3px 10px !important;
-    }
-
-    .sheet-armor-table .sheet-armor-desc-row {
-        width: 50% !important;
-        box-sizing: border-box !important;
-    }
-
-    .sheet-armor-table tbody td {
-        font-size: 11px !important;
-    }
-
-    .sheet-armor-table tbody td::before {
-        font-size: 8px !important;
-    }
-
-    .sheet-armor-table .sheet-armor-name {
-        font-size: 12px !important;
-        padding-bottom: 3px !important;
-        margin-bottom: 1px !important;
-    }
-
-    .sheet-armor-table .sheet-armor-traits {
-        font-size: 10px !important;
-    }
-
-    .sheet-armor-table .sheet-armor-desc-row {
-        padding: 0 10px 8px !important;
-    }
-
-    /* Equipment cards: 2-column layout for print */
-    .sheet-equipment-table {
-        display: flex !important;
-        flex-wrap: wrap !important;
-    }
-
-    .sheet-equipment-table tbody {
-        display: contents !important;
-    }
-
-    /* The group (a tbody) is the card. This rule stays here, outside the light theme, because it
-       corrects the layout of every print, with or without the light class. It overrides the old rule
-       "tbody, display: contents" above for the equipment groups. Specificity decides, not the order:
-       (0,2,0) against (0,1,1), both !important. The rule sits beside the old rule so that a reader finds
-       both. With display: contents the card dissolves, and the name, the Effect cell and the value sit side by side. */
-    .sheet-equipment-table .sheet-equip-group {
-        display: grid !important;
-        width: 50% !important;
-        box-sizing: border-box !important;
-        padding: 8px 10px !important;
-    }
-
-    .sheet-equipment-table tbody tr {
-        width: 50% !important;
-        box-sizing: border-box !important;
-        padding: 8px 10px !important;
-    }
-
-    .sheet-equipment-table .sheet-equip-desc-row {
-        width: 50% !important;
-        box-sizing: border-box !important;
-    }
-
-    .sheet-equipment-table tbody td {
-        font-size: 11px !important;
-    }
-
-    .sheet-equipment-table tbody td::before {
-        font-size: 8px !important;
-    }
-
-    .sheet-equipment-table .sheet-equip-name {
-        font-size: 12px !important;
-        padding-bottom: 3px !important;
-        margin-bottom: 2px !important;
-    }
-
-    .sheet-equipment-table .sheet-equip-desc-row {
-        padding: 0 10px 8px !important;
-    }
-
-    /* Compact spacing for print to fit more on first page */
-    .sheet-section {
-        padding: 10px 15px !important;
-        margin-bottom: 10px !important;
-    }
-
-    .sheet-header-section {
-        padding: 10px 15px !important;
-        margin-bottom: 10px !important;
-    }
-
-    .sheet-character-name {
-        font-size: 24px !important;
-        margin-bottom: 3px !important;
-    }
-
-    .sheet-subtitle {
-        font-size: 14px !important;
-        margin-bottom: 8px !important;
-    }
-
-    .sheet-keywords {
-        gap: 5px !important;
-    }
-
-    .sheet-keyword {
-        padding: 2px 8px !important;
-        font-size: 10px !important;
-    }
-
-    .sheet-section-title {
-        font-size: 14px !important;
-        margin-bottom: 8px !important;
-        padding-bottom: 5px !important;
-    }
-
-    .sheet-columns {
-        gap: 10px !important;
-        margin-bottom: 10px !important;
-    }
-
-    .sheet-compact-grid {
-        gap: 2px 10px !important;
-    }
-
-    .sheet-compact-item {
-        padding: 3px 0 !important;
-    }
-
-    .sheet-compact-name {
-        font-size: 11px !important;
-    }
-
-    .sheet-compact-value {
-        font-size: 13px !important;
-    }
-
-    .sheet-derived-section {
-        margin-top: 5px !important;
-    }
-
-    .sheet-tracking-section {
-        margin-top: 5px !important;
-    }
-
-    /* Print the plain-text copy of the notes, not the editable box */
-    .sheet-notes-input {
-        display: none !important;
-    }
-
-    .sheet-notes-print {
-        display: block !important;
-    }
-}
-
-/* Light theme for paper printing */
-@media print {
-    body.print-light-theme,
-    body.print-light-theme .content,
-    body.print-light-theme .character-sheet,
-    body.print-light-theme .sheet-section {
-        background: white !important;
-        color: black !important;
-    }
-
-    body.print-light-theme .sheet-section {
-        border: 1px solid #ccc !important;
-        box-shadow: none !important;
-    }
-
-    body.print-light-theme .sheet-header-section {
-        background: #f5f5f5 !important;
-        border-color: #333 !important;
-    }
-
-    body.print-light-theme .sheet-character-name {
-        color: #333 !important;
-    }
-
-    body.print-light-theme .sheet-subtitle,
-    body.print-light-theme .sheet-ability-desc,
-    body.print-light-theme .sheet-ability-flavor,
-    body.print-light-theme .sheet-ability-effect,
-    body.print-light-theme .sheet-talent-desc,
-    body.print-light-theme .sheet-talent-effect,
-    body.print-light-theme .sheet-talent-flavor,
-    body.print-light-theme .sheet-notes,
-    body.print-light-theme .sheet-background-item,
-    body.print-light-theme .sheet-weapons-table .sheet-weapon-traits,
-    body.print-light-theme .sheet-armor-table .sheet-armor-traits,
-    body.print-light-theme .sheet-powers-table .sheet-power-desc,
-    body.print-light-theme .sheet-item-description,
-    body.print-light-theme .sheet-traits-cell {
-        color: #555 !important;
-    }
-
-    body.print-light-theme .sheet-section-title {
-        color: #333 !important;
-        border-bottom-color: #ccc !important;
-    }
-
-    body.print-light-theme .sheet-keyword {
-        background: #eee !important;
-        border-color: #333 !important;
-        color: #333 !important;
-    }
-
-    body.print-light-theme .sheet-compact-value,
-    body.print-light-theme .tracker-value {
-        color: #333 !important;
-    }
-
-    body.print-light-theme .sheet-compact-abbrev,
-    body.print-light-theme .sheet-table th {
-        color: #666 !important;
-    }
-
-    body.print-light-theme .sheet-compact-item {
-        border-bottom-color: #ddd !important;
-    }
-
-    body.print-light-theme .sheet-table th {
-        background: #f0f0f0 !important;
-    }
-
-    body.print-light-theme .sheet-table td,
-    body.print-light-theme .sheet-table th {
-        border-bottom-color: #ddd !important;
-    }
-
-    body.print-light-theme .sheet-equipment-item {
-        background: #f0f0f0 !important;
-        color: #333 !important;
-    }
-
-    body.print-light-theme .sheet-mini-keyword {
-        background: #eee !important;
-        border-color: #ccc !important;
-        color: #333 !important;
-    }
-
-    body.print-light-theme .sheet-weapon-desc-row td,
-    body.print-light-theme .sheet-armor-desc-row td,
-    body.print-light-theme .sheet-equip-desc-row td {
-        background: #f5f5f5 !important;
-    }
-
-    body.print-light-theme .sheet-ability-name,
-    body.print-light-theme .sheet-talent-name,
-    body.print-light-theme .sheet-talent-choice,
-    body.print-light-theme .sheet-background-item strong {
-        color: #000 !important;
-    }
-
-    body.print-light-theme .sheet-ability-source {
-        color: #666 !important;
-    }
-
-    /* Injuries, corruption and mutations */
-    body.print-light-theme .sheet-subsection-title {
-        color: #333 !important;
-        border-bottom-color: #ccc !important;
-    }
-
-    body.print-light-theme .sheet-injury-name,
-    body.print-light-theme .sheet-mutation-name {
-        color: #000 !important;
-    }
-
-    body.print-light-theme .sheet-injury-desc,
-    body.print-light-theme .sheet-mutation-desc {
-        color: #555 !important;
-    }
-
-    body.print-light-theme .sheet-mutation-effect {
-        color: #000 !important;
-    }
-
-    /* On the light cards the severity badges and the glossary terms take the dark text color.
-       The gold and the colors of the screen are too pale on a light background. */
-    body.print-light-theme .sheet-mutation-severity,
-    body.print-light-theme .sheet-mutation-item .glossary-term,
-    body.print-light-theme .sheet-follower .glossary-term {
-        color: #333 !important;
-    }
-
-    body.print-light-theme .sheet-mutation-item {
-        background: #f0f0f0 !important;
-        border-color: #ccc !important;
-    }
-
-    /* Ascension card */
-    body.print-light-theme .sheet-ascension-item {
-        background: #f0f0f0 !important;
-        border-color: #ccc !important;
-    }
-
-    body.print-light-theme .sheet-ascension-name {
-        color: #000 !important;
-    }
-
-    body.print-light-theme .sheet-ascension-tier,
-    body.print-light-theme .sheet-ascension-cost,
-    body.print-light-theme .sheet-ascension-details {
-        color: #555 !important;
-    }
-
-    body.print-light-theme .sheet-ascension-keywords {
-        color: #333 !important;
-    }
-
-    /* Follower threat card, reached through the sheet so that no other screen changes */
-    body.print-light-theme .sheet-follower .threat-card {
-        background: #fff !important;
-        border-color: #ccc !important;
-    }
-
-    body.print-light-theme .sheet-follower .threat-card-header {
-        background: #f5f5f5 !important;
-        border-bottom-color: #333 !important;
-    }
-
-    body.print-light-theme .sheet-follower .threat-stat-table th,
-    body.print-light-theme .sheet-follower .resilience-row,
-    body.print-light-theme .sheet-follower .determination-row,
-    body.print-light-theme .sheet-follower .abilities-header,
-    body.print-light-theme .sheet-follower .bonuses-header {
-        background: #f0f0f0 !important;
-        border-color: #ddd !important;
-    }
-
-    body.print-light-theme .sheet-follower .threat-stat-table td {
-        background: transparent !important;
-        color: #000 !important;
-        border-color: #ddd !important;
-    }
-
-    body.print-light-theme .sheet-follower .ability-name {
-        color: #000 !important;
-    }
-
-    body.print-light-theme .sheet-follower .threat-keyword {
-        background: #eee !important;
-        border-color: #333 !important;
-    }
-
-    body.print-light-theme .sheet-ability {
-        border-bottom-color: #ddd !important;
-    }
-
-    body.print-light-theme .sheet-note,
-    body.print-light-theme .sheet-weapon-upgrades {
-        color: #555 !important;
-    }
-
-    /* Card layout light theme colors */
-    body.print-light-theme .sheet-weapons-table .sheet-weapon-name,
-    body.print-light-theme .sheet-armor-table .sheet-armor-name,
-    body.print-light-theme .sheet-equipment-table .sheet-equip-name {
-        color: #000 !important;
-        border-bottom-color: #ccc !important;
-    }
-
-    body.print-light-theme .sheet-weapons-table .sheet-weapon-group td,
-    body.print-light-theme .sheet-armor-table tbody td,
-    body.print-light-theme .sheet-equipment-table tbody td {
-        color: #333 !important;
-    }
-
-    body.print-light-theme .sheet-weapons-table .sheet-weapon-group td::before,
-    body.print-light-theme .sheet-armor-table tbody td::before,
-    body.print-light-theme .sheet-equipment-table tbody td::before {
-        color: #888 !important;
-    }
-
-    body.print-light-theme .sheet-weapons-table .sheet-weapon-dice[title],
-    body.print-light-theme .sheet-weapons-table .sheet-weapon-damage[title],
-    body.print-light-theme .sheet-weapons-table .sheet-weapon-ed[title],
-    body.print-light-theme .sheet-weapons-table .sheet-weapon-ap[title] {
-        color: #333 !important;
-    }
-
-    body.print-light-theme .sheet-weapons-table .sheet-weapon-group {
-        border-bottom-color: #ddd !important;
-    }
-
-    body.print-light-theme .sheet-weapons-table .sheet-weapon-traits {
-        border-top-color: #ddd !important;
-    }
-
-    body.print-light-theme .sheet-armor-table tbody tr {
-        border-bottom-color: #ddd !important;
-    }
-
-
-    body.print-light-theme .sheet-equipment-table tbody tr {
-        border-bottom-color: #ddd !important;
-    }
-
-    body.print-light-theme .sheet-tracking-section {
-        border-top-color: #ccc !important;
-    }
-
-    body.print-light-theme .tracker-label {
-        color: #333 !important;
-    }
-
-    /* Print-friendly tracking boxes */
-    body.print-light-theme .tracking-box {
-        border-color: #666 !important;
-        background: transparent !important;
-    }
-
-    body.print-light-theme .tracking-box.filled {
-        background: #333 !important;
-        border-color: #333 !important;
-    }
-
-    /* Threat statblock card colors (Followers) */
-    body.print-light-theme .threat-card-description,
-    body.print-light-theme .threat-card-source,
-    body.print-light-theme .threat-card-quote,
-    body.print-light-theme .threat-card-attribution,
-    body.print-light-theme .ability-description,
-    body.print-light-theme .bonus-description,
-    body.print-light-theme .threat-text-section,
-    body.print-light-theme .determination-value,
-    body.print-light-theme .skills-value,
-    body.print-light-theme .resilience-value,
-    body.print-light-theme .resilience-note,
-    body.print-light-theme .sheet-follower-type,
-    body.print-light-theme .sheet-follower-mob,
-    body.print-light-theme .sheet-follower-track-label,
-    body.print-light-theme .sheet-follower-altstats,
-    body.print-light-theme .sheet-follower-notes {
-        color: #555 !important;
-    }
-
-    body.print-light-theme .threat-card-title,
-    body.print-light-theme .abilities-header,
-    body.print-light-theme .bonuses-header,
-    body.print-light-theme .threat-stat-table th,
-    body.print-light-theme .threat-keywords-label,
-    body.print-light-theme .threat-keyword,
-    body.print-light-theme .resilience-label,
-    body.print-light-theme .skills-label,
-    body.print-light-theme .ability-type,
-    body.print-light-theme .ability-stats,
-    body.print-light-theme .bonus-name,
-    body.print-light-theme .determination-label {
-        color: #333 !important;
-    }
-
-    /* Hide section nav in print */
-    .section-nav {
-        display: none !important;
-    }
 }
 
 /* ===== Section Navigation (Prev/Next) ===== */
@@ -6499,12 +5873,15 @@ textarea {
 
 /* ===== Character Sheet Tabs (issue #25) ===== */
 /* The strip (identity, trackers, tab bar) and one pane per tab. Pinning and the layout
-   modes are screen-only, so that print never sees them. Three modes:
+   modes are screen-only. The width selects the layout of the name card: above 768px, the identity and
+   the trackers are side by side; at 768px or less, the counts are below the identity. Three modes:
    - Full mode, "screen": the whole strip is pinned. These rules are the base of all modes.
-   - Compact mode, "screen and (max-width: 768px), screen and (max-height: 600px)":
-     the identity scrolls away, and the strip bar (trackers and tab bar) is pinned.
-   - Low mode, "screen and (max-height: 480px)": compact mode, but the trackers scroll
-     away too, and only the tab bar is pinned. */
+     A window wider than 768px and higher than 480px uses full mode.
+   - Compact mode, "screen and (max-width: 768px)": the identity scrolls away, and the strip
+     bar (the counts and the tab bar) is pinned. Below 601px high, the tab bar is one row also in
+     a wide window ("screen and (max-width: 768px), screen and (max-height: 600px)").
+   - Low mode, "screen and (max-height: 480px)": the strip and the strip bar are unwrapped,
+     and only the tab bar is pinned. */
 .sheet-pane[hidden] { display: none; }
 
 .sheet-tab-btn:focus-visible,
@@ -6596,10 +5973,12 @@ textarea {
         margin-bottom: 8px;
     }
 
+    /* A long word breaks, so that the name stays inside its part of the card */
     .sheet-strip .sheet-character-name {
         font-size: 22px;
         line-height: 1.2;
         margin-bottom: 2px;
+        overflow-wrap: anywhere;
     }
 
     .sheet-strip .sheet-subtitle {
@@ -6617,83 +5996,153 @@ textarea {
         gap: 8px;
     }
 
-    /* Label | boxes | Wrath. Wounds is row 1, Shock is row 2, Wrath spans both. */
-    .sheet-strip-trackers {
-        display: grid;
-        grid-template-columns: 64px 1fr 112px;
-        gap: 6px 8px;
-        align-items: start;
-    }
-
-    .sheet-strip-label {
-        grid-column: 1;
-        line-height: 18px;
-        text-align: left;
-    }
-
-    .sheet-strip-trackers > .tracking-boxes {
-        grid-column: 2;
-        max-width: none;
-        justify-content: flex-start;
-    }
-
-    .sheet-strip-wrath {
-        grid-column: 3;
-        grid-row: 1 / span 2;
-        align-self: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 2px;
+    /* The width of the card (100cqi) sets the gradient of the name card and the count of boxes in one row */
+    #character-sheet-content {
+        container-type: inline-size;
     }
 }
 
-/* Compact mode: the identity scrolls away, and the bar (trackers and tab bar) is pinned */
-@media screen and (max-width: 768px), screen and (max-height: 600px) {
+/* The name card in a window wider than 768px (layout E2). The identity and the trackers are the two halves
+   of the card, side by side in one row with one height. The tab bar is the next row. Each half draws its
+   part of the card: the gradient is as wide as the card (100cqi) and starts at the left edge of the card in
+   each half, so the two parts join with no step. A line with the same inset at its top and its bottom is
+   the divider. The trackers half is 50% of the card, or wider up to 58% when the boxes need the width. */
+@media screen and (min-width: 768.02px) {
     .sheet-strip {
-        display: contents;
+        display: flex;
+        flex-wrap: wrap;
+        row-gap: 8px;
     }
 
     .sheet-strip-bar {
-        position: sticky;
-        top: 0;
-        z-index: 5;
-        background: var(--bg-primary);
-        padding: 8px 12px;
-        gap: 6px;
+        display: contents;
     }
 
-    /* Label | boxes. Wounds is row 1, Shock is row 2, Wrath is row 3 across both columns. */
+    .sheet-strip .sheet-header-section {
+        flex: 1 1 0;
+        min-width: 42%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: left;
+        border-right: 0;
+        border-radius: var(--radius-md) 0 0 var(--radius-md);
+        background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%) left top / 100cqi 100% no-repeat border-box;
+    }
+
+    .sheet-strip .sheet-keywords {
+        justify-content: flex-start;
+    }
+
+    /* Row 1 is Wrath | Wounds, and row 2 is Faith | Shock. Each label is above its controls. The box row has
+       the height of the buttons (28px), so a counter stays level with its boxes group, also when the boxes wrap. */
     .sheet-strip-trackers {
-        grid-template-columns: 52px 1fr;
+        flex: 0 0 auto;
+        min-width: 50%;
+        max-width: 58%;
+        display: grid;
+        grid-template-columns: auto minmax(0, auto);
+        justify-content: center;
+        align-content: center;
+        align-items: start;
+        gap: 8px 28px;
+        /* The 17px left padding is the 16px padding and the 1px right border of the card, so the grid is
+           centered between the divider and the right edge */
+        padding: 10px 16px 10px 17px;
+        border: 1px solid var(--accent-gold);
+        border-left: 0;
+        border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        background:
+            linear-gradient(var(--border-light), var(--border-light)) left center / 1px calc(100% - 22px) no-repeat border-box,
+            linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%) right top / 100cqi 100% no-repeat border-box;
+    }
+
+    .sheet-tabbar {
+        flex: 1 0 100%;
+    }
+
+    /* The grid places each counter */
+    .sheet-strip-counters {
+        display: contents;
+    }
+
+    .sheet-strip-group,
+    .sheet-strip-counter {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+    }
+
+    .sheet-strip-counter {
+        grid-column: 1;
+        align-items: center;
+    }
+
+    .sheet-strip-group {
+        grid-column: 2;
+        align-items: flex-start;
+    }
+
+    .sheet-strip-wrath,
+    .sheet-strip-wounds {
+        grid-row: 1;
+    }
+
+    .sheet-strip-faith,
+    .sheet-strip-shock {
+        grid-row: 2;
+    }
+
+    /* With no Faith, the Wrath counter is centered against the two boxes groups */
+    .sheet-strip-wrath:only-child {
+        grid-row: 1 / span 2;
+        align-self: center;
+    }
+
+    .sheet-strip-trackers .tracker-label {
+        line-height: 18px;
     }
 
     .sheet-strip-label {
-        line-height: 22px;
-    }
-
-    .sheet-strip-trackers .tracking-box {
-        width: 22px;
-        height: 22px;
-    }
-
-    .sheet-strip-wrath {
-        grid-column: 1 / -1;
-        grid-row: 3;
-        flex-direction: row;
-        gap: 8px;
-    }
-
-    .sheet-strip-wrath .tracker-label {
-        flex: 0 0 52px;
         text-align: left;
     }
 
-    .sheet-strip-wrath .tracker-btn {
-        width: 32px;
-        height: 32px;
+    .sheet-strip-trackers .tracking-boxes {
+        max-width: none;
+        justify-content: flex-start;
+        align-items: center;
+        min-height: 28px;
     }
 
+    /* The even rows (refer to the @supports block below): the count that fits in one row of the widest trackers
+       half. 170px is the 1px right border, the 17px and 16px padding, the 112px counters column (two 28px
+       buttons, two 8px gaps and the 40px value), and the 28px column gap (174px), less one 4px box gap,
+       because the last box of a row has no gap after it. The pitch is the 18px box and the 4px gap. */
+    .sheet-strip-trackers .tracking-boxes {
+        --box-layout: grid;
+        --box-max: max(1, round(down, (58cqi - 170px) / 22px));
+        grid-auto-columns: 18px;
+    }
+}
+
+/* Low mode in a wide window: the strip is unwrapped, so the sheet content is the row that holds the two
+   halves of the name card. The tab bar can then pin over the whole sheet. */
+@media screen and (min-width: 768.02px) and (max-height: 480px) {
+    #character-sheet-content {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .sheet-panes {
+        flex: 1 0 100%;
+        min-width: 0;
+    }
+}
+
+/* The tab bar of compact mode, and of a window 600px high or less at any width */
+@media screen and (max-width: 768px), screen and (max-height: 600px) {
     /* One row that scrolls sideways. The 4px padding keeps the focus ring inside the scroll box. */
     .sheet-tabbar {
         flex-wrap: nowrap;
@@ -6751,6 +6200,131 @@ textarea {
     }
 }
 
+/* The name card in a window 768px wide or less. The identity is the top of the card, and the counts are the
+   bottom, below a horizontal divider (the top border of the counts). In compact mode, the identity scrolls
+   away, and the strip bar (the counts and the tab bar) is pinned. The two parts have the same horizontal
+   gradient, so they join with no step at any height. The bar has no top or side padding, so the parts join
+   and their side edges align. */
+@media screen and (max-width: 768px) {
+    .sheet-strip {
+        display: contents;
+    }
+
+    .sheet-strip-bar {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        background: var(--bg-primary);
+        padding: 0 0 8px;
+        gap: 6px;
+    }
+
+    .sheet-strip .sheet-header-section {
+        margin-bottom: 0;
+        border-bottom: 0;
+        border-radius: var(--radius-md) var(--radius-md) 0 0;
+        background: linear-gradient(90deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+    }
+
+    /* Label | boxes. Wounds is row 1, Shock is row 2, the counters are row 3 across both columns. */
+    .sheet-strip-trackers {
+        display: grid;
+        grid-template-columns: 52px 1fr;
+        gap: 10px 8px;
+        align-items: start;
+        padding: 10px 16px;
+        border: 1px solid var(--accent-gold);
+        border-top: 1px solid var(--border-light);
+        border-radius: 0 0 var(--radius-md) var(--radius-md);
+        background: linear-gradient(90deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+    }
+
+    /* The grid places the label and the boxes of each group */
+    .sheet-strip-group {
+        display: contents;
+    }
+
+    .sheet-strip-label {
+        grid-column: 1;
+        line-height: 22px;
+        text-align: left;
+    }
+
+    .sheet-strip-trackers .tracking-boxes {
+        grid-column: 2;
+        max-width: none;
+        justify-content: flex-start;
+    }
+
+    .sheet-strip-trackers .tracking-box {
+        width: 22px;
+        height: 22px;
+    }
+
+    /* The even rows (refer to the @supports block below): the count that fits in one row of the boxes column.
+       90px is the two 1px borders, the two 16px paddings, the 52px label column and the 8px column gap
+       (94px), less one 4px box gap, because the last box of a row has no gap after it. The pitch is the
+       22px box and the 4px gap. */
+    .sheet-strip-trackers .tracking-boxes {
+        --box-layout: grid;
+        --box-max: max(1, round(down, (100cqi - 90px) / 26px));
+        grid-auto-columns: 22px;
+    }
+
+    /* The Faith counter follows the Wrath counter, and goes to the next row when the two do not fit */
+    .sheet-strip-counters {
+        grid-column: 1 / -1;
+        grid-row: 3;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 16px;
+    }
+
+    .sheet-strip-counter {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* With no Faith, the Wrath counter fills the row */
+    .sheet-strip-counter:only-child {
+        flex-grow: 1;
+    }
+
+    .sheet-strip-counter .tracker-label {
+        flex: 0 0 52px;
+        text-align: left;
+    }
+
+    .sheet-strip-counter .tracker-btn {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+/* Even rows of boxes in the strip, in each layout: the rows of a group have the same count, or the first rows
+   have one box more. Each layout sets --box-max, the count that fits in one row, and --box-layout: grid.
+   Each box gets its column from its index (--i), and a column that is not after the last one starts a new
+   row. With no layout block (--box-layout is not set), the boxes keep the flex row and its natural wrap.
+   A browser with no support for this math also keeps the natural wrap. */
+@supports (width: calc(100cqi / 1px * 1px)) and (width: calc(mod(3, 2) * 1px)) {
+    @media screen {
+        .sheet-strip-trackers .tracking-boxes {
+            --rows: round(up, var(--n) / var(--box-max));
+            --per-row: round(up, var(--n) / var(--rows));
+            --cut: calc((var(--rows) - (var(--per-row) * var(--rows) - var(--n))) * var(--per-row));
+            display: var(--box-layout, flex);
+            gap: 4px;
+            align-content: center;
+        }
+
+        .sheet-strip-trackers .tracking-box {
+            --long: clamp(0, var(--cut) - var(--i), 1);
+            grid-column-start: calc(var(--long) * mod(var(--i), var(--per-row)) + (1 - var(--long)) * mod(var(--i) - var(--cut), max(var(--per-row) - 1, 1)) + 1);
+        }
+    }
+}
+
 /* The top padding that .tab-fullwidth has at these widths, moved into the sheet (refer to the full-mode block above) */
 @media screen and (max-width: 768px) {
     #tab-character-sheet .character-sheet {
@@ -6764,16 +6338,16 @@ textarea {
     }
 }
 
-/* Low mode: in a window this low, the pinned bar would take most of the scroller. The strip bar
-   is unwrapped too, so the trackers scroll away and only the tab bar is pinned. The 16px side
+/* Low mode: in a window this low, the pinned bar would take most of the scroller. The strip and the
+   strip bar are unwrapped, so the name card scrolls away and only the tab bar is pinned. The 16px side
    padding keeps the buttons where compact mode puts them. */
 @media screen and (max-height: 480px) {
-    .sheet-strip-bar {
+    .sheet-strip {
         display: contents;
     }
 
-    .sheet-strip-trackers {
-        padding: 8px 12px 0;
+    .sheet-strip-bar {
+        display: contents;
     }
 
     .sheet-tabbar {
@@ -6791,137 +6365,5 @@ textarea {
 
     .sheet-tabbar::after {
         right: -16px;
-    }
-}
-
-/* Print: the whole sheet in tab order, the strip first and static, no tab bar, only the Wealth line of the Details block.
-   The light-theme rule is last. The strip and the strip bar are static whatever the page size,
-   because the pinning and the layout modes are screen-only. The tab bar does not print. */
-@media print {
-    .sheet-strip,
-    .sheet-strip-bar {
-        position: static !important;
-    }
-
-    .sheet-strip {
-        display: block !important;
-    }
-
-    .sheet-tabbar {
-        display: none !important;
-    }
-
-    .sheet-pane[hidden] {
-        display: block !important;
-    }
-
-    /* Of the Details block, only the Wealth line prints. It sits directly under the Wrath line
-       of the strip, in the same form: the label, then the value, on one row. The title, the rows
-       and the card frame do not print, because the printed strip carries the same facts.
-       The print rule for .tracker-btn hides the buttons. */
-    .sheet-details-section,
-    body.print-light-theme .sheet-details-section {
-        background: none !important;
-        border: none !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        padding: 0 16px !important;
-        margin: 6px 0 15px !important;
-    }
-
-    .sheet-details-section .sheet-section-title,
-    .sheet-details-section .sheet-background-content {
-        display: none !important;
-    }
-
-    .sheet-details-section .sheet-tracking-section {
-        border-top: none !important;
-        margin-top: 0 !important;
-        padding-top: 0 !important;
-    }
-
-    .sheet-details-section .tracker-row-horizontal {
-        justify-content: flex-start;
-    }
-
-    .sheet-details-section .tracker-column {
-        flex-direction: row;
-        align-items: center;
-        gap: 10px;
-    }
-
-    /* The widest label of the strip sets the label column of the strip. The Wealth label holds a
-       hidden copy of that label, so that the Wealth value lines up with the Wrath value in any
-       font. The copy must stay equal to the widest label of the strip ("Wounds"). */
-    .sheet-details-section .tracker-label {
-        display: flex;
-        flex-direction: column;
-        text-align: left;
-    }
-
-    .sheet-details-section .tracker-label::after {
-        content: 'Wounds';
-        height: 0;
-        overflow: hidden;
-        visibility: hidden;
-    }
-
-    .sheet-details-section .tracker-value {
-        text-align: left;
-    }
-
-    .sheet-details-section .tracker-controls {
-        justify-content: flex-start;
-    }
-
-    /* The Stats blocks print whole (this overrides the old rule that lets a column block split),
-       and a block title never stays alone at the foot of a page. */
-    .sheet-pane .sheet-column .sheet-section {
-        page-break-inside: avoid;
-        break-inside: avoid;
-    }
-
-    /* The old print rule "sheet-columns, page-break-before: avoid" kept the columns with the header
-       card. The header is the strip now, so the columns follow the Character blocks and may start a page. */
-    .sheet-pane .sheet-columns {
-        page-break-before: auto;
-        break-before: auto;
-    }
-
-    .sheet-section-title {
-        page-break-after: avoid;
-        break-after: avoid;
-    }
-
-    /* A row for each tracker: the label, then its boxes (or the Wrath value) at the left.
-       The Wrath group joins the grid, so that its label sits in the column of the other labels. */
-    .sheet-strip-trackers {
-        page-break-inside: avoid;
-        padding: 0 16px;
-        display: grid;
-        grid-template-columns: auto 1fr;
-        gap: 6px 10px;
-        align-items: start;
-    }
-
-    .sheet-strip-wrath {
-        display: contents;
-    }
-
-    .sheet-strip-trackers .tracker-label,
-    .sheet-strip-trackers .tracker-value {
-        text-align: left;
-    }
-
-    .sheet-strip-trackers .tracking-boxes,
-    .sheet-strip-trackers .tracker-controls {
-        justify-content: flex-start;
-    }
-
-    body.print-light-theme .sheet-strip,
-    body.print-light-theme .sheet-strip-bar,
-    body.print-light-theme .sheet-strip-trackers {
-        background: transparent !important;
-        border: none !important;
     }
 }

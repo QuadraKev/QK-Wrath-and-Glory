@@ -28,11 +28,6 @@ const CharacterSheetTab = {
 
     // Initialize the tab
     init() {
-        // Print button
-        document.getElementById('btn-print').addEventListener('click', () => {
-            this.print();
-        });
-
         // Copy Summary button
         document.getElementById('btn-copy-summary').addEventListener('click', (e) => {
             this.copySummary(e.target);
@@ -226,8 +221,7 @@ const CharacterSheetTab = {
     },
 
     // Bind the editable notes box. Deliberately no this.render() here: re-rendering the
-    // sheet on every keystroke would replace the textarea and lose the caret. The only
-    // other thing that needs updating is the print-only copy, which is patched in place.
+    // sheet on every keystroke would replace the textarea and lose the caret.
     bindNotesInput(container) {
         const input = container.querySelector('.sheet-notes-input');
         if (!input) return;
@@ -236,10 +230,8 @@ const CharacterSheetTab = {
         // leading newline inside a <textarea>, which would silently trim the notes.
         input.value = State.getCharacter().notes || '';
 
-        const printCopy = container.querySelector('.sheet-notes-print');
         input.addEventListener('input', (e) => {
             State.setNotes(e.target.value);
-            if (printCopy) printCopy.textContent = e.target.value;
         });
     },
 
@@ -381,22 +373,31 @@ const CharacterSheetTab = {
         return `<div class="sheet-tabbar" role="tablist" aria-label="Character sheet sections">${buttons}</div>`;
     },
 
-    // Render the Wounds and Shock boxes and the Wrath counter of the strip.
-    // The children stay flat, because the strip grid places each one.
+    // Render the Wounds and Shock boxes, the Wrath counter and, with a max Faith above 0, the Faith counter of the strip.
+    // One markup for all modes. Each boxes group has a wrapper for the grid of the wide layout, and the counters have
+    // a wrapper, so that the Faith counter can follow the Wrath counter in one row and wrap to the next row.
+    // The box count (--n) and the box index (--i) let the CSS make even rows of boxes.
     renderStripTrackers(stats) {
+        const counter = (type, label, value) => `
+                    <div class="sheet-strip-counter sheet-strip-${type}">
+                        <span class="tracker-label">${label}</span>
+                        <div class="tracker-controls">
+                            <button type="button" class="tracker-btn tracker-minus" data-type="${type}" aria-label="Remove ${label}">−</button>
+                            <span class="tracker-value">${this.escapeHtml(String(value))}</span>
+                            <button type="button" class="tracker-btn tracker-plus" data-type="${type}" aria-label="Add ${label}">+</button>
+                        </div>
+                    </div>`;
         return `
             <div class="sheet-strip-trackers">
-                <span class="sheet-strip-label tracker-label">Wounds</span>
-                <div class="tracking-boxes">${this.renderTrackingBoxes('wounds', State.getCurrentWounds(), stats.maxWounds)}</div>
-                <span class="sheet-strip-label tracker-label">Shock</span>
-                <div class="tracking-boxes">${this.renderTrackingBoxes('shock', State.getCurrentShock(), stats.maxShock)}</div>
-                <div class="sheet-strip-wrath">
-                    <span class="tracker-label">Wrath</span>
-                    <div class="tracker-controls">
-                        <button type="button" class="tracker-btn tracker-minus" data-type="wrath" aria-label="Remove Wrath">−</button>
-                        <span class="tracker-value">${this.escapeHtml(String(State.getCurrentWrath()))}</span>
-                        <button type="button" class="tracker-btn tracker-plus" data-type="wrath" aria-label="Add Wrath">+</button>
-                    </div>
+                <div class="sheet-strip-group sheet-strip-wounds">
+                    <span class="sheet-strip-label tracker-label">Wounds</span>
+                    <div class="tracking-boxes" style="--n: ${this.escapeHtml(String(stats.maxWounds))}">${this.renderTrackingBoxes('wounds', State.getCurrentWounds(), stats.maxWounds)}</div>
+                </div>
+                <div class="sheet-strip-group sheet-strip-shock">
+                    <span class="sheet-strip-label tracker-label">Shock</span>
+                    <div class="tracking-boxes" style="--n: ${this.escapeHtml(String(stats.maxShock))}">${this.renderTrackingBoxes('shock', State.getCurrentShock(), stats.maxShock)}</div>
+                </div>
+                <div class="sheet-strip-counters">${counter('wrath', 'Wrath', State.getCurrentWrath())}${State.getMaxFaith() > 0 ? counter('faith', 'Faith', State.getCurrentFaith()) : ''}
                 </div>
             </div>
         `;
@@ -579,33 +580,12 @@ const CharacterSheetTab = {
             `;
         }).join('');
 
-        // Get Faith values
-        const currentFaith = State.getCurrentFaith();
-        const maxFaith = State.getMaxFaith();
-
-        // Faith tracker (only shown if character has Faith)
-        const faithTracker = maxFaith > 0 ? `
-            <div class="tracker-column">
-                <span class="tracker-label">Faith</span>
-                <div class="tracker-controls">
-                    <button class="tracker-btn tracker-minus" data-type="faith">−</button>
-                    <span class="tracker-value">${currentFaith}</span>
-                    <button class="tracker-btn tracker-plus" data-type="faith">+</button>
-                </div>
-            </div>
-        ` : '';
-
         return `
             <div class="sheet-section sheet-derived-section">
                 <h2 class="sheet-section-title">Traits</h2>
                 <div class="sheet-compact-grid sheet-traits-grid">
                     ${staticItems}
                 </div>
-                ${maxFaith > 0 ? `<div class="sheet-tracking-section">
-                    <div class="tracker-row-horizontal">
-                        ${faithTracker}
-                    </div>
-                </div>` : ''}
             </div>
         `;
     },
@@ -741,7 +721,7 @@ const CharacterSheetTab = {
         let boxes = '';
         for (let i = 0; i < max; i++) {
             const filled = i < current ? 'filled' : '';
-            boxes += `<span class="tracking-box ${filled}" data-type="${type}" data-index="${i}"></span>`;
+            boxes += `<span class="tracking-box ${filled}" data-type="${type}" data-index="${i}" style="--i: ${i}"></span>`;
         }
         return boxes;
     },
@@ -2004,24 +1984,8 @@ const CharacterSheetTab = {
             <div class="sheet-section">
                 <h2 class="sheet-section-title">Notes</h2>
                 <textarea class="sheet-notes-input" placeholder="Notes taken during play...">${this.escapeHtml(notes)}</textarea>
-                <div class="sheet-notes sheet-notes-print">${this.escapeHtml(notes)}</div>
             </div>
         `;
-    },
-
-    // Print the character sheet (with light theme for paper)
-    print() {
-        // Add light theme class for printer-friendly output
-        document.body.classList.add('print-light-theme');
-
-        // Use afterprint event to clean up
-        const cleanup = () => {
-            document.body.classList.remove('print-light-theme');
-            window.removeEventListener('afterprint', cleanup);
-        };
-        window.addEventListener('afterprint', cleanup);
-
-        window.print();
     },
 
     // Copy character summary as plain text to clipboard

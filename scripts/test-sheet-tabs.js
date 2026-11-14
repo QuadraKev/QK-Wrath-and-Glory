@@ -160,7 +160,7 @@ function makeDom() {
         getElementById: (id) => {
             if (id === 'character-sheet-content') return container;
             if (id === 'tab-character-sheet') return scroller;
-            if (id === 'btn-print' || id === 'btn-copy-summary') return stubEl();
+            if (id === 'btn-copy-summary') return stubEl();
             return null;
         },
         querySelector: () => null,
@@ -300,7 +300,7 @@ function tabsSection() {
             { type: 'archetype', archetypeId: 'missing', targetTier: 5 }] });
         const html = sheet.renderDetails(ch, { name: 'Human' }, { name: 'Warrior' });
         check('Details has the title', titlesIn(html), ['Details']);
-        check('Details carries the sheet-details-section class (the print rules use it)', html.includes('sheet-details-section'), true);
+        check('Details carries the sheet-details-section class', html.includes('sheet-details-section'), true);
         check('Details rows', ['<strong>Name:</strong> Kaelen', '<strong>Species:</strong> Human', '<strong>Archetype:</strong> Warrior → Veteran (Tier 3)', '<strong>Tier:</strong> 3', '<strong>Rank:</strong> 2'].map(s => html.replace(/\s+/g, ' ').includes(s)), [true, true, true, true, true]);
         check('Details skips an unresolved ascension archetype', html.includes('Tier 5'), false);
         const plain = sheet.renderDetails(makeCharacter({ name: '', rank: undefined }), null, null).replace(/\s+/g, ' ');
@@ -481,6 +481,15 @@ function tabsSection() {
             check('Wrath buttons are never disabled', /data-type="wrath"[^>]*disabled|disabled[^>]*data-type="wrath"/.test(html), false);
             check('Wrath buttons are type="button"', [tagOf(html, 'aria-label="Remove Wrath"').includes('type="button"'), tagOf(html, 'aria-label="Add Wrath"').includes('type="button"')], [true, true]);
             check('strip labels carry tracker-label', count(html, /class="sheet-strip-label tracker-label"/g), 2);
+            check('the strip has the identity, the trackers and the tab bar one time each (one markup for all modes)',
+                [count(html, /class="sheet-section sheet-header-section"/g), count(html, /class="sheet-strip-trackers"/g), count(html, /class="sheet-tabbar"/g)], [1, 1, 1]);
+            check('each boxes group has its label and its boxes in one wrapper',
+                [/<div class="sheet-strip-group sheet-strip-wounds">\s*<span class="sheet-strip-label tracker-label">Wounds<\/span>\s*<div class="tracking-boxes"/.test(html),
+                    /<div class="sheet-strip-group sheet-strip-shock">\s*<span class="sheet-strip-label tracker-label">Shock<\/span>\s*<div class="tracking-boxes"/.test(html)],
+                [true, true]);
+            check('the even rows get the box count and each box index (B3)',
+                [html.includes('<div class="tracking-boxes" style="--n: 11">'), html.includes('<div class="tracking-boxes" style="--n: 8">'), count(html, /data-type="wounds" data-index="(\d+)" style="--i: \1"/g)],
+                [true, true, 11]);
 
             env.state.wrath = 0;
             sheet.render();
@@ -505,18 +514,65 @@ function tabsSection() {
         }
     }
 
-    // Traits keeps the trait grid and Faith only. The Wealth counter is in Details (owner, 2026-11-14)
+    // Traits keeps the trait grid only. The Wealth counter is in Details, and Faith is in the strip (owner, 2026-11-14)
     {
         const env = sheetSandbox();
-        const html = env.sheet.renderTraits(DERIVED, {});
-        check('Traits with no Faith has no boxes, no Wrath, no Wealth, no Faith, no tracking section',
-            [html.includes('tracking-box'), html.includes('data-type="wrath"'), html.includes('data-type="wealth"'), html.includes('data-type="faith"'), html.includes('sheet-tracking-section')],
-            [false, false, false, false, false]);
+        const parts = (html) => [html.includes('tracking-box'), html.includes('data-type="wrath"'), html.includes('data-type="wealth"'), html.includes('data-type="faith"'), html.includes('sheet-tracking-section')];
+        const noFaith = env.sheet.renderTraits(DERIVED, {});
         env.state.maxFaith = 2;
-        const faithHtml = env.sheet.renderTraits(DERIVED, {});
-        check('Traits with Faith has Faith, one tracking section, no Wealth',
-            [faithHtml.includes('data-type="faith"'), count(faithHtml, /sheet-tracking-section/g), faithHtml.includes('data-type="wealth"')],
-            [true, 1, false]);
+        const withFaith = env.sheet.renderTraits(DERIVED, {});
+        check('Traits has no boxes, no Wrath, no Wealth, no Faith and no tracking section, with max Faith 0 and 2',
+            [parts(noFaith), parts(withFaith)],
+            [[false, false, false, false, false], [false, false, false, false, false]]);
+        check('Traits keeps its trait grid with max Faith 2', [titlesIn(withFaith), withFaith.includes('sheet-traits-grid')], [['Traits'], true]);
+    }
+
+    // The Faith counter in the strip (owner, 2026-11-14)
+    {
+        const env = sheetSandbox();
+        const strip = () => env.sheet.renderStripTrackers(DERIVED);
+        check('strip with max Faith 0 has no Faith counter', strip().includes('data-type="faith"'), false);
+        env.state.maxFaith = 2;
+        env.state.faith = 1;
+        const html = strip();
+        check('strip with max Faith 2 has one Faith minus and one Faith plus, with labels and type="button"',
+            [count(html, /<button type="button" class="tracker-btn tracker-minus" data-type="faith" aria-label="Remove Faith">/g),
+                count(html, /<button type="button" class="tracker-btn tracker-plus" data-type="faith" aria-label="Add Faith">/g),
+                count(html, /data-type="faith"/g)],
+            [1, 1, 2]);
+        const at = (needle) => html.indexOf(needle);
+        check('the Faith buttons come after the Wrath buttons',
+            [at('aria-label="Remove Wrath"') < at('aria-label="Add Wrath"'), at('aria-label="Add Wrath"') < at('aria-label="Remove Faith"'), at('aria-label="Remove Faith"') < at('aria-label="Add Faith"')],
+            [true, true, true]);
+        check('the strip shows the Faith value', /sheet-strip-faith[\s\S]*?tracker-value">1</.test(html), true);
+        env.state.faith = 0;
+        check('the strip shows a Faith of 0 as 0', /sheet-strip-faith[\s\S]*?tracker-value">0</.test(strip()), true);
+        env.state.faith = '<img src=x onerror=alert(1)>';
+        const evilHtml = strip();
+        check('a hostile Faith value is escaped', [evilHtml.includes('<img'), evilHtml.includes('&lt;img src=x onerror=alert(1)&gt;')], [false, true]);
+    }
+
+    // The whole sheet: each tracker control is in the HTML one time (Faith only with a max Faith above 0)
+    {
+        const env = sheetSandbox();
+        const sheet = env.sheet;
+        const realDetails = sheet.renderDetails, realTraits = sheet.renderTraits;
+        const restore = stubBlocks(sheet);
+        try {
+            sheet.renderDetails = realDetails;
+            sheet.renderTraits = realTraits;
+            const pairs = (html) => [
+                count(html, /tracker-minus" data-type="faith"/g), count(html, /tracker-plus" data-type="faith"/g),
+                count(html, /data-type="wounds" data-index="0"/g), count(html, /data-type="shock" data-index="0"/g),
+                count(html, /tracker-minus" data-type="wrath"/g), count(html, /tracker-plus" data-type="wrath"/g)];
+            sheet.render();
+            check('whole sheet with max Faith 0: no Faith pair, one set of Wounds, Shock and Wrath', pairs(env.dom.container.innerHTML), [0, 0, 1, 1, 1, 1]);
+            env.state.maxFaith = 2;
+            sheet.render();
+            check('whole sheet with max Faith 2: one Faith pair, one set of Wounds, Shock and Wrath', pairs(env.dom.container.innerHTML), [1, 1, 1, 1, 1, 1]);
+        } finally {
+            restore();
+        }
     }
 
     // The Wealth counter in Details (owner, 2026-11-14)
@@ -552,11 +608,10 @@ function tabsSection() {
             restore();
         }
 
-        // CSS: one line above the Faith counter, none from the row
+        // CSS: one line above the Wealth counter, none from the row
         const css = readSource('creator/css/styles.css');
         const baseRow = (css.match(/^\.tracker-row-horizontal\s*\{([^}]*)\}/m) || [])[1] || '';
         check('the base .tracker-row-horizontal rule exists and has no border-top, padding-top or margin-top', [baseRow.length > 0, /border-top/.test(baseRow), /padding-top/.test(baseRow), /margin-top/.test(baseRow)], [true, false, false, false]);
-        check('no print selector for .tracker-row-horizontal', css.includes('body.print-light-theme .tracker-row-horizontal'), false);
     }
 
     // Box clicks (spec §10.1 case 5)
@@ -823,7 +878,6 @@ function tabsSection() {
     const full = mediaBlocks(sec, 'screen').join('\n');
     const compact = mediaBlocks(sec, 'screen and (max-width: 768px), screen and (max-height: 600px)').join('\n');
     check('full mode pins the strip', /\.sheet-strip\s*\{[^}]*position:\s*sticky[^}]*top:\s*0/.test(full), true);
-    check('compact mode unwraps the strip and pins the bar', [/\.sheet-strip\s*\{[^}]*display:\s*contents/.test(compact), /\.sheet-strip-bar\s*\{[^}]*position:\s*sticky/.test(compact)], [true, true]);
     check('compact tab bar scrolls sideways', /\.sheet-tabbar\s*\{[^}]*flex-wrap:\s*nowrap[^}]*overflow-x:\s*auto/.test(compact), true);
     const paddingSides = (rule) => {
         const sides = { top: 0, right: 0, bottom: 0, left: 0 };
@@ -856,13 +910,160 @@ function tabsSection() {
     const low = mediaBlocks(sec, 'screen and (max-height: 480px)').join('\n');
     check('full mode: the strip is opaque', has(ruleOf(full, '.sheet-strip'), /background:\s*var\(--bg-primary\)/), true);
     check('full mode: the strip has z-index 5', has(ruleOf(full, '.sheet-strip'), /z-index:\s*5;/), true);
-    check('compact mode: the bar is opaque', has(ruleOf(compact, '.sheet-strip-bar'), /background:\s*var\(--bg-primary\)/), true);
-    check('compact mode: the bar has z-index 5', has(ruleOf(compact, '.sheet-strip-bar'), /z-index:\s*5;/), true);
-    check('full mode tracker grid: label, boxes, Wrath', has(ruleOf(full, '.sheet-strip-trackers'), /grid-template-columns:\s*64px 1fr 112px;/), true);
-    check('compact mode tracker grid: label, boxes', has(ruleOf(compact, '.sheet-strip-trackers'), /grid-template-columns:\s*52px 1fr;/), true);
-    check('compact mode boxes are 22px', [/width:\s*22px/, /height:\s*22px/].map(re => has(ruleOf(compact, '.sheet-strip-trackers .tracking-box'), re)), [true, true]);
-    check('compact mode Wrath buttons are 32px', [/width:\s*32px/, /height:\s*32px/].map(re => has(ruleOf(compact, '.sheet-strip-wrath .tracker-btn'), re)), [true, true]);
+    // Width selects the layout (controller rulings B1-B5, 2026-11-14): the E2 card above 768px, the flat counts at 768px or less
+    const wide = mediaBlocks(sec, 'screen and (min-width: 768.02px)').join('\n');
+    const narrow = mediaBlocks(sec, 'screen and (max-width: 768px)').join('\n');
+    const wideLow = mediaBlocks(sec, 'screen and (min-width: 768.02px) and (max-height: 480px)').join('\n');
+    check('narrow compact mode: the bar is opaque', has(ruleOf(narrow, '.sheet-strip-bar'), /background:\s*var\(--bg-primary\)/), true);
+    check('narrow compact mode: the bar has z-index 5', has(ruleOf(narrow, '.sheet-strip-bar'), /z-index:\s*5;/), true);
+    check('narrow compact mode unwraps the strip and pins the bar',
+        [has(ruleOf(narrow, '.sheet-strip'), /display:\s*contents/), has(ruleOf(narrow, '.sheet-strip-bar'), /position:\s*sticky/), has(ruleOf(narrow, '.sheet-strip-bar'), /top:\s*0;/)], [true, true, true]);
+    // A wide window above 480px high pins the whole strip: no rule outside the narrow and low blocks unwraps the strip
+    const outsideNarrowLow = sec.replace(/@media screen and \((?:max-width: 768px|max-height: 480px)\)\s*\{(?:[^{}]|\{[^{}]*\})*\}/g, '');
+    check('a wide window above 480px high pins the whole strip',
+        [/\.sheet-strip\s*\{[^}]*display:\s*contents/.test(outsideNarrowLow), /\.sheet-strip-bar\s*\{[^}]*position:\s*sticky/.test(outsideNarrowLow),
+            /\.sheet-strip\s*\{[^}]*display:\s*contents/.test(compact), /\.sheet-strip-bar\s*\{[^}]*position:\s*sticky/.test(compact)],
+        [false, false, false, false]);
+    const stripPositions = [...sec.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/(?:^|[{};])\s*\.sheet-strip\s*\{([^}]*)\}/g)]
+        .map(m => (m[1].match(/(?:^|;)\s*position:\s*([a-z-]+)/) || [])[1]).filter(Boolean);
+    check('each .sheet-strip rule that sets a position makes the strip sticky', [stripPositions.length > 0, stripPositions.every(v => v === 'sticky')], [true, true]);
+    // No band between the layouts: each wide query starts within 0.02px above the 768px limit of the narrow queries
+    const queries = [...sec.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/@media([^{]*)\{/g)].map(m => m[1]);
+    const widths = (kind) => queries.flatMap(q => [...q.matchAll(new RegExp(`${kind}-width:\\s*([\\d.]+)px`, 'g'))].map(m => parseFloat(m[1])));
+    check('no query of the section leaves a band between the narrow and the wide layout',
+        [widths('max').includes(768), widths('min').filter(w => w !== 1400).length > 0, widths('min').filter(w => w !== 1400).every(w => w > 768 && w <= 768.02)],
+        [true, true, true]);
+    check('low mode unwraps the strip at any width', has(ruleOf(low, '.sheet-strip'), /display:\s*contents/), true);
 
+    // The wide layout: the identity and the trackers are the two halves of the name card, with a vertical divider
+    const wideHeader = ruleOf(wide, '.sheet-strip .sheet-header-section');
+    const wideTrackers = ruleOf(wide, '.sheet-strip-trackers');
+    check('wide: the strip is a row that wraps, and the bar is unwrapped',
+        [has(ruleOf(wide, '.sheet-strip'), /display:\s*flex/), has(ruleOf(wide, '.sheet-strip'), /flex-wrap:\s*wrap/), has(ruleOf(wide, '.sheet-strip-bar'), /display:\s*contents/)], [true, true, true]);
+    check('wide: the identity is the left half, left-aligned, at least 42%',
+        [/min-width:\s*42%/, /border-right:\s*0/, /text-align:\s*left/, /justify-content:\s*center/].map(re => has(wideHeader, re)), [true, true, true, true]);
+    check('wide: the trackers are the right half, 50% to 58% of the card',
+        [/min-width:\s*50%/, /max-width:\s*58%/, /border-left:\s*0/, /display:\s*grid/, /grid-template-columns:\s*auto minmax\(0, auto\);/, /justify-content:\s*center/, /align-content:\s*center/].map(re => has(wideTrackers, re)),
+        [true, true, true, true, true, true, true]);
+    check('wide: the two halves show one gradient, the full width of the card',
+        [/100cqi 100%/.test(wideHeader), /100cqi 100%/.test(wideTrackers), /left top/.test(wideHeader), /right top/.test(wideTrackers), has(ruleOf(full, '#character-sheet-content'), /container-type:\s*inline-size/)],
+        [true, true, true, true, true]);
+    check('wide: the divider is a line with the same inset at its top and its bottom',
+        /linear-gradient\(var\(--border-light\), var\(--border-light\)\) left center \/ 1px calc\(100% - 22px\)/.test(wideTrackers), true);
+    check('wide: Wrath and Wounds in row 1, Faith and Shock in row 2, the counters in column 1',
+        [has(ruleOf(wide, '.sheet-strip-counters'), /display:\s*contents/), has(ruleOf(wide, '.sheet-strip-counter'), /grid-column:\s*1;/), has(ruleOf(wide, '.sheet-strip-group'), /grid-column:\s*2;/),
+            /\.sheet-strip-wrath,\s*\.sheet-strip-wounds\s*\{[^}]*grid-row:\s*1;/.test(wide), /\.sheet-strip-faith,\s*\.sheet-strip-shock\s*\{[^}]*grid-row:\s*2;/.test(wide)],
+        [true, true, true, true, true]);
+    check('wide: with no Faith, the Wrath counter spans the two rows and is centered',
+        [/grid-row:\s*1 \/ span 2/, /align-self:\s*center/].map(re => has(ruleOf(wide, '.sheet-strip-wrath:only-child'), re)), [true, true]);
+    check('wide: the box row has the height of the buttons (28px)', has(ruleOf(wide, '.sheet-strip-trackers .tracking-boxes'), /min-height:\s*28px/), true);
+    check('wide low mode: the sheet content is the row that wraps, so the tab bar can pin',
+        [has(ruleOf(wideLow, '#character-sheet-content'), /display:\s*flex/), has(ruleOf(wideLow, '#character-sheet-content'), /flex-wrap:\s*wrap/)], [true, true]);
+    const outsideWide = sec.replace(/\/\*[\s\S]*?\*\//g, '').replace(/@media screen and \(min-width: 768.02px\)[^{]*\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\}/g, '');
+    check('the wide rules are only in the wide screen blocks',
+        [/minmax\(0, auto\)/.test(outsideWide), /\.sheet-strip-counters\s*\{[^}]*display:\s*contents/.test(outsideWide), /100cqi 100%/.test(outsideWide), /max-width:\s*58%/.test(outsideWide), /64px 1fr 112px/.test(sec)],
+        [false, false, false, false, false]);
+
+    // The narrow layout: the counts are the lower part of the name card, below a horizontal divider
+    const narrowHeader = ruleOf(narrow, '.sheet-strip .sheet-header-section');
+    const narrowTrackers = ruleOf(narrow, '.sheet-strip-trackers');
+    check('narrow: the identity is the top of the card, with no bottom border and no margin',
+        [/border-bottom:\s*0/, /margin-bottom:\s*0/, /border-radius:\s*var\(--radius-md\) var\(--radius-md\) 0 0/].map(re => has(narrowHeader, re)), [true, true, true]);
+    check('narrow: the counts are the bottom of the card, with the divider as the top edge',
+        [/border:\s*1px solid var\(--accent-gold\)/, /border-top:\s*1px solid var\(--border-light\)/, /border-radius:\s*0 0 var\(--radius-md\) var\(--radius-md\)/].map(re => has(narrowTrackers, re)), [true, true, true]);
+    const horiz = /linear-gradient\(90deg, var\(--bg-tertiary\) 0%, var\(--bg-secondary\) 100%\)/;
+    check('narrow: the two parts have one horizontal gradient, so they join with no step', [horiz.test(narrowHeader), horiz.test(narrowTrackers)], [true, true]);
+    check('narrow: the bar has no top or side padding, so the parts join and align', paddingSides(ruleOf(narrow, '.sheet-strip-bar')), { top: 0, right: 0, bottom: 8, left: 0 });
+    check('narrow tracker grid: label, boxes, with a 10px row gap',
+        [/display:\s*grid/, /grid-template-columns:\s*52px 1fr;/, /gap:\s*10px 8px;/].map(re => has(narrowTrackers, re)), [true, true, true]);
+    check('narrow boxes are 22px', [/width:\s*22px/, /height:\s*22px/].map(re => has(ruleOf(narrow, '.sheet-strip-trackers .tracking-box'), re)), [true, true]);
+    check('narrow: the counters are one row under the boxes, and the Faith counter can wrap to the next row',
+        [/grid-column:\s*1 \/ -1/, /grid-row:\s*3;/, /display:\s*flex/, /flex-wrap:\s*wrap/, /gap:\s*10px 16px;/].map(re => has(ruleOf(narrow, '.sheet-strip-counters'), re)), [true, true, true, true, true]);
+    check('narrow counter buttons are 32px', [/width:\s*32px/, /height:\s*32px/].map(re => has(ruleOf(narrow, '.sheet-strip-counter .tracker-btn'), re)), [true, true]);
+    const outsideNarrow = sec.replace(/@media screen and \(max-width: 768px\)\s*\{(?:[^{}]|\{[^{}]*\})*\}/g, '');
+    check('the flat tracker rules apply only at 768px wide or less, not at 600px high alone',
+        [/52px 1fr/.test(outsideNarrow), /\.sheet-strip-trackers \.tracking-box\s*\{[^}]*22px/.test(outsideNarrow), /\.sheet-strip-(?:wrath|counters?)\b[^{]*\{[^}]*grid-row:\s*3/.test(outsideNarrow),
+            /sheet-strip-(?:trackers|wrath|counters?|label)/.test(compact), /90deg/.test(outsideNarrow)],
+        [false, false, false, false, false]);
+
+    // B3: even rows of boxes in the wide layout. The test evaluates the CSS formulas for a maximum per row.
+    {
+        const evenBlock = mediaBlocks((sec.replace(/\/\*[\s\S]*?\*\//g, '').match(/@supports[^{]*\{((?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*)\}/) || [])[1] || '', 'screen').join('\n');
+        const decl = (sel, prop) => {
+            const body = ruleOf(evenBlock, sel);
+            const m = body.match(new RegExp(`(?:^|;)\\s*${prop.replace(/[-]/g, '\\-')}:\\s*([^;]+);`));
+            return m ? m[1].trim() : null;
+        };
+        const boxesSel = '.sheet-strip-trackers .tracking-boxes';
+        // All the rules of one selector in a block, joined
+        const rulesOf = (css, selector) => {
+            const esc = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            return [...css.matchAll(new RegExp(`(?:^|[};/])\\s*${esc}\\s*\\{([^}]*)\\}`, 'g'))].map(m => m[1]).join('\n');
+        };
+        const boxSel = '.sheet-strip-trackers .tracking-box';
+        const formulas = {
+            rows: decl(boxesSel, '--rows'), perRow: decl(boxesSel, '--per-row'), cut: decl(boxesSel, '--cut'),
+            long: decl(boxSel, '--long'), col: decl(boxSel, 'grid-column-start')
+        };
+        check('B3: the even-row formulas exist in an @supports block, and each layout sets the count for one row',
+            [Object.values(formulas).every(f => f !== null),
+                /--box-max:\s*max\(1, round\(down, \(58cqi - 170px\) \/ 22px\)\)/.test(rulesOf(wide, boxesSel)), has(rulesOf(wide, boxesSel), /grid-auto-columns:\s*18px/),
+                /--box-max:\s*max\(1, round\(down, \(100cqi - 90px\) \/ 26px\)\)/.test(rulesOf(narrow, boxesSel)), has(rulesOf(narrow, boxesSel), /grid-auto-columns:\s*22px/),
+                has(ruleOf(full, '#character-sheet-content'), /container-type:\s*inline-size/)],
+            [true, true, true, true, true, true]);
+        // The guard: the even-row grid applies only where a layout block sets --box-layout; else the flex wrap stays
+        check('the even rows make a grid only where a layout sets --box-layout, else the boxes keep the natural wrap',
+            [decl(boxesSel, 'display'), /--box-layout:\s*grid;/.test(rulesOf(wide, boxesSel)), /--box-layout:\s*grid;/.test(rulesOf(narrow, boxesSel))],
+            ['var(--box-layout, flex)', true, true]);
+        // Each --box-max constant comes from the sizes of the rules: the test adds them up and compares
+        const px = (body, prop) => { const m = body.match(new RegExp(`(?:^|;)\\s*${prop}:\\s*([\\d.]+)px`)); return m ? parseFloat(m[1]) : NaN; };
+        const gapCols = (body) => { const m = body.match(/(?:^|;)\s*gap:\s*([\d.]+)px(?:\s+([\d.]+)px)?/); return m ? parseFloat(m[2] ?? m[1]) : NaN; };
+        const allCss = readSource('creator/css/styles.css');
+        const topRule = (sel) => (allCss.match(new RegExp(`^${sel.replace(/[.]/g, '\\.')}\\s*\\{([^}]*)\\}`, 'm')) || [])[1] || '';
+        const counterCol = 2 * px(topRule('.tracker-btn'), 'width') + 2 * gapCols(topRule('.tracker-controls')) + px(topRule('.tracker-value'), 'min-width');
+        const boxGap = gapCols(ruleOf(evenBlock, boxesSel));
+        const noComments = (css) => css.replace(/\/\*[\s\S]*?\*\//g, '');
+        const wideCard = noComments(ruleOf(wide, '.sheet-strip-trackers')), narrowCard = noComments(ruleOf(narrow, '.sheet-strip-trackers'));
+        const widePad = paddingSides(wideCard), narrowPad = paddingSides(narrowCard);
+        const borderW = (body) => { const m = body.match(/(?:^|;)\s*border:\s*([\d.]+)px/); return m ? parseFloat(m[1]) : NaN; };
+        const wideBox = px(rulesOf(wide, boxesSel), 'grid-auto-columns'), narrowBox = px(rulesOf(narrow, boxesSel), 'grid-auto-columns');
+        const expected = {
+            wide: [borderW(wideCard) + widePad.left + widePad.right + counterCol + gapCols(wideCard) - boxGap, wideBox + boxGap],
+            narrow: [2 * borderW(narrowCard) + narrowPad.left + narrowPad.right + parseFloat((narrowCard.match(/grid-template-columns:\s*([\d.]+)px/) || [])[1]) + gapCols(narrowCard) - boxGap, narrowBox + boxGap]
+        };
+        const inRule = (css, unit) => { const m = css.match(new RegExp(`--box-max:\\s*max\\(1, round\\(down, \\(${unit} - ([\\d.]+)px\\) \\/ ([\\d.]+)px\\)\\)`)); return m ? [parseFloat(m[1]), parseFloat(m[2])] : null; };
+        check('each --box-max constant and pitch is the sum of the sizes of the rules (wide 170px / 22px, narrow 90px / 26px)',
+            [inRule(rulesOf(wide, boxesSel), '58cqi'), inRule(rulesOf(narrow, boxesSel), '100cqi'), has(wideCard, /border-left:\s*0/), px(ruleOf(narrow, '.sheet-strip-trackers .tracking-box'), 'width')],
+            [expected.wide, expected.narrow, true, narrowBox]);
+        // CSS math to JS: var(--x) reads a value, round(up|down, a) is ceil|floor, mod takes the sign of the divisor
+        const toJs = (css) => css
+            .replace(/var\(--([a-z-]+)\)/g, (m, name) => `v['${name}']`)
+            .replace(/calc\(/g, '(').replace(/round\(up,/g, 'Math.ceil(').replace(/round\(down,/g, 'Math.floor(')
+            .replace(/\bmod\(/g, 'mod(').replace(/\bclamp\(/g, 'clamp(').replace(/\bmax\(/g, 'Math.max(');
+        const evalCss = (css, v) => new Function('v', 'mod', 'clamp', `return (${toJs(css)});`)(v, (a, b) => a - b * Math.floor(a / b), (lo, x, hi) => Math.min(Math.max(x, lo), hi));
+        const rowSizes = (n, max) => {
+            if (Object.values(formulas).some(f => f === null)) return null;
+            const v = { n, 'box-max': max };
+            v.rows = evalCss(formulas.rows, v); v['per-row'] = evalCss(formulas.perRow, v); v.cut = evalCss(formulas.cut, v);
+            // Grid auto-placement with a set column: a column that is not after the last one starts a new row
+            const sizes = [];
+            let last = Infinity;
+            for (let i = 0; i < n; i++) {
+                const col = evalCss(formulas.col, { ...v, i, long: evalCss(formulas.long, { ...v, i }) });
+                if (col <= last) sizes.push(0);
+                sizes[sizes.length - 1]++;
+                last = col;
+            }
+            return sizes;
+        };
+        check('B3: the examples of the ruling', [rowSizes(16, 12), rowSizes(24, 16), rowSizes(24, 11), rowSizes(11, 10), rowSizes(50, 16), rowSizes(10, 16), rowSizes(1, 16)],
+            [[8, 8], [12, 12], [8, 8, 8], [6, 5], [13, 13, 12, 12], [10], [1]]);
+        const even = (sizes, n, max) => sizes !== null && sizes.length === Math.ceil(n / max) && sizes.reduce((a, b) => a + b, 0) === n &&
+            sizes.every((s, i) => s <= max && (i === 0 || s === sizes[i - 1] || s === sizes[i - 1] - 1)) && (n === 1 || !sizes.includes(1));
+        const bad = [];
+        for (const n of [1, 10, 11, 16, 24, 50]) for (const max of [8, 10, 11, 12, 16, 20]) if (!even(rowSizes(n, max), n, max)) bad.push(`${n}/${max}: ${JSON.stringify(rowSizes(n, max))}`);
+        check('B3: for 1, 10, 11, 16, 24 and 50 boxes, the rows are even (the first rows can have one box more) and no row has one box alone', bad, []);
+    }
     // Low mode (a window 480px high or less): only the tab bar is pinned
     const lowBar = ruleOf(low, '.sheet-strip-bar');
     const lowTabbar = ruleOf(low, '.sheet-tabbar');
@@ -1052,118 +1253,26 @@ function tabsSection() {
     }
 }
 
-// --- Task 7: Print ---
+// --- Print is retired (owner decision, 2026-11-14) ---
 {
-    const sec = tabsSection();
-    const print = mediaBlocks(sec, 'print').join('\n');
-    const rule = sel => new RegExp(sel.replace(/[.[\]]/g, '\\$&') + '\\s*\\{([^}]*)\\}');
-    const printRules = (css) => [...css.matchAll(/([^{}]+)\{([^}]*)\}/g)].map(m => ({ sels: m[1].replace(/\/\*[\s\S]*?\*\//g, '').split(',').map(x => x.trim()), body: m[2] }));
-    check('print block exists', print.length > 0, true);
-    check('hidden panes print', /display:\s*block\s*!important/.test((print.match(rule('.sheet-pane[hidden]')) || [])[1] || ''), true);
-    check('tab bar does not print', /display:\s*none\s*!important/.test((print.match(rule('.sheet-tabbar')) || [])[1] || ''), true);
-    // Of the Details block, only the Wealth line prints, under the Wrath line of the strip (controller ruling, 2026-11-14)
-    {
-        const detailsRule = (sel) => printRules(print).filter(r => r.sels.includes(sel)).map(r => r.body).join('\n');
-        check('print: the Details card itself is not hidden', /display:\s*none/.test(detailsRule('.sheet-details-section')), false);
-        check('print: the Details title and rows are hidden',
-            ['.sheet-details-section .sheet-section-title', '.sheet-details-section .sheet-background-content'].map(sel => /display:\s*none\s*!important/.test(detailsRule(sel))),
-            [true, true]);
-        check('print: the Details card has no border and no background, in both looks',
-            ['.sheet-details-section', 'body.print-light-theme .sheet-details-section'].map(sel => [/border:\s*none\s*!important/.test(detailsRule(sel)), /background:\s*none\s*!important/.test(detailsRule(sel))]),
-            [[true, true], [true, true]]);
-        const wealthLine = detailsRule('.sheet-details-section .sheet-tracking-section');
-        check('print: the Wealth line has no border-top, margin-top or padding-top',
-            [/border-top:\s*none\s*!important/.test(wealthLine), /margin-top:\s*0\s*!important/.test(wealthLine), /padding-top:\s*0\s*!important/.test(wealthLine)],
-            [true, true, true]);
-        check('print: the Wealth line is one left-aligned row like the Wrath row',
-            [/flex-direction:\s*row/.test(detailsRule('.sheet-details-section .tracker-column')), /text-align:\s*left/.test(detailsRule('.sheet-details-section .tracker-label')), /text-align:\s*left/.test(detailsRule('.sheet-details-section .tracker-value')), /justify-content:\s*flex-start/.test(detailsRule('.sheet-details-section .tracker-row-horizontal'))],
-            [true, true, true, true]);
-        // The Wealth label holds a hidden copy of the widest strip label, so that its width follows the font
-        const labelRule = detailsRule('.sheet-details-section .tracker-label'), afterRule = detailsRule('.sheet-details-section .tracker-label::after');
-        check('print: the Wealth label holds a hidden copy of the Wounds label, with no fixed width',
-            [/content:\s*'Wounds'/.test(afterRule), /height:\s*0/.test(afterRule), /visibility:\s*hidden/.test(afterRule), /display:\s*flex/.test(labelRule), /flex-direction:\s*column/.test(labelRule), /min-width/.test(labelRule), /51px/.test(print)],
-            [true, true, true, true, true, false, false]);
-        // A rule of the tabs print block that names a tracker class must name the Details card or the strip
-        const trackerSels = printRules(print).flatMap(r => r.sels).filter(x => /\.tracker-|\.sheet-tracking-section/.test(x));
-        check('print: each tracker rule is scoped to the Details card or the strip', [trackerSels.length > 0, trackerSels.every(x => /\.sheet-details-section|\.sheet-strip-trackers/.test(x))], [true, true]);
-    }
-    check('strip is static and block in print', [/\.sheet-strip,\s*\.sheet-strip-bar\s*\{[^}]*position:\s*static\s*!important/.test(print), /display:\s*block\s*!important/.test((print.match(rule('.sheet-strip')) || [])[1] || '')], [true, true]);
-    check('trackers stay on one page', /page-break-inside:\s*avoid/.test((print.match(rule('.sheet-strip-trackers')) || [])[1] || ''), true);
-    check('light theme clears the strip background', /body\.print-light-theme \.sheet-strip,[\s\S]*?background:\s*transparent/.test(print), true);
-    check('light theme clears the bar and the trackers too', [/body\.print-light-theme \.sheet-strip-bar,/.test(print), /body\.print-light-theme \.sheet-strip-trackers\s*\{[^}]*border:\s*none/.test(print)], [true, true]);
-    // Print never sees a screen rule: no sticky outside screen blocks (the Task 4 check), and the print block does not unpin a rule that is not there
-    check('print block has no sticky rule', /sticky/.test(print), false);
-    // Page breaks: the Stats blocks print whole, and a block title never stays alone at the foot of a page
-    const breakRule = (sel) => printRules(print).filter(r => r.sels.includes(sel)).map(r => r.body).join('\n');
-    check('print: the Stats blocks do not split across pages', [/page-break-inside:\s*avoid/.test(breakRule('.sheet-pane .sheet-column .sheet-section')), /(?:^|[;\s])break-inside:\s*avoid/.test(breakRule('.sheet-pane .sheet-column .sheet-section'))], [true, true]);
-    check('print: the Stats columns may start on a new page (the old keep-with-header rule no longer has a header above them)', [/page-break-before:\s*auto/.test(breakRule('.sheet-pane .sheet-columns')), /(?:^|[;\s])break-before:\s*auto/.test(breakRule('.sheet-pane .sheet-columns'))], [true, true]);
-    check('print: a block title stays with its block', [/page-break-after:\s*avoid/.test(breakRule('.sheet-section-title')), /(?:^|[;\s])break-after:\s*avoid/.test(breakRule('.sheet-section-title'))], [true, true]);
-    // The printed trackers line up with the text of the printed cards (15px padding and a 1px border)
-    check('print: the tracker block has the inset of the cards', /padding:\s*0 16px/.test(breakRule('.sheet-strip-trackers')), true);
-
-    // The trackers print as rows: a label, then its boxes (or the Wrath value) directly after it, left-aligned
-    const printDecls = (sel) => printRules(print).filter(r => r.sels.includes(sel)).map(r => r.body).join('\n');
-    const trackers = printDecls('.sheet-strip-trackers');
-    check('print trackers: a two-column grid, label then boxes', [/display:\s*grid/.test(trackers), /grid-template-columns:\s*auto 1fr/.test(trackers)], [true, true]);
-    check('print Wrath group joins the grid columns', /display:\s*contents/.test(printDecls('.sheet-strip-wrath')), true);
-    check('print tracker labels and the Wrath value are left-aligned', [printDecls('.sheet-strip-trackers .tracker-label'), printDecls('.sheet-strip-trackers .tracker-value')].map(d => /text-align:\s*left/.test(d)), [true, true]);
-    check('print tracker boxes and controls start at the left', [printDecls('.sheet-strip-trackers .tracking-boxes'), printDecls('.sheet-strip-trackers .tracker-controls')].map(d => /justify-content:\s*flex-start/.test(d)), [true, true]);
-    // No grid rule for the tracker container sits outside the @media screen blocks and the @media print block
-    const withoutMedia = (css, keep) => {
-        let out = '', from = 0;
-        while (true) {
-            const at = css.indexOf('@media', from);
-            if (at < 0) { out += css.slice(from); break; }
-            const open = css.indexOf('{', at);
-            let depth = 1, i = open + 1;
-            while (i < css.length && depth > 0) { if (css[i] === '{') depth++; else if (css[i] === '}') depth--; i++; }
-            out += css.slice(from, at);
-            if (!keep(css.slice(at + 6, open).trim())) out += css.slice(at, i);
-            from = i;
-        }
-        return out;
-    };
-    const outsideScreenAndPrint = withoutMedia(sec, q => /^screen\b/.test(q) || q === 'print');
-    const gridRuleOf = css => printRules(css).filter(r => r.sels.some(x => x.includes('.sheet-strip-trackers') && !x.includes('.sheet-strip-trackers ') ) ).some(r => /grid/.test(r.body));
-    check('no tracker grid rule outside the screen and print blocks', gridRuleOf(outsideScreenAndPrint), false);
-    check('the tracker grid rule finder sees a top-level rule, a screen rule and a print rule', [gridRuleOf('.sheet-strip-trackers { display: grid; }'), gridRuleOf(mediaBlocks(sec, 'screen').join('\n')), gridRuleOf(print)], [true, true, true]);
-
-    // The light print theme: injury subheads, injury and mutation text, and the mutation card
-    const light = (sel) => printRules(mediaBlocks(readSource('creator/css/styles.css'), 'print').join('\n')).filter(r => r.sels.includes('body.print-light-theme ' + sel)).map(r => r.body).join('\n');
-    const has = (decl, re) => re.test(decl);
-    check('light theme: injury subheads are dark with a light rule', [has(light('.sheet-subsection-title'), /(?:^|[;\s])color:\s*#333\s*!important/), has(light('.sheet-subsection-title'), /border-bottom-color:\s*#ccc\s*!important/)], [true, true]);
-    check('light theme: injury and mutation names are black', [light('.sheet-injury-name'), light('.sheet-mutation-name')].map(d => has(d, /(?:^|[;\s])color:\s*#000\s*!important/)), [true, true]);
-    check('light theme: injury and mutation descriptions are dark gray', [light('.sheet-injury-desc'), light('.sheet-mutation-desc')].map(d => has(d, /(?:^|[;\s])color:\s*#555\s*!important/)), [true, true]);
-    check('light theme: the mutation effect is black', has(light('.sheet-mutation-effect'), /(?:^|[;\s])color:\s*#000\s*!important/), true);
-    check('light theme: the mutation card is light', [has(light('.sheet-mutation-item'), /background:\s*#f0f0f0\s*!important/), has(light('.sheet-mutation-item'), /border-color:\s*#ccc\s*!important/)], [true, true]);
-
-    // The Ascension card, the Follower threat card (reached through .sheet-follower) and the equipment cards in print
-    const lightFollower = (sel) => light('.sheet-follower ' + sel);
-    const bgOf = (d, v) => new RegExp('background:\\s*' + v + '\\s*!important').test(d);
-    check('light theme: the Ascension card is light with dark text', [bgOf(light('.sheet-ascension-item'), '#f0f0f0'), has(light('.sheet-ascension-item'), /border-color:\s*#ccc\s*!important/), has(light('.sheet-ascension-name'), /(?:^|[;\s])color:\s*#000\s*!important/), ['.sheet-ascension-tier', '.sheet-ascension-cost', '.sheet-ascension-details'].map(c => has(light(c), /(?:^|[;\s])color:\s*#555\s*!important/)), has(light('.sheet-ascension-keywords'), /(?:^|[;\s])color:\s*#333\s*!important/)], [true, true, true, [true, true, true], true]);
-    check('light theme: the Follower threat card is light with dark text', [
-        bgOf(lightFollower('.threat-card'), '#fff'), bgOf(lightFollower('.threat-card-header'), '#f5f5f5'),
-        ['.threat-stat-table th', '.resilience-row', '.determination-row', '.abilities-header', '.bonuses-header'].map(c => bgOf(lightFollower(c), '#f0f0f0')),
-        [bgOf(lightFollower('.threat-stat-table td'), 'transparent'), has(lightFollower('.threat-stat-table td'), /(?:^|[;\s])color:\s*#000\s*!important/)],
-        [bgOf(lightFollower('.threat-keyword'), '#eee'), has(lightFollower('.threat-keyword'), /border-color:\s*#333\s*!important/)]
-    ], [true, true, [true, true, true, true, true], [true, true], [true, true]]);
-    // The borders that keep the light cards readable on paper
-    const borderOf = (d, prop, v) => new RegExp(prop + ':\\s*' + v + '\\s*!important').test(d);
-    check('light theme: the light cards keep visible borders', [
-        borderOf(lightFollower('.threat-card'), 'border-color', '#ccc'), borderOf(lightFollower('.threat-card-header'), 'border-bottom-color', '#333'),
-        ['.threat-stat-table th', '.resilience-row', '.determination-row', '.abilities-header', '.bonuses-header'].map(c => borderOf(lightFollower(c), 'border-color', '#ddd')),
-        borderOf(lightFollower('.threat-stat-table td'), 'border-color', '#ddd')
-    ], [true, true, [true, true, true, true, true], true]);
-    // Text that was pale on the dark cards of the screen becomes dark on the light cards
-    check('light theme: the follower ability names are black', has(lightFollower('.ability-name'), /(?:^|[;\s])color:\s*#000\s*!important/), true);
-    check('light theme: glossary terms in the Mutation and Follower cards are dark', ['.sheet-mutation-item .glossary-term', '.sheet-follower .glossary-term'].map(c => has(light(c), /(?:^|[;\s])color:\s*#333\s*!important/)), [true, true]);
-    check('light theme: the mutation severity badges are dark', has(light('.sheet-mutation-severity'), /(?:^|[;\s])color:\s*#333\s*!important/), true);
-    check('light theme: the Follower card rules never reach the card outside the sheet', /body\.print-light-theme \.threat-card\s*[,{]/.test(mediaBlocks(readSource('creator/css/styles.css'), 'print').join('\n')), false);
-    // In print the equipment group (a tbody) must stay a grid card. A display: contents tbody puts the name, the Effect cell and the value side by side.
-    const printAll = mediaBlocks(readSource('creator/css/styles.css'), 'print').join('\n');
-    const equipGroup = printRules(printAll).filter(r => r.sels.includes('.sheet-equipment-table .sheet-equip-group')).map(r => r.body).join('\n');
-    check('print: an equipment group is a grid card (not display: contents)', [has(equipGroup, /display:\s*grid\s*!important/), has(equipGroup, /width:\s*50%\s*!important/)], [true, true]);
-    check('print: an equipment group keeps its padding inside the 50% width', [has(equipGroup, /box-sizing:\s*border-box\s*!important/), has(equipGroup, /padding:\s*8px 10px\s*!important/)], [true, true]);
+    const css = readSource('creator/css/styles.css');
+    check('the creator stylesheet has no @media print block', /@media\s+print/.test(css), false);
+    check('the creator stylesheet has no print-light-theme class', css.includes('print-light-theme'), false);
+    check('the creator stylesheet has no @page rule', /@page/.test(css), false);
+    check('the creator page has no Print button', readSource('creator/index.html').includes('btn-print'), false);
+    check('the creator API has no exportPDF', readSource('creator/js/web-api.js').includes('exportPDF'), false);
+    const env = sheetSandbox();
+    check('the sheet object has no print method', typeof env.sheet.print, 'undefined');
+    const notesHtml = env.sheet.renderNotes(makeCharacter({ notes: 'Plan' }));
+    check('the Notes block has no print copy and keeps the notes input', [notesHtml.includes('sheet-notes-print'), notesHtml.includes('class="sheet-notes-input"')], [false, true]);
+    // The notes box still updates the state on input and does not render the sheet again
+    const input = stubEl({ cls: ['sheet-notes-input'] });
+    env.dom.container.query = sel => (sel === '.sheet-notes-input' ? [input] : []);
+    let renders = 0;
+    env.sheet.render = () => { renders++; };
+    env.sheet.bindNotesInput(env.dom.container);
+    (input.listeners.input || []).forEach(fn => fn({ target: { value: 'Plan B' } }));
+    check('the notes input sets the notes and does not render the sheet', [env.state.calls.filter(c => c[0] === 'setNotes'), renders], [[['setNotes', 'Plan B']], 0]);
 }
 
 // --- Final review fixes ---

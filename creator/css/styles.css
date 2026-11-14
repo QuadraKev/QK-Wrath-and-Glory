@@ -6794,7 +6794,7 @@ textarea {
     }
 }
 
-/* Print: the whole sheet in tab order, the strip first and static, no tab bar, no Details block.
+/* Print: the whole sheet in tab order, the strip first and static, no tab bar, only the Wealth line of the Details block.
    The light-theme rule is last. The strip and the strip bar are static whatever the page size,
    because the pinning and the layout modes are screen-only. The tab bar does not print. */
 @media print {
@@ -6815,8 +6815,54 @@ textarea {
         display: block !important;
     }
 
-    .sheet-details-section {
+    /* Of the Details block, only the Wealth line prints. It sits directly under the Wrath line
+       of the strip, in the same form: the label, then the value, on one row. The title, the rows
+       and the card frame do not print, because the printed strip carries the same facts. The
+       tracker buttons are hidden by the print rule for .tracker-btn. */
+    .sheet-details-section,
+    body.print-light-theme .sheet-details-section {
+        background: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 0 16px !important;
+        margin: 6px 0 15px !important;
+    }
+
+    .sheet-details-section .sheet-section-title,
+    .sheet-details-section .sheet-background-content {
         display: none !important;
+    }
+
+    .sheet-details-section .sheet-tracking-section {
+        border-top: none !important;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    .sheet-details-section .tracker-row-horizontal {
+        justify-content: flex-start;
+    }
+
+    .sheet-details-section .tracker-column {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* The label has the width of the printed "Wounds" label, which sets the label column of the
+       strip, so that the Wealth value lines up with the Wrath value. */
+    .sheet-details-section .tracker-label {
+        min-width: 51px;
+        text-align: left;
+    }
+
+    .sheet-details-section .tracker-value {
+        text-align: left;
+    }
+
+    .sheet-details-section .tracker-controls {
+        justify-content: flex-start;
     }
 
     /* The Stats blocks print whole (this overrides the old rule that lets a column block split),

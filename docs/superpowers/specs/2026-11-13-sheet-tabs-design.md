@@ -330,7 +330,8 @@ rows, in a `<dl>` or the existing `.sheet-background-item` form:
 - **Tier**: `State.getEffectiveTier()`, as in the strip.
 - **Rank**: `character.rank || 1`.
 
-The Details block does not print (§7), because the printed strip carries the same facts.
+Of the Details block, only the Wealth line prints (§7). The title and the rows do not print,
+because the printed strip carries the same facts **[Controller ruling, 2026-11-14]**.
 
 ### 3.2 Mutations block
 
@@ -556,7 +557,10 @@ Print shows the whole sheet, whichever tab is selected **[Designer]**:
 - The tab bar does not print.
 - Every pane prints, in tab order: `@media print { .sheet-pane[hidden] { display: block !important; } }`.
   Each block keeps its own `<h2>`; no pane title is added.
-- The Details block does not print (§3.1).
+- Of the Details block, only the Wealth line prints, directly under the Wrath line of the strip, in
+  the same form: the label, then the value, on one row. The title, the rows and the card frame do
+  not print (§3.1). The print rules for `.sheet-details-section` set this. The Wealth label has the
+  width of the "Wounds" label, so that the two values line up **[Controller ruling, 2026-11-14]**.
 - The existing print rules keep working because the block classes do not change. Remove the print
   rule for `.sheet-body` (it no longer exists, §8). Keep `.sheet-header-section { page-break-after:
   avoid }`, and add `page-break-inside: avoid` for `.sheet-strip-trackers`.
@@ -684,8 +688,8 @@ about 50 Wounds and 35 Shock.
   rows wrap and never cause a horizontal page scroll, the pane layouts of §2.3, the tab bar scrolls
   sideways in compact mode.
 - A glossary popup and a breakdown popup close on a tab switch and show above the pinned part.
-- Print preview from the Wargear tab: strip with the box rows and the Wrath value, no tab bar, no
-  Details block, all blocks in tab order, light theme.
+- Print preview from the Wargear tab: strip with the box rows, the Wrath value and the Wealth value, no tab bar, no
+  Details title and rows, all blocks in tab order, light theme.
 - Copy Summary output is the same as before the change.
 - New character and Load: the selected tab stays when the new character has it.
 

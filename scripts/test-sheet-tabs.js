@@ -300,7 +300,7 @@ function tabsSection() {
             { type: 'archetype', archetypeId: 'missing', targetTier: 5 }] });
         const html = sheet.renderDetails(ch, { name: 'Human' }, { name: 'Warrior' });
         check('Details has the title', titlesIn(html), ['Details']);
-        check('Details carries the print-hide class', html.includes('sheet-details-section'), true);
+        check('Details carries the sheet-details-section class (the print rules use it)', html.includes('sheet-details-section'), true);
         check('Details rows', ['<strong>Name:</strong> Kaelen', '<strong>Species:</strong> Human', '<strong>Archetype:</strong> Warrior → Veteran (Tier 3)', '<strong>Tier:</strong> 3', '<strong>Rank:</strong> 2'].map(s => html.replace(/\s+/g, ' ').includes(s)), [true, true, true, true, true]);
         check('Details skips an unresolved ascension archetype', html.includes('Tier 5'), false);
         const plain = sheet.renderDetails(makeCharacter({ name: '', rank: undefined }), null, null).replace(/\s+/g, ' ');
@@ -1059,7 +1059,27 @@ function tabsSection() {
     check('print block exists', print.length > 0, true);
     check('hidden panes print', /display:\s*block\s*!important/.test((print.match(rule('.sheet-pane[hidden]')) || [])[1] || ''), true);
     check('tab bar does not print', /display:\s*none\s*!important/.test((print.match(rule('.sheet-tabbar')) || [])[1] || ''), true);
-    check('Details does not print', /display:\s*none\s*!important/.test((print.match(rule('.sheet-details-section')) || [])[1] || ''), true);
+    // Of the Details block, only the Wealth line prints, under the Wrath line of the strip (controller ruling, 2026-11-14)
+    {
+        const detailsRule = (sel) => printRules(print).filter(r => r.sels.includes(sel)).map(r => r.body).join('\n');
+        check('print: the Details card itself is not hidden', /display:\s*none/.test(detailsRule('.sheet-details-section')), false);
+        check('print: the Details title and rows are hidden',
+            ['.sheet-details-section .sheet-section-title', '.sheet-details-section .sheet-background-content'].map(sel => /display:\s*none\s*!important/.test(detailsRule(sel))),
+            [true, true]);
+        check('print: the Details card has no border and no background, in both looks',
+            ['.sheet-details-section', 'body.print-light-theme .sheet-details-section'].map(sel => [/border:\s*none\s*!important/.test(detailsRule(sel)), /background:\s*none\s*!important/.test(detailsRule(sel))]),
+            [[true, true], [true, true]]);
+        const wealthLine = detailsRule('.sheet-details-section .sheet-tracking-section');
+        check('print: the Wealth line has no border-top, margin-top or padding-top',
+            [/border-top:\s*none\s*!important/.test(wealthLine), /margin-top:\s*0\s*!important/.test(wealthLine), /padding-top:\s*0\s*!important/.test(wealthLine)],
+            [true, true, true]);
+        check('print: the Wealth line is one left-aligned row like the Wrath row',
+            [/flex-direction:\s*row/.test(detailsRule('.sheet-details-section .tracker-column')), /text-align:\s*left/.test(detailsRule('.sheet-details-section .tracker-label')), /text-align:\s*left/.test(detailsRule('.sheet-details-section .tracker-value')), /justify-content:\s*flex-start/.test(detailsRule('.sheet-details-section .tracker-row-horizontal'))],
+            [true, true, true, true]);
+        check('print: the Wealth label is as wide as the label column of the strip', /min-width:\s*51px/.test(detailsRule('.sheet-details-section .tracker-label')), true);
+        check('print: every new Details rule is scoped to the Details card',
+            printRules(print).filter(r => r.sels.some(x => /sheet-details-section/.test(x))).every(r => r.sels.every(x => /sheet-details-section/.test(x))), true);
+    }
     check('strip is static and block in print', [/\.sheet-strip,\s*\.sheet-strip-bar\s*\{[^}]*position:\s*static\s*!important/.test(print), /display:\s*block\s*!important/.test((print.match(rule('.sheet-strip')) || [])[1] || '')], [true, true]);
     check('trackers stay on one page', /page-break-inside:\s*avoid/.test((print.match(rule('.sheet-strip-trackers')) || [])[1] || ''), true);
     check('light theme clears the strip background', /body\.print-light-theme \.sheet-strip,[\s\S]*?background:\s*transparent/.test(print), true);

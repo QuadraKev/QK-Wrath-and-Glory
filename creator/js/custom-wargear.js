@@ -107,11 +107,12 @@ const CustomWargear = {
         document.getElementById('custom-item-save').textContent = editing ? 'Save Changes' : 'Add Wargear';
 
         const body = document.getElementById('custom-item-body');
-        const focus = this._focusSelector(document.activeElement, body);
+        const active = document.activeElement;
+        const focus = active && body.contains(active) ? this._focusSelectors(active.dataset) : [];
         const scrollTop = body.scrollTop;
         body.innerHTML = this.bodyHtml(this.form);
         body.scrollTop = scrollTop;
-        const control = focus && body.querySelector(focus);
+        const control = focus.map(selector => body.querySelector(selector)).find(el => el);
         if (control) control.focus();
         this.refresh();
     },
@@ -320,14 +321,21 @@ const CustomWargear = {
         return this._rated[kind];
     },
 
-    // A selector for the same control after a render, so that the focus stays on it; or null
-    _focusSelector(element, body) {
-        if (!element || !body.contains(element)) return null;
-        const d = element.dataset;
-        if (d.field) return `[data-field="${d.field}"]`;
-        if (d.bonusPart) return `[data-bonus-index="${d.bonusIndex}"][data-bonus-part="${d.bonusPart}"]`;
-        if (d.action) return d.index !== undefined ? `[data-action="${d.action}"][data-index="${d.index}"]` : `[data-action="${d.action}"]`;
-        return null;
+    // Selectors, in order, for the control that gets the focus after a render: the same control,
+    // then a control of the same group that stays when the first one goes away (the rating box
+    // after its add, the last chip or bonus row after its removal). d is the dataset of the control.
+    _focusSelectors(d) {
+        const fallback = {
+            traitRating: '[data-field="traitPick"]',
+            'remove-trait': '[data-field="typedTrait"]',
+            'remove-keyword': '[data-field="keywordInput"]',
+            'remove-bonus': '[data-action="add-bonus"]'
+        };
+        let selector = null;
+        if (d.field) selector = `[data-field="${d.field}"]`;
+        else if (d.bonusPart) selector = `[data-bonus-index="${d.bonusIndex}"][data-bonus-part="${d.bonusPart}"]`;
+        else if (d.action) selector = d.index !== undefined ? `[data-action="${d.action}"][data-index="${d.index}"]` : `[data-action="${d.action}"]`;
+        return [selector, fallback[d.field || d.action]].filter(s => s);
     },
 
     // --- Event handlers ---
@@ -413,12 +421,13 @@ const CustomWargear = {
         }
     },
 
+    // A refused edit (updateCustomItem returns false) keeps the modal open and does not call onSaved
     save() {
         const f = this.form;
         if (Object.keys(this.validateForm(f)).length) return;
         const record = this.buildRecord(f);
         if (f.editIndex !== null) {
-            State.updateCustomItem(f.editIndex, record);
+            if (!State.updateCustomItem(f.editIndex, record)) return;
         } else {
             State.addCustomItem(record);
         }
@@ -451,7 +460,8 @@ const CustomWargear = {
         const L = this.LIMITS;
         const list = form.kind === 'armor' ? form.armorTraits : form.weaponTraits;
         if (trait.length > L.typedTrait) return `Use a trait of ${L.typedTrait} characters or fewer.`;
-        if (list.includes(trait)) return 'That trait is already on the item.';
+        // A stored chip can be unnormalized (saved while the glossary was not loaded)
+        if (list.some(t => this.normalizeTrait(t, form.kind) === trait)) return 'That trait is already on the item.';
         if (list.length >= L.traits) return `Use ${L.traits} traits or fewer.`;
         list.push(trait);
         return null;

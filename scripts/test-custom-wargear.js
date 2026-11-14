@@ -776,6 +776,14 @@ for (const rel of ['character-sheet-tab.js', 'wargear-tab.js', 'talents-tab.js']
     check('a typed trait of 60 characters is added', [CW.addTypedTrait(f, 'y'.repeat(60)), f.weaponTraits.includes('y'.repeat(60))], [null, true]);
     check('a typed trait that repeats a trait after normalizeTrait is refused', refused(f, 'weaponTraits', () => CW.addTypedTrait(f, ' rad (2)')), [true, true]);
     check('a typed trait that repeats a list trait name is refused', refused(f, 'weaponTraits', () => CW.addTypedTrait(f, 'AGONISING')), [true, true]);
+    check('a typed trait that normalizeTrait makes longer than 60 characters is refused',
+        (() => { const g = F({}); return refused(g, 'weaponTraits', () => CW.addTypedTrait(g, 'rad(' + 'z'.repeat(55) + ')')); })(), [true, true]);
+    check('a typed trait that normalizeTrait makes 60 characters long is added in the list spelling',
+        (() => { const g = F({}); return [CW.addTypedTrait(g, 'rad(' + 'z'.repeat(54) + ')'), g.weaponTraits]; })(), [null, ['Rad (' + 'z'.repeat(54) + ')']]);
+    check('a trait that repeats a stored chip written before the glossary was loaded is refused', (() => {
+        const a = F({ kind: 'armor', armorTraits: ['shield'] });
+        return [...refused(a, 'armorTraits', () => CW.addTypedTrait(a, 'Shield')), ...refused(a, 'armorTraits', () => CW.addListTrait(a, 'Shield', ''))];
+    })(), [true, true, true, true]);
     check('the 21st trait is refused', (() => {
         const g = F({ weaponTraits: Array.from({ length: 20 }, (_, i) => `T${i}`) });
         return [...refused(g, 'weaponTraits', () => CW.addTypedTrait(g, 'Another')), ...refused(g, 'weaponTraits', () => CW.addListTrait(g, 'Rad', ''))];
@@ -875,6 +883,39 @@ for (const rel of ['character-sheet-tab.js', 'wargear-tab.js', 'talents-tab.js']
         return fields.filter(field => !html.includes(`data-error-for="${field}"`));
     })(), []);
     check('the preview element is in the body', weaponHtml.includes('id="custom-item-preview"'), true);
+
+    // Focus after a render: the same control first, then a control of the same group that the body
+    // always has, so that the focus never falls back to the page behind the modal.
+    check('the focus after an add from the rating box goes back to the trait select', CW._focusSelectors({ field: 'traitRating' }),
+        ['[data-field="traitRating"]', '[data-field="traitPick"]']);
+    check('the focus after a removed chip goes to the next chip, then to the add box of the group',
+        [CW._focusSelectors({ action: 'remove-trait', index: '0' }), CW._focusSelectors({ action: 'remove-keyword', index: '2' }),
+            CW._focusSelectors({ action: 'remove-bonus', index: '0' })],
+        [['[data-action="remove-trait"][data-index="0"]', '[data-field="typedTrait"]'],
+            ['[data-action="remove-keyword"][data-index="2"]', '[data-field="keywordInput"]'],
+            ['[data-action="remove-bonus"][data-index="0"]', '[data-action="add-bonus"]']]);
+    check('the fallback controls are in the body with no chips and no rows', (() => {
+        const weapon = CW.bodyHtml(F({})), augmetic = CW.bodyHtml(F({ kind: 'augmetic' }));
+        return [weapon.includes('data-field="traitPick"'), weapon.includes('data-field="typedTrait"'), weapon.includes('data-field="keywordInput"'),
+            augmetic.includes('data-action="add-bonus"')];
+    })(), [true, true, true, true]);
+
+    // save(): a refused edit keeps the modal open and does not call onSaved.
+    const saveRun = updateResult => {
+        const calls = { closed: false, saved: false, update: 0, add: 0 };
+        const ctx = creatorSandbox({
+            State: { updateCustomItem: () => { calls.update++; return updateResult; }, addCustomItem: () => { calls.add++; return 0; } },
+            document: { getElementById: () => ({ classList: { add: () => { calls.closed = true; } } }) }
+        });
+        load(ctx, 'creator/js/custom-wargear.js');
+        const M = get(ctx, 'CustomWargear');
+        M.onSaved = () => { calls.saved = true; };
+        M.form = { ...xenotech, editIndex: 0 };
+        M.save();
+        return calls;
+    };
+    check('a refused edit keeps the modal open and does not call onSaved', saveRun(false), { closed: false, saved: false, update: 1, add: 0 });
+    check('an accepted edit closes the modal and calls onSaved', saveRun(true), { closed: true, saved: true, update: 1, add: 0 });
 
     // The Wargear tab card and its button.
     const tab = readSource('creator/tabs/wargear-tab.js');

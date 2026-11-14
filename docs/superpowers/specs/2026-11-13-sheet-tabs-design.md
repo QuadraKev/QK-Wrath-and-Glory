@@ -532,6 +532,9 @@ Use the WAI-ARIA Tabs pattern with automatic activation (a switch is cheap, §5.
   used, because it scrolls the page for each focus on a control of the pinned part.
 - Only the focus move of a Tab key press starts this scroll. A mouse or touch focus, the focus
   restore of a re-render, and a control of the pinned part do not move the page.
+- Known limit: the Tab key press must start inside `#character-sheet-content`. A press that starts
+  outside it (for example Shift+Tab from the footer into the last control of a pane) gets no scroll,
+  and that control can be behind the pinned part. The last re-review recorded this as a Minor item.
 - A focused pane shows the gold ring of the other sheet controls, drawn inside the pane
   (`outline-offset: -2px`), so the scroller does not clip it. This is a screen rule only. The
   transition of a tab button names its properties, so its focus ring shows gold at once.

@@ -55,6 +55,15 @@ const CharacterSheetTab = {
         sheetContent.addEventListener('focusin', (e) => {
             this.handleSheetFocusIn(e);
         });
+
+        // The edge cue of the tab bar. A scroll event does not bubble and each render replaces the bar,
+        // so the listener sits on the sheet in the capture phase.
+        sheetContent.addEventListener('scroll', (e) => {
+            if (e.target.classList && e.target.classList.contains('sheet-tabbar')) this._updateTabBarCue(sheetContent);
+        }, true);
+        window.addEventListener('resize', () => {
+            this.handleSheetResize();
+        });
     },
 
     // Refresh the character sheet
@@ -127,8 +136,9 @@ const CharacterSheetTab = {
         // Put back the scroll position and the focus from before the rewrite
         this._restoreViewState(viewState);
 
-        // A rewrite resets the scroll of the tab bar: bring the selected tab into view again
+        // A rewrite resets the scroll of the tab bar: bring the selected tab into view again, then set the edge cue
         this._scrollActiveTabIntoBar(container);
+        this._updateTabBarCue(container);
     },
 
     // Bind event handlers for session tracking (boxes and +/- buttons)
@@ -2505,6 +2515,7 @@ const CharacterSheetTab = {
         this._keepBelowPinned(container, container.querySelector('.sheet-panes'), 0);
 
         this._scrollActiveTabIntoBar(container);
+        this._updateTabBarCue(container);
     },
 
     // Scroll the sheet up so that the top of el is margin px or more under the pinned part. An element lower than that keeps the scroll.
@@ -2573,18 +2584,40 @@ const CharacterSheetTab = {
     },
 
     // Bring the selected tab into view in the tab bar. Sets scrollLeft only: scrollIntoView would scroll the page.
+    // The 32px of room is the 24px edge fade and 8px of clear space, so a part of the next tab shows under the fade.
+    // At the first and the last tab the scroll range stops the room, and the 4px padding of the bar keeps the focus ring.
     _scrollActiveTabIntoBar(container) {
         const bar = container.querySelector('.sheet-tabbar');
         const btn = container.querySelector('.sheet-tab-btn.active');
         if (!bar || !btn) return;
 
+        const room = 32;
         const left = btn.offsetLeft;
         const right = left + btn.offsetWidth;
         let target;
-        if (right > bar.scrollLeft + bar.clientWidth) target = right + 4 - bar.clientWidth;
-        else if (left < bar.scrollLeft) target = left - 4;
+        if (right + room > bar.scrollLeft + bar.clientWidth) target = right + room - bar.clientWidth;
+        else if (left - room < bar.scrollLeft) target = left - room;
         else return;
         bar.scrollLeft = Math.min(Math.max(0, target), Math.max(0, bar.scrollWidth - bar.clientWidth));
+    },
+
+    // Show the edge fade of the tab bar on each side that has more tabs. The state comes from the bar itself.
+    // The 1px tolerance is for a fractional scrollLeft.
+    _updateTabBarCue(container) {
+        const bar = container.querySelector('.sheet-tabbar');
+        if (!bar) return;
+        const max = bar.scrollWidth - bar.clientWidth;
+        bar.classList.toggle('sheet-tabbar-more-left', bar.scrollLeft > 1);
+        bar.classList.toggle('sheet-tabbar-more-right', bar.scrollLeft < max - 1);
+    },
+
+    // After a rotate or a resize, bring the selected tab into view again and set the edge cue. Nothing while the sheet is not displayed.
+    handleSheetResize() {
+        const scroller = document.getElementById('tab-character-sheet');
+        if (!scroller || window.getComputedStyle(scroller).display === 'none') return;
+        const container = document.getElementById('character-sheet-content');
+        this._scrollActiveTabIntoBar(container);
+        this._updateTabBarCue(container);
     },
 
     // ===== View state across a re-render =====

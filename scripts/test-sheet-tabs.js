@@ -131,7 +131,11 @@ function stubEl({ cls = [], data = {}, attrs = {}, parent = null, rect = null, d
             if (sel.startsWith('.') && classes.has(sel.slice(1))) return el;
             return el.parent ? el.parent.closest(sel) : null;
         },
-        addEventListener: (type, fn) => { (el.listeners[type] = el.listeners[type] || []).push(fn); },
+        listenerOptions: {},
+        addEventListener: (type, fn, options) => {
+            (el.listeners[type] = el.listeners[type] || []).push(fn);
+            (el.listenerOptions[type] = el.listenerOptions[type] || []).push(options);
+        },
         focus: (opts) => { el.focusCalls.push(opts); },
         getBoundingClientRect: () => rect
     };
@@ -750,8 +754,10 @@ function tabsSection() {
             return bar.scrollLeft;
         };
         try {
-            check('a button past the right edge: 4px beyond it', scrollTo({ scrollLeft: 0, offsetLeft: 400, offsetWidth: 80 }), 184);
-            check('a button past the left edge: 4px beyond it', scrollTo({ scrollLeft: 100, offsetLeft: 50, offsetWidth: 80 }), 46);
+            // 32px of room: the 24px edge fade, then 8px of clear space; a part of the next tab shows under the fade
+            check('a button past the right edge: 32px beyond it', scrollTo({ scrollLeft: 0, offsetLeft: 400, offsetWidth: 80 }), 212);
+            check('a button past the left edge: 32px beyond it', scrollTo({ scrollLeft: 100, offsetLeft: 50, offsetWidth: 80 }), 18);
+            check('a button under the right fade comes out of it', scrollTo({ scrollLeft: 0, offsetLeft: 200, offsetWidth: 80 }), 12);
             check('the left target clamps to 0', scrollTo({ scrollLeft: 100, offsetLeft: 2, offsetWidth: 80 }), 0);
             check('the right target clamps to the scroll range', scrollTo({ scrollLeft: 0, offsetLeft: 900, offsetWidth: 98 }), 700);
             check('a button inside the view changes nothing', scrollTo({ scrollLeft: 100, offsetLeft: 150, offsetWidth: 80 }), 100);
@@ -1170,6 +1176,94 @@ function tabsSection() {
         g.tabKey();
         g.env.sheet._restoreViewState({ scrollTop: 900, focusKey: 'equip:0', selection: null });
         check('F1: the focus restore of a re-render keeps the scroll', [box.focusCalls, g.env.dom.scroller.scrollTop], [[{ preventScroll: true }], 900]);
+    }
+
+    // F2: the edge cue of the tab bar comes from the scroll state of the bar
+    {
+        const { sheet, dom } = sheetSandbox();
+        const cue = ({ scrollLeft, scrollWidth, clientWidth = 306 }) => {
+            const bar = Object.assign(stubEl({ cls: ['sheet-tabbar'] }), { scrollLeft, scrollWidth, clientWidth });
+            dom.container.query = sel => (sel === '.sheet-tabbar' ? [bar] : []);
+            sheet._updateTabBarCue(dom.container);
+            return [bar.classList.contains('sheet-tabbar-more-left'), bar.classList.contains('sheet-tabbar-more-right')];
+        };
+        check('F2: 7 tabs at 360px, scrollLeft 0, middle, maximum',
+            [cue({ scrollLeft: 0, scrollWidth: 570 }), cue({ scrollLeft: 132, scrollWidth: 570 }), cue({ scrollLeft: 264, scrollWidth: 570 })],
+            [[false, true], [true, true], [true, false]]);
+        check('F2: 5 tabs at 360px, scrollLeft 0, middle, maximum',
+            [cue({ scrollLeft: 0, scrollWidth: 370 }), cue({ scrollLeft: 32, scrollWidth: 370 }), cue({ scrollLeft: 64, scrollWidth: 370 })],
+            [[false, true], [true, true], [true, false]]);
+        check('F2: a fractional maximum scrollLeft shows no right cue', cue({ scrollLeft: 263.5, scrollWidth: 570 }), [true, false]);
+        check('F2: all tabs fit, no cue', cue({ scrollLeft: 0, scrollWidth: 712, clientWidth: 712 }), [false, false]);
+        dom.container.query = () => [];
+        let error = null;
+        try { sheet._updateTabBarCue(dom.container); } catch (e) { error = e.message; }
+        check('F2: a missing bar gives no error', error, null);
+    }
+
+    // F2, F11: render and selectSheetTab bring the selected tab into the bar, then set the cue
+    {
+        const env = sheetSandbox();
+        const sheet = env.sheet;
+        const restore = stubBlocks(sheet);
+        const calls = [];
+        try {
+            sheet._scrollActiveTabIntoBar = () => { calls.push('scroll'); };
+            sheet._updateTabBarCue = () => { calls.push('cue'); };
+            sheet.render();
+            check('F11: render brings the selected tab into the bar, then sets the cue', calls.splice(0), ['scroll', 'cue']);
+            sheet._closeBreakdownPopup = () => {};
+            sheet.selectSheetTab('wargear');
+            check('F11: selectSheetTab brings the selected tab into the bar, then sets the cue', calls.splice(0), ['scroll', 'cue']);
+        } finally {
+            restore();
+        }
+    }
+
+    // F2, F5: a scroll of the tab bar sets the cue; a resize also brings the selected tab into view, only when the sheet shows
+    {
+        const env = sheetSandbox();
+        const sheet = env.sheet;
+        const calls = [];
+        sheet.init();
+        sheet._scrollActiveTabIntoBar = () => { calls.push('scroll'); };
+        sheet._updateTabBarCue = () => { calls.push('cue'); };
+        const listeners = env.dom.container.listeners;
+        check('F2: init adds one scroll listener in the capture phase', [(listeners.scroll || []).length, env.dom.container.listenerOptions.scroll], [1, [true]]);
+        listeners.scroll[0]({ target: stubEl({ cls: ['sheet-tabbar'] }) });
+        listeners.scroll[0]({ target: stubEl({ cls: ['sheet-notes-input'] }) });
+        check('F2: a scroll of the tab bar sets the cue, another scroll does not', calls.splice(0), ['cue']);
+        const resize = env.dom.window.listeners.resize || [];
+        check('F5: init adds one resize listener on the window', resize.length, 1);
+        env.dom.scroller._display = 'none';
+        resize.forEach(fn => fn());
+        check('F5: a resize does nothing while the sheet is not displayed', calls.splice(0), []);
+        env.dom.scroller._display = 'flex';
+        resize.forEach(fn => fn());
+        check('F5: a resize brings the selected tab into the bar and sets the cue', calls.splice(0), ['scroll', 'cue']);
+    }
+
+    // F2: the CSS of the edge cue
+    {
+        const sec = tabsSection();
+        const compact = mediaBlocks(sec, 'screen and (max-width: 768px), screen and (max-height: 600px)').join('\n');
+        const low = mediaBlocks(sec, 'screen and (max-height: 480px)').join('\n');
+        const ruleBody = (css, sel) => {
+            const esc = sel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            return [...css.matchAll(new RegExp(`(?<=^|[};/])\\s*([^{}]*?${esc}[^{}]*)\\{([^}]*)\\}`, 'g'))].map(m => m[2]).join('\n');
+        };
+        const both = ruleBody(compact, '.sheet-tabbar::before');
+        check('F2: the cue is sticky, takes no pointer events, and has no width in the flow',
+            [/position:\s*sticky/, /pointer-events:\s*none/, /flex:\s*0 0 24px/].map(re => re.test(both)), [true, true, true]);
+        check('F2: the cue fades to the bar background',
+            [/linear-gradient\(to right,\s*var\(--bg-primary\),\s*transparent\)/.test(ruleBody(compact, '.sheet-tabbar::before')), /linear-gradient\(to left,\s*var\(--bg-primary\),\s*transparent\)/.test(ruleBody(compact, '.sheet-tabbar::after'))], [true, true]);
+        check('F2: the cue shows only on a side with more tabs',
+            [/opacity:\s*0/.test(both), /opacity:\s*1/.test(ruleBody(compact, '.sheet-tabbar.sheet-tabbar-more-left::before'))], [true, true]);
+        check('F2: the cue starts at the bar edge in compact and low mode (the negative padding)',
+            [/left:\s*-4px/.test(ruleBody(compact, '.sheet-tabbar::before')), /right:\s*-4px/.test(ruleBody(compact, '.sheet-tabbar::after')),
+                /left:\s*-16px/.test(ruleBody(low, '.sheet-tabbar::before')), /right:\s*-16px/.test(ruleBody(low, '.sheet-tabbar::after'))], [true, true, true, true]);
+        const outsideCompact = sec.replace(/@media screen and \((?:max-width: 768px\), screen and \(max-height: 600px|max-height: 480px)\)\s*\{(?:[^{}]|\{[^{}]*\})*\}/g, '');
+        check('F2: no cue rule outside the compact and low screen blocks', /sheet-tabbar[^{,]*::(?:before|after)/.test(outsideCompact), false);
     }
 }
 

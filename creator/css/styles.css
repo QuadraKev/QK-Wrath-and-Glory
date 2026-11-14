@@ -6695,6 +6695,38 @@ textarea {
         overflow-x: auto;
         padding: 4px;
     }
+
+    /* The edge cue: a fade on each side of the bar that has more tabs (_updateTabBarCue sets the classes).
+       Each fade is a sticky flex item with a net width of 0 (24px, less 24px and the 6px gap), so the tab
+       positions and the scroll width do not change. The inset is the negative padding, so the fade starts
+       at the bar edge. The fade has the bar background, var(--bg-primary), in compact and in low mode. */
+    .sheet-tabbar::before,
+    .sheet-tabbar::after {
+        content: '';
+        position: sticky;
+        z-index: 1;
+        flex: 0 0 24px;
+        align-self: stretch;
+        pointer-events: none;
+        opacity: 0;
+    }
+
+    .sheet-tabbar::before {
+        left: -4px;
+        margin-right: -30px;
+        background: linear-gradient(to right, var(--bg-primary), transparent);
+    }
+
+    .sheet-tabbar::after {
+        right: -4px;
+        margin-left: -30px;
+        background: linear-gradient(to left, var(--bg-primary), transparent);
+    }
+
+    .sheet-tabbar.sheet-tabbar-more-left::before,
+    .sheet-tabbar.sheet-tabbar-more-right::after {
+        opacity: 1;
+    }
 }
 
 /* The top padding that .tab-fullwidth has at these widths, moved into the sheet (refer to the full-mode block above) */
@@ -6728,6 +6760,15 @@ textarea {
         z-index: 5;
         background: var(--bg-primary);
         padding: 8px 16px;
+    }
+
+    /* The edge cue starts at the bar edge: the inset is the negative side padding */
+    .sheet-tabbar::before {
+        left: -16px;
+    }
+
+    .sheet-tabbar::after {
+        right: -16px;
     }
 }
 

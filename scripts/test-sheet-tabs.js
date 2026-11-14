@@ -1028,6 +1028,22 @@ function tabsSection() {
     check('light theme: injury and mutation descriptions are dark gray', [light('.sheet-injury-desc'), light('.sheet-mutation-desc')].map(d => has(d, /(?:^|[;\s])color:\s*#555\s*!important/)), [true, true]);
     check('light theme: the mutation effect is dark', has(light('.sheet-mutation-effect'), /(?:^|[;\s])color:\s*#333\s*!important/), true);
     check('light theme: the mutation card is light', [has(light('.sheet-mutation-item'), /background:\s*#f0f0f0\s*!important/), has(light('.sheet-mutation-item'), /border-color:\s*#ccc\s*!important/)], [true, true]);
+
+    // The Ascension card, the Follower threat card (reached through .sheet-follower) and the equipment cards in print
+    const lightFollower = (sel) => light('.sheet-follower ' + sel);
+    const bgOf = (d, v) => new RegExp('background:\\s*' + v + '\\s*!important').test(d);
+    check('light theme: the Ascension card is light with dark text', [bgOf(light('.sheet-ascension-item'), '#f0f0f0'), has(light('.sheet-ascension-item'), /border-color:\s*#ccc\s*!important/), has(light('.sheet-ascension-name'), /(?:^|[;\s])color:\s*#000\s*!important/), ['.sheet-ascension-tier', '.sheet-ascension-cost', '.sheet-ascension-details', '.sheet-ascension-keywords'].map(c => has(light(c), /(?:^|[;\s])color:\s*#555\s*!important/))], [true, true, true, [true, true, true, true]]);
+    check('light theme: the Follower threat card is light with dark text', [
+        bgOf(lightFollower('.threat-card'), '#fff'), bgOf(lightFollower('.threat-card-header'), '#f5f5f5'),
+        ['.threat-stat-table th', '.resilience-row', '.determination-row', '.abilities-header', '.bonuses-header'].map(c => bgOf(lightFollower(c), '#f0f0f0')),
+        [bgOf(lightFollower('.threat-stat-table td'), 'transparent'), has(lightFollower('.threat-stat-table td'), /(?:^|[;\s])color:\s*#333\s*!important/)],
+        [bgOf(lightFollower('.threat-keyword'), '#eee'), has(lightFollower('.threat-keyword'), /border-color:\s*#333\s*!important/)]
+    ], [true, true, [true, true, true, true, true], [true, true], [true, true]]);
+    check('light theme: the Follower card rules never reach the card outside the sheet', /body\.print-light-theme \.threat-card\s*[,{]/.test(mediaBlocks(readSource('creator/css/styles.css'), 'print').join('\n')), false);
+    // In print the equipment group (a tbody) must stay a grid card. A display: contents tbody puts the name, the Effect cell and the value side by side.
+    const printAll = mediaBlocks(readSource('creator/css/styles.css'), 'print').join('\n');
+    const equipGroup = printRules(printAll).filter(r => r.sels.includes('.sheet-equipment-table .sheet-equip-group')).map(r => r.body).join('\n');
+    check('print: an equipment group is a grid card (not display: contents)', [has(equipGroup, /display:\s*grid\s*!important/), has(equipGroup, /width:\s*50%\s*!important/)], [true, true]);
 }
 
 console.log(failures ? `\n${failures} check(s) FAILED` : '\nAll checks passed');

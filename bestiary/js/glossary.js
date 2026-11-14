@@ -33,15 +33,16 @@ const Glossary = {
     },
 
     // A chip or term is a span with role="button". Enter and Space click it, so the key runs the
-    // same click handlers as the mouse. preventDefault stops Space from scrolling the page.
+    // same click handlers as the mouse. preventDefault stops Space from scrolling the page. A held
+    // key repeats the keydown. Each repeat calls preventDefault, so a held Space does not scroll,
+    // but only the first keydown clicks, so one press opens one popup.
     handleActivationKey(e) {
         if (e.key !== 'Enter' && e.key !== ' ') return;
-        // A held key repeats the keydown. One press must open one popup.
-        if (e.repeat) return;
         // The target can be the document, and the document has no matches function.
         if (!e.target || typeof e.target.matches !== 'function') return;
         if (!e.target.matches('span[role="button"]')) return;
         e.preventDefault();
+        if (e.repeat) return;
         e.target.click();
     },
 

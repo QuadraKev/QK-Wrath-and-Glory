@@ -218,12 +218,21 @@ async function main() {
             Glossary.handleActivationKey(buttonEnter);
             check('Enter on a <button> element does nothing', [nativeButton.clicks, buttonEnter.defaultPrevented], [0, false]);
 
-            // A held key repeats the keydown. The repeat must not click the chip again.
+            // A held key repeats the keydown. The repeat must not click the chip again, but it must
+            // call preventDefault, or a held Space scrolls the page.
             const heldChip = fakeChip('SPAN', 'button');
             const heldEnter = { ...keyEvent('Enter', heldChip), repeat: true };
             Glossary.handleActivationKey(heldEnter);
-            check('a repeated Enter keydown on a chip does not click it and does not call preventDefault',
-                [heldChip.clicks, heldEnter.defaultPrevented], [0, false]);
+            check('a repeated Enter keydown on a chip does not click it and calls preventDefault',
+                [heldChip.clicks, heldEnter.defaultPrevented], [0, true]);
+            const heldSpaceChip = fakeChip('SPAN', 'button');
+            const heldSpace = { ...keyEvent(' ', heldSpaceChip), repeat: true };
+            Glossary.handleActivationKey(heldSpace);
+            check('a repeated Space keydown on a chip does not click it and calls preventDefault, so the page does not scroll',
+                [heldSpaceChip.clicks, heldSpace.defaultPrevented], [0, true]);
+            const repeatPlain = { ...keyEvent('Enter', fakeChip('SPAN', undefined)), repeat: true };
+            Glossary.handleActivationKey(repeatPlain);
+            check('a repeated Enter keydown on a span without the role does not call preventDefault', repeatPlain.defaultPrevented, false);
 
             // The target of a keydown can be the document, and the document has no matches function
             const noMatches = (event) => {
@@ -351,6 +360,15 @@ async function main() {
             [...pending.values()].forEach(fn => fn());
             const result = [timersAfterLeave, opened, Glossary.popupStack, !!fakeDocument.popups['fake-chip-popup'], Glossary._pinned];
 
+            // A hover timer that is pending when the chip popup opens must not open a popup later
+            Glossary.closeAllPopups();
+            fakeDocument.popups = {};
+            pending.clear();
+            term.listeners.find(l => l.type === 'mouseenter').handler({ target: term });
+            const timersAfterEnter = pending.size;
+            Glossary.showEntryPopup('keyword', 'imperium', {});
+            const timersAfterChip = pending.size;
+
             bestiary.setTimeout = realSetTimeout;
             bestiary.clearTimeout = realClearTimeout;
             Glossary.showPopup = realShowPopup;
@@ -358,6 +376,8 @@ async function main() {
             fakeDocument.popups = {};
             check('a chip popup opened while the close timer of a hover is pending stays open and pinned',
                 result, [1, true, ['fake-chip-popup'], true, true]);
+            check('a chip popup clears the pending hover timer of a term',
+                [timersAfterEnter, timersAfterChip], [1, 0]);
         }
 
         // The document keydown listener of the popup engine routes the key into the click

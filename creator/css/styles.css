@@ -1172,8 +1172,6 @@ textarea {
 
 .wargear-info {
     flex: 1;
-    min-width: 0;
-    overflow-wrap: anywhere;
 }
 
 .wargear-name {

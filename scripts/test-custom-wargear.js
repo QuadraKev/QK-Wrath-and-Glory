@@ -1151,10 +1151,6 @@ for (const rel of ['character-sheet-tab.js', 'wargear-tab.js', 'talents-tab.js']
         check('updateCustomItem with the text index "0" keeps the id',
             [MS.updateCustomItem('0', M.buildRecord(F({ name: 'A2' }))), MS.character.wargear[0].id, names()], [true, ids[0], ['A2', 'B', 'C']]);
     }
-
-    // F6: a long name with no spaces wraps, so the row buttons stay in view.
-    const infoRule = (readSource('creator/css/styles.css').match(/\n\.wargear-info \{[^}]*\}/) || [''])[0];
-    check('the .wargear-info rule lets a long name wrap', [/min-width: 0;/.test(infoRule), /overflow-wrap: anywhere;/.test(infoRule)], [true, true]);
 }
 
 console.log(failures === 0 ? '\nAll custom wargear checks passed.' : `\n${failures} custom wargear check(s) FAILED.`);

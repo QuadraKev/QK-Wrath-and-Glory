@@ -3213,7 +3213,7 @@ textarea {
     border-color: var(--accent-red);
 }
 
-/* Horizontal tracker row for Faith and Wealth. The line above it comes from .sheet-tracking-section. */
+/* Horizontal tracker row for Wealth. The line above it comes from .sheet-tracking-section. */
 .tracker-row-horizontal {
     display: flex;
     justify-content: center;
@@ -5991,7 +5991,8 @@ textarea {
         gap: 8px;
     }
 
-    /* Label | boxes | Wrath. Wounds is row 1, Shock is row 2, Wrath spans both. */
+    /* Label | boxes | counters. Wounds is row 1, Shock is row 2, the counters span both.
+       The Faith counter is below the Wrath counter. This is an interim layout for a window wider than 768px. */
     .sheet-strip-trackers {
         display: grid;
         grid-template-columns: 64px 1fr 112px;
@@ -6011,10 +6012,16 @@ textarea {
         justify-content: flex-start;
     }
 
-    .sheet-strip-wrath {
+    .sheet-strip-counters {
         grid-column: 3;
         grid-row: 1 / span 2;
         align-self: center;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .sheet-strip-counter {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -6035,37 +6042,6 @@ textarea {
         background: var(--bg-primary);
         padding: 8px 12px;
         gap: 6px;
-    }
-
-    /* Label | boxes. Wounds is row 1, Shock is row 2, Wrath is row 3 across both columns. */
-    .sheet-strip-trackers {
-        grid-template-columns: 52px 1fr;
-    }
-
-    .sheet-strip-label {
-        line-height: 22px;
-    }
-
-    .sheet-strip-trackers .tracking-box {
-        width: 22px;
-        height: 22px;
-    }
-
-    .sheet-strip-wrath {
-        grid-column: 1 / -1;
-        grid-row: 3;
-        flex-direction: row;
-        gap: 8px;
-    }
-
-    .sheet-strip-wrath .tracker-label {
-        flex: 0 0 52px;
-        text-align: left;
-    }
-
-    .sheet-strip-wrath .tracker-btn {
-        width: 32px;
-        height: 32px;
     }
 
     /* One row that scrolls sideways. The 4px padding keeps the focus ring inside the scroll box. */
@@ -6122,6 +6098,53 @@ textarea {
     .sheet-tabbar.sheet-tabbar-more-left::before,
     .sheet-tabbar.sheet-tabbar-more-right::after {
         opacity: 1;
+    }
+}
+
+/* The flat trackers, in each mode of a window 768px wide or less. A window wider than 768px keeps the
+   full-mode grid, also in compact and low mode. */
+@media screen and (max-width: 768px) {
+    /* Label | boxes. Wounds is row 1, Shock is row 2, the counters are row 3 across both columns. */
+    .sheet-strip-trackers {
+        grid-template-columns: 52px 1fr;
+    }
+
+    .sheet-strip-label {
+        line-height: 22px;
+    }
+
+    .sheet-strip-trackers .tracking-box {
+        width: 22px;
+        height: 22px;
+    }
+
+    /* The Faith counter follows the Wrath counter, and goes to the next row when the two do not fit */
+    .sheet-strip-counters {
+        grid-column: 1 / -1;
+        grid-row: 3;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 6px 16px;
+    }
+
+    .sheet-strip-counter {
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    /* With no Faith, the Wrath counter fills the row */
+    .sheet-strip-counter:only-child {
+        flex-grow: 1;
+    }
+
+    .sheet-strip-counter .tracker-label {
+        flex: 0 0 52px;
+        text-align: left;
+    }
+
+    .sheet-strip-counter .tracker-btn {
+        width: 32px;
+        height: 32px;
     }
 }
 

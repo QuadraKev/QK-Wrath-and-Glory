@@ -505,18 +505,65 @@ function tabsSection() {
         }
     }
 
-    // Traits keeps the trait grid and Faith only. The Wealth counter is in Details (owner, 2026-11-14)
+    // Traits keeps the trait grid only. The Wealth counter is in Details, and Faith is in the strip (owner, 2026-11-14)
     {
         const env = sheetSandbox();
-        const html = env.sheet.renderTraits(DERIVED, {});
-        check('Traits with no Faith has no boxes, no Wrath, no Wealth, no Faith, no tracking section',
-            [html.includes('tracking-box'), html.includes('data-type="wrath"'), html.includes('data-type="wealth"'), html.includes('data-type="faith"'), html.includes('sheet-tracking-section')],
-            [false, false, false, false, false]);
+        const parts = (html) => [html.includes('tracking-box'), html.includes('data-type="wrath"'), html.includes('data-type="wealth"'), html.includes('data-type="faith"'), html.includes('sheet-tracking-section')];
+        const noFaith = env.sheet.renderTraits(DERIVED, {});
         env.state.maxFaith = 2;
-        const faithHtml = env.sheet.renderTraits(DERIVED, {});
-        check('Traits with Faith has Faith, one tracking section, no Wealth',
-            [faithHtml.includes('data-type="faith"'), count(faithHtml, /sheet-tracking-section/g), faithHtml.includes('data-type="wealth"')],
-            [true, 1, false]);
+        const withFaith = env.sheet.renderTraits(DERIVED, {});
+        check('Traits has no boxes, no Wrath, no Wealth, no Faith and no tracking section, with max Faith 0 and 2',
+            [parts(noFaith), parts(withFaith)],
+            [[false, false, false, false, false], [false, false, false, false, false]]);
+        check('Traits keeps its trait grid with max Faith 2', [titlesIn(withFaith), withFaith.includes('sheet-traits-grid')], [['Traits'], true]);
+    }
+
+    // The Faith counter in the strip (owner, 2026-11-14)
+    {
+        const env = sheetSandbox();
+        const strip = () => env.sheet.renderStripTrackers(DERIVED);
+        check('strip with max Faith 0 has no Faith counter', strip().includes('data-type="faith"'), false);
+        env.state.maxFaith = 2;
+        env.state.faith = 1;
+        const html = strip();
+        check('strip with max Faith 2 has one Faith minus and one Faith plus, with labels and type="button"',
+            [count(html, /<button type="button" class="tracker-btn tracker-minus" data-type="faith" aria-label="Remove Faith">/g),
+                count(html, /<button type="button" class="tracker-btn tracker-plus" data-type="faith" aria-label="Add Faith">/g),
+                count(html, /data-type="faith"/g)],
+            [1, 1, 2]);
+        const at = (needle) => html.indexOf(needle);
+        check('the Faith buttons come after the Wrath buttons',
+            [at('aria-label="Remove Wrath"') < at('aria-label="Add Wrath"'), at('aria-label="Add Wrath"') < at('aria-label="Remove Faith"'), at('aria-label="Remove Faith"') < at('aria-label="Add Faith"')],
+            [true, true, true]);
+        check('the strip shows the Faith value', /sheet-strip-faith[\s\S]*?tracker-value">1</.test(html), true);
+        env.state.faith = 0;
+        check('the strip shows a Faith of 0 as 0', /sheet-strip-faith[\s\S]*?tracker-value">0</.test(strip()), true);
+        env.state.faith = '<img src=x onerror=alert(1)>';
+        const evilHtml = strip();
+        check('a hostile Faith value is escaped', [evilHtml.includes('<img'), evilHtml.includes('&lt;img src=x onerror=alert(1)&gt;')], [false, true]);
+    }
+
+    // The whole sheet: each tracker control is in the HTML one time (Faith only with a max Faith above 0)
+    {
+        const env = sheetSandbox();
+        const sheet = env.sheet;
+        const realDetails = sheet.renderDetails, realTraits = sheet.renderTraits;
+        const restore = stubBlocks(sheet);
+        try {
+            sheet.renderDetails = realDetails;
+            sheet.renderTraits = realTraits;
+            const pairs = (html) => [
+                count(html, /tracker-minus" data-type="faith"/g), count(html, /tracker-plus" data-type="faith"/g),
+                count(html, /data-type="wounds" data-index="0"/g), count(html, /data-type="shock" data-index="0"/g),
+                count(html, /tracker-minus" data-type="wrath"/g), count(html, /tracker-plus" data-type="wrath"/g)];
+            sheet.render();
+            check('whole sheet with max Faith 0: no Faith pair, one set of Wounds, Shock and Wrath', pairs(env.dom.container.innerHTML), [0, 0, 1, 1, 1, 1]);
+            env.state.maxFaith = 2;
+            sheet.render();
+            check('whole sheet with max Faith 2: one Faith pair, one set of Wounds, Shock and Wrath', pairs(env.dom.container.innerHTML), [1, 1, 1, 1, 1, 1]);
+        } finally {
+            restore();
+        }
     }
 
     // The Wealth counter in Details (owner, 2026-11-14)
@@ -552,7 +599,7 @@ function tabsSection() {
             restore();
         }
 
-        // CSS: one line above the Faith counter, none from the row
+        // CSS: one line above the Wealth counter, none from the row
         const css = readSource('creator/css/styles.css');
         const baseRow = (css.match(/^\.tracker-row-horizontal\s*\{([^}]*)\}/m) || [])[1] || '';
         check('the base .tracker-row-horizontal rule exists and has no border-top, padding-top or margin-top', [baseRow.length > 0, /border-top/.test(baseRow), /padding-top/.test(baseRow), /margin-top/.test(baseRow)], [true, false, false, false]);
@@ -857,10 +904,22 @@ function tabsSection() {
     check('full mode: the strip has z-index 5', has(ruleOf(full, '.sheet-strip'), /z-index:\s*5;/), true);
     check('compact mode: the bar is opaque', has(ruleOf(compact, '.sheet-strip-bar'), /background:\s*var\(--bg-primary\)/), true);
     check('compact mode: the bar has z-index 5', has(ruleOf(compact, '.sheet-strip-bar'), /z-index:\s*5;/), true);
-    check('full mode tracker grid: label, boxes, Wrath', has(ruleOf(full, '.sheet-strip-trackers'), /grid-template-columns:\s*64px 1fr 112px;/), true);
-    check('compact mode tracker grid: label, boxes', has(ruleOf(compact, '.sheet-strip-trackers'), /grid-template-columns:\s*52px 1fr;/), true);
-    check('compact mode boxes are 22px', [/width:\s*22px/, /height:\s*22px/].map(re => has(ruleOf(compact, '.sheet-strip-trackers .tracking-box'), re)), [true, true]);
-    check('compact mode Wrath buttons are 32px', [/width:\s*32px/, /height:\s*32px/].map(re => has(ruleOf(compact, '.sheet-strip-wrath .tracker-btn'), re)), [true, true]);
+    // Width selects the tracker layout (controller ruling 1, 2026-11-14): the flat layout applies at 768px or less
+    check('full mode tracker grid: label, boxes, counters', has(ruleOf(full, '.sheet-strip-trackers'), /grid-template-columns:\s*64px 1fr 112px;/), true);
+    const narrow = mediaBlocks(sec, 'screen and (max-width: 768px)').join('\n');
+    check('narrow tracker grid: label, boxes', has(ruleOf(narrow, '.sheet-strip-trackers'), /grid-template-columns:\s*52px 1fr;/), true);
+    check('narrow boxes are 22px', [/width:\s*22px/, /height:\s*22px/].map(re => has(ruleOf(narrow, '.sheet-strip-trackers .tracking-box'), re)), [true, true]);
+    check('narrow: the counters are one row under the boxes, and the Faith counter can wrap to the next row',
+        [/grid-column:\s*1 \/ -1/, /grid-row:\s*3;/, /flex-direction:\s*row/, /flex-wrap:\s*wrap/].map(re => has(ruleOf(narrow, '.sheet-strip-counters'), re))
+            .concat([has(ruleOf(full, '.sheet-strip-counters'), /display:\s*flex/)]), [true, true, true, true, true]);
+    check('narrow counter buttons are 32px', [/width:\s*32px/, /height:\s*32px/].map(re => has(ruleOf(narrow, '.sheet-strip-counter .tracker-btn'), re)), [true, true]);
+    const outsideNarrow = sec.replace(/@media screen and \(max-width: 768px\)\s*\{(?:[^{}]|\{[^{}]*\})*\}/g, '');
+    check('the flat tracker rules apply only at 768px wide or less, not at 600px high alone',
+        [/52px 1fr/.test(outsideNarrow), /\.sheet-strip-trackers \.tracking-box\s*\{/.test(outsideNarrow), /\.sheet-strip-(?:wrath|counters?)\b[^{]*\{[^}]*grid-row:\s*3/.test(outsideNarrow),
+            /sheet-strip-(?:trackers|wrath|counters?|label)/.test(compact)],
+        [false, false, false, false]);
+    check('compact mode keeps its pin rules at 768px wide or 600px high',
+        [has(ruleOf(compact, '.sheet-strip'), /display:\s*contents/), has(ruleOf(compact, '.sheet-strip-bar'), /position:\s*sticky/), has(ruleOf(compact, '.sheet-strip-bar'), /top:\s*0;/)], [true, true, true]);
 
     // Low mode (a window 480px high or less): only the tab bar is pinned
     const lowBar = ruleOf(low, '.sheet-strip-bar');

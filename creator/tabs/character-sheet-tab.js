@@ -373,22 +373,26 @@ const CharacterSheetTab = {
         return `<div class="sheet-tabbar" role="tablist" aria-label="Character sheet sections">${buttons}</div>`;
     },
 
-    // Render the Wounds and Shock boxes and the Wrath counter of the strip.
-    // The children stay flat, because the strip grid places each one.
+    // Render the Wounds and Shock boxes, the Wrath counter and, with a max Faith above 0, the Faith counter of the strip.
+    // The labels and the boxes stay flat, because the strip grid places each one. The counters have a wrapper,
+    // so that the Faith counter can follow the Wrath counter in one row and wrap to the next row.
     renderStripTrackers(stats) {
+        const counter = (type, label, value) => `
+                    <div class="sheet-strip-counter sheet-strip-${type}">
+                        <span class="tracker-label">${label}</span>
+                        <div class="tracker-controls">
+                            <button type="button" class="tracker-btn tracker-minus" data-type="${type}" aria-label="Remove ${label}">−</button>
+                            <span class="tracker-value">${this.escapeHtml(String(value))}</span>
+                            <button type="button" class="tracker-btn tracker-plus" data-type="${type}" aria-label="Add ${label}">+</button>
+                        </div>
+                    </div>`;
         return `
             <div class="sheet-strip-trackers">
                 <span class="sheet-strip-label tracker-label">Wounds</span>
                 <div class="tracking-boxes">${this.renderTrackingBoxes('wounds', State.getCurrentWounds(), stats.maxWounds)}</div>
                 <span class="sheet-strip-label tracker-label">Shock</span>
                 <div class="tracking-boxes">${this.renderTrackingBoxes('shock', State.getCurrentShock(), stats.maxShock)}</div>
-                <div class="sheet-strip-wrath">
-                    <span class="tracker-label">Wrath</span>
-                    <div class="tracker-controls">
-                        <button type="button" class="tracker-btn tracker-minus" data-type="wrath" aria-label="Remove Wrath">−</button>
-                        <span class="tracker-value">${this.escapeHtml(String(State.getCurrentWrath()))}</span>
-                        <button type="button" class="tracker-btn tracker-plus" data-type="wrath" aria-label="Add Wrath">+</button>
-                    </div>
+                <div class="sheet-strip-counters">${counter('wrath', 'Wrath', State.getCurrentWrath())}${State.getMaxFaith() > 0 ? counter('faith', 'Faith', State.getCurrentFaith()) : ''}
                 </div>
             </div>
         `;
@@ -571,33 +575,12 @@ const CharacterSheetTab = {
             `;
         }).join('');
 
-        // Get Faith values
-        const currentFaith = State.getCurrentFaith();
-        const maxFaith = State.getMaxFaith();
-
-        // Faith tracker (only shown if character has Faith)
-        const faithTracker = maxFaith > 0 ? `
-            <div class="tracker-column">
-                <span class="tracker-label">Faith</span>
-                <div class="tracker-controls">
-                    <button class="tracker-btn tracker-minus" data-type="faith">−</button>
-                    <span class="tracker-value">${currentFaith}</span>
-                    <button class="tracker-btn tracker-plus" data-type="faith">+</button>
-                </div>
-            </div>
-        ` : '';
-
         return `
             <div class="sheet-section sheet-derived-section">
                 <h2 class="sheet-section-title">Traits</h2>
                 <div class="sheet-compact-grid sheet-traits-grid">
                     ${staticItems}
                 </div>
-                ${maxFaith > 0 ? `<div class="sheet-tracking-section">
-                    <div class="tracker-row-horizontal">
-                        ${faithTracker}
-                    </div>
-                </div>` : ''}
             </div>
         `;
     },

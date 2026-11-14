@@ -617,6 +617,11 @@ body {
     color: var(--bg-primary);
 }
 
+.threat-keyword:focus-visible {
+    outline: 2px solid var(--accent-gold);
+    outline-offset: 2px;
+}
+
 /* Attributes Table */
 .attributes-table th,
 .attributes-table td {
@@ -1129,6 +1134,11 @@ body {
 .glossary-term:hover {
     color: #f0c040;
     border-bottom-style: solid;
+}
+
+.glossary-term:focus-visible {
+    outline: 2px solid var(--accent-gold);
+    outline-offset: 2px;
 }
 
 .glossary-popup {
@@ -4663,6 +4673,13 @@ body {
 
 .vehicle-twin-marker:hover {
     border-bottom-style: solid;
+}
+
+/* A keyboard user sees which chip or marker has the focus */
+.vehicle-chip[data-popup-type]:focus-visible,
+.vehicle-twin-marker:focus-visible {
+    outline: 2px solid var(--accent-gold);
+    outline-offset: 2px;
 }
 
 /* The weapons table scrolls inside its box on a narrow screen, never the page */

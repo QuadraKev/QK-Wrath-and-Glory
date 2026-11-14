@@ -273,9 +273,9 @@ async function main() {
             plain(VehiclesTab.buildWeaponRows({ text: 'Prism Cannon', weaponId: null, count: 1, profileIds: ['no_such_a', 'no_such_b'] })),
             [{ text: 'Prism Cannon', twin: false, resolved: false }]);
         check('the word Twin becomes the marker', VehiclesTab.renderWeaponName(twinRow),
-            '2 <span class="vehicle-twin-marker" data-popup-type="vehicleRule" data-popup-key="twin_weapons">Twin</span> Lascannons');
+            '2 <span class="vehicle-twin-marker" data-popup-type="vehicleRule" data-popup-key="twin_weapons" tabindex="0" role="button">Twin</span> Lascannons');
         check('a Twin line without the word still gets the marker', VehiclesTab.renderWeaponName({ text: 'Paired guns', twin: true }),
-            'Paired guns <span class="vehicle-twin-marker" data-popup-type="vehicleRule" data-popup-key="twin_weapons">Twin</span>');
+            'Paired guns <span class="vehicle-twin-marker" data-popup-type="vehicleRule" data-popup-key="twin_weapons" tabindex="0" role="button">Twin</span>');
         check('a plain line keeps its text', VehiclesTab.renderWeaponName({ text: 'Heavy Bolter', twin: false }), 'Heavy Bolter');
         check('an unresolved line shows the printed text alone',
             plain(VehiclesTab.buildWeaponRows({ text: 'Mystery Gun', weaponId: null, count: 1 })), [{ text: 'Mystery Gun', twin: false, resolved: false }]);

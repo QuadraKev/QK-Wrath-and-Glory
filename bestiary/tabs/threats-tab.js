@@ -366,7 +366,7 @@ const ThreatsTab = {
 
         // Build keywords row
         const keywordsHtml = (threat.keywords || []).map(kw =>
-            `<span class="threat-keyword">${kw}</span>`
+            `<span class="threat-keyword" tabindex="0" role="button">${kw}</span>`
         ).join('');
 
         // Build attributes table

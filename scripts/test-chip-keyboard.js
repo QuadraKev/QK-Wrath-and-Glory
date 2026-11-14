@@ -237,12 +237,18 @@ async function main() {
             const termB = fakeTerm(keyB);
             Glossary.attachHandlers({ querySelectorAll: (selector) => (selector === '.glossary-term' ? [termA, termB] : []) });
 
-            // A stand-in popup: the stack and the document hold it as showPopup does
+            // A stand-in popup: the stack and the document hold it as showPopup does.
+            // A test puts a term in `members` to put that term inside the popup.
             let popupCount = 0;
             const realShowPopup = Glossary.showPopup;
             Glossary.showPopup = (definitions, anchorElement, termKey) => {
                 const id = `fake-popup-${popupCount++}`;
-                fakeDocument.popups[id] = { dataset: { glossaryKey: termKey }, remove() { delete fakeDocument.popups[id]; } };
+                fakeDocument.popups[id] = {
+                    dataset: { glossaryKey: termKey },
+                    members: [],
+                    contains(element) { return this.members.includes(element); },
+                    remove() { delete fakeDocument.popups[id]; }
+                };
                 Glossary.popupStack.push(id);
             };
             const reset = () => {
@@ -269,6 +275,21 @@ async function main() {
             Glossary.handleActivationKey(keyEvent('Enter', termA));
             check('(c) Enter on a term with the hover popup of a different term open opens the focused term',
                 [openKeys(), Glossary._pinned], [[keyA], true]);
+
+            // (d) Term B is inside the hover popup of term A. Activating B opens B on top and keeps A.
+            const activateInsideHoverPopup = (activate) => {
+                reset();
+                openHoverPopup(termA);
+                const hoverIdA = Glossary.popupStack[0];
+                fakeDocument.popups[hoverIdA].members.push(termB);
+                activate();
+                // [A is still the bottom popup, the open keys, pinned, A's popup is still in the document]
+                return [Glossary.popupStack[0] === hoverIdA, openKeys(), Glossary._pinned, !!fakeDocument.popups[hoverIdA]];
+            };
+            check('(d) Enter on a term inside a hover popup opens it on top and keeps that popup open and pinned',
+                activateInsideHoverPopup(() => Glossary.handleActivationKey(keyEvent('Enter', termB))), [true, [keyA, keyB], true, true]);
+            check('(d) a click on a term inside a hover popup opens it on top and keeps that popup open and pinned',
+                activateInsideHoverPopup(() => termB.click()), [true, [keyA, keyB], true, true]);
 
             reset();
             Glossary.showPopup = realShowPopup;

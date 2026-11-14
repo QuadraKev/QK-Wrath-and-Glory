@@ -210,8 +210,9 @@ const Glossary = {
                         this._pinned = true;
                         return;
                     }
-                    // The hover popup is for a different term: close it and open this term as a plain click does
-                    this.closeAllPopups();
+                    // The hover popup is for a different term: close it and open this term as a plain click does.
+                    // A term inside the hover popup keeps that popup, so its own popup opens on top.
+                    if (!hoverPopup || !hoverPopup.contains(term)) this.closeAllPopups();
                 }
                 this._pinned = true;
                 this.handleTermClick(e);

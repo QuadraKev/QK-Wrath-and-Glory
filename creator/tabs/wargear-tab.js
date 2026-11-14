@@ -175,8 +175,8 @@ const WargearTab = {
         return `
             <div class="wargear-item wargear-item-owned">
                 <div class="wargear-info">
-                    <div class="wargear-name">${relicHtml ? relicHtml.nameLine : weapon.name} ${startingBadge}</div>
-                    <div class="wargear-type">${relicHtml ? relicHtml.typeLine : `${typeLabel} Weapon${weapon.category ? ' • ' + weapon.category : ''}`}</div>
+                    <div class="wargear-name">${relicHtml ? relicHtml.nameLine : this.escapeHtml(weapon.name)} ${startingBadge}</div>
+                    <div class="wargear-type">${relicHtml ? relicHtml.typeLine : `${typeLabel} Weapon${weapon.category ? ' • ' + this.escapeHtml(weapon.category) : ''}`}</div>
                     ${relicHtml ? relicHtml.detailLine : ''}
                     ${upgradeText}
                 </div>
@@ -199,8 +199,8 @@ const WargearTab = {
         return `
             <div class="wargear-item wargear-item-owned">
                 <div class="wargear-info">
-                    <div class="wargear-name">${relicHtml ? relicHtml.nameLine : item.name} ${startingBadge}</div>
-                    <div class="wargear-type">${relicHtml ? relicHtml.typeLine : typeLabel}</div>
+                    <div class="wargear-name">${relicHtml ? relicHtml.nameLine : this.escapeHtml(item.name)} ${startingBadge}</div>
+                    <div class="wargear-type">${relicHtml ? relicHtml.typeLine : this.escapeHtml(typeLabel)}</div>
                     ${relicHtml ? relicHtml.detailLine : ''}
                 </div>
                 <div class="wargear-actions">
@@ -909,8 +909,11 @@ const WargearTab = {
     // Helper: Escape HTML for safe insertion
     escapeHtml(text) {
         if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     }
 };

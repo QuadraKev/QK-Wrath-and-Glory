@@ -320,7 +320,7 @@ const TalentsTab = {
                             ? DataLoader.getWeapon(character.wargear[wargearIndex].id)
                             : DataLoader.getArmor(character.wargear[wargearIndex].id);
                         if (item) {
-                            choiceDisplay = item.name;
+                            choiceDisplay = this.escapeHtml(item.name);
                         }
                     }
                 }
@@ -588,5 +588,15 @@ const TalentsTab = {
 
     refresh() {
         this.render();
+    },
+
+    escapeHtml(text) {
+        if (!text) return '';
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     }
 };

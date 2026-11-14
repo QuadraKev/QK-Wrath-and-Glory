@@ -413,5 +413,21 @@ const CustomWargear = {
             return out;
         }
         return value;
+    },
+
+    // Escape player text for HTML text and for a quoted attribute.
+    escapeHtml(text) {
+        if (!text) return '';
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    },
+
+    // The five-character escape is safe in an attribute. The name matches ImprovisedBuilder.
+    escapeAttr(text) {
+        return this.escapeHtml(text);
     }
 };

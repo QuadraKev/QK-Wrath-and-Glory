@@ -522,5 +522,144 @@ const spineRecordWithId = { ...spineRecord, id: 'custom_p7d2m0zt' };
     check('an empty choice stays empty', State.character.talents[2].choice, null);
 }
 
+// --- text safety: escape helpers and item-text sites ---
+// The fixtures at file scope are for the later sections too. The sheet context has no document stub.
+const EVIL = '<b>"x\'</b>&';
+const SAFE = '&lt;b&gt;&quot;x&#39;&lt;/b&gt;&amp;';
+const SAFE_UPPER = '&lt;B&gt;&quot;X&#39;&lt;/B&gt;&amp;';
+const RAW_TAG = /<\/?b>/i;
+const sheetCharacter = { rank: 1, attributes: { strength: 3, toughness: 3, agility: 3, initiative: 3, willpower: 3, intellect: 3, fellowship: 3 },
+    skills: {}, talents: [], mutations: [], wargear: [] };
+const sctx = creatorSandbox({
+    State: {
+        character: sheetCharacter,
+        getCharacter: () => sheetCharacter,
+        getEquippedWeapons: () => [],
+        isWeaponEquipped: () => false,
+        getTalentEntry: () => null,
+        getKeywords: () => [],
+        getEffectiveTier: () => 1,
+        isPsyker: () => false,
+        hasTalent: () => false
+    },
+    PrerequisiteChecker: { getCharacterKeywords: () => [] },
+    navigator: { clipboard: { writeText: () => ({ then() {} }) } }
+});
+for (const rel of ['derived-stats.js', 'improvised-builder.js', 'custom-wargear.js'])
+    load(sctx, `creator/js/${rel}`);
+for (const rel of ['character-sheet-tab.js', 'wargear-tab.js', 'talents-tab.js'])
+    load(sctx, `creator/tabs/${rel}`);
+{
+    const SHEET = get(sctx, 'CharacterSheetTab'), WT = get(sctx, 'WargearTab');
+    const SCW = get(sctx, 'CustomWargear'), SDL = get(sctx, 'DataLoader');
+
+    for (const mod of ['CharacterSheetTab', 'WargearTab', 'TalentsTab', 'CustomWargear'])
+        check(`${mod}.escapeHtml escapes the five characters`, get(sctx, mod).escapeHtml(`<a href="x">'&`), '&lt;a href=&quot;x&quot;&gt;&#39;&amp;');
+    check('escapeHtml gives "" for a falsy value', [SHEET.escapeHtml(''), SHEET.escapeHtml(undefined), SHEET.escapeHtml(null)], ['', '', '']);
+    check('escapeHtml leaves plain text as it is', SHEET.escapeHtml('Flak Armour 5'), 'Flak Armour 5');
+    check('CustomWargear.escapeAttr is escapeHtml', SCW.escapeAttr(`"'<&`), SCW.escapeHtml(`"'<&`));
+
+    // One custom entry per kind. Every text field is EVIL (keywords are upper case after buildRecord).
+    const evilForm = o => F({ name: EVIL, description: EVIL, effect: EVIL, keywords: [EVIL], ...o });
+    const entryOf = (form, id) => ({ id, isStarting: false, custom: { ...CW.buildRecord(form), id } });
+    const sheetWith = wargear => { sheetCharacter.wargear = wargear; return sheetCharacter; };
+    const weaponEntry = entryOf(evilForm({ weaponTraits: [EVIL] }), 'custom_evilweap');
+    const armourEntry = entryOf(evilForm({ kind: 'armor', ar: '3', armorTraits: [EVIL] }), 'custom_evilarmr');
+    const augEntry = entryOf(evilForm({ kind: 'augmetic' }), 'custom_evilaugm');
+    // An Other record keeps no effect or keywords, so set them here: the sheet site must escape them all the same.
+    const otherEntry = entryOf(evilForm({ kind: 'other' }), 'custom_evilothr');
+    otherEntry.custom.effect = EVIL;
+    otherEntry.custom.keywords = [EVIL.toUpperCase()];
+    check('the EVIL keyword is upper case in the record', weaponEntry.custom.keywords, [EVIL.toUpperCase()]);
+    check('the EVIL trait is stored as typed', weaponEntry.custom.traits, [EVIL]);
+
+    const safeAll = (label, html, { keywords = true, effect = false } = {}) => {
+        check(`${label} holds the escaped name`, html.includes(SAFE), true);
+        if (keywords) check(`${label} holds the escaped keyword`, html.includes(SAFE_UPPER), true);
+        check(`${label} holds no raw <b> tag`, RAW_TAG.test(html), false);
+    };
+
+    {
+        const html = SHEET.renderWeapons(sheetWith([weaponEntry]));
+        safeAll('renderWeapons', html);
+        check('renderWeapons escapes the trait', html.includes(`<span class="sheet-traits-cell">${SAFE}</span>`), true);
+        check('renderWeapons escapes the description', html.includes(`<span class="sheet-item-description">${SAFE}</span>`), true);
+        check('renderWeapons keeps the tooltips whole', (html.match(/ title="[^"]*"/g) || []).every(t => !/[<>]/.test(t) && t.endsWith('"')), true);
+    }
+    {
+        const html = SHEET.renderArmor(sheetWith([armourEntry]));
+        safeAll('renderArmor', html);
+        check('renderArmor escapes the trait', html.includes(`<span class="sheet-traits-cell">${SAFE}</span>`), true);
+        check('renderArmor escapes the description', html.includes(`<span class="sheet-item-description">${SAFE}</span>`), true);
+    }
+    {
+        const html = SHEET.renderAugmetics(sheetWith([augEntry]));
+        safeAll('renderAugmetics', html);
+        check('renderAugmetics escapes the effect', html.includes(`<td class="sheet-equip-effect">${SAFE}</td>`), true);
+        check('renderAugmetics escapes the description', html.includes(`<span class="sheet-item-description">${SAFE}</span>`), true);
+    }
+    {
+        const html = SHEET.renderEquipment(sheetWith([otherEntry]));
+        safeAll('renderEquipment', html);
+        check('renderEquipment escapes the effect', html.includes(`<td class="sheet-equip-effect">${SAFE}</td>`), true);
+        check('renderEquipment escapes the description', html.includes(`<span class="sheet-item-description">${SAFE}</span>`), true);
+    }
+    check('an augmetic with no effect still prints "-"', SHEET.renderAugmetics(sheetWith([entryOf(evilForm({ kind: 'augmetic', effect: '' }), 'custom_noeffect')]))
+        .includes('<td class="sheet-equip-effect">-</td>'), true);
+
+    // A book item whose text holds the five characters (the relic branches print the base name too).
+    const relic = { name: EVIL, formId: 'x', ownerId: 'x' };
+    {
+        const book = SDL.getWeapon('whip');
+        check('the book Whip renders its name unchanged', SHEET.renderWeapons(sheetWith([{ id: 'whip', isStarting: false }])).includes('>Whip<'), true);
+        safeAll('renderWeapons (relic branch)', SHEET.renderWeapons(sheetWith([{ id: 'whip', isStarting: false, relic }])), { keywords: false });
+        const saved = book.name;
+        book.name = EVIL;
+        try {
+            safeAll('renderWeapons (book name)', SHEET.renderWeapons(sheetWith([{ id: 'whip', isStarting: false }])), { keywords: false });
+            safeAll('renderWeapons (relic base name)', SHEET.renderWeapons(sheetWith([{ id: 'whip', isStarting: false, relic: { ...relic, name: 'Relic' } }])), { keywords: false });
+            safeAll('WargearTab.renderOwnedWeapon', WT.renderOwnedWeapon({ ...book, wargearIndex: 0, isStarting: false, upgrades: [] }), { keywords: false });
+        } finally { book.name = saved; }
+    }
+    {
+        const flak = { ...SDL.getArmor('flak_armour'), name: EVIL, wargearIndex: 0, isStarting: false };
+        safeAll('WargearTab.renderOwnedItem (armour)', WT.renderOwnedItem(flak, 'armor'), { keywords: false });
+        const equip = { ...SDL.getEquipment('medi_pack') || SDL.getAllEquipment()[0], name: EVIL, category: EVIL, wargearIndex: 0, isStarting: false };
+        const html = WT.renderOwnedItem(equip, 'equipment');
+        safeAll('WargearTab.renderOwnedItem (equipment)', html, { keywords: false });
+        check('WargearTab.renderOwnedItem escapes the category', html.includes(`<div class="wargear-type">${SAFE}</div>`), true);
+        safeAll('WargearTab.renderOwnedWeapon (custom)', WT.renderOwnedWeapon({ ...weaponEntry.custom, wargearIndex: 0, isStarting: false, upgrades: [] }), { keywords: false });
+    }
+    {
+        sheetCharacter.talents = [{ id: 'trademark_weapon', choice: '0' }];
+        const html = SHEET.renderTalents(sheetWith([weaponEntry]));
+        check('CharacterSheetTab.renderTalents shows the escaped weapon name', html.includes(SAFE), true);
+        check('CharacterSheetTab.renderTalents holds no raw <b> tag', RAW_TAG.test(html), false);
+        sheetCharacter.talents = [];
+    }
+    {
+        // TalentsTab.renderSelected builds DOM nodes, so run it against a minimal document stub.
+        const nodes = [];
+        const stub = () => { const n = { className: '', style: {}, children: [], dataset: {}, set innerHTML(v) { this._html = v; }, get innerHTML() { return this._html || ''; },
+            appendChild(c) { this.children.push(c); }, addEventListener() {}, querySelector: () => stub(), querySelectorAll: () => [], setAttribute() {}, classList: { add() {}, remove() {} } }; nodes.push(n); return n; };
+        const container = stub();
+        const tctx = creatorSandbox({
+            State: { character: sheetCharacter, getCharacter: () => sheetCharacter },
+            ImprovisedBuilder: { talentProfilesHtml: () => '' },
+            Glossary: { enhanceElement() {}, enhance() {} },
+            document: { getElementById: () => container, createElement: stub }
+        });
+        load(tctx, 'creator/tabs/talents-tab.js');
+        sheetCharacter.talents = [{ id: 'trademark_weapon', choice: '0' }];
+        sheetCharacter.wargear = [weaponEntry];
+        get(tctx, 'TalentsTab').renderSelected();
+        const html = container.children.map(c => c.innerHTML).join('');
+        check('TalentsTab.renderSelected shows the escaped weapon name', html.includes(SAFE), true);
+        check('TalentsTab.renderSelected holds no raw <b> tag', RAW_TAG.test(html), false);
+        sheetCharacter.talents = [];
+        sheetCharacter.wargear = [];
+    }
+}
+
 console.log(failures === 0 ? '\nAll custom wargear checks passed.' : `\n${failures} custom wargear check(s) FAILED.`);
 process.exit(failures === 0 ? 0 : 1);

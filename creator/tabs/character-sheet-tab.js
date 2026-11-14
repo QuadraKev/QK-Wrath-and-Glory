@@ -1,15 +1,30 @@
 // Character Sheet Tab - Renders a comprehensive character summary
 
 const CharacterSheetTab = {
-    // Table-of-contents floating button + panel (created once in init)
-    _tocFab: null,
-    _tocPanel: null,
-    _tocEscHandler: null,
-    _tocDismissHandler: null,
-
     // Threat-load state for the Followers block: 'idle' | 'pending' | 'loaded' | 'failed'.
     // Guards against asking DataLoader for the threats more than once.
     _followerThreatLoad: 'idle',
+
+    // The selected sheet tab. It stays for the page session and is never stored.
+    activeSheetTab: 'stats',
+
+    // The sheet tabs, in tab order. Each tab is one pane built by renderPane.
+    SHEET_TABS: [
+        { id: 'character', label: 'Character' },
+        { id: 'stats', label: 'Stats' },
+        { id: 'abilities', label: 'Abilities' },
+        { id: 'wargear', label: 'Wargear' },
+        { id: 'powers', label: 'Psychic Powers' },
+        { id: 'companions', label: 'Followers' },
+        { id: 'notes', label: 'Notes' }
+    ],
+
+    // True during the focus move of a Tab key press, and during the focus restore of a re-render (refer to handleSheetFocusIn)
+    _tabKeyFocus: false,
+    _restoringFocus: false,
+
+    // The controls that can get the focus back after a re-render (refer to _focusKeyOf)
+    _FOCUS_SELECTOR: '.sheet-tab-btn, .tracker-btn, .weapon-equip-checkbox, .follower-living-btn, .sheet-notes-input',
 
     // Initialize the tab
     init() {
@@ -23,10 +38,32 @@ const CharacterSheetTab = {
             this.copySummary(e.target);
         });
 
-        // Build the table-of-contents FAB + panel once, and keep its
-        // visibility tied to whether the Character Sheet tab is active.
-        this._ensureTocElements();
-        this._observeTabVisibility();
+        // Tab bar: one delegated click and keydown listener (the Notes box is inside this element too)
+        const sheetContent = document.getElementById('character-sheet-content');
+        sheetContent.addEventListener('click', (e) => {
+            const btn = e.target.closest('.sheet-tab-btn');
+            if (btn) this.selectSheetTab(btn.dataset.sheetTab);
+        });
+        sheetContent.addEventListener('keydown', (e) => {
+            // The Tab key moves the focus in its default action, before a timer runs: the flag holds for that move only
+            if (e.key === 'Tab') {
+                this._tabKeyFocus = true;
+                setTimeout(() => { this._tabKeyFocus = false; }, 0);
+            }
+            this.handleSheetTabKeydown(e);
+        });
+        sheetContent.addEventListener('focusin', (e) => {
+            this.handleSheetFocusIn(e);
+        });
+
+        // The edge cue of the tab bar. A scroll event does not bubble and each render replaces the bar,
+        // so the listener sits on the sheet in the capture phase.
+        sheetContent.addEventListener('scroll', (e) => {
+            if (e.target.classList && e.target.classList.contains('sheet-tabbar')) this._updateTabBarCue(sheetContent);
+        }, true);
+        window.addEventListener('resize', () => {
+            this.handleSheetResize();
+        });
     },
 
     // Refresh the character sheet
@@ -36,6 +73,9 @@ const CharacterSheetTab = {
 
     // Render the full character sheet
     render() {
+        // The rewrite below resets the scroll and the focus: keep them to put back after it
+        const viewState = this._captureViewState();
+
         const character = State.getCharacter();
 
         // Repair any background selections missing bonusType
@@ -49,38 +89,29 @@ const CharacterSheetTab = {
         const resilienceBreakdown = DerivedStats.getResilienceBreakdown(character);
         const defenceBreakdown = DerivedStats.getDefenceBreakdown(character);
 
+        const ctx = {
+            character,
+            species,
+            archetype,
+            keywords,
+            derivedStats,
+            breakdowns: { resilience: resilienceBreakdown, defence: defenceBreakdown }
+        };
+        const visible = this.getVisibleSheetTabs(character);
+
+        // The selected tab can go away (no PSYKER keyword, no follower): fall back to Stats
+        // and show the Stats pane from its top, not at the scroll position of the old pane
+        if (!visible.includes(this.activeSheetTab)) {
+            this.activeSheetTab = 'stats';
+            viewState.scrollTop = 0;
+        }
+
         const container = document.getElementById('character-sheet-content');
 
         container.innerHTML = `
-            ${this.renderHeader(character, species, archetype, keywords)}
-            <div class="sheet-body">
-                <div class="sheet-body-left">
-                    <div class="sheet-columns">
-                        <div class="sheet-column">
-                            ${this.renderAttributes(character)}
-                            ${this.renderTraits(derivedStats, { resilience: resilienceBreakdown, defence: defenceBreakdown })}
-                        </div>
-                        <div class="sheet-column">
-                            ${this.renderSkills(character)}
-                        </div>
-                    </div>
-                    ${this.renderPsychicPowers(character)}
-                    ${this.renderSpeciesAbilities(character, species)}
-                    ${this.renderArchetypeAbilities(archetype)}
-                    ${this.renderAscensions(character)}
-                    ${this.renderTalents(character)}
-                    ${this.renderInjuriesCorruption(character)}
-                    ${this.renderBackground(character)}
-                    ${this.renderNotes(character)}
-                </div>
-                <div class="sheet-body-right">
-                    ${this.renderWeapons(character)}
-                    ${this.renderArmor(character)}
-                    ${this.renderAugmetics(character)}
-                    ${this.renderEquipment(character)}
-                    ${this.renderHolyRelics(character)}
-                    ${this.renderFollowers(character)}
-                </div>
+            ${this.renderStrip(ctx, visible)}
+            <div class="sheet-panes">
+                ${visible.map(id => `<div class="sheet-pane" role="tabpanel" id="sheet-pane-${id}" aria-labelledby="sheet-tab-${id}" tabindex="0"${id === this.activeSheetTab ? '' : ' hidden'}>${this.renderPane(id, ctx)}</div>`).join('')}
             </div>
         `;
 
@@ -102,155 +133,12 @@ const CharacterSheetTab = {
         // Bind the editable notes box
         this.bindNotesInput(container);
 
-        // Give each section a stable id and rebuild the jump-to-section list
-        this._assignSectionIds(container);
-        this._buildTocList();
-    },
+        // Put back the scroll position and the focus from before the rewrite
+        this._restoreViewState(viewState);
 
-    // ===== Table of Contents (jump-to-section) =====
-
-    // Create the floating button + panel once and append them to #app
-    _ensureTocElements() {
-        if (this._tocFab) return;
-
-        const app = document.getElementById('app');
-        if (!app) return;
-
-        const fab = document.createElement('button');
-        fab.className = 'sheet-toc-fab';
-        fab.setAttribute('aria-label', 'Jump to section');
-        fab.setAttribute('title', 'Jump to section');
-        fab.innerHTML = '&#9776;';
-
-        const panel = document.createElement('div');
-        panel.className = 'sheet-toc-panel hidden';
-        panel.innerHTML = `
-            <div class="sheet-toc-header">Jump to Section</div>
-            <ul class="sheet-toc-list"></ul>
-        `;
-
-        // Toggle the panel when the button is clicked
-        fab.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this._toggleTocPanel();
-        });
-
-        // Jumping to a section hides the panel (event delegation)
-        panel.querySelector('.sheet-toc-list').addEventListener('click', (e) => {
-            const item = e.target.closest('.sheet-toc-item');
-            if (!item) return;
-            const target = document.getElementById(item.dataset.sectionId);
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-            this._closeTocPanel();
-        });
-
-        app.appendChild(fab);
-        app.appendChild(panel);
-        this._tocFab = fab;
-        this._tocPanel = panel;
-    },
-
-    // Show/hide the FAB based on whether the Character Sheet tab is active
-    _observeTabVisibility() {
-        const tab = document.getElementById('tab-character-sheet');
-        if (!tab) return;
-
-        const sync = () => {
-            const active = tab.classList.contains('active');
-            if (this._tocFab) this._tocFab.classList.toggle('hidden', !active);
-            // Never leave the panel open when the tab is hidden
-            if (!active) this._closeTocPanel();
-        };
-
-        new MutationObserver(sync).observe(tab, {
-            attributes: true,
-            attributeFilter: ['class']
-        });
-        sync();
-    },
-
-    // Slugify a section title for use as a stable element id
-    _slugifySection(text) {
-        return 'sheet-section-' + text
-            .toLowerCase()
-            .replace(/&/g, ' and ')
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/^-+|-+$/g, '');
-    },
-
-    // Assign an id to each rendered section based on its title
-    _assignSectionIds(container) {
-        const used = new Set();
-        container.querySelectorAll('.sheet-section').forEach(section => {
-            const titleEl = section.querySelector('.sheet-section-title');
-            if (!titleEl) return; // header block has no h2
-            let id = this._slugifySection(titleEl.textContent);
-            // Guard against duplicate slugs
-            let unique = id;
-            let n = 2;
-            while (used.has(unique)) unique = `${id}-${n++}`;
-            used.add(unique);
-            section.id = unique;
-        });
-    },
-
-    // Rebuild the TOC list from the currently rendered sections
-    _buildTocList() {
-        if (!this._tocPanel) return;
-        const container = document.getElementById('character-sheet-content');
-        if (!container) return;
-
-        const list = this._tocPanel.querySelector('.sheet-toc-list');
-        const items = [];
-        container.querySelectorAll('.sheet-section').forEach(section => {
-            const titleEl = section.querySelector('.sheet-section-title');
-            if (!titleEl || !section.id) return;
-            items.push(`<li class="sheet-toc-item" data-section-id="${section.id}">${this.escapeHtml(titleEl.textContent)}</li>`);
-        });
-        list.innerHTML = items.join('');
-    },
-
-    _toggleTocPanel() {
-        if (!this._tocPanel) return;
-        if (this._tocPanel.classList.contains('hidden')) {
-            this._openTocPanel();
-        } else {
-            this._closeTocPanel();
-        }
-    },
-
-    _openTocPanel() {
-        if (!this._tocPanel) return;
-        this._buildTocList();
-        this._tocPanel.classList.remove('hidden');
-
-        // Dismiss on outside click
-        this._tocDismissHandler = (e) => {
-            if (!this._tocPanel.contains(e.target) && e.target !== this._tocFab) {
-                this._closeTocPanel();
-            }
-        };
-        setTimeout(() => document.addEventListener('click', this._tocDismissHandler), 0);
-
-        // Dismiss on Escape
-        this._tocEscHandler = (e) => {
-            if (e.key === 'Escape') this._closeTocPanel();
-        };
-        document.addEventListener('keydown', this._tocEscHandler);
-    },
-
-    _closeTocPanel() {
-        if (this._tocPanel) this._tocPanel.classList.add('hidden');
-        if (this._tocDismissHandler) {
-            document.removeEventListener('click', this._tocDismissHandler);
-            this._tocDismissHandler = null;
-        }
-        if (this._tocEscHandler) {
-            document.removeEventListener('keydown', this._tocEscHandler);
-            this._tocEscHandler = null;
-        }
+        // A rewrite resets the scroll of the tab bar: bring the selected tab into view again, then set the edge cue
+        this._scrollActiveTabIntoBar(container);
+        this._updateTabBarCue(container);
     },
 
     // Bind event handlers for session tracking (boxes and +/- buttons)
@@ -425,9 +313,8 @@ const CharacterSheetTab = {
         }
     },
 
-    // Render the header section
-    renderHeader(character, species, archetype, keywords) {
-        const name = character.name || 'Unnamed Character';
+    // Helper: Species name for display, with the chapter or path in parentheses (raw text)
+    getSpeciesDisplayName(character, species) {
         let speciesName = species?.name || '-';
 
         // Add chapter/path info to species name if applicable
@@ -453,15 +340,146 @@ const CharacterSheetTab = {
             }
         }
 
-        const archetypeName = character.archetype?.id === 'custom'
+        return speciesName;
+    },
+
+    // Helper: Archetype name for display (raw text)
+    getArchetypeDisplayName(character, archetype) {
+        return character.archetype?.id === 'custom'
             ? (character.customArchetype?.name || 'Custom Archetype')
             : (archetype?.name || '-');
+    },
+
+    // Get the ids of the tabs to show, in tab order
+    getVisibleSheetTabs(character) {
+        return this.SHEET_TABS.map(tab => tab.id).filter(id => {
+            if (id === 'powers') return State.isPsyker();
+            if (id === 'companions') return (character.followers || []).length > 0;
+            return true;
+        });
+    },
+
+    // Render the strip: the identity, then a bar with the trackers and the tab bar
+    renderStrip(ctx, visibleIds) {
+        return `
+            <div class="sheet-strip">
+                ${this.renderHeader(ctx.character, ctx.species, ctx.archetype, ctx.keywords)}
+                <div class="sheet-strip-bar">
+                    ${this.renderStripTrackers(ctx.derivedStats)}
+                    ${this.renderTabBar(visibleIds)}
+                </div>
+            </div>
+        `;
+    },
+
+    // Render the tab bar (WAI-ARIA Tabs pattern): one button per visible tab
+    renderTabBar(visibleIds) {
+        const buttons = this.SHEET_TABS.filter(tab => visibleIds.includes(tab.id)).map(tab => {
+            const on = tab.id === this.activeSheetTab;
+            return `<button type="button" class="sheet-tab-btn${on ? ' active' : ''}" role="tab" id="sheet-tab-${tab.id}" aria-controls="sheet-pane-${tab.id}" data-sheet-tab="${tab.id}" aria-selected="${on}" tabindex="${on ? 0 : -1}">${tab.label}</button>`;
+        }).join('');
+        return `<div class="sheet-tabbar" role="tablist" aria-label="Character sheet sections">${buttons}</div>`;
+    },
+
+    // Render the Wounds and Shock boxes and the Wrath counter of the strip.
+    // The children stay flat, because the strip grid places each one.
+    renderStripTrackers(stats) {
+        return `
+            <div class="sheet-strip-trackers">
+                <span class="sheet-strip-label tracker-label">Wounds</span>
+                <div class="tracking-boxes">${this.renderTrackingBoxes('wounds', State.getCurrentWounds(), stats.maxWounds)}</div>
+                <span class="sheet-strip-label tracker-label">Shock</span>
+                <div class="tracking-boxes">${this.renderTrackingBoxes('shock', State.getCurrentShock(), stats.maxShock)}</div>
+                <div class="sheet-strip-wrath">
+                    <span class="tracker-label">Wrath</span>
+                    <div class="tracker-controls">
+                        <button type="button" class="tracker-btn tracker-minus" data-type="wrath" aria-label="Remove Wrath">−</button>
+                        <span class="tracker-value">${this.escapeHtml(String(State.getCurrentWrath()))}</span>
+                        <button type="button" class="tracker-btn tracker-plus" data-type="wrath" aria-label="Add Wrath">+</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    // Render the blocks of one tab's pane. The two-column wrappers apply only on a wide screen.
+    renderPane(tabId, ctx) {
+        const { character } = ctx;
+        switch (tabId) {
+            case 'character':
+                return `
+                    <div class="sheet-pane-columns">
+                        <div class="sheet-pane-column">
+                            ${this.renderDetails(character, ctx.species, ctx.archetype)}
+                            ${this.renderAscensions(character)}
+                        </div>
+                        <div class="sheet-pane-column">
+                            ${this.renderInjuriesCorruption(character)}
+                            ${this.renderBackground(character)}
+                        </div>
+                    </div>
+                `;
+            case 'stats':
+                return `
+                    <div class="sheet-columns">
+                        <div class="sheet-column">
+                            ${this.renderAttributes(character)}
+                            ${this.renderTraits(ctx.derivedStats, ctx.breakdowns)}
+                        </div>
+                        <div class="sheet-column">
+                            ${this.renderSkills(character)}
+                        </div>
+                    </div>
+                `;
+            case 'abilities':
+                return `
+                    <div class="sheet-pane-columns">
+                        <div class="sheet-pane-column">
+                            ${this.renderSpeciesAbilities(character, ctx.species)}
+                            ${this.renderArchetypeAbilities(ctx.archetype)}
+                        </div>
+                        <div class="sheet-pane-column">
+                            ${this.renderTalents(character)}
+                            ${this.renderMutations(character)}
+                        </div>
+                    </div>
+                `;
+            case 'wargear':
+                return `
+                    ${this.renderWeapons(character)}
+                    <div class="sheet-pane-columns">
+                        <div class="sheet-pane-column">
+                            ${this.renderArmor(character)}
+                            ${this.renderAugmetics(character)}
+                        </div>
+                        <div class="sheet-pane-column">
+                            ${this.renderEquipment(character)}
+                            ${this.renderHolyRelics(character)}
+                        </div>
+                    </div>
+                `;
+            case 'powers':
+                return this.renderPsychicPowers(character);
+            case 'companions':
+                return this.renderFollowers(character);
+            case 'notes':
+                return this.renderNotes(character);
+            default:
+                return '';
+        }
+    },
+
+    // Render the header section
+    renderHeader(character, species, archetype, keywords) {
+        const name = character.name || 'Unnamed Character';
+        const speciesName = this.getSpeciesDisplayName(character, species);
+        const archetypeName = this.getArchetypeDisplayName(character, archetype);
         const tier = character.tier || 1;
         const effectiveTier = State.getEffectiveTier();
         const rank = character.rank || 1;
 
         const keywordHtml = keywords.length > 0
-            ? keywords.map(k => `<span class="sheet-keyword">${k}</span>`).join('')
+            ? keywords.map(k => `<span class="sheet-keyword">${this.escapeHtml(k)}</span>`).join('')
             : '<span class="sheet-keyword">-</span>';
 
         const tierDisplay = `Tier ${effectiveTier}`;
@@ -470,7 +488,7 @@ const CharacterSheetTab = {
             <div class="sheet-section sheet-header-section">
                 <h1 class="sheet-character-name">${this.escapeHtml(name)}</h1>
                 <div class="sheet-subtitle">
-                    ${speciesName} &bull; ${archetypeName} &bull; ${tierDisplay} &bull; Rank ${rank}
+                    ${this.escapeHtml(speciesName)} &bull; ${this.escapeHtml(archetypeName)} &bull; ${tierDisplay} &bull; Rank ${this.escapeHtml(String(rank))}
                 </div>
                 <div class="sheet-keywords">
                     ${keywordHtml}
@@ -479,11 +497,40 @@ const CharacterSheetTab = {
         `;
     },
 
+    // Render the Details block (name, species, archetype, tier, rank)
+    renderDetails(character, species, archetype) {
+        const name = character.name || 'Unnamed Character';
+        let archetypeText = this.escapeHtml(this.getArchetypeDisplayName(character, archetype));
+
+        // Add each ascension archetype that resolves, in array order
+        for (const asc of character.ascensions || []) {
+            if (asc.type !== 'archetype') continue;
+            const ascArchetype = DataLoader.getArchetype(asc.archetypeId);
+            if (ascArchetype) {
+                archetypeText += ` → ${this.escapeHtml(ascArchetype.name)} (Tier ${this.escapeHtml(String(asc.targetTier))})`;
+            }
+        }
+
+        const rows = [
+            ['Name', this.escapeHtml(name)],
+            ['Species', this.escapeHtml(this.getSpeciesDisplayName(character, species))],
+            ['Archetype', archetypeText],
+            ['Tier', State.getEffectiveTier()],
+            ['Rank', this.escapeHtml(String(character.rank || 1))]
+        ];
+
+        return `
+            <div class="sheet-section sheet-details-section">
+                <h2 class="sheet-section-title">Details</h2>
+                <div class="sheet-background-content">
+                    ${rows.map(([label, value]) => `<p class="sheet-background-item"><strong>${label}:</strong> ${value}</p>`).join('')}
+                </div>
+            </div>
+        `;
+    },
+
     // Render traits (formerly derived stats) in compact 2-column grid
     renderTraits(stats, breakdowns = {}) {
-        // Get current session values (wounds/shock count UP from 0)
-        const currentWounds = State.getCurrentWounds();
-        const currentShock = State.getCurrentShock();
         const currentWealth = State.getCurrentWealth();
 
         // Build tooltip text from breakdown
@@ -522,28 +569,9 @@ const CharacterSheetTab = {
             `;
         }).join('');
 
-        // Generate wound boxes
-        const woundBoxes = this.renderTrackingBoxes('wounds', currentWounds, stats.maxWounds);
-
-        // Generate shock boxes
-        const shockBoxes = this.renderTrackingBoxes('shock', currentShock, stats.maxShock);
-
-        // Get Wrath and Faith values
-        const currentWrath = State.getCurrentWrath();
+        // Get Faith values
         const currentFaith = State.getCurrentFaith();
         const maxFaith = State.getMaxFaith();
-
-        // Wrath tracker (always shown)
-        const wrathTracker = `
-            <div class="tracker-column">
-                <span class="tracker-label">Wrath</span>
-                <div class="tracker-controls">
-                    <button class="tracker-btn tracker-minus" data-type="wrath">−</button>
-                    <span class="tracker-value">${currentWrath}</span>
-                    <button class="tracker-btn tracker-plus" data-type="wrath">+</button>
-                </div>
-            </div>
-        `;
 
         // Faith tracker (only shown if character has Faith)
         const faithTracker = maxFaith > 0 ? `
@@ -576,16 +604,7 @@ const CharacterSheetTab = {
                     ${staticItems}
                 </div>
                 <div class="sheet-tracking-section">
-                    <div class="tracker-row">
-                        <span class="tracker-label">Wounds</span>
-                        <div class="tracking-boxes">${woundBoxes}</div>
-                    </div>
-                    <div class="tracker-row">
-                        <span class="tracker-label">Shock</span>
-                        <div class="tracking-boxes">${shockBoxes}</div>
-                    </div>
                     <div class="tracker-row-horizontal">
-                        ${wrathTracker}
                         ${faithTracker}
                         ${wealthTracker}
                     </div>
@@ -660,7 +679,7 @@ const CharacterSheetTab = {
                     Members:
                     <button class="follower-living-btn" data-delta="-1" title="One more casualty"
                             ${follower.livingCount <= 0 ? 'disabled' : ''}>&minus;</button>
-                    <span class="sheet-follower-living">${follower.livingCount} / ${follower.count}</span>
+                    <span class="sheet-follower-living">${this.escapeHtml(String(follower.livingCount))} / ${this.escapeHtml(String(follower.count))}</span>
                     <button class="follower-living-btn" data-delta="1" title="One more living member"
                             ${follower.livingCount >= follower.count ? 'disabled' : ''}>+</button>
                 </span>
@@ -678,7 +697,7 @@ const CharacterSheetTab = {
         ` : '';
 
         return `
-            <div class="sheet-follower" data-follower-id="${follower.id}">
+            <div class="sheet-follower" data-follower-id="${this.escapeHtml(follower.id)}">
                 <div class="sheet-follower-header">
                     <span class="sheet-follower-name">${this.escapeHtml(displayName)}</span>
                     <span class="sheet-follower-type">${isMob ? 'Mob' : 'Individual'}</span>
@@ -1783,10 +1802,9 @@ const CharacterSheetTab = {
         const memorableInjuries = character.memorableInjuries || [];
         const traumaticInjuries = character.traumaticInjuries || [];
         const corruption = character.corruption || 0;
-        const mutations = character.mutations || [];
 
         // Hide section entirely if nothing to show
-        if (memorableInjuries.length === 0 && traumaticInjuries.length === 0 && corruption === 0 && mutations.length === 0) {
+        if (memorableInjuries.length === 0 && traumaticInjuries.length === 0 && corruption === 0) {
             return '';
         }
 
@@ -1853,60 +1871,68 @@ const CharacterSheetTab = {
             `;
         }
 
-        // Mutations
-        if (mutations.length > 0) {
-            const allMutations = data.mutations || [];
-            const items = mutations.map(entry => {
-                const mutation = allMutations.find(m => m.id === entry.id);
-                if (!mutation) return '';
-
-                let subChoiceLabel = '';
-                let effectText = mutation.effect;
-                let activeBonuses = mutation.bonuses;
-
-                if (entry.subChoice && mutation.subChoices) {
-                    const sub = mutation.subChoices.find(s => s.id === entry.subChoice);
-                    if (sub) {
-                        subChoiceLabel = ` — ${sub.name}`;
-                        effectText = sub.effect;
-                        activeBonuses = sub.bonuses || null;
-                    }
-                }
-
-                const severityClass = `sheet-mutation-severity-${mutation.severity}`;
-
-                let bonusDisplay = '';
-                if (activeBonuses) {
-                    const bonusParts = Object.entries(activeBonuses).map(([key, val]) => {
-                        const name = this.formatMutationBonusKey(key);
-                        return `${val > 0 ? '+' : ''}${val} ${name}`;
-                    });
-                    bonusDisplay = `<div class="sheet-mutation-bonuses">${bonusParts.join(', ')}</div>`;
-                }
-
-                return `
-                    <div class="sheet-mutation-item">
-                        <div class="sheet-mutation-header">
-                            <span class="sheet-mutation-name">${mutation.name}${subChoiceLabel}</span>
-                            <span class="sheet-mutation-severity ${severityClass}">${mutation.severity}</span>
-                        </div>
-                        <div class="sheet-mutation-desc">${mutation.description}</div>
-                        <div class="sheet-mutation-effect">${effectText}</div>
-                        ${bonusDisplay}
-                    </div>
-                `;
-            }).join('');
-
-            sections += `
-                <h3 class="sheet-subsection-title">Mutations</h3>
-                ${items}
-            `;
-        }
-
         return `
             <div class="sheet-section">
                 <h2 class="sheet-section-title">Injuries & Corruption</h2>
                 ${sections}
+            </div>
+        `;
+    },
+
+    // Render the mutations section
+    renderMutations(character) {
+        const data = DataLoader.getInjuriesCorruptionData();
+        if (!data) return '';
+
+        const mutations = character.mutations || [];
+        if (mutations.length === 0) return '';
+
+        const allMutations = data.mutations || [];
+        const items = mutations.map(entry => {
+            const mutation = allMutations.find(m => m.id === entry.id);
+            if (!mutation) return '';
+
+            let subChoiceLabel = '';
+            let effectText = mutation.effect;
+            let activeBonuses = mutation.bonuses;
+
+            if (entry.subChoice && mutation.subChoices) {
+                const sub = mutation.subChoices.find(s => s.id === entry.subChoice);
+                if (sub) {
+                    subChoiceLabel = ` — ${sub.name}`;
+                    effectText = sub.effect;
+                    activeBonuses = sub.bonuses || null;
+                }
+            }
+
+            const severityClass = `sheet-mutation-severity-${mutation.severity}`;
+
+            let bonusDisplay = '';
+            if (activeBonuses) {
+                const bonusParts = Object.entries(activeBonuses).map(([key, val]) => {
+                    const name = this.formatMutationBonusKey(key);
+                    return `${val > 0 ? '+' : ''}${val} ${name}`;
+                });
+                bonusDisplay = `<div class="sheet-mutation-bonuses">${bonusParts.join(', ')}</div>`;
+            }
+
+            return `
+                <div class="sheet-mutation-item">
+                    <div class="sheet-mutation-header">
+                        <span class="sheet-mutation-name">${mutation.name}${subChoiceLabel}</span>
+                        <span class="sheet-mutation-severity ${severityClass}">${mutation.severity}</span>
+                    </div>
+                    <div class="sheet-mutation-desc">${mutation.description}</div>
+                    <div class="sheet-mutation-effect">${effectText}</div>
+                    ${bonusDisplay}
+                </div>
+            `;
+        }).join('');
+
+        return `
+            <div class="sheet-section">
+                <h2 class="sheet-section-title">Mutations</h2>
+                ${items}
             </div>
         `;
     },
@@ -1973,7 +1999,7 @@ const CharacterSheetTab = {
         `;
     },
 
-    // Render notes (editable in place; always shown so it stays in the table of contents)
+    // Render notes (editable in place; always shown)
     renderNotes(character) {
         const notes = character.notes || '';
 
@@ -2463,6 +2489,197 @@ const CharacterSheetTab = {
                 }, 200);
             });
         });
+    },
+
+    // ===== Sheet tab selection and keys =====
+
+    // Select a tab without a re-render: toggle the attributes, close popups, keep the pane clear of the strip
+    selectSheetTab(id) {
+        const container = document.getElementById('character-sheet-content');
+        this.activeSheetTab = id;
+
+        container.querySelectorAll('.sheet-tab-btn').forEach(btn => {
+            const on = btn.dataset.sheetTab === id;
+            btn.setAttribute('aria-selected', on ? 'true' : 'false');
+            btn.setAttribute('tabindex', on ? '0' : '-1');
+            btn.classList.toggle('active', on);
+        });
+        container.querySelectorAll('.sheet-pane').forEach(pane => {
+            pane.hidden = pane.id !== 'sheet-pane-' + id;
+        });
+
+        this._closeBreakdownPopup();
+        if (typeof Glossary !== 'undefined') Glossary.closeAllPopups();
+
+        // Scroll only when the new pane would start under the pinned part
+        this._keepBelowPinned(container, container.querySelector('.sheet-panes'), 0);
+
+        this._scrollActiveTabIntoBar(container);
+        this._updateTabBarCue(container);
+    },
+
+    // Scroll the sheet up so that the top of el is margin px or more under the pinned part. An element lower than that keeps the scroll.
+    _keepBelowPinned(container, el, margin) {
+        const pinned = this._pinnedElement(container);
+        const scroller = document.getElementById('tab-character-sheet');
+        if (!el || !pinned || !scroller) return;
+        const gap = el.getBoundingClientRect().top - pinned.getBoundingClientRect().bottom - margin;
+        if (gap < 0) scroller.scrollTop += gap;
+    },
+
+    // The browser scrolls a Tab focus into the scrollport, and the pinned part covers the top of it.
+    // A Tab focus inside the panes thus goes under the pinned part: 4px for the focus ring of a control,
+    // 0px for a pane (its ring is inside it). A mouse or touch focus, the focus restore of a re-render
+    // and a control of the pinned part do not move the page.
+    handleSheetFocusIn(e) {
+        if (!this._tabKeyFocus || this._restoringFocus) return;
+        const target = e.target;
+        if (!target.closest || !target.closest('.sheet-panes')) return;
+        const container = document.getElementById('character-sheet-content');
+        this._keepBelowPinned(container, target, target.classList.contains('sheet-pane') ? 0 : 4);
+    },
+
+    // The pinned part of the strip. The CSS decides the mode, so JS reads the computed display and does not repeat the media query:
+    // the strip is not display: contents → full mode, the whole strip;
+    // only the strip is display: contents → compact mode, the strip bar;
+    // the strip and the strip bar are display: contents → low mode, the tab bar.
+    _pinnedElement(container) {
+        const strip = container.querySelector('.sheet-strip');
+        if (!strip || window.getComputedStyle(strip).display !== 'contents') return strip;
+        const bar = container.querySelector('.sheet-strip-bar');
+        if (bar && window.getComputedStyle(bar).display === 'contents') {
+            return container.querySelector('.sheet-tabbar');
+        }
+        return bar;
+    },
+
+    // The id of the tab that a key moves to, or null when the key or the current id does not apply
+    _nextSheetTabId(ids, currentId, key) {
+        const index = ids.indexOf(currentId);
+        if (index < 0) return null;
+        switch (key) {
+            case 'ArrowRight': return ids[(index + 1) % ids.length];
+            case 'ArrowLeft': return ids[(index - 1 + ids.length) % ids.length];
+            case 'Home': return ids[0];
+            case 'End': return ids[ids.length - 1];
+            default: return null;
+        }
+    },
+
+    // Keys on a focused tab button. The listener sits on the whole sheet, so any other target
+    // (the Notes box, a button in a pane) must return at once and keep its own keys.
+    handleSheetTabKeydown(e) {
+        const btn = e.target.closest('.sheet-tab-btn');
+        if (!btn) return;
+
+        const container = document.getElementById('character-sheet-content');
+        const buttons = Array.from(container.querySelectorAll('.sheet-tab-btn'));
+        const next = this._nextSheetTabId(buttons.map(b => b.dataset.sheetTab), btn.dataset.sheetTab, e.key);
+        if (next === null) return;
+
+        e.preventDefault();
+        this.selectSheetTab(next);
+        const target = buttons.find(b => b.dataset.sheetTab === next);
+        if (target) target.focus();
+    },
+
+    // Bring the selected tab into view in the tab bar. Sets scrollLeft only: scrollIntoView would scroll the page.
+    // The 32px of room is the 24px edge fade and 8px of clear space, so a part of the next tab shows under the fade.
+    // At the first and the last tab the scroll range stops the room, and the 4px padding of the bar keeps the focus ring.
+    _scrollActiveTabIntoBar(container) {
+        const bar = container.querySelector('.sheet-tabbar');
+        const btn = container.querySelector('.sheet-tab-btn.active');
+        if (!bar || !btn) return;
+
+        const room = 32;
+        const left = btn.offsetLeft;
+        const right = left + btn.offsetWidth;
+        let target;
+        if (right + room > bar.scrollLeft + bar.clientWidth) target = right + room - bar.clientWidth;
+        else if (left - room < bar.scrollLeft) target = left - room;
+        else return;
+        bar.scrollLeft = Math.min(Math.max(0, target), Math.max(0, bar.scrollWidth - bar.clientWidth));
+    },
+
+    // Show the edge fade of the tab bar on each side that has more tabs. The state comes from the bar itself.
+    // The 1px tolerance is for a fractional scrollLeft.
+    _updateTabBarCue(container) {
+        const bar = container.querySelector('.sheet-tabbar');
+        if (!bar) return;
+        const max = bar.scrollWidth - bar.clientWidth;
+        bar.classList.toggle('sheet-tabbar-more-left', bar.scrollLeft > 1);
+        bar.classList.toggle('sheet-tabbar-more-right', bar.scrollLeft < max - 1);
+    },
+
+    // After a rotate or a resize, bring the selected tab into view again and set the edge cue. Nothing while the sheet is not displayed.
+    handleSheetResize() {
+        const scroller = document.getElementById('tab-character-sheet');
+        if (!scroller || window.getComputedStyle(scroller).display === 'none') return;
+        const container = document.getElementById('character-sheet-content');
+        this._scrollActiveTabIntoBar(container);
+        this._updateTabBarCue(container);
+    },
+
+    // ===== View state across a re-render =====
+
+    // A key that finds the same control in the new HTML, made from attributes of the markup. Null for other elements.
+    _focusKeyOf(el) {
+        if (!el || !el.classList) return null;
+        if (el.classList.contains('sheet-tab-btn')) return 'tab:' + el.dataset.sheetTab;
+        if (el.classList.contains('tracker-btn')) {
+            if (el.classList.contains('tracker-minus')) return 'tracker:' + el.dataset.type + ':minus';
+            if (el.classList.contains('tracker-plus')) return 'tracker:' + el.dataset.type + ':plus';
+            return null;
+        }
+        if (el.classList.contains('weapon-equip-checkbox')) return 'equip:' + el.dataset.wargearIndex;
+        if (el.classList.contains('follower-living-btn')) {
+            const item = el.closest('.sheet-follower');
+            return item ? 'living:' + item.dataset.followerId + ':' + el.dataset.delta : null;
+        }
+        if (el.classList.contains('sheet-notes-input')) return 'notes';
+        return null;
+    },
+
+    // The scroll position of the sheet, the focus key when the focus is inside the sheet,
+    // and the selection of the Notes box when it has the focus
+    _captureViewState() {
+        const scroller = document.getElementById('tab-character-sheet');
+        const container = document.getElementById('character-sheet-content');
+        const active = document.activeElement;
+        const focusKey = container && container.contains(active) ? this._focusKeyOf(active) : null;
+        const notes = container ? container.querySelector('.sheet-notes-input') : null;
+        return {
+            scrollTop: scroller ? scroller.scrollTop : 0,
+            focusKey,
+            selection: focusKey === 'notes' ? [active.selectionStart, active.selectionEnd] : null,
+            notesScrollTop: notes ? notes.scrollTop : null
+        };
+    },
+
+    // Set the scroll position again, and focus the control with the same key when it is there and not disabled.
+    // The keys are compared, never put in a selector: a key can hold a follower id.
+    // The scroll of the Notes box comes back with or without the focus.
+    _restoreViewState(state) {
+        const scroller = document.getElementById('tab-character-sheet');
+        if (scroller) scroller.scrollTop = state.scrollTop;
+
+        const container = document.getElementById('character-sheet-content');
+        const match = state.focusKey === null ? null : Array.from(container.querySelectorAll(this._FOCUS_SELECTOR))
+            .find(el => this._focusKeyOf(el) === state.focusKey);
+        if (match && !match.disabled) {
+            this._restoringFocus = true;
+            try {
+                match.focus({ preventScroll: true });
+            } finally {
+                this._restoringFocus = false;
+            }
+            // The caret of the new Notes box is at 0: the restore sets the old range
+            if (state.selection) match.setSelectionRange(state.selection[0], state.selection[1]);
+        }
+
+        // Last, because setSelectionRange scrolls the box to the caret
+        const notes = container.querySelector('.sheet-notes-input');
+        if (notes && typeof state.notesScrollTop === 'number') notes.scrollTop = state.notesScrollTop;
     },
 
     // Show a glossary-style breakdown popup for an element

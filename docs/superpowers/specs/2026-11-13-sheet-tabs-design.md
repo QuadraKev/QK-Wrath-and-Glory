@@ -145,10 +145,21 @@ trackers, a 32px Wrath row, a 40px tab bar and 16px of vertical padding. "Typica
 | 740×360 (landscape phone) | 1 + 1 | about 145px (40%) | 3 + 2 | about 225px (62%) |
 | 1280×560 | 1 + 1 | about 145px (26%) | 2 + 2 | about 200px (36%) |
 
-No special case for a short window **[Designer, new]**: the owner accepted more rows "if needed".
-The worst case in a landscape phone leaves about 135px for the pane, and the worst case on a 360px
-phone leaves about 390px. The player can turn the phone upright. Only a Tier 5, Rank 5 character with
-the largest bonuses reaches the worst case.
+**Low mode [Controller ruling, 2026-11-14; the owner can reverse it].** The first version of this
+section had no special case for a short window and said that the worst case in a landscape phone
+leaves about 135px for the pane. That figure was wrong: it did not count the app header, the tab
+navigation and the footer (130px). Measured at 740×360, the scroller is 230px high, and the pinned
+part of compact mode left 80px for a typical character and 2px for the worst case. So a third mode
+exists: in `@media screen and (max-height: 480px)` the tracker rows are not pinned and scroll with
+the page, and only the tab bar stays pinned (48px), which leaves 182px for the pane at 740×360.
+Windows from 481px to 600px high keep compact mode. The owner's decision for a narrow viewport
+(the boxes stay pinned and fill more rows) does not change. `_pinnedElement` returns the strip in
+full mode, the strip bar in compact mode and the tab bar in low mode. The 740×360 row of the table
+above describes compact mode and does not apply any more.
+
+Measured room for the pane (pinned height / room): 360×740 typical 176 / 434px, worst case
+358 / 252px; 1280×560 typical 150 / 280px, worst case 202 / 228px; 1280×481 worst case
+202 / 149px. Only a Tier 5, Rank 5 character with the largest bonuses reaches the worst case.
 
 Size targets (browser check, §10.2), each with a tolerance of 20px for fonts and borders:
 
@@ -259,6 +270,23 @@ The tab bar: a flex row of pill buttons in the style of `.wargear-tab-btn`
 (`creator/css/styles.css:1340-1360`). It wraps in full mode. In compact mode it is one row with
 `flex-wrap: nowrap` and `overflow-x: auto` **[Designer]**; after a render and after a switch, the
 selected tab is scrolled into view inside the bar without a vertical scroll of the page.
+
+**Additions after the final review [Controller rulings, 2026-11-14].**
+
+- In compact and low mode, the tab bar stays one row and shows a 24px edge fade on each side that
+  has more tabs. Reason: at 360px the bar showed four whole tabs and a clean right edge, so nothing
+  told the player about the other tabs. The fade has the bar background (`var(--bg-primary)`), takes
+  no pointer events and exists only in the screen rules. Each fade also shows a gold arrow (`‹` on the
+  left, `›` on the right) at its outer edge, on the solid outer 12px, as in the sketch above. A fade
+  alone was too weak at 360px. The arrow is decoration, so its alternative text is empty and a screen
+  reader does not speak it. The state comes from `scrollLeft`,
+  `clientWidth` and `scrollWidth` of the bar. It changes after a render, after a switch, when the bar
+  scrolls, and on a window resize. When all tabs fit, no fade shows.
+- The scroll into view keeps 32px of room on a side that has more tabs, so the selected tab is clear
+  of the fade and a part of the next tab shows. At the first and the last tab, the 4px padding of the
+  bar keeps the room for the focus ring.
+- A window resize (for example a rotate) also scrolls the selected tab into view. The resize does
+  nothing while the sheet is not displayed.
 
 ## 3. Block-to-tab mapping
 
@@ -434,6 +462,27 @@ accepted **[Designer, new]**.
 The notes editor keeps its rule: `bindNotesInput` saves on `input` and does not re-render. A tracker
 click while the Notes tab is open re-renders the textarea from state, as today.
 
+**Additions after the task reviews [Controller rulings, 2026-11-14].**
+
+- The Notes textarea has a focus key too: `.sheet-notes-input` is in `_FOCUS_SELECTOR`, its key is
+  `notes`, and the view state also holds its `selectionStart` and `selectionEnd`, which the restore
+  sets again after the focus. Reason: the sheet re-renders one time when the threat data for
+  followers finishes its load, and a player who types in Notes at that moment lost the focus and
+  the caret.
+- When the selected tab went away and `render()` falls back to Stats, the captured scroll position
+  becomes 0, so that Stats shows from its top.
+- `renderFollower` escapes the values that come from the saved character (`follower.id`,
+  `follower.livingCount`, `follower.count`), because a character file can come from another
+  person.
+
+**Additions after the final review [Controller rulings, 2026-11-14].**
+
+- The view state also holds the `scrollTop` of the Notes box, when the box exists. The restore sets
+  it on the new box, with or without the focus, after the caret. Reason: a tracker click while the
+  Notes tab is open re-renders the box, and the box went back to its first line.
+- The strip and the Details block escape the Wrath value, the Rank and the target tier of an
+  ascension, because a character file can come from another person.
+
 ### 5.3 Tab switch
 
 `selectSheetTab(id)` does not re-render. It:
@@ -471,6 +520,24 @@ Use the WAI-ARIA Tabs pattern with automatic activation (a switch is cheap, §5.
   `:2398`, a gold border); no button has one.
 - `.sheet-pane[hidden] { display: none; }` is stated in CSS, so no later rule shows a hidden pane on
   screen.
+
+**Additions after the final review [Controller rulings, 2026-11-14].**
+
+- A keyboard focus inside the panes goes under the pinned part. Reason: the browser scrolls a
+  focused control into the scrollport, and the pinned part covers the top of the scrollport, so a
+  control could have the focus and change with no part of it visible. One `focusin` listener on
+  `#character-sheet-content` compares the top of the target with the bottom of the pinned part at
+  that moment and scrolls the page up by the difference: a control goes 4px under the pinned part for
+  its focus ring, a pane goes directly under it. No height is stored, and no `scroll-padding-top` is
+  used, because it scrolls the page for each focus on a control of the pinned part.
+- Only the focus move of a Tab key press starts this scroll. A mouse or touch focus, the focus
+  restore of a re-render, and a control of the pinned part do not move the page.
+- Known limit: the Tab key press must start inside `#character-sheet-content`. A press that starts
+  outside it (for example Shift+Tab from the footer into the last control of a pane) gets no scroll,
+  and that control can be behind the pinned part. The last re-review recorded this as a Minor item.
+- A focused pane shows the gold ring of the other sheet controls, drawn inside the pane
+  (`outline-offset: -2px`), so the scroller does not clip it. This is a screen rule only. The
+  transition of a tab button names its properties, so its focus ring shows gold at once.
 
 ## 7. Print
 

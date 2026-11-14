@@ -116,7 +116,7 @@ Data is loaded once via `DataLoader.loadAll()`, cached in a plain object (`DataL
 | Type | Convention | Examples |
 |------|-----------|----------|
 | IDs | kebab-case | `#threat-list`, `#encounter-tier`, `#talent-search` |
-| Classes | kebab-case | `.threat-detail-container`, `.filter-btn-group`, `.sheet-body-left` |
+| Classes | kebab-case | `.threat-detail-container`, `.filter-btn-group`, `.sheet-strip-bar` |
 | Data attributes | kebab-case | `data-tab`, `data-threat-id`, `data-faction`, `data-deferred` |
 
 ### Data IDs

@@ -3138,13 +3138,6 @@ textarea {
     gap: 12px;
 }
 
-.tracker-row {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-}
-
 .tracker-label {
     font-weight: 500;
     color: var(--text-primary);
@@ -4319,14 +4312,6 @@ textarea {
     .character-sheet {
         max-width: none;
     }
-
-    /* 2-column body: left (stats + character) | right (wargear) */
-    .sheet-body {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
-        align-items: start;
-    }
 }
 
 /* ===== Responsive: Tablet (<=1024px) ===== */
@@ -4828,11 +4813,6 @@ textarea {
         page-break-inside: auto;
     }
 
-    /* Disable 2-column body layout in print */
-    .sheet-body {
-        display: block !important;
-    }
-
     /* Allow Attributes + Traits to share a page within columns */
     .sheet-column .sheet-section {
         page-break-inside: auto;
@@ -4967,6 +4947,18 @@ textarea {
         display: contents !important;
     }
 
+    /* The group (a tbody) is the card. This rule stays here, outside the light theme, because it
+       corrects the layout of every print, with or without the light class. It overrides the old rule
+       "tbody, display: contents" above for the equipment groups. Specificity decides, not the order:
+       (0,2,0) against (0,1,1), both !important. The rule sits beside the old rule so that a reader finds
+       both. With display: contents the card dissolves, and the name, the Effect cell and the value sit side by side. */
+    .sheet-equipment-table .sheet-equip-group {
+        display: grid !important;
+        width: 50% !important;
+        box-sizing: border-box !important;
+        padding: 8px 10px !important;
+    }
+
     .sheet-equipment-table tbody tr {
         width: 50% !important;
         box-sizing: border-box !important;
@@ -5059,10 +5051,6 @@ textarea {
 
     .sheet-tracking-section {
         margin-top: 5px !important;
-    }
-
-    .tracker-row {
-        margin-bottom: 5px !important;
     }
 
     /* Print the plain-text copy of the notes, not the editable box */
@@ -5176,6 +5164,94 @@ textarea {
 
     body.print-light-theme .sheet-ability-source {
         color: #666 !important;
+    }
+
+    /* Injuries, corruption and mutations */
+    body.print-light-theme .sheet-subsection-title {
+        color: #333 !important;
+        border-bottom-color: #ccc !important;
+    }
+
+    body.print-light-theme .sheet-injury-name,
+    body.print-light-theme .sheet-mutation-name {
+        color: #000 !important;
+    }
+
+    body.print-light-theme .sheet-injury-desc,
+    body.print-light-theme .sheet-mutation-desc {
+        color: #555 !important;
+    }
+
+    body.print-light-theme .sheet-mutation-effect {
+        color: #000 !important;
+    }
+
+    /* On the light cards the severity badges and the glossary terms take the dark text color.
+       The gold and the colors of the screen are too pale on a light background. */
+    body.print-light-theme .sheet-mutation-severity,
+    body.print-light-theme .sheet-mutation-item .glossary-term,
+    body.print-light-theme .sheet-follower .glossary-term {
+        color: #333 !important;
+    }
+
+    body.print-light-theme .sheet-mutation-item {
+        background: #f0f0f0 !important;
+        border-color: #ccc !important;
+    }
+
+    /* Ascension card */
+    body.print-light-theme .sheet-ascension-item {
+        background: #f0f0f0 !important;
+        border-color: #ccc !important;
+    }
+
+    body.print-light-theme .sheet-ascension-name {
+        color: #000 !important;
+    }
+
+    body.print-light-theme .sheet-ascension-tier,
+    body.print-light-theme .sheet-ascension-cost,
+    body.print-light-theme .sheet-ascension-details {
+        color: #555 !important;
+    }
+
+    body.print-light-theme .sheet-ascension-keywords {
+        color: #333 !important;
+    }
+
+    /* Follower threat card, reached through the sheet so that no other screen changes */
+    body.print-light-theme .sheet-follower .threat-card {
+        background: #fff !important;
+        border-color: #ccc !important;
+    }
+
+    body.print-light-theme .sheet-follower .threat-card-header {
+        background: #f5f5f5 !important;
+        border-bottom-color: #333 !important;
+    }
+
+    body.print-light-theme .sheet-follower .threat-stat-table th,
+    body.print-light-theme .sheet-follower .resilience-row,
+    body.print-light-theme .sheet-follower .determination-row,
+    body.print-light-theme .sheet-follower .abilities-header,
+    body.print-light-theme .sheet-follower .bonuses-header {
+        background: #f0f0f0 !important;
+        border-color: #ddd !important;
+    }
+
+    body.print-light-theme .sheet-follower .threat-stat-table td {
+        background: transparent !important;
+        color: #000 !important;
+        border-color: #ddd !important;
+    }
+
+    body.print-light-theme .sheet-follower .ability-name {
+        color: #000 !important;
+    }
+
+    body.print-light-theme .sheet-follower .threat-keyword {
+        background: #eee !important;
+        border-color: #333 !important;
     }
 
     body.print-light-theme .sheet-ability {
@@ -5726,110 +5802,6 @@ textarea {
     border: none;
     border-top: 1px solid var(--border-color);
     margin: 14px 0;
-}
-
-/* ===== Character Sheet Table of Contents (jump-to-section) (issue #6) ===== */
-.sheet-toc-fab {
-    position: fixed;
-    bottom: calc(var(--footer-height) + 25px);
-    right: 20px;
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg-card);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-    border-radius: 50%;
-    box-shadow: var(--shadow-lg);
-    font-size: 20px;
-    line-height: 1;
-    cursor: pointer;
-    z-index: 1500;
-    transition: all 0.2s;
-}
-
-.sheet-toc-fab:hover {
-    background: var(--bg-hover);
-    border-color: var(--accent-gold);
-}
-
-.sheet-toc-fab.hidden {
-    display: none;
-}
-
-.sheet-toc-panel {
-    position: fixed;
-    bottom: calc(var(--footer-height) + 80px);
-    right: 20px;
-    width: 240px;
-    max-height: 60vh;
-    display: flex;
-    flex-direction: column;
-    background: var(--bg-secondary);
-    border: 1px solid var(--accent-gold);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-lg);
-    z-index: 1500;
-    overflow: hidden;
-    animation: glossary-fade-in 0.15s ease-out;
-}
-
-.sheet-toc-panel.hidden {
-    display: none;
-}
-
-.sheet-toc-header {
-    flex-shrink: 0;
-    padding: 10px 12px;
-    background: var(--bg-tertiary);
-    border-bottom: 1px solid var(--border-color);
-    border-radius: var(--radius-md) var(--radius-md) 0 0;
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: var(--accent-gold);
-}
-
-.sheet-toc-list {
-    list-style: none;
-    margin: 0;
-    padding: 4px;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-}
-
-.sheet-toc-item {
-    padding: 8px 10px;
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all 0.15s;
-}
-
-.sheet-toc-item:hover {
-    background: var(--bg-hover);
-    color: var(--text-primary);
-}
-
-/* Mobile: keep clear of the footer, widen the tap targets a touch */
-@media (max-width: 768px) {
-    .sheet-toc-panel {
-        width: calc(100vw - 40px);
-        max-width: 280px;
-    }
-    .sheet-toc-item {
-        padding: 10px 12px;
-    }
-}
-
-@media print {
-    .sheet-toc-fab,
-    .sheet-toc-panel {
-        display: none !important;
-    }
 }
 
 /* ===== Relic Wizard ===== */
@@ -6527,4 +6499,378 @@ textarea {
 #custom-item-save:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+/* ===== Character Sheet Tabs (issue #25) ===== */
+/* The strip (identity, trackers, tab bar) and one pane per tab. Pinning and the layout
+   modes are screen-only, so that print never sees them. Three modes:
+   - Full mode, "screen": the whole strip is pinned. These rules are the base of all modes.
+   - Compact mode, "screen and (max-width: 768px), screen and (max-height: 600px)":
+     the identity scrolls away, and the strip bar (trackers and tab bar) is pinned.
+   - Low mode, "screen and (max-height: 480px)": compact mode, but the trackers scroll
+     away too, and only the tab bar is pinned. */
+.sheet-pane[hidden] { display: none; }
+
+.sheet-tab-btn:focus-visible,
+.tracker-btn:focus-visible {
+    outline: 2px solid var(--accent-gold);
+    outline-offset: 2px;
+}
+
+/* The tab bar is the offsetParent of its buttons: _scrollActiveTabIntoBar reads offsetLeft */
+.sheet-tabbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    position: relative;
+}
+
+/* Pills in the .wargear-tab-btn style */
+.sheet-tab-btn {
+    flex: 0 0 auto;
+    padding: 6px 14px;
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    white-space: nowrap;
+    /* Not "all": the focus ring must show gold at once, with no fade from the default ring color */
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.sheet-tab-btn:hover {
+    border-color: var(--accent-gold);
+    color: var(--text-primary);
+}
+
+.sheet-tab-btn.active {
+    background: var(--accent-gold);
+    color: var(--bg-primary);
+    border-color: var(--accent-gold);
+}
+
+/* Two-column panes: a plain block below the wide breakpoint */
+.sheet-pane-columns {
+    display: block;
+}
+
+@media screen and (min-width: 1400px) {
+    .sheet-pane-columns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        align-items: start;
+    }
+}
+
+/* The base screen rules, which are full mode: the whole strip is pinned. The compact and low
+   modes override parts of them. The z-index stays under every popup, modal and the drawer backdrop (899). */
+@media screen {
+    /* A sticky element pins inside the top padding of its scroller, and content then shows above it.
+       The scroller's top padding thus moves into the sheet, with the same value at each breakpoint. */
+    #tab-character-sheet {
+        padding-top: 0;
+    }
+
+    #tab-character-sheet .character-sheet {
+        padding-top: 20px;
+    }
+
+    /* The focus ring of a pane, in the gold of the other sheet controls. The negative offset draws it
+       inside the pane, so the scroller does not clip it. */
+    .sheet-pane:focus-visible {
+        outline: 2px solid var(--accent-gold);
+        outline-offset: -2px;
+    }
+
+    .sheet-strip {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        background: var(--bg-primary);
+        padding-bottom: 8px;
+        margin-bottom: 7px;
+    }
+
+    .sheet-strip .sheet-header-section {
+        padding: 10px 16px;
+        margin-bottom: 8px;
+    }
+
+    .sheet-strip .sheet-character-name {
+        font-size: 22px;
+        line-height: 1.2;
+        margin-bottom: 2px;
+    }
+
+    .sheet-strip .sheet-subtitle {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .sheet-strip .sheet-keywords {
+        gap: 6px;
+    }
+
+    .sheet-strip-bar {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    /* Label | boxes | Wrath. Wounds is row 1, Shock is row 2, Wrath spans both. */
+    .sheet-strip-trackers {
+        display: grid;
+        grid-template-columns: 64px 1fr 112px;
+        gap: 6px 8px;
+        align-items: start;
+    }
+
+    .sheet-strip-label {
+        grid-column: 1;
+        line-height: 18px;
+        text-align: left;
+    }
+
+    .sheet-strip-trackers > .tracking-boxes {
+        grid-column: 2;
+        max-width: none;
+        justify-content: flex-start;
+    }
+
+    .sheet-strip-wrath {
+        grid-column: 3;
+        grid-row: 1 / span 2;
+        align-self: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+    }
+}
+
+/* Compact mode: the identity scrolls away, and the bar (trackers and tab bar) is pinned */
+@media screen and (max-width: 768px), screen and (max-height: 600px) {
+    .sheet-strip {
+        display: contents;
+    }
+
+    .sheet-strip-bar {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        background: var(--bg-primary);
+        padding: 8px 12px;
+        gap: 6px;
+    }
+
+    /* Label | boxes. Wounds is row 1, Shock is row 2, Wrath is row 3 across both columns. */
+    .sheet-strip-trackers {
+        grid-template-columns: 52px 1fr;
+    }
+
+    .sheet-strip-label {
+        line-height: 22px;
+    }
+
+    .sheet-strip-trackers .tracking-box {
+        width: 22px;
+        height: 22px;
+    }
+
+    .sheet-strip-wrath {
+        grid-column: 1 / -1;
+        grid-row: 3;
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    .sheet-strip-wrath .tracker-label {
+        flex: 0 0 52px;
+        text-align: left;
+    }
+
+    .sheet-strip-wrath .tracker-btn {
+        width: 32px;
+        height: 32px;
+    }
+
+    /* One row that scrolls sideways. The 4px padding keeps the focus ring inside the scroll box. */
+    .sheet-tabbar {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding: 4px;
+    }
+
+    /* The edge cue: a fade on each side of the bar that has more tabs (_updateTabBarCue sets the classes).
+       Each fade is a sticky flex item with a net width of 0 (24px, less 24px and the 6px gap), so the tab
+       positions and the scroll width do not change. The inset is the negative padding, so the fade starts
+       at the bar edge. The fade has the bar background, var(--bg-primary), in compact and in low mode.
+       An arrow sits at the outer edge on the solid outer 12px, so it never sits on a pill. The arrow is
+       decoration: the empty alternative text keeps it silent for a screen reader, and the plain content
+       before it is the fallback for a browser that does not know that syntax. */
+    .sheet-tabbar::before,
+    .sheet-tabbar::after {
+        position: sticky;
+        z-index: 1;
+        flex: 0 0 24px;
+        box-sizing: border-box;
+        align-self: stretch;
+        display: flex;
+        align-items: center;
+        color: var(--accent-gold);
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1;
+        pointer-events: none;
+        opacity: 0;
+    }
+
+    .sheet-tabbar::before {
+        content: '‹';
+        content: '‹' / '';
+        left: -4px;
+        margin-right: -30px;
+        justify-content: flex-start;
+        padding-left: 3px;
+        background: linear-gradient(to right, var(--bg-primary) 12px, transparent);
+    }
+
+    .sheet-tabbar::after {
+        content: '›';
+        content: '›' / '';
+        right: -4px;
+        margin-left: -30px;
+        justify-content: flex-end;
+        padding-right: 3px;
+        background: linear-gradient(to left, var(--bg-primary) 12px, transparent);
+    }
+
+    .sheet-tabbar.sheet-tabbar-more-left::before,
+    .sheet-tabbar.sheet-tabbar-more-right::after {
+        opacity: 1;
+    }
+}
+
+/* The top padding that .tab-fullwidth has at these widths, moved into the sheet (refer to the full-mode block above) */
+@media screen and (max-width: 768px) {
+    #tab-character-sheet .character-sheet {
+        padding-top: 15px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    #tab-character-sheet .character-sheet {
+        padding-top: 10px;
+    }
+}
+
+/* Low mode: in a window this low, the pinned bar would take most of the scroller. The strip bar
+   is unwrapped too, so the trackers scroll away and only the tab bar is pinned. The 16px side
+   padding keeps the buttons where compact mode puts them. */
+@media screen and (max-height: 480px) {
+    .sheet-strip-bar {
+        display: contents;
+    }
+
+    .sheet-strip-trackers {
+        padding: 8px 12px 0;
+    }
+
+    .sheet-tabbar {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        background: var(--bg-primary);
+        padding: 8px 16px;
+    }
+
+    /* The edge cue starts at the bar edge: the inset is the negative side padding */
+    .sheet-tabbar::before {
+        left: -16px;
+    }
+
+    .sheet-tabbar::after {
+        right: -16px;
+    }
+}
+
+/* Print: the whole sheet in tab order, the strip first and static, no tab bar, no Details block.
+   The light-theme rule is last. The strip and the strip bar are static whatever the page size,
+   because the pinning and the layout modes are screen-only. The tab bar does not print. */
+@media print {
+    .sheet-strip,
+    .sheet-strip-bar {
+        position: static !important;
+    }
+
+    .sheet-strip {
+        display: block !important;
+    }
+
+    .sheet-tabbar {
+        display: none !important;
+    }
+
+    .sheet-pane[hidden] {
+        display: block !important;
+    }
+
+    .sheet-details-section {
+        display: none !important;
+    }
+
+    /* The Stats blocks print whole (this overrides the old rule that lets a column block split),
+       and a block title never stays alone at the foot of a page. */
+    .sheet-pane .sheet-column .sheet-section {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    /* The old print rule "sheet-columns, page-break-before: avoid" kept the columns with the header
+       card. The header is the strip now, so the columns follow the Character blocks and may start a page. */
+    .sheet-pane .sheet-columns {
+        page-break-before: auto;
+        break-before: auto;
+    }
+
+    .sheet-section-title {
+        page-break-after: avoid;
+        break-after: avoid;
+    }
+
+    /* A row for each tracker: the label, then its boxes (or the Wrath value) at the left.
+       The Wrath group joins the grid, so that its label sits in the column of the other labels. */
+    .sheet-strip-trackers {
+        page-break-inside: avoid;
+        padding: 0 16px;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 6px 10px;
+        align-items: start;
+    }
+
+    .sheet-strip-wrath {
+        display: contents;
+    }
+
+    .sheet-strip-trackers .tracker-label,
+    .sheet-strip-trackers .tracker-value {
+        text-align: left;
+    }
+
+    .sheet-strip-trackers .tracking-boxes,
+    .sheet-strip-trackers .tracker-controls {
+        justify-content: flex-start;
+    }
+
+    body.print-light-theme .sheet-strip,
+    body.print-light-theme .sheet-strip-bar,
+    body.print-light-theme .sheet-strip-trackers {
+        background: transparent !important;
+        border: none !important;
+    }
 }

@@ -6530,8 +6530,13 @@ textarea {
 }
 
 /* ===== Character Sheet Tabs (issue #25) ===== */
-/* The strip (identity, trackers, tab bar) and one pane per tab. Pinning and the two
-   layout modes are screen-only, so that print never sees them. */
+/* The strip (identity, trackers, tab bar) and one pane per tab. Pinning and the layout
+   modes are screen-only, so that print never sees them. Three modes:
+   - Full mode, "screen": the whole strip is pinned. These rules are the base of all modes.
+   - Compact mode, "screen and (max-width: 768px), screen and (max-height: 600px)":
+     the identity scrolls away, and the strip bar (trackers and tab bar) is pinned.
+   - Low mode, "screen and (max-height: 480px)": compact mode, but the trackers scroll
+     away too, and only the tab bar is pinned. */
 .sheet-pane[hidden] { display: none; }
 
 .sheet-tab-btn:focus-visible,
@@ -6588,7 +6593,8 @@ textarea {
     }
 }
 
-/* Full mode: the whole strip is pinned. The z-index stays under every popup, modal and the drawer backdrop (899). */
+/* The base screen rules, which are full mode: the whole strip is pinned. The compact and low
+   modes override parts of them. The z-index stays under every popup, modal and the drawer backdrop (899). */
 @media screen {
     /* A sticky element pins inside the top padding of its scroller, and content then shows above it.
        The scroller's top padding thus moves into the sheet, with the same value at each breakpoint. */
@@ -6638,7 +6644,7 @@ textarea {
     /* Label | boxes | Wrath. Wounds is row 1, Shock is row 2, Wrath spans both. */
     .sheet-strip-trackers {
         display: grid;
-        grid-template-columns: 64px 1fr 110px;
+        grid-template-columns: 64px 1fr 112px;
         gap: 6px 8px;
         align-items: start;
     }
@@ -6730,5 +6736,26 @@ textarea {
 @media screen and (max-width: 480px) {
     #tab-character-sheet .character-sheet {
         padding-top: 10px;
+    }
+}
+
+/* Low mode: in a window this low, the pinned bar would take most of the scroller. The strip bar
+   is unwrapped too, so the trackers scroll away and only the tab bar is pinned. The 16px side
+   padding keeps the buttons where compact mode puts them. */
+@media screen and (max-height: 480px) {
+    .sheet-strip-bar {
+        display: contents;
+    }
+
+    .sheet-strip-trackers {
+        padding: 8px 12px 0;
+    }
+
+    .sheet-tabbar {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        background: var(--bg-primary);
+        padding: 8px 16px;
     }
 }

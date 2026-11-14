@@ -658,16 +658,17 @@ function tabsSection() {
 
     // selectSheetTab (spec §10.1 case 8, §5.3)
     {
-        const run = ({ panesTop, display, closeGlossary = true }) => {
+        const run = ({ panesTop, display, barDisplay = 'block', closeGlossary = true }) => {
             const env = sheetSandbox();
             const sheet = env.sheet;
             const buttons = tabButtons(IDS5);
             const panes = tabPanes(IDS5);
             const panesEl = stubEl({ cls: ['sheet-panes'], rect: { top: panesTop } });
             const strip = stubEl({ cls: ['sheet-strip'], display, rect: { bottom: 300 } });
-            const bar = stubEl({ cls: ['sheet-strip-bar'], rect: { bottom: 150 } });
+            const bar = stubEl({ cls: ['sheet-strip-bar'], display: barDisplay, rect: { bottom: 150 } });
+            const tabbar = stubEl({ cls: ['sheet-tabbar'], rect: { bottom: 50 } });
             env.dom.scroller.scrollTop = 900;
-            const map = { '.sheet-tab-btn': buttons, '.sheet-pane': panes, '.sheet-panes': [panesEl], '.sheet-strip': [strip], '.sheet-strip-bar': [bar] };
+            const map = { '.sheet-tab-btn': buttons, '.sheet-pane': panes, '.sheet-panes': [panesEl], '.sheet-strip': [strip], '.sheet-strip-bar': [bar], '.sheet-tabbar': [tabbar] };
             env.dom.container.query = sel => map[sel] || [];
             const counters = { render: 0, breakdown: 0, glossary: 0 };
             const render = sheet.render;
@@ -695,6 +696,7 @@ function tabsSection() {
         check('the pane under the strip scrolls it free (900 + 120 - 300)', a.scrollTop, 720);
         check('a pane below the strip leaves the scroll', run({ panesTop: 400, display: 'block' }).scrollTop, 900);
         check('compact mode pins the bar (900 + 100 - 150)', run({ panesTop: 100, display: 'contents' }).scrollTop, 850);
+        check('low mode pins the tab bar only (900 + 40 - 50)', run({ panesTop: 40, display: 'contents', barDisplay: 'contents' }).scrollTop, 890);
         let error = null;
         try { run({ panesTop: 120, display: 'block', closeGlossary: false }); } catch (e) { error = e.message; }
         check('no Glossary in the context gives no error', error, null);
@@ -754,7 +756,7 @@ function tabsSection() {
     }
 }
 
-// --- Task 4: Strip CSS (pinning, the two modes, boxes, tab buttons, panes, focus) ---
+// --- Task 4: Strip CSS (pinning, the layout modes, boxes, tab buttons, panes, focus) ---
 {
     const sec = tabsSection();
     check('section exists', sec.length > 0, true);
@@ -765,16 +767,50 @@ function tabsSection() {
     check('full mode pins the strip', /\.sheet-strip\s*\{[^}]*position:\s*sticky[^}]*top:\s*0/.test(full), true);
     check('compact mode unwraps the strip and pins the bar', [/\.sheet-strip\s*\{[^}]*display:\s*contents/.test(compact), /\.sheet-strip-bar\s*\{[^}]*position:\s*sticky/.test(compact)], [true, true]);
     check('compact tab bar scrolls sideways', /\.sheet-tabbar\s*\{[^}]*flex-wrap:\s*nowrap[^}]*overflow-x:\s*auto/.test(compact), true);
+    const paddingSides = (rule) => {
+        const sides = { top: 0, right: 0, bottom: 0, left: 0 };
+        const short = rule.match(/(?:^|;)\s*padding:\s*([^;]+)/);
+        if (short) { const v = short[1].trim().split(/\s+/).map(parseFloat); [sides.top, sides.right, sides.bottom, sides.left] = [v[0], v[1] ?? v[0], v[2] ?? v[0], v[3] ?? v[1] ?? v[0]]; }
+        for (const side of Object.keys(sides)) { const m = rule.match(new RegExp(`padding-${side}:\\s*([\\d.]+)px`)); if (m) sides[side] = parseFloat(m[1]); }
+        return sides;
+    };
     const barRule = (compact.match(/\.sheet-tabbar\s*\{([^}]*)\}/) || [])[1] || '';
-    const sides = { top: 0, right: 0, bottom: 0, left: 0 };
-    const short = barRule.match(/(?:^|;)\s*padding:\s*([^;]+)/);
-    if (short) { const v = short[1].trim().split(/\s+/).map(parseFloat); [sides.top, sides.right, sides.bottom, sides.left] = [v[0], v[1] ?? v[0], v[2] ?? v[0], v[3] ?? v[1] ?? v[0]]; }
-    for (const side of Object.keys(sides)) { const m = barRule.match(new RegExp(`padding-${side}:\\s*([\\d.]+)px`)); if (m) sides[side] = parseFloat(m[1]); }
-    check('compact tab bar has 4px padding on every side for the focus ring', Object.values(sides).every(v => v >= 4), true);
+    check('compact tab bar has 4px padding on every side for the focus ring', Object.values(paddingSides(barRule)).every(v => v >= 4), true);
     check('strip labels set no colour', /\.sheet-strip-label\s*\{[^}]*color:/.test(sec), false);
     check('sticky only inside screen blocks', count(sec.replace(/@media screen[^{]*\{(?:[^{}]|\{[^{}]*\})*\}/g, ''), /position:\s*sticky/g), 0);
     check('wide panes are two columns', /\.sheet-pane-columns\s*\{[^}]*grid-template-columns:\s*1fr 1fr/.test(mediaBlocks(sec, '(min-width: 1400px)').join('')), true);
-    check('no raw colour', /#[0-9a-f]{3,8}\b|rgba?\(/i.test(sec), false);
+    // A raw colour: a hex value, rgb()/rgba(), or a colour name in a declaration value (var() names and comments removed)
+    const NAMED = /\b(white|black|red|green|blue|yellow|orange|purple|pink|gold|silver|gray|grey|navy|maroon|teal|aqua|cyan|lime|olive|brown|magenta|fuchsia|crimson|indigo|violet)\b/i;
+    const hasRawColour = (css) => {
+        const bare = css.replace(/\/\*[\s\S]*?\*\//g, '');
+        if (/#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(/i.test(bare)) return true;
+        return [...bare.matchAll(/([a-z-]+)\s*:\s*([^;{}]+);/gi)].some(m => NAMED.test(m[2].replace(/var\([^)]*\)/g, '')));
+    };
+    check('the colour test finds a named colour', [hasRawColour('a { color: white; }'), hasRawColour('a { border: 1px solid Gold; }'), hasRawColour('a { color: var(--accent-gold); background: transparent; color: currentColor; }')], [true, true, false]);
+    check('no raw colour', hasRawColour(sec), false);
+
+    // The pinned part of each mode is opaque and sits at z-index 5; the tracker sizes of each mode
+    const ruleOf = (css, selector) => {
+        const esc = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return (css.match(new RegExp(`(?:^|[};/])\\s*${esc}\\s*\\{([^}]*)\\}`)) || [])[1] || '';
+    };
+    const has = (rule, re) => re.test(rule);
+    const low = mediaBlocks(sec, 'screen and (max-height: 480px)').join('\n');
+    check('full mode: the strip is opaque', has(ruleOf(full, '.sheet-strip'), /background:\s*var\(--bg-primary\)/), true);
+    check('full mode: the strip has z-index 5', has(ruleOf(full, '.sheet-strip'), /z-index:\s*5;/), true);
+    check('compact mode: the bar is opaque', has(ruleOf(compact, '.sheet-strip-bar'), /background:\s*var\(--bg-primary\)/), true);
+    check('compact mode: the bar has z-index 5', has(ruleOf(compact, '.sheet-strip-bar'), /z-index:\s*5;/), true);
+    check('full mode tracker grid: label, boxes, Wrath', has(ruleOf(full, '.sheet-strip-trackers'), /grid-template-columns:\s*64px 1fr 112px;/), true);
+    check('compact mode tracker grid: label, boxes', has(ruleOf(compact, '.sheet-strip-trackers'), /grid-template-columns:\s*52px 1fr;/), true);
+    check('compact mode boxes are 22px', [/width:\s*22px/, /height:\s*22px/].map(re => has(ruleOf(compact, '.sheet-strip-trackers .tracking-box'), re)), [true, true]);
+    check('compact mode Wrath buttons are 32px', [/width:\s*32px/, /height:\s*32px/].map(re => has(ruleOf(compact, '.sheet-strip-wrath .tracker-btn'), re)), [true, true]);
+
+    // Low mode (a window 480px high or less): only the tab bar is pinned
+    const lowBar = ruleOf(low, '.sheet-strip-bar');
+    const lowTabbar = ruleOf(low, '.sheet-tabbar');
+    check('low mode unwraps the strip bar, so it is not sticky', [has(lowBar, /display:\s*contents/), has(lowBar, /position:\s*sticky/)], [true, false]);
+    check('low mode pins the tab bar', [/position:\s*sticky/, /top:\s*0;/, /background:\s*var\(--bg-primary\)/, /z-index:\s*5;/].map(re => has(lowTabbar, re)), [true, true, true, true]);
+    check('low mode tab bar has 4px padding on every side for the focus ring', Object.values(paddingSides(lowTabbar)).every(v => v >= 4), true);
 
     // The sheet's scroller loses its top padding (a sticky element pins inside it) and the sheet gets the same space
     const rest = readSource('creator/css/styles.css').replace(sec, '');
@@ -788,6 +824,23 @@ function tabsSection() {
     check('the sheet gets the top padding of the scroller at each breakpoint',
         [sheetPad(full), sheetPad(mediaBlocks(sec, 'screen and (max-width: 768px)').join('\n')), sheetPad(mediaBlocks(sec, 'screen and (max-width: 480px)').join('\n'))],
         [topPad(rest), topPad(mediaBlocks(rest, '(max-width: 768px)').join('\n')), topPad(mediaBlocks(rest, '(max-width: 480px)').join('\n'))]);
+
+    // _pinnedElement follows the computed styles of the three modes
+    {
+        const env = sheetSandbox();
+        const strip = stubEl({ cls: ['sheet-strip'] });
+        const bar = stubEl({ cls: ['sheet-strip-bar'] });
+        const tabbar = stubEl({ cls: ['sheet-tabbar'] });
+        const map = { '.sheet-strip': [strip], '.sheet-strip-bar': [bar], '.sheet-tabbar': [tabbar] };
+        env.dom.container.query = sel => map[sel] || [];
+        const pinned = (stripDisplay, barDisplay) => {
+            strip._display = stripDisplay;
+            bar._display = barDisplay;
+            const el = env.sheet._pinnedElement(env.dom.container);
+            return el === strip ? 'strip' : el === bar ? 'bar' : el === tabbar ? 'tabbar' : String(el);
+        };
+        check('_pinnedElement: full, compact, low', [pinned('block', 'flex'), pinned('contents', 'flex'), pinned('contents', 'contents')], ['strip', 'bar', 'tabbar']);
+    }
 }
 
 console.log(failures ? `\n${failures} check(s) FAILED` : '\nAll checks passed');

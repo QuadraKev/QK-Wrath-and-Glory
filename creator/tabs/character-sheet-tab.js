@@ -2649,14 +2649,18 @@ const CharacterSheetTab = {
         this._scrollActiveTabIntoBar(container);
     },
 
-    // The pinned part of the strip: the bar in compact mode, the whole strip otherwise.
-    // The CSS decides the mode (display: contents on the strip), so JS does not repeat the media query.
+    // The pinned part of the strip. The CSS decides the mode, so JS reads the computed display and does not repeat the media query:
+    // the strip is not display: contents → full mode, the whole strip;
+    // only the strip is display: contents → compact mode, the strip bar;
+    // the strip and the strip bar are display: contents → low mode, the tab bar.
     _pinnedElement(container) {
         const strip = container.querySelector('.sheet-strip');
-        if (strip && window.getComputedStyle(strip).display === 'contents') {
-            return container.querySelector('.sheet-strip-bar');
+        if (!strip || window.getComputedStyle(strip).display !== 'contents') return strip;
+        const bar = container.querySelector('.sheet-strip-bar');
+        if (bar && window.getComputedStyle(bar).display === 'contents') {
+            return container.querySelector('.sheet-tabbar');
         }
-        return strip;
+        return bar;
     },
 
     // The id of the tab that a key moves to, or null when the key or the current id does not apply

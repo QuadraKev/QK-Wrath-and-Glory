@@ -199,7 +199,7 @@ const VehiclesTab = {
         return (keywords || []).map(keyword => {
             const key = this.findKeywordKey(keyword);
             return key
-                ? `<span class="vehicle-chip vehicle-chip-keyword" data-popup-type="keyword" data-popup-key="${key}">${keyword}</span>`
+                ? `<span class="vehicle-chip vehicle-chip-keyword" data-popup-type="keyword" data-popup-key="${key}" tabindex="0" role="button">${keyword}</span>`
                 : `<span class="vehicle-chip vehicle-chip-keyword">${keyword}</span>`;
         }).join('');
     },
@@ -209,7 +209,7 @@ const VehiclesTab = {
         return (traits || []).map(trait => {
             const key = this.findTraitKey(trait);
             return key
-                ? `<span class="vehicle-chip" data-popup-type="vehicleTrait" data-popup-key="${key}">${trait}</span>`
+                ? `<span class="vehicle-chip" data-popup-type="vehicleTrait" data-popup-key="${key}" tabindex="0" role="button">${trait}</span>`
                 : `<span class="vehicle-chip">${trait}</span>`;
         }).join('');
     },
@@ -267,7 +267,7 @@ const VehiclesTab = {
     // The printed text, with its word "Twin" turned into a marker that opens the Twin Weapons rule
     renderWeaponName(row) {
         if (!row.twin) return row.text;
-        const marker = '<span class="vehicle-twin-marker" data-popup-type="vehicleRule" data-popup-key="twin_weapons">Twin</span>';
+        const marker = '<span class="vehicle-twin-marker" data-popup-type="vehicleRule" data-popup-key="twin_weapons" tabindex="0" role="button">Twin</span>';
         const marked = row.text.replace(/\bTwin\b/, marker);
         return marked === row.text ? `${row.text} ${marker}` : marked;
     },

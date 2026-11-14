@@ -23,12 +23,22 @@ const Glossary = {
             }
         });
 
-        // Add escape key handler
+        // Add escape key handler, and Enter/Space activation for chips and terms
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 this.closeTopPopup();
             }
+            this.handleActivationKey(e);
         });
+    },
+
+    // A chip or term is a span with role="button". Enter and Space click it, so the key runs the
+    // same click handlers as the mouse. preventDefault stops Space from scrolling the page.
+    handleActivationKey(e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        if (!e.target.matches('span[role="button"]')) return;
+        e.preventDefault();
+        e.target.click();
     },
 
     buildTermMap() {
@@ -172,7 +182,7 @@ const Glossary = {
                 const placeholder = `__GLOSSARY_${this.popupIdCounter++}__`;
                 replacements.push({
                     placeholder,
-                    html: `<span class="glossary-term" data-term-key="${useTermData.key}" data-term-type="${useTermData.type}">${match}</span>`
+                    html: `<span class="glossary-term" data-term-key="${useTermData.key}" data-term-type="${useTermData.type}" tabindex="0" role="button">${match}</span>`
                 });
                 return placeholder;
             });
@@ -195,8 +205,14 @@ const Glossary = {
                 clearTimeout(this._closeTimer);
                 // If hover popup is open, pin it instead of opening a new one
                 if (this.popupStack.length > 0 && !this._pinned) {
-                    this._pinned = true;
-                    return;
+                    const hoverPopup = document.getElementById(this.popupStack[this.popupStack.length - 1]);
+                    if (hoverPopup && hoverPopup.dataset.glossaryKey === term.dataset.termKey) {
+                        this._pinned = true;
+                        return;
+                    }
+                    // The hover popup is for a different term: close it and open this term as a plain click does.
+                    // A term inside the hover popup keeps that popup, so its own popup opens on top.
+                    if (!hoverPopup || !hoverPopup.contains(term)) this.closeAllPopups();
                 }
                 this._pinned = true;
                 this.handleTermClick(e);

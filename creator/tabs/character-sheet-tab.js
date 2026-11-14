@@ -19,6 +19,10 @@ const CharacterSheetTab = {
         { id: 'notes', label: 'Notes' }
     ],
 
+    // True during the focus move of a Tab key press, and during the focus restore of a re-render (refer to handleSheetFocusIn)
+    _tabKeyFocus: false,
+    _restoringFocus: false,
+
     // The controls that can get the focus back after a re-render (refer to _focusKeyOf)
     _FOCUS_SELECTOR: '.sheet-tab-btn, .tracker-btn, .weapon-equip-checkbox, .follower-living-btn, .sheet-notes-input',
 
@@ -41,7 +45,15 @@ const CharacterSheetTab = {
             if (btn) this.selectSheetTab(btn.dataset.sheetTab);
         });
         sheetContent.addEventListener('keydown', (e) => {
+            // The Tab key moves the focus in its default action, before a timer runs: the flag holds for that move only
+            if (e.key === 'Tab') {
+                this._tabKeyFocus = true;
+                setTimeout(() => { this._tabKeyFocus = false; }, 0);
+            }
             this.handleSheetTabKeydown(e);
+        });
+        sheetContent.addEventListener('focusin', (e) => {
+            this.handleSheetFocusIn(e);
         });
     },
 
@@ -2490,15 +2502,30 @@ const CharacterSheetTab = {
         if (typeof Glossary !== 'undefined') Glossary.closeAllPopups();
 
         // Scroll only when the new pane would start under the pinned part
-        const panes = container.querySelector('.sheet-panes');
-        const pinned = this._pinnedElement(container);
-        const scroller = document.getElementById('tab-character-sheet');
-        if (panes && pinned && scroller) {
-            const gap = panes.getBoundingClientRect().top - pinned.getBoundingClientRect().bottom;
-            if (gap < 0) scroller.scrollTop += gap;
-        }
+        this._keepBelowPinned(container, container.querySelector('.sheet-panes'), 0);
 
         this._scrollActiveTabIntoBar(container);
+    },
+
+    // Scroll the sheet up so that the top of el is margin px or more under the pinned part. An element lower than that keeps the scroll.
+    _keepBelowPinned(container, el, margin) {
+        const pinned = this._pinnedElement(container);
+        const scroller = document.getElementById('tab-character-sheet');
+        if (!el || !pinned || !scroller) return;
+        const gap = el.getBoundingClientRect().top - pinned.getBoundingClientRect().bottom - margin;
+        if (gap < 0) scroller.scrollTop += gap;
+    },
+
+    // The browser scrolls a Tab focus into the scrollport, and the pinned part covers the top of it.
+    // A Tab focus inside the panes thus goes under the pinned part: 4px for the focus ring of a control,
+    // 0px for a pane (its ring is inside it). A mouse or touch focus, the focus restore of a re-render
+    // and a control of the pinned part do not move the page.
+    handleSheetFocusIn(e) {
+        if (!this._tabKeyFocus || this._restoringFocus) return;
+        const target = e.target;
+        if (!target.closest || !target.closest('.sheet-panes')) return;
+        const container = document.getElementById('character-sheet-content');
+        this._keepBelowPinned(container, target, target.classList.contains('sheet-pane') ? 0 : 4);
     },
 
     // The pinned part of the strip. The CSS decides the mode, so JS reads the computed display and does not repeat the media query:
@@ -2605,7 +2632,12 @@ const CharacterSheetTab = {
         const match = Array.from(container.querySelectorAll(this._FOCUS_SELECTOR))
             .find(el => this._focusKeyOf(el) === state.focusKey);
         if (!match || match.disabled) return;
-        match.focus({ preventScroll: true });
+        this._restoringFocus = true;
+        try {
+            match.focus({ preventScroll: true });
+        } finally {
+            this._restoringFocus = false;
+        }
         // The new Notes box has its caret at the end of the text: put the old caret back
         if (state.selection) match.setSelectionRange(state.selection[0], state.selection[1]);
     },

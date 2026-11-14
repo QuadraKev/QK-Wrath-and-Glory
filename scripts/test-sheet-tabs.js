@@ -174,7 +174,12 @@ function makeDom() {
     container.querySelectorAll = (sel) => container.query(sel);
     container.querySelector = (sel) => container.query(sel)[0] || null;
     container.contains = (el) => !!el && el !== body;
-    const window = { getComputedStyle: (el) => ({ display: el._display }) };
+    const windowListeners = {};
+    const window = {
+        listeners: windowListeners,
+        getComputedStyle: (el) => ({ display: el._display }),
+        addEventListener: (type, fn) => { (windowListeners[type] = windowListeners[type] || []).push(fn); }
+    };
     function MutationObserver() { this.observe = () => {}; }
     return { document, window, MutationObserver, container, scroller, body };
 }
@@ -190,8 +195,12 @@ function sheetSandbox({ character, dom } = {}) {
         getDefenceBreakdown: () => null,
         getAllDerivedStats: () => env.derived
     };
+    // Timers wait in a queue: a check runs them with env.runTimers()
+    env.timers = [];
+    env.runTimers = () => { env.timers.splice(0).forEach(fn => fn()); };
     env.ctx = vm.createContext({
         console,
+        setTimeout: (fn) => { env.timers.push(fn); },
         State: env.state,
         DataLoader: env.dataLoader,
         DerivedStats: derivedStats,
@@ -1099,6 +1108,68 @@ function tabsSection() {
         check('F3: the Wrath value is escaped in the strip', [wrathHtml.includes('tracker-value">' + SAFE + '<'), RAW_TAG.test(wrathHtml)], [true, false]);
         env.state.wrath = 0;
         check('F3: a Wrath of 0 prints 0', sheet.renderStripTrackers(DERIVED).includes('tracker-value">0<'), true);
+    }
+
+    // F1: a Tab focus inside the panes goes under the pinned part; other focus changes do not move the page
+    {
+        // The pinned strip ends at y=300 and the sheet is at scroll 900
+        const setup = () => {
+            const env = sheetSandbox();
+            const strip = stubEl({ cls: ['sheet-strip'], rect: { bottom: 300 } });
+            const panes = stubEl({ cls: ['sheet-panes'], rect: { top: 120 } });
+            const pane = stubEl({ cls: ['sheet-pane'], parent: panes, rect: { top: 50 } });
+            const inPane = (top, cls = ['weapon-equip-checkbox']) => stubEl({ cls, parent: pane, rect: { top } });
+            const map = { '.sheet-strip': [strip], '.sheet-panes': [panes] };
+            env.dom.container.query = sel => map[sel] || [];
+            env.dom.scroller.scrollTop = 900;
+            env.sheet.init();
+            const listeners = env.dom.container.listeners;
+            const tabKey = () => listeners.keydown[0]({ key: 'Tab', target: env.dom.body });
+            const focusIn = (target) => listeners.focusin[0]({ target });
+            return { env, strip, pane, inPane, listeners, tabKey, focusIn };
+        };
+
+        const a = setup();
+        check('F1: init adds one focusin listener', (a.listeners.focusin || []).length, 1);
+        a.tabKey();
+        a.focusIn(a.inPane(100));
+        check('F1: a Tab focus under the pinned part scrolls it 4px under it (900 + 100 - 300 - 4)', a.env.dom.scroller.scrollTop, 696);
+
+        const b = setup();
+        b.tabKey();
+        b.focusIn(b.pane);
+        check('F1: a Tab focus on the pane puts the pane top directly under the pinned part (900 + 50 - 300)', b.env.dom.scroller.scrollTop, 650);
+
+        const c = setup();
+        c.tabKey();
+        c.focusIn(c.inPane(400));
+        check('F1: a Tab focus below the pinned part keeps the scroll', c.env.dom.scroller.scrollTop, 900);
+
+        const d = setup();
+        d.focusIn(d.inPane(100, ['sheet-notes-input']));
+        d.focusIn(d.inPane(100));
+        check('F1: a mouse focus (no Tab key) on the Notes box or a checkbox keeps the scroll', d.env.dom.scroller.scrollTop, 900);
+
+        const e = setup();
+        e.tabKey();
+        e.focusIn(stubEl({ cls: ['tracker-btn', 'tracker-plus'], parent: e.strip, rect: { top: 200 } }));
+        check('F1: a Tab focus on a control of the pinned part keeps the scroll', e.env.dom.scroller.scrollTop, 900);
+
+        const f = setup();
+        f.tabKey();
+        f.env.runTimers();
+        f.focusIn(f.inPane(100));
+        check('F1: the Tab key counts only for its own focus move (the flag clears after it)', f.env.dom.scroller.scrollTop, 900);
+
+        // The focus restore of a re-render calls focus({ preventScroll: true }), which also fires focusin
+        const g = setup();
+        const box = g.inPane(100);
+        box.focus = (opts) => { box.focusCalls.push(opts); g.focusIn(box); };
+        g.env.dom.container.query = sel => (sel === g.env.sheet._FOCUS_SELECTOR ? [box] : sel === '.sheet-strip' ? [g.strip] : []);
+        Object.assign(box.dataset, { wargearIndex: '0' });
+        g.tabKey();
+        g.env.sheet._restoreViewState({ scrollTop: 900, focusKey: 'equip:0', selection: null });
+        check('F1: the focus restore of a re-render keeps the scroll', [box.focusCalls, g.env.dom.scroller.scrollTop], [[{ preventScroll: true }], 900]);
     }
 }
 

@@ -6631,3 +6631,40 @@ textarea {
         padding: 8px 16px;
     }
 }
+
+/* Print: the whole sheet in tab order, the strip first and static, no tab bar, no Details block.
+   The light-theme rule is last. The strip, the bar and the tab bar are static whatever the page size,
+   because the pinning and the layout modes are screen-only. */
+@media print {
+    .sheet-strip,
+    .sheet-strip-bar {
+        position: static !important;
+    }
+
+    .sheet-strip {
+        display: block !important;
+    }
+
+    .sheet-tabbar {
+        display: none !important;
+    }
+
+    .sheet-pane[hidden] {
+        display: block !important;
+    }
+
+    .sheet-details-section {
+        display: none !important;
+    }
+
+    .sheet-strip-trackers {
+        page-break-inside: avoid;
+    }
+
+    body.print-light-theme .sheet-strip,
+    body.print-light-theme .sheet-strip-bar,
+    body.print-light-theme .sheet-strip-trackers {
+        background: transparent !important;
+        border: none !important;
+    }
+}

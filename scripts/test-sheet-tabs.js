@@ -993,5 +993,22 @@ function tabsSection() {
     }
 }
 
+// --- Task 7: Print ---
+{
+    const sec = tabsSection();
+    const print = mediaBlocks(sec, 'print').join('\n');
+    const rule = sel => new RegExp(sel.replace(/[.[\]]/g, '\\$&') + '\\s*\\{([^}]*)\\}');
+    check('print block exists', print.length > 0, true);
+    check('hidden panes print', /display:\s*block\s*!important/.test((print.match(rule('.sheet-pane[hidden]')) || [])[1] || ''), true);
+    check('tab bar does not print', /display:\s*none\s*!important/.test((print.match(rule('.sheet-tabbar')) || [])[1] || ''), true);
+    check('Details does not print', /display:\s*none\s*!important/.test((print.match(rule('.sheet-details-section')) || [])[1] || ''), true);
+    check('strip is static and block in print', [/\.sheet-strip,\s*\.sheet-strip-bar\s*\{[^}]*position:\s*static\s*!important/.test(print), /display:\s*block\s*!important/.test((print.match(rule('.sheet-strip')) || [])[1] || '')], [true, true]);
+    check('trackers stay on one page', /page-break-inside:\s*avoid/.test((print.match(rule('.sheet-strip-trackers')) || [])[1] || ''), true);
+    check('light theme clears the strip background', /body\.print-light-theme \.sheet-strip,[\s\S]*?background:\s*transparent/.test(print), true);
+    check('light theme clears the bar and the trackers too', [/body\.print-light-theme \.sheet-strip-bar,/.test(print), /body\.print-light-theme \.sheet-strip-trackers\s*\{[^}]*border:\s*none/.test(print)], [true, true]);
+    // Print never sees a screen rule: no sticky outside screen blocks (the Task 4 check), and the print block does not unpin a rule that is not there
+    check('print block has no sticky rule', /sticky/.test(print), false);
+}
+
 console.log(failures ? `\n${failures} check(s) FAILED` : '\nAll checks passed');
 process.exit(failures ? 1 : 0);

@@ -1008,6 +1008,26 @@ function tabsSection() {
     check('light theme clears the bar and the trackers too', [/body\.print-light-theme \.sheet-strip-bar,/.test(print), /body\.print-light-theme \.sheet-strip-trackers\s*\{[^}]*border:\s*none/.test(print)], [true, true]);
     // Print never sees a screen rule: no sticky outside screen blocks (the Task 4 check), and the print block does not unpin a rule that is not there
     check('print block has no sticky rule', /sticky/.test(print), false);
+
+    // The trackers print as rows: a label, then its boxes (or the Wrath value) directly after it, left-aligned
+    const printRules = (css) => [...css.matchAll(/([^{}]+)\{([^}]*)\}/g)].map(m => ({ sels: m[1].replace(/\/\*[\s\S]*?\*\//g, '').split(',').map(x => x.trim()), body: m[2] }));
+    const printDecls = (sel) => printRules(print).filter(r => r.sels.includes(sel)).map(r => r.body).join('\n');
+    const trackers = printDecls('.sheet-strip-trackers');
+    check('print trackers: a two-column grid, label then boxes', [/display:\s*grid/.test(trackers), /grid-template-columns:\s*auto 1fr/.test(trackers)], [true, true]);
+    check('print Wrath group joins the grid columns', /display:\s*contents/.test(printDecls('.sheet-strip-wrath')), true);
+    check('print tracker labels and the Wrath value are left-aligned', [printDecls('.sheet-strip-trackers .tracker-label'), printDecls('.sheet-strip-trackers .tracker-value')].map(d => /text-align:\s*left/.test(d)), [true, true]);
+    check('print tracker boxes and controls start at the left', [printDecls('.sheet-strip-trackers .tracking-boxes'), printDecls('.sheet-strip-trackers .tracker-controls')].map(d => /justify-content:\s*flex-start/.test(d)), [true, true]);
+    // The screen grids stay where they are: no grid rule of the strip outside the screen blocks and the print block
+    check('the screen tracker grids stay in the screen blocks', mediaBlocks(sec, 'screen').join('\n').includes('grid-template-columns: 64px 1fr 112px'), true);
+
+    // The light print theme: injury subheads, injury and mutation text, and the mutation card
+    const light = (sel) => printRules(mediaBlocks(readSource('creator/css/styles.css'), 'print').join('\n')).filter(r => r.sels.includes('body.print-light-theme ' + sel)).map(r => r.body).join('\n');
+    const has = (decl, re) => re.test(decl);
+    check('light theme: injury subheads are dark with a light rule', [has(light('.sheet-subsection-title'), /(?:^|[;\s])color:\s*#333\s*!important/), has(light('.sheet-subsection-title'), /border-bottom-color:\s*#ccc\s*!important/)], [true, true]);
+    check('light theme: injury and mutation names are black', [light('.sheet-injury-name'), light('.sheet-mutation-name')].map(d => has(d, /(?:^|[;\s])color:\s*#000\s*!important/)), [true, true]);
+    check('light theme: injury and mutation descriptions are dark gray', [light('.sheet-injury-desc'), light('.sheet-mutation-desc')].map(d => has(d, /(?:^|[;\s])color:\s*#555\s*!important/)), [true, true]);
+    check('light theme: the mutation effect is dark', has(light('.sheet-mutation-effect'), /(?:^|[;\s])color:\s*#333\s*!important/), true);
+    check('light theme: the mutation card is light', [has(light('.sheet-mutation-item'), /background:\s*#f0f0f0\s*!important/), has(light('.sheet-mutation-item'), /border-color:\s*#ccc\s*!important/)], [true, true]);
 }
 
 console.log(failures ? `\n${failures} check(s) FAILED` : '\nAll checks passed');

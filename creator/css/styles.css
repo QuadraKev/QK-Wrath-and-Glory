@@ -5154,6 +5154,31 @@ textarea {
         color: #666 !important;
     }
 
+    /* Injuries, corruption and mutations */
+    body.print-light-theme .sheet-subsection-title {
+        color: #333 !important;
+        border-bottom-color: #ccc !important;
+    }
+
+    body.print-light-theme .sheet-injury-name,
+    body.print-light-theme .sheet-mutation-name {
+        color: #000 !important;
+    }
+
+    body.print-light-theme .sheet-injury-desc,
+    body.print-light-theme .sheet-mutation-desc {
+        color: #555 !important;
+    }
+
+    body.print-light-theme .sheet-mutation-effect {
+        color: #333 !important;
+    }
+
+    body.print-light-theme .sheet-mutation-item {
+        background: #f0f0f0 !important;
+        border-color: #ccc !important;
+    }
+
     body.print-light-theme .sheet-ability {
         border-bottom-color: #ddd !important;
     }
@@ -6657,8 +6682,28 @@ textarea {
         display: none !important;
     }
 
+    /* A row for each tracker: the label, then its boxes (or the Wrath value) at the left.
+       The Wrath group joins the grid, so that its label sits in the column of the other labels. */
     .sheet-strip-trackers {
         page-break-inside: avoid;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 6px 10px;
+        align-items: start;
+    }
+
+    .sheet-strip-wrath {
+        display: contents;
+    }
+
+    .sheet-strip-trackers .tracker-label,
+    .sheet-strip-trackers .tracker-value {
+        text-align: left;
+    }
+
+    .sheet-strip-trackers .tracking-boxes,
+    .sheet-strip-trackers .tracker-controls {
+        justify-content: flex-start;
     }
 
     body.print-light-theme .sheet-strip,

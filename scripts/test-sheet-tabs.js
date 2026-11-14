@@ -843,5 +843,16 @@ function tabsSection() {
     }
 }
 
+// --- Task 5: Remove jump-to-section ---
+{
+    const src = readSource('creator/tabs/character-sheet-tab.js'), css = readSource('creator/css/styles.css');
+    check('no TOC member in the sheet module', [/_toc/.test(src), /_assignSectionIds|_buildTocList|_slugifySection|_ensureTocElements|_observeTabVisibility/.test(src)], [false, false]);
+    check('no sheet-body in the module', /sheet-body/.test(src), false);
+    check('no TOC or sheet-body CSS', [/\.sheet-toc-/.test(css), /\.sheet-body\b/.test(css), /jump-to-section/.test(css)], [false, false, false]);
+    check('no tracker-row CSS (class has no markup)', /\.tracker-row(?![-\w])/.test(css), false);
+    check('Notes comment no longer mentions the table of contents', /table of contents/i.test(src), false);
+    check('escapeHtml stays', /\n    escapeHtml\(text\) \{/.test(src), true);
+}
+
 console.log(failures ? `\n${failures} check(s) FAILED` : '\nAll checks passed');
 process.exit(failures ? 1 : 0);

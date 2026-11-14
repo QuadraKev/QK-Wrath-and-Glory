@@ -102,51 +102,30 @@ const CustomWargear = {
     },
 
     // The record of the selected kind and weapon type, with no id. The form must pass validateForm.
+    // The form values go through _cleanRecord, the one owner of the record shape, which
+    // normalizeEntry also uses. A blank optional field parses to no key there.
     buildRecord(form) {
-        const record = { kind: form.kind, name: form.name.trim() };
-        if (form.kind === 'weapon') {
-            const ranged = form.weaponType === 'ranged';
-            record.type = ranged ? 'ranged' : 'melee';
-            record.description = form.description.trim();
-            record.damage = { base: this.parseIntStrict(form.damage), attribute: ranged ? null : 'strength', bonus: 0 };
-            record.ed = this.parseIntStrict(form.ed);
-            record.ap = this.parseIntStrict(form.ap);
-            if (ranged) {
-                record.range = {
-                    short: this.parseIntStrict(form.rangeShort),
-                    medium: this.parseIntStrict(form.rangeMedium),
-                    long: this.parseIntStrict(form.rangeLong)
-                };
-                record.salvo = this.parseIntStrict(form.salvo);
-            } else if (form.reach.trim() !== '') {
-                record.reach = this.parseIntStrict(form.reach);
-            }
-            record.traits = form.weaponTraits.slice();
-            record.keywords = form.keywords.slice();
-        } else if (form.kind === 'armor') {
-            record.description = form.description.trim();
-            record.ar = this.parseIntStrict(form.ar);
-            record.traits = form.armorTraits.slice();
-            record.keywords = form.keywords.slice();
-        } else if (form.kind === 'augmetic') {
-            record.category = 'augmetic';
-            record.description = form.description.trim();
-            record.effect = form.effect.trim();
-            if (form.bonuses.length) {
-                record.bonuses = {};
-                for (const row of form.bonuses) record.bonuses[row.key] = this._bonusValue(row.value);
-            }
-            record.keywords = form.keywords.slice();
-        } else {
-            record.category = 'Other';
-            record.description = form.description.trim();
-            record.effect = '';
-            record.keywords = [];
-        }
-        if (form.value.trim() !== '') record.value = this.parseIntStrict(form.value);
-        if (form.rarity !== '') record.rarity = form.rarity;
-        record.source = 'custom';
-        return record;
+        const bonuses = {};
+        for (const row of form.bonuses) bonuses[row.key] = row.value;
+        return this._cleanRecord({
+            kind: form.kind,
+            name: form.name,
+            type: form.weaponType,
+            description: form.description,
+            damage: { base: form.damage },
+            ed: form.ed,
+            ap: form.ap,
+            reach: form.reach,
+            range: { short: form.rangeShort, medium: form.rangeMedium, long: form.rangeLong },
+            salvo: form.salvo,
+            ar: form.ar,
+            traits: form.kind === 'armor' ? form.armorTraits : form.weaponTraits,
+            effect: form.effect,
+            bonuses,
+            keywords: form.keywords,
+            value: form.value,
+            rarity: form.rarity
+        });
     },
 
     // One short message per invalid field of the selected kind and type; {} when the form is valid.
@@ -242,10 +221,9 @@ const CustomWargear = {
     // Returns true when anything changed. The caller logs the repair (rule 8).
     normalizeEntry(entry, usedIds) {
         const before = JSON.stringify(this._canon(entry));
-        const isObject = value => value !== null && typeof value === 'object' && !Array.isArray(value);
-        if (!isObject(entry.custom)) entry.custom = { kind: 'other', name: 'Unreadable custom item', description: '' };
+        if (!this._isObject(entry.custom)) entry.custom = { kind: 'other', name: 'Unreadable custom item', description: '' };
         const custom = entry.custom;
-        const clean = this._cleanRecord(custom, isObject);
+        const clean = this._cleanRecord(custom);
         // Keep the same custom object, so a reference to it stays valid.
         for (const key of Object.keys(custom)) delete custom[key];
         Object.assign(custom, clean);
@@ -266,7 +244,8 @@ const CustomWargear = {
     },
 
     // The record coerced to the types and limits of its kind (spec §2.8 rules 3-5), with no id.
-    _cleanRecord(custom, isObject) {
+    // The one owner of the record shape (spec §2.3): buildRecord and normalizeEntry both use it.
+    _cleanRecord(custom) {
         const L = this.LIMITS;
         const str = (value, max) => (typeof value === 'string' ? value.trim().slice(0, max).trim() : '');
         const int = (value, limit) => {
@@ -303,12 +282,12 @@ const CustomWargear = {
             const ranged = custom.type === 'ranged';
             record.type = ranged ? 'ranged' : 'melee';
             record.description = description;
-            const base = isObject(custom.damage) ? custom.damage.base : undefined;
+            const base = this._isObject(custom.damage) ? custom.damage.base : undefined;
             record.damage = { base: int(base, L.damage), attribute: ranged ? null : 'strength', bonus: 0 };
             record.ed = int(custom.ed, L.ed);
             record.ap = int(custom.ap, L.ap);
             if (ranged) {
-                const range = isObject(custom.range) ? custom.range : {};
+                const range = this._isObject(custom.range) ? custom.range : {};
                 const parts = ['short', 'medium', 'long'].map(key => optionalInt(range[key], L.range));
                 if (parts.every(n => n !== undefined)) record.range = { short: parts[0], medium: parts[1], long: parts[2] };
                 record.salvo = int(custom.salvo, L.salvo);
@@ -328,7 +307,7 @@ const CustomWargear = {
             record.description = description;
             record.effect = str(custom.effect, L.effect);
             const bonuses = {};
-            for (const [key, value] of Object.entries(isObject(custom.bonuses) ? custom.bonuses : {})) {
+            for (const [key, value] of Object.entries(this._isObject(custom.bonuses) ? custom.bonuses : {})) {
                 const bonus = this._bonusValue(value);
                 if (this.BONUS_KEYS.includes(key) && bonus !== null) bonuses[key] = bonus;
             }
@@ -345,6 +324,10 @@ const CustomWargear = {
         if (this.RARITIES.includes(custom.rarity)) record.rarity = custom.rarity;
         record.source = 'custom';
         return record;
+    },
+
+    _isObject(value) {
+        return value !== null && typeof value === 'object' && !Array.isArray(value);
     },
 
     // A bonus value: 'rank', 'doubleRank', or an integer from -10 to 10 that is not 0; else null.

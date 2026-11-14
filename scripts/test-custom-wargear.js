@@ -208,6 +208,9 @@ const spineRecordWithId = { ...spineRecord, id: 'custom_p7d2m0zt' };
     check('validateForm: description of 2001 chars is invalid', v({ ...xenotech, description: 'x'.repeat(2001) }), ['description']);
     check('validateForm: effect of 501 chars is invalid', v({ ...spine, effect: 'x'.repeat(501) }), ['effect']);
     check('validateForm: hidden fields are not validated', v({ ...armour, damage: 'x' }), []);
+    check('validateForm: AR 21 is invalid', v({ ...armour, ar: '21' }), ['ar']);
+    check('validateForm: 21 traits are invalid', v({ ...xenotech, weaponTraits: Array.from({ length: 21 }, (_, i) => `Trait ${i}`) }), ['traits']);
+    check('validateForm: a keyword of 41 chars is invalid', v({ ...xenotech, keywords: ['K'.repeat(41)] }), ['keywords']);
 
     // traitNames and normalizeTrait
     const sortedNames = list => Object.values(list).map(t => t.name).sort((a, b) => a.localeCompare(b));
@@ -225,11 +228,24 @@ const spineRecordWithId = { ...spineRecord, id: 'custom_p7d2m0zt' };
         const changed = CW.normalizeEntry(entry, new Set());
         return { entry, c: entry.custom, changed };
     };
+    // A fixture record with the id of the fix() entry, so that the id alone is not a change.
+    const withId = record => ({ ...copy(record), id: 'custom_k3v9q2xa' });
     {
         const normal = { id: 'custom_k3v9q2xa', isStarting: false, custom: xenotechCustom() };
         const before = canon(normal);
         check('normalizeEntry: a normal Xenotech entry returns false', CW.normalizeEntry(normal, new Set()), false);
         check('normalizeEntry: a normal Xenotech entry stays the same', canon(normal), before);
+    }
+    // buildRecord and normalizeEntry must agree on the record shape.
+    for (const [label, record] of [['Xenotech', xenotechRecord], ['§2.5', spineRecord], ['ranged', rangedRecord], ['armour', armourRecord], ['Other', otherRecord]]) {
+        const r = fix(withId(record));
+        check(`normalizeEntry: the built ${label} record returns false`, r.changed, false);
+        check(`normalizeEntry: the built ${label} record stays the same`, canon(r.c), canon(withId(record)));
+    }
+    {
+        const record = CW.buildRecord(F({ name: 'Keyed', keywords: [' a '] }));
+        check('buildRecord: form keyword " a " is stored as "A"', record.keywords, ['A']);
+        check('normalizeEntry: the built " a " keyword record returns false', fix(withId(record)).changed, false);
     }
     const repaired = (name, r, actual, expected) => {
         check(`normalizeEntry: ${name}`, actual, expected);
@@ -245,7 +261,7 @@ const spineRecordWithId = { ...spineRecord, id: 'custom_p7d2m0zt' };
     repaired('ED "abc" becomes 0', r, r.c.ed, 0);
     r = fix({ ...xenotechCustom(), damage: { base: -5 } });
     repaired('damage base -5 becomes 0', r, r.c.damage, { base: 0, attribute: 'strength', bonus: 0 });
-    r = fix({ ...copy(rangedRecord), salvo: -3 });
+    r = fix({ ...withId(rangedRecord), salvo: -3 });
     repaired('salvo -3 clamps to 0', r, r.c.salvo, 0);
     r = fix({ ...xenotechCustom(), reach: 'x' });
     repaired('reach "x" is removed', r, 'reach' in r.c, false);
@@ -253,7 +269,7 @@ const spineRecordWithId = { ...spineRecord, id: 'custom_p7d2m0zt' };
     repaired('value 99 clamps to 30', r, r.c.value, 30);
     r = fix({ ...xenotechCustom(), rarity: 'Mythic' });
     repaired('rarity "Mythic" is removed', r, 'rarity' in r.c, false);
-    r = fix({ ...copy(rangedRecord), range: { short: 5 } });
+    r = fix({ ...withId(rangedRecord), range: { short: 5 } });
     repaired('ranged range { short: 5 } is removed', r, 'range' in r.c, false);
     r = fix({ ...xenotechCustom(), name: 'n'.repeat(200) });
     repaired('name of 200 chars is cut to 80', r, r.c.name.length, 80);
@@ -261,17 +277,17 @@ const spineRecordWithId = { ...spineRecord, id: 'custom_p7d2m0zt' };
     repaired('description of 3000 chars is cut to 2000', r, r.c.description.length, 2000);
     r = fix({ ...xenotechCustom(), keywords: ['imperium', ' Imperium ', 'x'.repeat(50), 7] });
     repaired('keywords are upper-cased, trimmed, cut and de-duplicated', r, r.c.keywords, ['IMPERIUM', 'X'.repeat(40)]);
-    r = fix({ ...copy(armourRecord), traits: ['shield', 'Shield', 'bulk (2)'] });
+    r = fix({ ...withId(armourRecord), traits: ['shield', 'Shield', 'bulk (2)'] });
     repaired('armour traits take the list spelling, no duplicates', r, r.c.traits, ['Shield', 'Bulk (2)']);
     r = fix({ ...xenotechCustom(), traits: [' rad (2) '] });
     repaired('weapon trait " rad (2) " becomes "Rad (2)"', r, r.c.traits, ['Rad (2)']);
     r = fix({ ...xenotechCustom(), traits: ['Xenos Venom (2)'] });
     check('normalizeEntry: typed trait "Xenos Venom (2)" stays', r.c.traits, ['Xenos Venom (2)']);
-    r = fix({ ...copy(spineRecord), bonuses: { wounds: 1, strength: 0, toughness: 99, agility: 'lots', resilience: 'rank', speed: -2 } });
+    r = fix({ ...withId(spineRecord), bonuses: { wounds: 1, strength: 0, toughness: 99, agility: 'lots', resilience: 'rank', speed: -2 } });
     repaired('augmetic bonuses keep only valid keys and values', r, r.c.bonuses, { resilience: 'rank', speed: -2 });
-    r = fix({ ...copy(spineRecord), bonuses: { wounds: 1 } });
+    r = fix({ ...withId(spineRecord), bonuses: { wounds: 1 } });
     repaired('augmetic bonuses with no valid key are removed', r, 'bonuses' in r.c, false);
-    r = fix({ ...copy(otherRecord), bonuses: { strength: 1 } });
+    r = fix({ ...withId(otherRecord), bonuses: { strength: 1 } });
     repaired('bonuses on an Other are removed', r, 'bonuses' in r.c, false);
     r = fix({ ...xenotechCustom(), bonuses: { strength: 1 } });
     repaired('bonuses on a weapon are removed', r, 'bonuses' in r.c, false);

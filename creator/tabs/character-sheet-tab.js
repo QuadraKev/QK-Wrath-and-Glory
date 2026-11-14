@@ -915,10 +915,9 @@ const CharacterSheetTab = {
                 ? `<span class="sheet-traits-cell">${allTraits.map(t => this.escapeHtml(t)).join(', ')}</span>`
                 : '-';
 
-            const range = weapon.type === 'ranged' && weapon.range
-                ? (typeof weapon.range === 'string' ? weapon.range
-                    : `${weapon.range.short ?? '-'}/${weapon.range.medium ?? '-'}/${weapon.range.long ?? '-'}m`)
-                : '-';
+            const salvoText = this.weaponSalvoText(weapon);
+            const range = this.escapeHtml(this.weaponRangeText(weapon))
+                + (salvoText ? `<div class="sheet-weapon-salvo">${this.escapeHtml(salvoText)}</div>` : '');
 
             // Build upgrade names display (each name is a glossary term with a popout)
             const upgradeNames = weapon.upgradeDetails.map(u =>
@@ -1035,6 +1034,28 @@ const CharacterSheetTab = {
             isMelee: entry.choice === 'Weapon Skill',
             isPistol: entry.choice === 'Ballistic Skill'
         };
+    },
+
+    // Plain text of the Range cell. Ranged: the stored string, or short/medium/long. Melee: reach, else range.
+    // An integer or an all-digit string prints as <n>m. Any other string prints as stored.
+    weaponRangeText(weapon) {
+        if (weapon.type === 'ranged') {
+            const range = weapon.range;
+            if (!range) return '-';
+            return typeof range === 'string' ? range
+                : `${range.short ?? '-'}/${range.medium ?? '-'}/${range.long ?? '-'}m`;
+        }
+        const value = weapon.reach ?? weapon.range;
+        if (value === undefined || value === null || value === '') return '-';
+        return typeof value === 'number' || /^\d+$/.test(value) ? `${value}m` : String(value);
+    },
+
+    // Plain text of the Salvo line: a ranged weapon with a number or a string other than "-".
+    weaponSalvoText(weapon) {
+        if (weapon.type !== 'ranged') return '';
+        const salvo = weapon.salvo;
+        if (typeof salvo === 'number') return `Salvo ${salvo}`;
+        return typeof salvo === 'string' && salvo !== '' && salvo !== '-' ? `Salvo ${salvo}` : '';
     },
 
     // Check if weapon is compatible with Simultaneous Strike
@@ -2064,6 +2085,8 @@ const CharacterSheetTab = {
                     if (item.improvised.details) {
                         for (const line of item.improvised.details.split(/\r?\n/)) lines.push(`    ${line}`);
                     }
+                } else if (item.custom) {
+                    for (const line of CustomWargear.textLines(wargear)) lines.push(line);
                 } else {
                     lines.push(`  ${wargear.name}`);
                 }

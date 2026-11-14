@@ -682,5 +682,77 @@ for (const rel of ['character-sheet-tab.js', 'wargear-tab.js', 'talents-tab.js']
     }
 }
 
+// --- sheet Range and Salvo, copy as text, Markdown ---
+{
+    const CS = get(sctx, 'CharacterSheetTab'), DL = get(sctx, 'DataLoader');
+    check('reach 2 prints 2m', CS.weaponRangeText({ type: 'melee', reach: 2 }), '2m');
+    check('melee range 2 prints 2m', CS.weaponRangeText({ type: 'melee', range: 2 }), '2m');
+    check('melee range "2" prints 2m', CS.weaponRangeText({ type: 'melee', range: '2' }), '2m');
+    check('melee Thrown text prints as stored', CS.weaponRangeText({ type: 'melee', range: 'Thrown S x 4' }), 'Thrown S x 4');
+    check('melee with no range prints -', CS.weaponRangeText({ type: 'melee' }), '-');
+    check('melee reach wins over range', CS.weaponRangeText({ type: 'melee', reach: 3, range: 2 }), '3m');
+    check('lasgun range', CS.weaponRangeText(DL.getWeapon('lasgun')), '12/24/36m');
+    check('ranged range string prints as stored', CS.weaponRangeText({ type: 'ranged', range: 'Thrown S x 4' }), 'Thrown S x 4');
+    check('ranged range object with a missing part prints -', CS.weaponRangeText({ type: 'ranged', range: { short: 5, long: 9 } }), '5/-/9m');
+    check('ranged with no range prints -', CS.weaponRangeText({ type: 'ranged' }), '-');
+    check('lasgun salvo', CS.weaponSalvoText(DL.getWeapon('lasgun')), 'Salvo 2');
+    check('a "-" salvo prints nothing', CS.weaponSalvoText({ type: 'ranged', salvo: '-' }), '');
+    check('a string salvo prints', CS.weaponSalvoText({ type: 'ranged', salvo: '2' }), 'Salvo 2');
+    check('a zero salvo prints', CS.weaponSalvoText({ type: 'ranged', salvo: 0 }), 'Salvo 0');
+    check('an empty salvo prints nothing', CS.weaponSalvoText({ type: 'ranged', salvo: '' }), '');
+    check('no salvo prints nothing', CS.weaponSalvoText({ type: 'ranged' }), '');
+    check('a melee weapon has no salvo line', CS.weaponSalvoText({ type: 'melee', salvo: 2 }), '');
+
+    sheetCharacter.wargear = ['whip', 'greataxe_aoa', 'knife', 'lasgun'].map(id => ({ id, isStarting: false }));
+    const cells = CS.renderWeapons(sheetCharacter).match(/<td class="sheet-weapon-range"[^>]*>[\s\S]*?<\/td>/g) || [];
+    const cellText = cell => cell.replace(/<[^>]*>/g, '|').replace(/\|+/g, '|').replace(/^\||\|$/g, '');
+    check('renderWeapons range cells', cells.map(cellText), ['4m', '2m', 'Thrown S x 4', '12/24/36m|Salvo 2']);
+    check('renderWeapons puts the salvo in its own div', cells[3].includes('<div class="sheet-weapon-salvo">Salvo 2</div>'), true);
+    check('renderWeapons gives a melee weapon no salvo div', cells.slice(0, 3).some(c => c.includes('sheet-weapon-salvo')), false);
+
+    // A stored range string holding markup must not reach the page as markup.
+    {
+        const whip = DL.getWeapon('whip');
+        const saved = whip.reach;
+        whip.reach = '<b>2</b>';
+        try {
+            sheetCharacter.wargear = [{ id: 'whip', isStarting: false }];
+            const cell = (CS.renderWeapons(sheetCharacter).match(/<td class="sheet-weapon-range"[^>]*>[\s\S]*?<\/td>/) || [''])[0];
+            check('renderWeapons escapes a range string with <b>', cell.includes('&lt;b&gt;2&lt;/b&gt;') && !RAW_TAG.test(cell), true);
+        } finally { whip.reach = saved; }
+    }
+
+    // Copy as text
+    {
+        const copied = [];
+        sctx.navigator.clipboard.writeText = text => { copied.push(text); return { then() {} }; };
+        sheetCharacter.wargear = [{ id: 'chainsword', isStarting: false }, { id: xenotechRecordWithId.id, isStarting: false, custom: xenotechRecordWithId }];
+        CS.copySummary({ innerHTML: '' });
+        check('copySummary wrote one text', copied.length, 1);
+        const text = copied[0] || '';
+        check('copySummary holds the book name then the custom lines',
+            text.includes('  Chainsword\n' + CW.textLines(xenotechRecordWithId).join('\n')), true);
+        sheetCharacter.wargear = [];
+    }
+
+    // Markdown
+    {
+        const anyFn = new Proxy({}, { get: () => () => ({}) });
+        const ioctx = vm.createContext({
+            console, DerivedStats: anyFn, PrerequisiteChecker: { getCharacterKeywords: () => [] },
+            DataLoader: { getSpecies: () => null, getArchetype: () => null,
+                getWargearItem: id => id === xenotechRecordWithId.id ? xenotechRecordWithId : null }
+        });
+        load(ioctx, 'creator/js/custom-wargear.js');
+        load(ioctx, 'creator/js/character-io.js');
+        const IO = get(ioctx, 'CharacterIO');
+        const md = IO.createCharacterSheet({ rank: 1, attributes: {}, skills: {}, talents: [], psychicPowers: [],
+            wargear: [{ id: xenotechRecordWithId.id, isStarting: false, custom: xenotechRecordWithId }] });
+        check('createCharacterSheet holds the custom lines',
+            md.includes('- Xenotech Blade (Custom)\n    Damage (S) +4 • ED 4 • AP 0 • Range 2m • Agonising, Rad (2)\n'), true);
+        check('createCharacterSheet prints the lines of textLines', md.includes(CW.textLines(xenotechRecordWithId).join('\n') + '\n'), true);
+    }
+}
+
 console.log(failures === 0 ? '\nAll custom wargear checks passed.' : `\n${failures} custom wargear check(s) FAILED.`);
 process.exit(failures === 0 ? 0 : 1);

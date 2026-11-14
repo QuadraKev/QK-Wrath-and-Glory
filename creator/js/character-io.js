@@ -249,6 +249,8 @@ const CharacterIO = {
                     if (item.improvised.details) {
                         for (const line of item.improvised.details.split(/\r?\n/)) sheet += `    ${line}\n`;
                     }
+                } else if (item.custom && wargear) {
+                    for (const line of CustomWargear.textLines(wargear)) sheet += `${line}\n`;
                 } else {
                     sheet += `- ${baseName}\n`;
                 }

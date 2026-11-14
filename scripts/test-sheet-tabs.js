@@ -416,6 +416,9 @@ function tabsSection() {
             check('visible tabs by default', sheet.getVisibleSheetTabs(makeCharacter()), ['character', 'stats', 'abilities', 'wargear', 'notes']);
             env.state.psyker = true;
             check('a psyker sees powers', sheet.getVisibleSheetTabs(makeCharacter()), ['character', 'stats', 'abilities', 'wargear', 'powers', 'notes']);
+            env.state.psyker = true;
+            check('a psyker with a follower sees powers before companions', sheet.getVisibleSheetTabs(makeCharacter({ followers: [{ id: 'f1' }] })),
+                ['character', 'stats', 'abilities', 'wargear', 'powers', 'companions', 'notes']);
             env.state.psyker = false;
             const withFollower = makeCharacter({ followers: [{ id: 'f1' }] });
             check('a follower shows companions', sheet.getVisibleSheetTabs(withFollower), ['character', 'stats', 'abilities', 'wargear', 'companions', 'notes']);
@@ -524,6 +527,229 @@ function tabsSection() {
         } finally {
             env.dom.container.query = query;
             sheet.render = render;
+        }
+    }
+}
+
+// --- Task 3: Tab bar, selection, keyboard ---
+{
+    const IDS5 = ['character', 'stats', 'abilities', 'wargear', 'notes'];
+    const ALL7 = ['character', 'stats', 'abilities', 'wargear', 'powers', 'companions', 'notes'];
+    const LABELS7 = ['Character', 'Stats', 'Abilities', 'Wargear', 'Psychic Powers', 'Followers', 'Notes'];
+
+    const tabButtons = (ids) => ids.map(id => stubEl({ cls: ['sheet-tab-btn'], data: { sheetTab: id }, attrs: { 'aria-selected': 'false', tabindex: '-1' } }));
+    const tabPanes = (ids) => ids.map(id => Object.assign(stubEl({ cls: ['sheet-pane'] }), { id: 'sheet-pane-' + id }));
+
+    // Markup (spec §10.1 cases 3, 8, 9)
+    {
+        const env = sheetSandbox();
+        const sheet = env.sheet;
+        const restore = stubBlocks(sheet);
+        try {
+            sheet.render();
+            const first = env.dom.container.innerHTML;
+            check('default activeSheetTab is stats', sheet.activeSheetTab, 'stats');
+            check('tablist has its aria-label', tagOf(first, 'role="tablist"').includes('aria-label="Character sheet sections"'), true);
+            const at = (needle) => first.indexOf(needle);
+            check('the tab bar lies in the bar, after the trackers and before the panes',
+                [at('class="sheet-strip-bar"') < at('sheet-strip-trackers'), at('sheet-strip-trackers') < at('class="sheet-tabbar"'), at('class="sheet-tabbar"') < at('class="sheet-panes"')],
+                [true, true, true]);
+
+            env.state.psyker = true;
+            env.state.character.followers = [{ id: 'f1' }];
+            sheet.activeSheetTab = 'wargear';
+            sheet.render();
+            const html = env.dom.container.innerHTML;
+            check('button labels in order', [...html.matchAll(/data-sheet-tab="[a-z]+"[^>]*>([^<]+)</g)].map(m => m[1].trim()), LABELS7);
+            for (const id of ALL7) {
+                const on = id === 'wargear';
+                const btn = tagOf(html, 'id="sheet-tab-' + id + '"');
+                check(`tab ${id} markup`,
+                    [btn.includes('role="tab"'), btn.includes('type="button"'), btn.includes('class="sheet-tab-btn' + (on ? ' active"' : '"')),
+                        btn.includes('aria-controls="sheet-pane-' + id + '"'), btn.includes('data-sheet-tab="' + id + '"'),
+                        btn.includes('aria-selected="' + on + '"'), btn.includes(on ? 'tabindex="0"' : 'tabindex="-1"')],
+                    [true, true, true, true, true, true, true]);
+                const pane = tagOf(html, 'id="sheet-pane-' + id + '"');
+                check(`pane ${id} markup`,
+                    [pane.includes('role="tabpanel"'), pane.includes('aria-labelledby="sheet-tab-' + id + '"'), pane.includes('tabindex="0"'), / hidden/.test(pane)],
+                    [true, true, true, !on]);
+            }
+            check('all seven panes are in the HTML in tab order', [...html.matchAll(/id="sheet-pane-([a-z]+)"/g)].map(m => m[1]), ALL7);
+
+            // Fallback (Review Focus): the selected tab disappears
+            for (const gone of ['powers', 'companions']) {
+                env.state.psyker = false;
+                env.state.character.followers = [];
+                sheet.activeSheetTab = gone;
+                sheet.render();
+                const fb = env.dom.container.innerHTML;
+                const shown = [...fb.matchAll(/<div class="sheet-pane"[^>]*>/g)].map(m => m[0]).filter(t => !/ hidden/.test(t)).map(t => (t.match(/id="(sheet-pane-[a-z]+)"/) || [])[1]);
+                check(`fallback from ${gone}: stats is active`, sheet.activeSheetTab, 'stats');
+                check(`fallback from ${gone}: one selected tab, stats`,
+                    [count(fb, /aria-selected="true"/g), tagOf(fb, 'id="sheet-tab-stats"').includes('aria-selected="true"')], [1, true]);
+                check(`fallback from ${gone}: only the stats pane shows`, shown, ['sheet-pane-stats']);
+            }
+        } finally {
+            restore();
+        }
+    }
+
+    // _nextSheetTabId (spec §10.1 case 8)
+    {
+        const { sheet } = sheetSandbox();
+        check('ArrowRight wraps from the last tab', sheet._nextSheetTabId(IDS5, 'notes', 'ArrowRight'), 'character');
+        check('ArrowLeft wraps from the first tab', sheet._nextSheetTabId(IDS5, 'character', 'ArrowLeft'), 'notes');
+        check('Home gives the first tab', sheet._nextSheetTabId(IDS5, 'wargear', 'Home'), 'character');
+        check('End gives the last tab', sheet._nextSheetTabId(IDS5, 'wargear', 'End'), 'notes');
+        check('ArrowRight gives the next tab', sheet._nextSheetTabId(IDS5, 'stats', 'ArrowRight'), 'abilities');
+        check('ArrowLeft gives the previous tab', sheet._nextSheetTabId(IDS5, 'stats', 'ArrowLeft'), 'character');
+        check('another key gives null', sheet._nextSheetTabId(IDS5, 'stats', 'a'), null);
+        check('an undefined current id gives null', sheet._nextSheetTabId(IDS5, undefined, 'ArrowRight'), null);
+        check('a current id outside the list gives null', sheet._nextSheetTabId(IDS5, 'powers', 'ArrowRight'), null);
+    }
+
+    // handleSheetTabKeydown (spec §10.1 case 8 and Review Focus)
+    {
+        const keyEvent = (key, target) => {
+            const e = { key, target, prevented: 0, preventDefault() { e.prevented++; } };
+            return e;
+        };
+        for (const mode of ['buttons', 'textarea']) {
+            const env = sheetSandbox();
+            const sheet = env.sheet;
+            const buttons = tabButtons(IDS5);
+            const query = env.dom.container.query;
+            const selectSheetTab = sheet.selectSheetTab;
+            const recorded = [];
+            try {
+                env.dom.container.query = sel => (sel === '.sheet-tab-btn' ? buttons : []);
+                sheet.selectSheetTab = id => { recorded.push(id); };
+                const byId = id => buttons.find(b => b.dataset.sheetTab === id);
+                if (mode === 'buttons') {
+                    sheet.activeSheetTab = 'stats';
+                    const e = keyEvent('ArrowRight', byId('notes'));
+                    sheet.handleSheetTabKeydown(e);
+                    check('ArrowRight on the notes button selects character', recorded, ['character']);
+                    check('the character button gets the focus once', buttons.map(b => b.focusCalls.length), [1, 0, 0, 0, 0]);
+                    check('the handled key calls preventDefault', e.prevented, 1);
+                    check('the current tab comes from the button, not activeSheetTab', sheet.activeSheetTab, 'stats');
+
+                    recorded.length = 0;
+                    const other = keyEvent('a', byId('stats'));
+                    sheet.handleSheetTabKeydown(other);
+                    check('another key records nothing and keeps the default', [recorded, other.prevented, buttons.map(b => b.focusCalls.length)], [[], 0, [1, 0, 0, 0, 0]]);
+                } else {
+                    // The Notes textarea sits inside #character-sheet-content, so the keys reach the listener
+                    const textarea = stubEl({ cls: ['sheet-notes-input'] });
+                    sheet.activeSheetTab = 'notes';
+                    const events = ['ArrowRight', 'ArrowLeft', 'Home', 'End'].map(k => keyEvent(k, textarea));
+                    events.forEach(e => sheet.handleSheetTabKeydown(e));
+                    check('textarea keys select no tab', recorded, []);
+                    check('textarea keys focus no button', buttons.map(b => b.focusCalls.length), [0, 0, 0, 0, 0]);
+                    check('textarea keys keep their default', events.map(e => e.prevented), [0, 0, 0, 0]);
+                    check('textarea keys keep the active tab', sheet.activeSheetTab, 'notes');
+                }
+            } finally {
+                env.dom.container.query = query;
+                sheet.selectSheetTab = selectSheetTab;
+            }
+        }
+    }
+
+    // selectSheetTab (spec §10.1 case 8, §5.3)
+    {
+        const run = ({ panesTop, display, closeGlossary = true }) => {
+            const env = sheetSandbox();
+            const sheet = env.sheet;
+            const buttons = tabButtons(IDS5);
+            const panes = tabPanes(IDS5);
+            const panesEl = stubEl({ cls: ['sheet-panes'], rect: { top: panesTop } });
+            const strip = stubEl({ cls: ['sheet-strip'], display, rect: { bottom: 300 } });
+            const bar = stubEl({ cls: ['sheet-strip-bar'], rect: { bottom: 150 } });
+            env.dom.scroller.scrollTop = 900;
+            const map = { '.sheet-tab-btn': buttons, '.sheet-pane': panes, '.sheet-panes': [panesEl], '.sheet-strip': [strip], '.sheet-strip-bar': [bar] };
+            env.dom.container.query = sel => map[sel] || [];
+            const counters = { render: 0, breakdown: 0, glossary: 0 };
+            const render = sheet.render;
+            const closeBreakdown = sheet._closeBreakdownPopup;
+            try {
+                sheet.render = () => { counters.render++; };
+                sheet._closeBreakdownPopup = () => { counters.breakdown++; };
+                if (closeGlossary) env.ctx.Glossary = { closeAllPopups: () => { counters.glossary++; } };
+                sheet.selectSheetTab('wargear');
+            } finally {
+                sheet.render = render;
+                sheet._closeBreakdownPopup = closeBreakdown;
+                delete env.ctx.Glossary;
+            }
+            return { sheet, buttons, panes, counters, scrollTop: env.dom.scroller.scrollTop };
+        };
+
+        const a = run({ panesTop: 120, display: 'block' });
+        check('selectSheetTab sets activeSheetTab', a.sheet.activeSheetTab, 'wargear');
+        check('button aria-selected', a.buttons.map(b => b.getAttribute('aria-selected')), ['false', 'false', 'false', 'true', 'false']);
+        check('button tabindex', a.buttons.map(b => b.getAttribute('tabindex')), ['-1', '-1', '-1', '0', '-1']);
+        check('button active class', a.buttons.map(b => b.classList.contains('active')), [false, false, false, true, false]);
+        check('only the wargear pane is shown', a.panes.map(p => p.hidden), [true, true, true, false, true]);
+        check('no re-render, one close per popup kind', [a.counters.render, a.counters.breakdown, a.counters.glossary], [0, 1, 1]);
+        check('the pane under the strip scrolls it free (900 + 120 - 300)', a.scrollTop, 720);
+        check('a pane below the strip leaves the scroll', run({ panesTop: 400, display: 'block' }).scrollTop, 900);
+        check('compact mode pins the bar (900 + 100 - 150)', run({ panesTop: 100, display: 'contents' }).scrollTop, 850);
+        let error = null;
+        try { run({ panesTop: 120, display: 'block', closeGlossary: false }); } catch (e) { error = e.message; }
+        check('no Glossary in the context gives no error', error, null);
+    }
+
+    // init() wiring
+    {
+        const env = sheetSandbox();
+        const sheet = env.sheet;
+        const selectSheetTab = sheet.selectSheetTab;
+        const handleSheetTabKeydown = sheet.handleSheetTabKeydown;
+        const selected = [];
+        const keyed = [];
+        try {
+            sheet.init();
+            const listeners = env.dom.container.listeners;
+            check('init adds one click and one keydown listener', [(listeners.click || []).length, (listeners.keydown || []).length], [1, 1]);
+            sheet.selectSheetTab = id => { selected.push(id); };
+            sheet.handleSheetTabKeydown = e => { keyed.push(e.key); };
+            const target = stubEl({ cls: ['sheet-tab-btn'], data: { sheetTab: 'notes' } });
+            listeners.click[0]({ target });
+            listeners.keydown[0]({ key: 'ArrowRight', target });
+            const outside = stubEl({ cls: ['sheet-notes-input'] });
+            listeners.click[0]({ target: outside });
+            check('a click on a tab button selects its tab', selected, ['notes']);
+            check('a keydown reaches handleSheetTabKeydown', keyed, ['ArrowRight']);
+        } finally {
+            sheet.selectSheetTab = selectSheetTab;
+            sheet.handleSheetTabKeydown = handleSheetTabKeydown;
+        }
+    }
+
+    // _scrollActiveTabIntoBar
+    {
+        const { sheet, dom } = sheetSandbox();
+        const query = dom.container.query;
+        const scrollTo = ({ scrollLeft, offsetLeft, offsetWidth }) => {
+            const bar = Object.assign(stubEl({ cls: ['sheet-tabbar'] }), { scrollWidth: 1000, scrollLeft, clientWidth: 300 });
+            const btn = Object.assign(stubEl({ cls: ['sheet-tab-btn', 'active'] }), { offsetLeft, offsetWidth });
+            dom.container.query = sel => (sel === '.sheet-tabbar' ? [bar] : sel === '.sheet-tab-btn.active' ? [btn] : []);
+            sheet._scrollActiveTabIntoBar(dom.container);
+            return bar.scrollLeft;
+        };
+        try {
+            check('a button past the right edge: 4px beyond it', scrollTo({ scrollLeft: 0, offsetLeft: 400, offsetWidth: 80 }), 184);
+            check('a button past the left edge: 4px beyond it', scrollTo({ scrollLeft: 100, offsetLeft: 50, offsetWidth: 80 }), 46);
+            check('the left target clamps to 0', scrollTo({ scrollLeft: 100, offsetLeft: 2, offsetWidth: 80 }), 0);
+            check('the right target clamps to the scroll range', scrollTo({ scrollLeft: 0, offsetLeft: 900, offsetWidth: 98 }), 700);
+            check('a button inside the view changes nothing', scrollTo({ scrollLeft: 100, offsetLeft: 150, offsetWidth: 80 }), 100);
+            dom.container.query = () => [];
+            let error = null;
+            try { sheet._scrollActiveTabIntoBar(dom.container); } catch (e) { error = e.message; }
+            check('a missing bar gives no error', error, null);
+        } finally {
+            dom.container.query = query;
         }
     }
 }

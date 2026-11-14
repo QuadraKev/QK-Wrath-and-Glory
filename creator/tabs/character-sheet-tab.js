@@ -11,6 +11,9 @@ const CharacterSheetTab = {
     // Guards against asking DataLoader for the threats more than once.
     _followerThreatLoad: 'idle',
 
+    // The selected sheet tab. It stays for the page session and is never stored.
+    activeSheetTab: 'stats',
+
     // The sheet tabs, in tab order. Each tab is one pane built by renderPane.
     SHEET_TABS: [
         { id: 'character', label: 'Character' },
@@ -38,6 +41,16 @@ const CharacterSheetTab = {
         // visibility tied to whether the Character Sheet tab is active.
         this._ensureTocElements();
         this._observeTabVisibility();
+
+        // Tab bar: one delegated click and keydown listener (the Notes box is inside this element too)
+        const sheetContent = document.getElementById('character-sheet-content');
+        sheetContent.addEventListener('click', (e) => {
+            const btn = e.target.closest('.sheet-tab-btn');
+            if (btn) this.selectSheetTab(btn.dataset.sheetTab);
+        });
+        sheetContent.addEventListener('keydown', (e) => {
+            this.handleSheetTabKeydown(e);
+        });
     },
 
     // Refresh the character sheet
@@ -70,12 +83,15 @@ const CharacterSheetTab = {
         };
         const visible = this.getVisibleSheetTabs(character);
 
+        // The selected tab can go away (no PSYKER keyword, no follower): fall back to Stats
+        if (!visible.includes(this.activeSheetTab)) this.activeSheetTab = 'stats';
+
         const container = document.getElementById('character-sheet-content');
 
         container.innerHTML = `
             ${this.renderStrip(ctx, visible)}
             <div class="sheet-panes">
-                ${visible.map(id => `<div class="sheet-pane" id="sheet-pane-${id}">${this.renderPane(id, ctx)}</div>`).join('')}
+                ${visible.map(id => `<div class="sheet-pane" role="tabpanel" id="sheet-pane-${id}" aria-labelledby="sheet-tab-${id}" tabindex="0"${id === this.activeSheetTab ? '' : ' hidden'}>${this.renderPane(id, ctx)}</div>`).join('')}
             </div>
         `;
 
@@ -100,6 +116,9 @@ const CharacterSheetTab = {
         // Give each section a stable id and rebuild the jump-to-section list
         this._assignSectionIds(container);
         this._buildTocList();
+
+        // A rewrite resets the scroll of the tab bar: bring the selected tab into view again
+        this._scrollActiveTabIntoBar(container);
     },
 
     // ===== Table of Contents (jump-to-section) =====
@@ -473,9 +492,19 @@ const CharacterSheetTab = {
                 ${this.renderHeader(ctx.character, ctx.species, ctx.archetype, ctx.keywords)}
                 <div class="sheet-strip-bar">
                     ${this.renderStripTrackers(ctx.derivedStats)}
+                    ${this.renderTabBar(visibleIds)}
                 </div>
             </div>
         `;
+    },
+
+    // Render the tab bar (WAI-ARIA Tabs pattern): one button per visible tab
+    renderTabBar(visibleIds) {
+        const buttons = this.SHEET_TABS.filter(tab => visibleIds.includes(tab.id)).map(tab => {
+            const on = tab.id === this.activeSheetTab;
+            return `<button type="button" class="sheet-tab-btn${on ? ' active' : ''}" role="tab" id="sheet-tab-${tab.id}" aria-controls="sheet-pane-${tab.id}" data-sheet-tab="${tab.id}" aria-selected="${on}" tabindex="${on ? 0 : -1}">${tab.label}</button>`;
+        }).join('');
+        return `<div class="sheet-tabbar" role="tablist" aria-label="Character sheet sections">${buttons}</div>`;
     },
 
     // Render the Wounds and Shock boxes and the Wrath counter of the strip.
@@ -2586,6 +2615,93 @@ const CharacterSheetTab = {
                 }, 200);
             });
         });
+    },
+
+    // ===== Sheet tab selection and keys =====
+
+    // Select a tab without a re-render: toggle the attributes, close popups, keep the pane clear of the strip
+    selectSheetTab(id) {
+        const container = document.getElementById('character-sheet-content');
+        this.activeSheetTab = id;
+
+        container.querySelectorAll('.sheet-tab-btn').forEach(btn => {
+            const on = btn.dataset.sheetTab === id;
+            btn.setAttribute('aria-selected', on ? 'true' : 'false');
+            btn.setAttribute('tabindex', on ? '0' : '-1');
+            btn.classList.toggle('active', on);
+        });
+        container.querySelectorAll('.sheet-pane').forEach(pane => {
+            pane.hidden = pane.id !== 'sheet-pane-' + id;
+        });
+
+        this._closeBreakdownPopup();
+        if (typeof Glossary !== 'undefined') Glossary.closeAllPopups();
+
+        // Scroll only when the new pane would start under the pinned part
+        const panes = container.querySelector('.sheet-panes');
+        const pinned = this._pinnedElement(container);
+        const scroller = document.getElementById('tab-character-sheet');
+        if (panes && pinned && scroller) {
+            const gap = panes.getBoundingClientRect().top - pinned.getBoundingClientRect().bottom;
+            if (gap < 0) scroller.scrollTop += gap;
+        }
+
+        this._scrollActiveTabIntoBar(container);
+    },
+
+    // The pinned part of the strip: the bar in compact mode, the whole strip otherwise.
+    // The CSS decides the mode (display: contents on the strip), so JS does not repeat the media query.
+    _pinnedElement(container) {
+        const strip = container.querySelector('.sheet-strip');
+        if (strip && window.getComputedStyle(strip).display === 'contents') {
+            return container.querySelector('.sheet-strip-bar');
+        }
+        return strip;
+    },
+
+    // The id of the tab that a key moves to, or null when the key or the current id does not apply
+    _nextSheetTabId(ids, currentId, key) {
+        const index = ids.indexOf(currentId);
+        if (index < 0) return null;
+        switch (key) {
+            case 'ArrowRight': return ids[(index + 1) % ids.length];
+            case 'ArrowLeft': return ids[(index - 1 + ids.length) % ids.length];
+            case 'Home': return ids[0];
+            case 'End': return ids[ids.length - 1];
+            default: return null;
+        }
+    },
+
+    // Keys on a focused tab button. The listener sits on the whole sheet, so any other target
+    // (the Notes box, a button in a pane) must return at once and keep its own keys.
+    handleSheetTabKeydown(e) {
+        const btn = e.target.closest('.sheet-tab-btn');
+        if (!btn) return;
+
+        const container = document.getElementById('character-sheet-content');
+        const buttons = Array.from(container.querySelectorAll('.sheet-tab-btn'));
+        const next = this._nextSheetTabId(buttons.map(b => b.dataset.sheetTab), btn.dataset.sheetTab, e.key);
+        if (next === null) return;
+
+        e.preventDefault();
+        this.selectSheetTab(next);
+        const target = buttons.find(b => b.dataset.sheetTab === next);
+        if (target) target.focus();
+    },
+
+    // Bring the selected tab into view in the tab bar. Sets scrollLeft only: scrollIntoView would scroll the page.
+    _scrollActiveTabIntoBar(container) {
+        const bar = container.querySelector('.sheet-tabbar');
+        const btn = container.querySelector('.sheet-tab-btn.active');
+        if (!bar || !btn) return;
+
+        const left = btn.offsetLeft;
+        const right = left + btn.offsetWidth;
+        let target;
+        if (right > bar.scrollLeft + bar.clientWidth) target = right + 4 - bar.clientWidth;
+        else if (left < bar.scrollLeft) target = left - 4;
+        else return;
+        bar.scrollLeft = Math.min(Math.max(0, target), Math.max(0, bar.scrollWidth - bar.clientWidth));
     },
 
     // Show a glossary-style breakdown popup for an element

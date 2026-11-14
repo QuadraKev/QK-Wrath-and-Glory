@@ -1082,5 +1082,25 @@ function tabsSection() {
     check('print: an equipment group keeps its padding inside the 50% width', [has(equipGroup, /box-sizing:\s*border-box\s*!important/), has(equipGroup, /padding:\s*8px 10px\s*!important/)], [true, true]);
 }
 
+// --- Final review fixes ---
+{
+    // F3: values from a character file are escaped in the strip and in Details
+    {
+        const env = sheetSandbox();
+        const sheet = env.sheet;
+        env.dataLoader.getArchetype = id => (id === 'veteran' ? { name: 'Veteran' } : null);
+        const evilRank = makeCharacter({ rank: EVIL });
+        const rankHtml = sheet.renderHeader(evilRank, null, null, []) + sheet.renderDetails(evilRank, null, null);
+        check('F3: rank is escaped in the subtitle and in Details', [rankHtml.split(SAFE).length - 1, RAW_TAG.test(rankHtml)], [2, false]);
+        const tierHtml = sheet.renderDetails(makeCharacter({ ascensions: [{ type: 'archetype', archetypeId: 'veteran', targetTier: EVIL }] }), null, null);
+        check('F3: an ascension target tier is escaped in Details', [tierHtml.includes('Veteran (Tier ' + SAFE + ')'), RAW_TAG.test(tierHtml)], [true, false]);
+        env.state.wrath = EVIL;
+        const wrathHtml = sheet.renderStripTrackers(DERIVED);
+        check('F3: the Wrath value is escaped in the strip', [wrathHtml.includes('tracker-value">' + SAFE + '<'), RAW_TAG.test(wrathHtml)], [true, false]);
+        env.state.wrath = 0;
+        check('F3: a Wrath of 0 prints 0', sheet.renderStripTrackers(DERIVED).includes('tracker-value">0<'), true);
+    }
+}
+
 console.log(failures ? `\n${failures} check(s) FAILED` : '\nAll checks passed');
 process.exit(failures ? 1 : 0);

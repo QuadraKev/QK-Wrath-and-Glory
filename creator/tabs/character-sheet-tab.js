@@ -372,7 +372,7 @@ const CharacterSheetTab = {
                     <span class="tracker-label">Wrath</span>
                     <div class="tracker-controls">
                         <button type="button" class="tracker-btn tracker-minus" data-type="wrath" aria-label="Remove Wrath">−</button>
-                        <span class="tracker-value">${State.getCurrentWrath()}</span>
+                        <span class="tracker-value">${this.escapeHtml(String(State.getCurrentWrath()))}</span>
                         <button type="button" class="tracker-btn tracker-plus" data-type="wrath" aria-label="Add Wrath">+</button>
                     </div>
                 </div>
@@ -466,7 +466,7 @@ const CharacterSheetTab = {
             <div class="sheet-section sheet-header-section">
                 <h1 class="sheet-character-name">${this.escapeHtml(name)}</h1>
                 <div class="sheet-subtitle">
-                    ${this.escapeHtml(speciesName)} &bull; ${this.escapeHtml(archetypeName)} &bull; ${tierDisplay} &bull; Rank ${rank}
+                    ${this.escapeHtml(speciesName)} &bull; ${this.escapeHtml(archetypeName)} &bull; ${tierDisplay} &bull; Rank ${this.escapeHtml(String(rank))}
                 </div>
                 <div class="sheet-keywords">
                     ${keywordHtml}
@@ -485,7 +485,7 @@ const CharacterSheetTab = {
             if (asc.type !== 'archetype') continue;
             const ascArchetype = DataLoader.getArchetype(asc.archetypeId);
             if (ascArchetype) {
-                archetypeText += ` → ${this.escapeHtml(ascArchetype.name)} (Tier ${asc.targetTier})`;
+                archetypeText += ` → ${this.escapeHtml(ascArchetype.name)} (Tier ${this.escapeHtml(String(asc.targetTier))})`;
             }
         }
 
@@ -494,7 +494,7 @@ const CharacterSheetTab = {
             ['Species', this.escapeHtml(this.getSpeciesDisplayName(character, species))],
             ['Archetype', archetypeText],
             ['Tier', State.getEffectiveTier()],
-            ['Rank', character.rank || 1]
+            ['Rank', this.escapeHtml(String(character.rank || 1))]
         ];
 
         return `

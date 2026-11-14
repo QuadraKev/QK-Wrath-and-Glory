@@ -4947,8 +4947,10 @@ textarea {
         display: contents !important;
     }
 
-    /* The group (a tbody) is the card. With display: contents it dissolves, and the name, the
-       Effect cell and the value sit side by side. */
+    /* The group (a tbody) is the card. This rule stays here, outside the light theme, because it
+       corrects the layout of every print, with or without the light class. It must come after the
+       old rule "tbody, display: contents" above, which it overrides for the equipment groups: with
+       display: contents the card dissolves, and the name, the Effect cell and the value sit side by side. */
     .sheet-equipment-table .sheet-equip-group {
         display: grid !important;
         width: 50% !important;
@@ -5180,6 +5182,14 @@ textarea {
     }
 
     body.print-light-theme .sheet-mutation-effect {
+        color: #000 !important;
+    }
+
+    /* On the light cards the severity badges and the glossary terms take the dark text color.
+       The gold and the colors of the screen are too pale on a light background. */
+    body.print-light-theme .sheet-mutation-severity,
+    body.print-light-theme .sheet-mutation-item .glossary-term,
+    body.print-light-theme .sheet-follower .glossary-term {
         color: #333 !important;
     }
 
@@ -5200,9 +5210,12 @@ textarea {
 
     body.print-light-theme .sheet-ascension-tier,
     body.print-light-theme .sheet-ascension-cost,
-    body.print-light-theme .sheet-ascension-details,
-    body.print-light-theme .sheet-ascension-keywords {
+    body.print-light-theme .sheet-ascension-details {
         color: #555 !important;
+    }
+
+    body.print-light-theme .sheet-ascension-keywords {
+        color: #333 !important;
     }
 
     /* Follower threat card, reached through the sheet so that no other screen changes */
@@ -5227,8 +5240,12 @@ textarea {
 
     body.print-light-theme .sheet-follower .threat-stat-table td {
         background: transparent !important;
-        color: #333 !important;
+        color: #000 !important;
         border-color: #ddd !important;
+    }
+
+    body.print-light-theme .sheet-follower .ability-name {
+        color: #000 !important;
     }
 
     body.print-light-theme .sheet-follower .threat-keyword {
@@ -6538,7 +6555,7 @@ textarea {
     display: block;
 }
 
-@media (min-width: 1400px) {
+@media screen and (min-width: 1400px) {
     .sheet-pane-columns {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -6715,8 +6732,8 @@ textarea {
 }
 
 /* Print: the whole sheet in tab order, the strip first and static, no tab bar, no Details block.
-   The light-theme rule is last. The strip, the bar and the tab bar are static whatever the page size,
-   because the pinning and the layout modes are screen-only. */
+   The light-theme rule is last. The strip and the strip bar are static whatever the page size,
+   because the pinning and the layout modes are screen-only. The tab bar does not print. */
 @media print {
     .sheet-strip,
     .sheet-strip-bar {
@@ -6739,10 +6756,30 @@ textarea {
         display: none !important;
     }
 
+    /* The Stats blocks print whole (this overrides the old rule that lets a column block split),
+       and a block title never stays alone at the foot of a page. */
+    .sheet-pane .sheet-column .sheet-section {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    /* The old print rule "sheet-columns, page-break-before: avoid" kept the columns with the header
+       card. The header is the strip now, so the columns follow the Character blocks and may start a page. */
+    .sheet-pane .sheet-columns {
+        page-break-before: auto;
+        break-before: auto;
+    }
+
+    .sheet-section-title {
+        page-break-after: avoid;
+        break-after: avoid;
+    }
+
     /* A row for each tracker: the label, then its boxes (or the Wrath value) at the left.
        The Wrath group joins the grid, so that its label sits in the column of the other labels. */
     .sheet-strip-trackers {
         page-break-inside: avoid;
+        padding: 0 16px;
         display: grid;
         grid-template-columns: auto 1fr;
         gap: 6px 10px;

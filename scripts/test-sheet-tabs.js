@@ -778,7 +778,7 @@ function tabsSection() {
     check('compact tab bar has 4px padding on every side for the focus ring', Object.values(paddingSides(barRule)).every(v => v >= 4), true);
     check('strip labels set no colour', /\.sheet-strip-label\s*\{[^}]*color:/.test(sec), false);
     check('sticky only inside screen blocks', count(sec.replace(/@media screen[^{]*\{(?:[^{}]|\{[^{}]*\})*\}/g, ''), /position:\s*sticky/g), 0);
-    check('wide panes are two columns', /\.sheet-pane-columns\s*\{[^}]*grid-template-columns:\s*1fr 1fr/.test(mediaBlocks(sec, '(min-width: 1400px)').join('')), true);
+    check('wide panes are two columns, on the screen only', /\.sheet-pane-columns\s*\{[^}]*grid-template-columns:\s*1fr 1fr/.test(mediaBlocks(sec, 'screen and (min-width: 1400px)').join('')), true);
     // A raw colour: a hex value, rgb()/rgba(), or a colour name in a declaration value (var() names and comments removed)
     const NAMED = /\b(white|black|red|green|blue|yellow|orange|purple|pink|gold|silver|gray|grey|navy|maroon|teal|aqua|cyan|lime|olive|brown|magenta|fuchsia|crimson|indigo|violet)\b/i;
     const hasRawColour = (css) => {
@@ -998,6 +998,7 @@ function tabsSection() {
     const sec = tabsSection();
     const print = mediaBlocks(sec, 'print').join('\n');
     const rule = sel => new RegExp(sel.replace(/[.[\]]/g, '\\$&') + '\\s*\\{([^}]*)\\}');
+    const printRules = (css) => [...css.matchAll(/([^{}]+)\{([^}]*)\}/g)].map(m => ({ sels: m[1].replace(/\/\*[\s\S]*?\*\//g, '').split(',').map(x => x.trim()), body: m[2] }));
     check('print block exists', print.length > 0, true);
     check('hidden panes print', /display:\s*block\s*!important/.test((print.match(rule('.sheet-pane[hidden]')) || [])[1] || ''), true);
     check('tab bar does not print', /display:\s*none\s*!important/.test((print.match(rule('.sheet-tabbar')) || [])[1] || ''), true);
@@ -1008,17 +1009,40 @@ function tabsSection() {
     check('light theme clears the bar and the trackers too', [/body\.print-light-theme \.sheet-strip-bar,/.test(print), /body\.print-light-theme \.sheet-strip-trackers\s*\{[^}]*border:\s*none/.test(print)], [true, true]);
     // Print never sees a screen rule: no sticky outside screen blocks (the Task 4 check), and the print block does not unpin a rule that is not there
     check('print block has no sticky rule', /sticky/.test(print), false);
+    // Page breaks: the Stats blocks print whole, and a block title never stays alone at the foot of a page
+    const breakRule = (sel) => printRules(print).filter(r => r.sels.includes(sel)).map(r => r.body).join('\n');
+    check('print: the Stats blocks do not split across pages', [/page-break-inside:\s*avoid/.test(breakRule('.sheet-pane .sheet-column .sheet-section')), /(?:^|[;\s])break-inside:\s*avoid/.test(breakRule('.sheet-pane .sheet-column .sheet-section'))], [true, true]);
+    check('print: the Stats columns may start on a new page (the old keep-with-header rule no longer has a header above them)', [/page-break-before:\s*auto/.test(breakRule('.sheet-pane .sheet-columns')), /(?:^|[;\s])break-before:\s*auto/.test(breakRule('.sheet-pane .sheet-columns'))], [true, true]);
+    check('print: a block title stays with its block', [/page-break-after:\s*avoid/.test(breakRule('.sheet-section-title')), /(?:^|[;\s])break-after:\s*avoid/.test(breakRule('.sheet-section-title'))], [true, true]);
+    // The printed trackers line up with the text of the printed cards (15px padding and a 1px border)
+    check('print: the tracker block has the inset of the cards', /padding:\s*0 16px/.test(breakRule('.sheet-strip-trackers')), true);
 
     // The trackers print as rows: a label, then its boxes (or the Wrath value) directly after it, left-aligned
-    const printRules = (css) => [...css.matchAll(/([^{}]+)\{([^}]*)\}/g)].map(m => ({ sels: m[1].replace(/\/\*[\s\S]*?\*\//g, '').split(',').map(x => x.trim()), body: m[2] }));
     const printDecls = (sel) => printRules(print).filter(r => r.sels.includes(sel)).map(r => r.body).join('\n');
     const trackers = printDecls('.sheet-strip-trackers');
     check('print trackers: a two-column grid, label then boxes', [/display:\s*grid/.test(trackers), /grid-template-columns:\s*auto 1fr/.test(trackers)], [true, true]);
     check('print Wrath group joins the grid columns', /display:\s*contents/.test(printDecls('.sheet-strip-wrath')), true);
     check('print tracker labels and the Wrath value are left-aligned', [printDecls('.sheet-strip-trackers .tracker-label'), printDecls('.sheet-strip-trackers .tracker-value')].map(d => /text-align:\s*left/.test(d)), [true, true]);
     check('print tracker boxes and controls start at the left', [printDecls('.sheet-strip-trackers .tracking-boxes'), printDecls('.sheet-strip-trackers .tracker-controls')].map(d => /justify-content:\s*flex-start/.test(d)), [true, true]);
-    // The screen grids stay where they are: no grid rule of the strip outside the screen blocks and the print block
-    check('the screen tracker grids stay in the screen blocks', mediaBlocks(sec, 'screen').join('\n').includes('grid-template-columns: 64px 1fr 112px'), true);
+    // No grid rule for the tracker container sits outside the @media screen blocks and the @media print block
+    const withoutMedia = (css, keep) => {
+        let out = '', from = 0;
+        while (true) {
+            const at = css.indexOf('@media', from);
+            if (at < 0) { out += css.slice(from); break; }
+            const open = css.indexOf('{', at);
+            let depth = 1, i = open + 1;
+            while (i < css.length && depth > 0) { if (css[i] === '{') depth++; else if (css[i] === '}') depth--; i++; }
+            out += css.slice(from, at);
+            if (!keep(css.slice(at + 6, open).trim())) out += css.slice(at, i);
+            from = i;
+        }
+        return out;
+    };
+    const outsideScreenAndPrint = withoutMedia(sec, q => /^screen\b/.test(q) || q === 'print');
+    const gridRuleOf = css => printRules(css).filter(r => r.sels.some(x => x.includes('.sheet-strip-trackers') && !x.includes('.sheet-strip-trackers ') ) ).some(r => /grid/.test(r.body));
+    check('no tracker grid rule outside the screen and print blocks', gridRuleOf(outsideScreenAndPrint), false);
+    check('the tracker grid rule finder sees a top-level rule, a screen rule and a print rule', [gridRuleOf('.sheet-strip-trackers { display: grid; }'), gridRuleOf(mediaBlocks(sec, 'screen').join('\n')), gridRuleOf(print)], [true, true, true]);
 
     // The light print theme: injury subheads, injury and mutation text, and the mutation card
     const light = (sel) => printRules(mediaBlocks(readSource('creator/css/styles.css'), 'print').join('\n')).filter(r => r.sels.includes('body.print-light-theme ' + sel)).map(r => r.body).join('\n');
@@ -1026,24 +1050,36 @@ function tabsSection() {
     check('light theme: injury subheads are dark with a light rule', [has(light('.sheet-subsection-title'), /(?:^|[;\s])color:\s*#333\s*!important/), has(light('.sheet-subsection-title'), /border-bottom-color:\s*#ccc\s*!important/)], [true, true]);
     check('light theme: injury and mutation names are black', [light('.sheet-injury-name'), light('.sheet-mutation-name')].map(d => has(d, /(?:^|[;\s])color:\s*#000\s*!important/)), [true, true]);
     check('light theme: injury and mutation descriptions are dark gray', [light('.sheet-injury-desc'), light('.sheet-mutation-desc')].map(d => has(d, /(?:^|[;\s])color:\s*#555\s*!important/)), [true, true]);
-    check('light theme: the mutation effect is dark', has(light('.sheet-mutation-effect'), /(?:^|[;\s])color:\s*#333\s*!important/), true);
+    check('light theme: the mutation effect is black', has(light('.sheet-mutation-effect'), /(?:^|[;\s])color:\s*#000\s*!important/), true);
     check('light theme: the mutation card is light', [has(light('.sheet-mutation-item'), /background:\s*#f0f0f0\s*!important/), has(light('.sheet-mutation-item'), /border-color:\s*#ccc\s*!important/)], [true, true]);
 
     // The Ascension card, the Follower threat card (reached through .sheet-follower) and the equipment cards in print
     const lightFollower = (sel) => light('.sheet-follower ' + sel);
     const bgOf = (d, v) => new RegExp('background:\\s*' + v + '\\s*!important').test(d);
-    check('light theme: the Ascension card is light with dark text', [bgOf(light('.sheet-ascension-item'), '#f0f0f0'), has(light('.sheet-ascension-item'), /border-color:\s*#ccc\s*!important/), has(light('.sheet-ascension-name'), /(?:^|[;\s])color:\s*#000\s*!important/), ['.sheet-ascension-tier', '.sheet-ascension-cost', '.sheet-ascension-details', '.sheet-ascension-keywords'].map(c => has(light(c), /(?:^|[;\s])color:\s*#555\s*!important/))], [true, true, true, [true, true, true, true]]);
+    check('light theme: the Ascension card is light with dark text', [bgOf(light('.sheet-ascension-item'), '#f0f0f0'), has(light('.sheet-ascension-item'), /border-color:\s*#ccc\s*!important/), has(light('.sheet-ascension-name'), /(?:^|[;\s])color:\s*#000\s*!important/), ['.sheet-ascension-tier', '.sheet-ascension-cost', '.sheet-ascension-details'].map(c => has(light(c), /(?:^|[;\s])color:\s*#555\s*!important/)), has(light('.sheet-ascension-keywords'), /(?:^|[;\s])color:\s*#333\s*!important/)], [true, true, true, [true, true, true], true]);
     check('light theme: the Follower threat card is light with dark text', [
         bgOf(lightFollower('.threat-card'), '#fff'), bgOf(lightFollower('.threat-card-header'), '#f5f5f5'),
         ['.threat-stat-table th', '.resilience-row', '.determination-row', '.abilities-header', '.bonuses-header'].map(c => bgOf(lightFollower(c), '#f0f0f0')),
-        [bgOf(lightFollower('.threat-stat-table td'), 'transparent'), has(lightFollower('.threat-stat-table td'), /(?:^|[;\s])color:\s*#333\s*!important/)],
+        [bgOf(lightFollower('.threat-stat-table td'), 'transparent'), has(lightFollower('.threat-stat-table td'), /(?:^|[;\s])color:\s*#000\s*!important/)],
         [bgOf(lightFollower('.threat-keyword'), '#eee'), has(lightFollower('.threat-keyword'), /border-color:\s*#333\s*!important/)]
     ], [true, true, [true, true, true, true, true], [true, true], [true, true]]);
+    // The borders that keep the light cards readable on paper
+    const borderOf = (d, prop, v) => new RegExp(prop + ':\\s*' + v + '\\s*!important').test(d);
+    check('light theme: the light cards keep visible borders', [
+        borderOf(lightFollower('.threat-card'), 'border-color', '#ccc'), borderOf(lightFollower('.threat-card-header'), 'border-bottom-color', '#333'),
+        ['.threat-stat-table th', '.resilience-row', '.determination-row', '.abilities-header', '.bonuses-header'].map(c => borderOf(lightFollower(c), 'border-color', '#ddd')),
+        borderOf(lightFollower('.threat-stat-table td'), 'border-color', '#ddd')
+    ], [true, true, [true, true, true, true, true], true]);
+    // Text that was pale on the dark cards of the screen becomes dark on the light cards
+    check('light theme: the follower ability names are black', has(lightFollower('.ability-name'), /(?:^|[;\s])color:\s*#000\s*!important/), true);
+    check('light theme: glossary terms in the Mutation and Follower cards are dark', ['.sheet-mutation-item .glossary-term', '.sheet-follower .glossary-term'].map(c => has(light(c), /(?:^|[;\s])color:\s*#333\s*!important/)), [true, true]);
+    check('light theme: the mutation severity badges are dark', has(light('.sheet-mutation-severity'), /(?:^|[;\s])color:\s*#333\s*!important/), true);
     check('light theme: the Follower card rules never reach the card outside the sheet', /body\.print-light-theme \.threat-card\s*[,{]/.test(mediaBlocks(readSource('creator/css/styles.css'), 'print').join('\n')), false);
     // In print the equipment group (a tbody) must stay a grid card. A display: contents tbody puts the name, the Effect cell and the value side by side.
     const printAll = mediaBlocks(readSource('creator/css/styles.css'), 'print').join('\n');
     const equipGroup = printRules(printAll).filter(r => r.sels.includes('.sheet-equipment-table .sheet-equip-group')).map(r => r.body).join('\n');
     check('print: an equipment group is a grid card (not display: contents)', [has(equipGroup, /display:\s*grid\s*!important/), has(equipGroup, /width:\s*50%\s*!important/)], [true, true]);
+    check('print: an equipment group keeps its padding inside the 50% width', [has(equipGroup, /box-sizing:\s*border-box\s*!important/), has(equipGroup, /padding:\s*8px 10px\s*!important/)], [true, true]);
 }
 
 console.log(failures ? `\n${failures} check(s) FAILED` : '\nAll checks passed');

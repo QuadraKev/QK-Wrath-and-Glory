@@ -1,0 +1,575 @@
+# Character Sheet Tabs Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** The creator's Character Sheet shows its blocks in seven tabs (Character, Stats, Abilities, Wargear, Psychic Powers, Followers, Notes) under a pinned strip with the character identity and the Wounds, Shock and Wrath trackers, and print and Copy Summary still give the whole sheet (issue #25).
+
+**Architecture:** `CharacterSheetTab.render()` keeps one full `innerHTML` write into `#character-sheet-content`: a `.sheet-strip` (identity + `.sheet-strip-bar` with the trackers and the tab bar) and a `.sheet-panes` with one `.sheet-pane` per visible tab, built by `renderPane(tabId, ctx)` from the unchanged block render functions. A tab switch only toggles attributes (`selectSheetTab`); a re-render keeps the view through `_captureViewState` / `_restoreViewState` with `_focusKeyOf`. Pinning, the two layout modes and print are CSS only; the jump-to-section code goes.
+
+**Tech Stack:** Vanilla JS (global-object modules, no build step), static HTML/CSS, Node `vm`-sandbox test scripts.
+
+**Spec:** `docs/superpowers/specs/2026-11-13-sheet-tabs-design.md` (approved 2026-11-13; §12 holds the owner's decisions and is not reopened). Line numbers in the spec and in this plan are hints only: they are from branch `custom-wargear` at `1ac43fb`, whose final review can still move lines in `creator/tabs/character-sheet-tab.js`. Before it merges, that branch gets a small fix wave (the sheet's Salvo line shows only for a salvo above 0; three talent-choice and upgrade sites get an escape; `creator/index.html` stays at 35 tags at `?v=124`); none of it changes a function that this plan restructures. Find every site by the function, class or selector that the step names.
+
+## Global Constraints
+
+- Branch `sheet-tabs`, cut from `main` after Custom Wargear (#33) merges. Tasks in order, each gated by a review before the next starts. One commit per task (more is fine), no push.
+- Commit: `git commit --author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github.com>" -m "<short plain sentence> (#25)"`. No attribution or co-author lines.
+- Vanilla JS in the existing `const CharacterSheetTab = {…}` object; no `import`/`export`, classes or IIFEs; no new file except the test; no new dependency; no build step (`STYLE_GUIDE.md`). New members go next to their kin: state properties at the top, render methods with the renderers, handlers with the binders.
+- CSS: `STYLE_GUIDE.md` variables only (no raw colour), Jost stays the font. All new rules go in ONE new section at the end of `creator/css/styles.css`: `/* ===== Character Sheet Tabs (issue #25) ===== */`. Screen-only rules for pinning and the two modes are wrapped in `@media screen …` so that print never sees them.
+- Naming rule: every new CSS class and DOM id starts with `sheet-` and continues with one of `strip`, `tab`, `pane`, `details` (`sheet-strip`, `sheet-strip-bar`, `sheet-strip-trackers`, `sheet-strip-label`, `sheet-strip-wrath`, `sheet-tabbar`, `sheet-tab-btn`, `sheet-tab-<id>`, `sheet-panes`, `sheet-pane`, `sheet-pane-<id>`, `sheet-pane-columns`, `sheet-pane-column`, `sheet-details-section`). New data attribute: `data-sheet-tab`. Exceptions, all existing names reused as they are: `sheet-section`, `sheet-section-title`, `sheet-header-section`, `sheet-background-content`, `sheet-background-item`, `sheet-columns`, `sheet-column`, `tracking-boxes`, `tracking-box`, `filled`, `tracker-label`, `tracker-controls`, `tracker-btn`, `tracker-minus`, `tracker-plus`, `tracker-value`, `active`, and the `.sheet-mutation-*` classes.
+- Text safety: every HTML site that this plan adds or moves and that prints character or item text (name, species and sub-option names, archetype and custom-archetype names, ascension archetype names, keywords) wraps it in the sheet's five-character `this.escapeHtml(...)`, in text and attribute contexts. Do not change `escapeHtml`.
+- Existing tests: `scripts/test-sheet-attributes.js` and `scripts/test-custom-wargear.js` are not edited and must pass after every task. They call `renderAttributes`, `renderWeapons`, `renderArmor`, `renderAugmetics`, `renderEquipment`, `renderTalents`, `copySummary` and helpers; this plan keeps every one of those names, signatures and outputs. This plan changes the output of only `renderHeader` (escaping, Task 1), `renderInjuriesCorruption` (no mutations, Task 1), `renderTraits` (no Wounds, Shock, Wrath, Task 2), `renderNotes` (comment only, Task 5) and `render()`; neither existing test calls these. No block render function is renamed or split except the mutation part of `renderInjuriesCorruption` (spec §3.2). Copy Summary (`copySummary`) does not change.
+- Tests are plain Node scripts: `node scripts/test-<name>.js`, a `vm` sandbox with hand-written stubs, `check(name, actual, expected)`, exit code 1 on any failure. Write the test first, run it and see it fail, then implement. A check must fail when the behaviour it names is removed; a check never compares one run of the code with another run of the same code as its only proof. A stub that a test puts on a sandbox member or global is restored in a `finally` block.
+- All new checks go in ONE file, `scripts/test-sheet-tabs.js`. Each task's checks sit in their own `{ … }` block headed `// --- Task N: <title> ---`; only the shared helpers below are at file scope. Shared helpers, defined once at the top of the file by Task 1 (one line each):
+  - `ROOT`, `readJson(rel)`, `readSource(rel)` — repo root and file readers.
+  - `check(name, actual, expected)` — compares `JSON.stringify` of both, prints PASS/FAIL, counts failures; the file ends with the summary line and `process.exit(failures ? 1 : 0)`.
+  - `INJURIES` — parsed `data/injuries-corruption.json`.
+  - `EVIL = '<b>"x\'</b>&'`, `SAFE = '&lt;b&gt;&quot;x&#39;&lt;/b&gt;&amp;'`, `SAFE_UPPER = '&lt;B&gt;&quot;X&#39;&lt;/B&gt;&amp;'`, `RAW_TAG = /<\/?b>/i`.
+  - `DERIVED` — `{ maxWounds: 11, maxShock: 8, defence: 3, resilience: 6, determination: 3, speed: 6, conviction: 3, resolve: 2, passiveAwareness: 2, influence: 1 }`.
+  - `makeCharacter(over) -> object` — `{ name: 'Kaelen', tier: 1, rank: 1, species: { id: 'human' }, archetype: { id: 'warrior' }, attributes: (all seven at 3), skills: {}, wargear: [], talents: [], mutations: [], ascensions: [], followers: [], notes: '', ...over }`.
+  - `makeState(character) -> object` — a `State` stub whose getters read its own fields (`character`, `keywords: []`, `tier: 1`, `psyker: false`, `wounds: 0`, `shock: 0`, `wrath: 2`, `wealth: 0`, `faith: 0`, `maxFaith: 0`): `getCharacter`, `getKeywords`, `getEffectiveTier`, `isPsyker`, `getCurrentWounds`, `getCurrentShock`, `getCurrentWrath`, `getCurrentWealth`, `getCurrentFaith`, `getMaxFaith`; every setter/modifier (`setCurrentWounds`, `setCurrentShock`, `modifyCurrentWrath`, `modifyCurrentWealth`, `modifyCurrentFaith`, `setNotes`, `toggleWeaponEquipped`, `updateFollower`) pushes `[name, ...args]` to its `calls` array; `getFollower` returns null.
+  - `makeDataLoader() -> object` — `getSpecies`/`getArchetype` → null, `getInjuriesCorruptionData` → `INJURIES`, `getBackgrounds` → null, `getAscensionPackages` → `[]`, `areThreatsLoaded` → true, `ensureThreatsLoaded` → `Promise.resolve()`. Tests replace members per check.
+  - `stubEl({ cls = [], data = {}, attrs = {}, parent = null, rect = null, display = 'block' }) -> el` — a DOM element stub: `classList` (`contains`, `add`, `remove`, `toggle(c, force)`), `dataset`, `getAttribute`/`setAttribute`/`removeAttribute`/`hasAttribute`/`toggleAttribute(name, force)`, a `hidden` property and a `tabIndex` property mapped to the `hidden` and `tabindex` attributes, `disabled` (false), `closest(sel)` (itself when `sel` is `.<one of its classes>`, else `parent.closest(sel)`, else null), `addEventListener(type, fn)` into `el.listeners[type]`, `focus(opts)` pushing `opts` to `el.focusCalls`, `getBoundingClientRect()` → `rect`, numbers `scrollLeft`, `offsetLeft`, `offsetWidth`, `clientWidth` (0), and `_display` read by the `window.getComputedStyle` stub.
+  - `makeDom() -> { document, window, MutationObserver, container, scroller, body }` — `scroller` (`stubEl()` plus a numeric `scrollTop`, 0) and `body` (`stubEl()`) are `stubEl`s, so that `classList.contains` and `_focusKeyOf(body)` work on them; `container` is a `stubEl` with an `innerHTML` accessor whose setter stores the string, sets `scroller.scrollTop = 0` and `document.activeElement = body` (what a browser does on a rewrite), `query(sel)` (default `() => []`, tests replace it), `querySelectorAll(sel)` → `query(sel)`, `querySelector(sel)` → `query(sel)[0] || null`, `contains(el)` → `!!el && el !== body`. `document.getElementById` maps `character-sheet-content` → `container`, `tab-character-sheet` → `scroller`, `btn-print` and `btn-copy-summary` → new `stubEl`s, else null; `document.activeElement` starts as `body`; `document.querySelector` → null; `document.addEventListener` no-op. `window.getComputedStyle(el)` → `{ display: el._display }`. `MutationObserver` is a no-op constructor with `observe()`.
+  - `sheetSandbox({ character, dom } = {}) -> env` — new `vm` context with `console`, `State` (`makeState(character || makeCharacter())`), `DataLoader` (`makeDataLoader()`), a `DerivedStats` stub (`getArmorBreakdown`/`getResilienceBreakdown`/`getDefenceBreakdown` → null, `getAllDerivedStats` → `env.derived`), `document`, `window`, `MutationObserver` from `dom || makeDom()`, then the real `creator/tabs/character-sheet-tab.js`. Returns `env = { ctx, sheet, state, dataLoader, dom, derived }` with `derived` a fresh copy of `DERIVED`; `sheet = vm.runInContext(readSource('creator/tabs/character-sheet-tab.js') + '\n;CharacterSheetTab;', ctx)` (a top-level `const` does not attach to the `vm` global; same pattern as `scripts/test-sheet-attributes.js`). `State`, `DataLoader` and `DerivedStats` are plain sandbox globals, so a test can replace them with `ctx.X = …`.
+  - `BLOCK_TITLES` — `{ renderDetails: 'Details', renderAscensions: 'Ascension', renderInjuriesCorruption: 'Injuries & Corruption', renderBackground: 'Background', renderAttributes: 'Attributes', renderTraits: 'Traits', renderSkills: 'Skills', renderSpeciesAbilities: 'Species Abilities', renderArchetypeAbilities: 'Archetype Abilities', renderTalents: 'Talents', renderMutations: 'Mutations', renderWeapons: 'Weapons', renderArmor: 'Armor', renderAugmetics: 'Augmetics', renderEquipment: 'Equipment', renderHolyRelics: 'Holy Relics', renderPsychicPowers: 'Psychic Powers', renderFollowers: 'Followers', renderNotes: 'Notes' }`.
+  - `stubBlocks(sheet) -> restore()` — replaces each `BLOCK_TITLES` function on `sheet` with one that returns `<div class="sheet-section"><h2 class="sheet-section-title">TITLE</h2></div>`; `restore()` puts the originals back (call it in `finally`).
+  - `titlesIn(html) -> string[]` — the texts of every `sheet-section-title` element, in order.
+  - `count(html, re) -> number` — number of matches of the global regex `re`.
+  - `tagOf(html, needle) -> string` — the opening tag (from the `<` before `needle` to the next `>`) that contains `needle`, or `''`.
+  - `mediaBlocks(css, query) -> string[]` — the bodies of every `@media <query> {…}` block in `css` whose query text equals `query` after trimming (brace-matched).
+  - `tabsSection() -> string` — the text of `creator/css/styles.css` from `/* ===== Character Sheet Tabs (issue #25) ===== */` to the end of the file (`''` when the header is missing).
+- Every task ends green: `for f in scripts/test-*.js; do node "$f" > /dev/null || echo "FAIL $f"; done` prints nothing, and the app loads with no console error (Browser procedure below).
+- Browser procedure (every browser step uses it; never port 8137 for anything else):
+  1. `ss -ltn | grep -c ':8137 '` must print `0`. If not, re-check every 30 s for up to 10 minutes; if the port is still taken, stop and report it instead of continuing.
+  2. Start `python3 -m http.server 8137 --directory <worktree root>` in the background and note its PID.
+  3. In the Playwright browser, disable the cache for the page before the first navigation (`browser_run_code_unsafe`: `const s = await page.context().newCDPSession(page); await s.send('Network.setCacheDisabled', { cacheDisabled: true });`). Every browser step before Task 8 runs with the browser cache disabled for the page: old copies of the scripts at the same `?v=` can be in the shared browser.
+  4. Open `http://localhost:8137/creator/`. Accept the `beforeunload` dialog when it appears. Before any reload, give the character a name and a species (the autosave skips a character with no name, no species and no archetype).
+  5. Read `browser_console_messages` (errors) after each numbered check. Expected: none.
+  6. When the step ends, kill the server PID at once and confirm `ss -ltn | grep -c ':8137 '` prints `0`.
+- Cache busting: no task before Task 8 changes any `?v=`. Task 8 reads the current value from `creator/index.html` (expected `35 ?v=124`) and sets all 35 tags to that value + 1 together (expected `?v=125`). `creator/js/web-api.js`, `bestiary/`, `data/` and `shared/` do not change (check: `git diff --stat $(git merge-base main HEAD) -- creator/js/web-api.js bestiary data shared` prints nothing).
+- Touch only what a task needs; no cleanups of adjacent code. Task 5 removes exactly the members, CSS blocks and print rule of spec §8, nothing else.
+- Anti-goals (spec §1): no selected tab in the URL hash or `localStorage`; no second live copy of the Wounds, Shock or Wrath controls; no re-render on a tab switch or a notes keystroke; inactive panes stay in the DOM with `hidden`.
+- Spec gaps settled by this plan (do not reopen): (a) `renderHeader` printed species, archetype (a custom archetype name is player text) and keywords raw; the strip escapes them (Task 1). (b) A printed page can be 768 CSS px wide or less, so an unqualified compact media query would apply in print; pinning and both modes are `screen`-only and print forces the strip static (Tasks 4, 7). (c) JS learns the mode from the computed `display: contents` of `.sheet-strip` (`_pinnedElement`), not from a second copy of the media query. (d) The tab-bar keys go through a pure `_nextSheetTabId` so that Node can test them. (e) `ctx` shape and the helpers `getArchetypeDisplayName`, `renderStrip`, `renderStripTrackers`, `renderTabBar`, `_scrollActiveTabIntoBar`, `_FOCUS_SELECTOR` are the plan's names (spec §11 leaves them open). (f) The selected tab is scrolled into the bar by setting `scrollLeft`, never `scrollIntoView`. (g) The print `.sheet-body` rule, listed in both spec §7 and §8, is removed once, in Task 5. (h) The Details rows use the existing `.sheet-background-item` form, so they need no new CSS.
+
+## Review Focus
+
+- A derived max Wounds or max Shock of 0 (a malformed save or odd data; a new character in the app has 3 Wounds and 2 Shock): the strip shows the Wounds and Shock labels with no boxes and no error, and Wrath still works. Pinned by Task 2 (zero-max strip check) only.
+- Player-typed text in the strip and the Details block (a character name, a custom archetype name, a keyword of a custom archetype) holding `<`, `"`, `'` or `&`: it shows as typed and never as markup. Pinned by Task 1 escape checks on `renderHeader` and `renderDetails`.
+- The selected tab disappears under the player: the PSYKER keyword goes, the last follower is removed, or a character without powers is loaded while Psychic Powers is selected. The sheet falls back to Stats with exactly one selected tab and one shown pane. Pinned by Task 3 fallback checks and Task 8 step 3.
+- Printing from a phone or a narrow window (the printed page is 768 CSS px wide or less): the strip prints static and in full, every pane prints, and no sticky or `display: contents` rule applies. Pinned by Task 4 (all pinning and mode rules inside `@media screen`) and Task 7 print checks.
+- Keys typed in the Notes textarea (ArrowLeft, ArrowRight, Home, End): the tab-bar `keydown` listener sits on `#character-sheet-content`, which holds the textarea, so a handler that does not return for a target outside `.sheet-tab-btn` would switch tabs and block the caret. Expected: the caret moves, no tab changes, no `preventDefault`. Pinned by the Task 3 textarea check and Task 8 step 8.
+
+---
+
+## File Structure
+
+| File | Change | Responsibility |
+|---|---|---|
+| `creator/tabs/character-sheet-tab.js` | modify | Details block and display-name helpers, Mutations block (Task 1); `SHEET_TABS`, visibility, `renderPane`, strip markup, Traits without trackers, new `render()` structure (Task 2); tab bar, selection, keyboard (Task 3); TOC removal (Task 5); view capture/restore and focus keys (Task 6) |
+| `creator/css/styles.css` | modify | TOC and `.sheet-body` removal (Task 5); new section "Character Sheet Tabs (issue #25)": strip, two modes, boxes, tab pills, panes, focus (Task 4); print (Task 7) |
+| `creator/index.html` | modify | all 35 `?v=` + 1 (Task 8) |
+| `scripts/test-sheet-tabs.js` | create | spec §10.1 cases 1–10 plus the plan's extra checks, one block per task |
+
+---
+
+### Task 1: Details block, display-name helpers, Mutations block
+
+**Model:** sonnet
+
+**Files:**
+- Create: `scripts/test-sheet-tabs.js` (the shared helpers of Global Constraints, then the Task 1 block)
+- Modify: `creator/tabs/character-sheet-tab.js` — `renderHeader` (about line 429), `renderInjuriesCorruption` (about 1778), new methods next to them, one line in `render()`
+
+**Interfaces:**
+- Consumes: nothing from earlier tasks.
+- Produces:
+  - All shared test helpers of Global Constraints, at file scope.
+  - `getSpeciesDisplayName(character, species) -> string` — raw text: `species?.name || '-'`, plus ` (<names>)` of the selected non-`countByTier` sub-options, exactly the logic now inside `renderHeader`.
+  - `getArchetypeDisplayName(character, archetype) -> string` — raw text: `character.customArchetype?.name || 'Custom Archetype'` when `character.archetype?.id === 'custom'`, else `archetype?.name || '-'`.
+  - `renderHeader(character, species, archetype, keywords) -> string` — same markup and classes as today, with the name, the species display name, the archetype display name and each keyword escaped.
+  - `renderDetails(character, species, archetype) -> string` — `<div class="sheet-section sheet-details-section">` with `<h2 class="sheet-section-title">Details</h2>` and a `.sheet-background-content` of five `<p class="sheet-background-item"><strong>Label:</strong> value</p>` rows: Name, Species, Archetype, Tier, Rank (spec §3.1).
+  - `renderMutations(character) -> string` — `''` when `DataLoader.getInjuriesCorruptionData()` is null or `character.mutations` is empty; else a `.sheet-section` with `<h2 class="sheet-section-title">Mutations</h2>` and the existing `.sheet-mutation-item` markup.
+  - `renderInjuriesCorruption(character)` no longer renders mutations and returns `''` when it has no memorable injury, no traumatic injury and `corruption === 0`.
+
+- [ ] **Step 1: Write the helpers and the failing Task 1 block**
+
+Write the shared helpers exactly as listed in Global Constraints. Task 1 block (each in a fresh `sheetSandbox`):
+
+```js
+// Details
+env.state.tier = 3;
+env.dataLoader.getArchetype = id => ({ warrior: { name: 'Warrior' }, veteran: { name: 'Veteran' } })[id] || null;
+const ch = makeCharacter({ rank: 2, ascensions: [
+    { type: 'archetype', archetypeId: 'veteran', targetTier: 3 },
+    { type: 'package', packageId: 'x', targetTier: 4 },
+    { type: 'archetype', archetypeId: 'missing', targetTier: 5 }] });
+const html = sheet.renderDetails(ch, { name: 'Human' }, { name: 'Warrior' });
+check('Details has the title', titlesIn(html), ['Details']);
+check('Details carries the print-hide class', html.includes('sheet-details-section'), true);
+check('Details rows', ['<strong>Name:</strong> Kaelen', '<strong>Species:</strong> Human', '<strong>Archetype:</strong> Warrior → Veteran (Tier 3)', '<strong>Tier:</strong> 3', '<strong>Rank:</strong> 2'].map(s => html.replace(/\s+/g, ' ').includes(s)), [true, true, true, true, true]);
+check('Details skips an unresolved ascension archetype', html.includes('Tier 5'), false);
+const plain = sheet.renderDetails(makeCharacter({ name: '', rank: undefined }), null, null).replace(/\s+/g, ' ');
+check('Details defaults', [plain.includes('<strong>Name:</strong> Unnamed Character'), plain.includes('<strong>Rank:</strong> 1'), plain.includes('<strong>Species:</strong> -')], [true, true, true]);
+// Escape: name, species, custom archetype name are EVIL
+const evil = makeCharacter({ name: EVIL, archetype: { id: 'custom' }, customArchetype: { name: EVIL } });
+const dHtml = sheet.renderDetails(evil, { name: EVIL }, null);
+check('Details escapes name, species and custom archetype', dHtml.split(SAFE).length - 1, 3);
+check('Details holds no raw <b>', RAW_TAG.test(dHtml), false);
+// Strip identity
+env.state.keywords = [EVIL.toUpperCase()];
+const hHtml = sheet.renderHeader(evil, { name: EVIL }, null, env.state.keywords);
+check('renderHeader escapes name, species and archetype', hHtml.split(SAFE).length - 1, 3);
+check('renderHeader escapes keywords', hHtml.includes(SAFE_UPPER), true);
+check('renderHeader holds no raw <b>', RAW_TAG.test(hHtml), false);
+check('renderHeader keeps its classes', ['sheet-section sheet-header-section', 'sheet-character-name', 'sheet-subtitle', 'sheet-keywords', 'sheet-keyword'].every(c => hHtml.includes(c)), true);
+```
+
+Also: `getSpeciesDisplayName` with a species `{ name: 'Adeptus Astartes', subOptions: [{ type: 'chapter', options: [{ id: 'ultra', name: 'Ultramarines' }] }, { type: 'x', countByTier: true, options: [{ id: 'y', name: 'Skip' }] }] }` and `character.species.subOptions = [{ type: 'chapter', optionId: 'ultra' }, { type: 'x', optionId: 'y' }]` gives `'Adeptus Astartes (Ultramarines)'`; with species null gives `'-'`. `getArchetypeDisplayName` gives `'Custom Archetype'` for a custom archetype with an empty name, and `'-'` for a null archetype. Mutations split (spec §10.1 case 6), real `INJURIES`: a character with only `mutations: [{ id: 'withered' }]` gives `''` from `renderInjuriesCorruption` and `titlesIn(renderMutations(...))` equal to `['Mutations']` with `sheet-mutation-name` and `Withered` in it; a character with `corruption: 3` and that mutation gives an Injuries block that holds no `sheet-mutation-item` and no `>Mutations<`; `renderMutations` gives `''` for `mutations: []` and when `getInjuriesCorruptionData` returns null.
+
+- [ ] **Step 2: Run the test to verify it fails**
+
+Run: `node scripts/test-sheet-tabs.js`
+Expected: exit 1 — `sheet.renderDetails is not a function` (comment out the Details lines once to see the `renderHeader` escape checks FAIL too: today it prints species, archetype and keywords raw).
+
+- [ ] **Step 3: Implement**
+
+Move the species and archetype logic out of `renderHeader` into the two helpers and call them from `renderHeader` and `renderDetails`. Escape at the output sites only. In `renderInjuriesCorruption`, cut the `// Mutations` part into `renderMutations` (the `<h3>` becomes the `<h2 class="sheet-section-title">Mutations</h2>`; item markup unchanged) and drop `mutations` from the hide test. In `render()`, add `${this.renderMutations(character)}` directly after `${this.renderInjuriesCorruption(character)}` so that the mutations stay on the sheet until Task 2 rebuilds `render()`. `renderDetails` is not placed yet.
+
+- [ ] **Step 4: Run all tests**
+
+Run: `for f in scripts/test-*.js; do node "$f" > /dev/null || echo "FAIL $f"; done`
+Expected: no output.
+
+- [ ] **Step 5: Browser smoke**
+
+Browser procedure. Character with a name, a species and a mutation (Injuries tab of the builder). Expected: the sheet shows a "Mutations" block after "Injuries & Corruption" and no Mutations subsection inside it; the header looks as before; no console error.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add scripts/test-sheet-tabs.js creator/tabs/character-sheet-tab.js
+git commit --author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github.com>" -m "Add the Details block and a separate Mutations block to the sheet (#25)"
+```
+
+---
+
+### Task 2: Pane structure and the strip
+
+**Model:** opus — the render split: `ctx`, `renderPane` composition with the wide-screen wrappers, and the strip markup that the CSS modes of Task 4 depend on.
+
+**Files:**
+- Modify: `creator/tabs/character-sheet-tab.js` — `render()`, `renderTraits`, new members
+- Test: `scripts/test-sheet-tabs.js` (Task 2 block)
+
+**Interfaces:**
+- Consumes: Task 1 `renderDetails`, `renderMutations`, `renderHeader`; shared helpers `sheetSandbox`, `makeCharacter`, `makeDom`, `stubEl`, `stubBlocks`, `BLOCK_TITLES`, `titlesIn`, `count`, `tagOf`, `DERIVED`.
+- Produces:
+  - `SHEET_TABS` — `[{ id: 'character', label: 'Character' }, { id: 'stats', label: 'Stats' }, { id: 'abilities', label: 'Abilities' }, { id: 'wargear', label: 'Wargear' }, { id: 'powers', label: 'Psychic Powers' }, { id: 'companions', label: 'Followers' }, { id: 'notes', label: 'Notes' }]`.
+  - `getVisibleSheetTabs(character) -> string[]` — ids in `SHEET_TABS` order; `powers` only when `State.isPsyker()`; `companions` only when `(character.followers || []).length > 0`.
+  - `ctx` shape: `{ character, species, archetype, keywords, derivedStats, breakdowns: { resilience, defence } }`, built once in `render()`.
+  - `renderPane(tabId, ctx) -> string` — the inner HTML of one pane (blocks and wrappers, not the `.sheet-pane` div); `''` for an unknown id.
+  - `renderStrip(ctx, visibleIds) -> string` — `<div class="sheet-strip">` + `renderHeader(...)` + `<div class="sheet-strip-bar">` + `renderStripTrackers(ctx.derivedStats)` + a tab-bar slot (empty in this task; Task 3 fills it with `renderTabBar(visibleIds)`) + closing tags.
+  - `renderStripTrackers(stats) -> string` — `<div class="sheet-strip-trackers">` with these children in this order, flat (the Task 4 grid relies on it): `<span class="sheet-strip-label tracker-label">Wounds</span>`, `<div class="tracking-boxes">` of `renderTrackingBoxes('wounds', State.getCurrentWounds(), stats.maxWounds)`, `<span class="sheet-strip-label tracker-label">Shock</span>`, `<div class="tracking-boxes">` of the Shock boxes, `<div class="sheet-strip-wrath">` with `<span class="tracker-label">Wrath</span>` and the existing `.tracker-controls` markup whose buttons gain `type="button"` and `aria-label="Remove Wrath"` / `aria-label="Add Wrath"`. The labels carry `tracker-label` too, so that they keep its colour and its light-theme print colour; Task 4 gives `.sheet-strip-label` no `color`. The Wrath buttons never get `disabled` (spec §4.2).
+  - `render()` writes `renderStrip(ctx, visible)` + `<div class="sheet-panes">` + one `<div class="sheet-pane" id="sheet-pane-<id>">renderPane(id, ctx)</div>` per visible id + `</div>`; no `hidden`, no role yet (all panes show until Task 3). The bind calls and the two TOC calls stay.
+  - `renderTraits(stats, breakdowns)` keeps the trait grid and `.sheet-tracking-section` with the Faith (when `State.getMaxFaith() > 0`) and Wealth counters only.
+
+- [ ] **Step 1: Write the failing Task 2 block**
+
+Per pane, with `stubBlocks` (restored in `finally`) and a `ctx` built in the block from `makeCharacter()`, `DERIVED` and nulls:
+
+```js
+const PANE_TITLES = {
+    character: ['Details', 'Ascension', 'Injuries & Corruption', 'Background'],
+    stats: ['Attributes', 'Traits', 'Skills'],
+    abilities: ['Species Abilities', 'Archetype Abilities', 'Talents', 'Mutations'],
+    wargear: ['Weapons', 'Armor', 'Augmetics', 'Equipment', 'Holy Relics'],
+    powers: ['Psychic Powers'], companions: ['Followers'], notes: ['Notes'] };
+check('SHEET_TABS is the §3 table', sheet.SHEET_TABS, [ /* the seven { id, label } of Produces */ ]);
+for (const [id, titles] of Object.entries(PANE_TITLES))
+    check(`renderPane(${id}) gives its blocks in order`, titlesIn(sheet.renderPane(id, ctx)), titles);
+```
+
+Wrapper checks: for `character`, `abilities`, `wargear` the pane holds one `sheet-pane-columns` and two `class="sheet-pane-column"`; the left column (text before the second `sheet-pane-column`) holds the first titles and the right column the rest — Character: Details, Ascension | Injuries & Corruption, Background; Abilities: Species Abilities, Archetype Abilities | Talents, Mutations; Wargear: Weapons comes before `sheet-pane-columns`, then Armor, Augmetics | Equipment, Holy Relics. `stats` holds `sheet-columns` with Attributes and Traits in the first `sheet-column` and Skills in the second; `powers`, `companions`, `notes` hold no `sheet-pane-column`. An empty column still renders: with `renderAscensions` and `renderDetails` returning `''`, the character pane still has two `class="sheet-pane-column"`.
+
+Visibility (spec §10.1 case 2): `getVisibleSheetTabs` gives `['character','stats','abilities','wargear','notes']`; with `env.state.psyker = true` it adds `powers` before `companions`/`notes`; with one follower it adds `companions` before `notes`, also when `dataLoader.areThreatsLoaded = () => false`.
+
+Render: with `stubBlocks` and `env.state.psyker = true`, `render()` writes `dom.container.innerHTML`; its pane ids in order (`/id="sheet-pane-([a-z]+)"/g`) are the six visible ids; `titlesIn` over the whole HTML is the concatenation of `PANE_TITLES` for those ids; the HTML has `class="sheet-strip"` before `class="sheet-panes"` and no `sheet-body`.
+
+Strip (spec §10.1 case 4), real `renderHeader`/`renderStripTrackers`, `env.state.wounds = 3`, `env.state.shock = 1`, `env.state.wrath = 4`, keywords `['IMPERIUM', 'ASTRA MILITARUM']`, `DERIVED` (11 / 8), on the `render()` HTML with `stubBlocks`:
+
+```js
+check('11 Wounds boxes', count(html, /data-type="wounds" data-index=/g), 11);
+check('3 filled Wounds boxes', count(html, /tracking-box filled" data-type="wounds"/g), 3);
+check('8 Shock boxes, 1 filled', [count(html, /data-type="shock" data-index=/g), count(html, /tracking-box filled" data-type="shock"/g)], [8, 1]);
+check('one Wrath pair with labels', [count(html, /data-type="wrath"/g), html.includes('aria-label="Remove Wrath"'), html.includes('aria-label="Add Wrath"')], [2, true, true]);
+check('Wrath value 4 in the strip', /sheet-strip-wrath[\s\S]*?tracker-value">4</.test(html), true);
+check('identity outside the bar, trackers inside', [html.indexOf('sheet-character-name') < html.indexOf('sheet-strip-bar'), html.indexOf('sheet-strip-bar') < html.indexOf('data-type="wounds"'), html.lastIndexOf('data-type="wrath"') < html.indexOf('class="sheet-panes"')], [true, true, true]);
+check('one chip per keyword', count(html, /class="sheet-keyword"/g), 2);
+check('subtitle has Tier and Rank', [/sheet-subtitle[\s\S]*?Tier 1[\s\S]*?Rank 1/.test(html)], [true]);
+check('Wrath buttons are never disabled', /data-type="wrath"[^>]*disabled|disabled[^>]*data-type="wrath"/.test(html), false);
+```
+
+Traits (real `renderTraits(DERIVED, {})`): no `tracking-box`, no `data-type="wrath"`, has `data-type="wealth"`, no `data-type="faith"`; with `env.state.maxFaith = 2` it has `data-type="faith"`. With `env.derived.maxWounds = 50` the strip has 50 Wounds boxes. With `env.state.wrath = 0` the Wrath "−" tag (`tagOf(html, 'aria-label="Remove Wrath"')`) still holds no `disabled`. Zero max (Review Focus): `maxWounds = 0`, `maxShock = 0` → no `data-type="wounds"` box, no `data-type="shock"` box, both `sheet-strip-label` texts present, Wrath pair present.
+
+Box clicks (spec §10.1 case 5): four `stubEl` boxes (`cls: ['tracking-box']` plus `'filled'` where filled; `data: { type, index }`); `dom.container.query = sel => sel === '.tracking-box:not(.follower-box)' ? boxes : []`; replace `sheet.render` with a counter (restore in `finally`); call `sheet.bindSessionTrackingControls(dom.container)` and fire each box's `click` listener. Expected `env.state.calls`: empty Wounds box 4 → `['setCurrentWounds', 5]`; filled Wounds box 1 → `['setCurrentWounds', 1]`; empty Shock box 2 → `['setCurrentShock', 3]`; filled Shock box 0 → `['setCurrentShock', 0]`; `render` counted 4.
+
+- [ ] **Step 2: Run the test to verify it fails**
+
+Run: `node scripts/test-sheet-tabs.js`
+Expected: exit 1, `renderPane is not a function` or FAIL on `SHEET_TABS`. (The box-click checks pass already; they pin the existing handler that now serves the strip — delete the `State.setCurrentWounds(index + 1)` branch once locally to see them fail, then restore it.)
+
+- [ ] **Step 3: Implement**
+
+Add `SHEET_TABS`, `getVisibleSheetTabs`, `renderPane`, `renderStrip`, `renderStripTrackers` with the signatures above. `renderPane` uses a `switch` on the id and calls the block functions with their existing signatures (`renderTraits(ctx.derivedStats, ctx.breakdowns)`, `renderSpeciesAbilities(ctx.character, ctx.species)`, `renderArchetypeAbilities(ctx.archetype)`, `renderDetails(ctx.character, ctx.species, ctx.archetype)`, the rest `(ctx.character)`). Stats reuses the current `.sheet-columns` markup of `render()`. Rewrite the `innerHTML` of `render()` as in Produces; drop the `.sheet-body`, `.sheet-body-left`, `.sheet-body-right` wrappers there. Remove the Wounds row, the Shock row, the Wrath tracker and the now-unused `currentWounds`/`currentShock`/`currentWrath`/`woundBoxes`/`shockBoxes` locals from `renderTraits`. Do not change the block functions' markup.
+
+- [ ] **Step 4: Run all tests**
+
+Run: `for f in scripts/test-*.js; do node "$f" > /dev/null || echo "FAIL $f"; done`
+Expected: no output.
+
+- [ ] **Step 5: Browser smoke**
+
+Browser procedure, a psyker character with a follower and a mutation. Expected: header, then the Wounds and Shock boxes and the Wrath counter, then all blocks in the order Character, Stats, Abilities, Wargear, Psychic Powers, Followers, Notes (no pinning, no tabs yet); Traits shows Faith/Wealth only; clicking a box and Wrath "+" changes the value; the jump-to-section button still lists the sections; no console error.
+Expected until Task 3: no tab bar, every pane shows. Expected until Task 4: the strip is unstyled and not pinned, and at 1440px the panes other than Stats show in one column. Expected until Task 6: a box or Wrath click can move the scroll position and loses the focus. Do not report these.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add scripts/test-sheet-tabs.js creator/tabs/character-sheet-tab.js
+git commit --author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github.com>" -m "Build the sheet as a strip and one pane per tab (#25)"
+```
+
+---
+
+### Task 3: Tab bar, selection, keyboard
+
+**Model:** sonnet
+
+**Files:**
+- Modify: `creator/tabs/character-sheet-tab.js` — `init()`, `render()`, `renderStrip`, new members
+- Test: `scripts/test-sheet-tabs.js` (Task 3 block)
+
+**Interfaces:**
+- Consumes: Task 2 `SHEET_TABS`, `getVisibleSheetTabs`, `renderStrip`, `renderPane`; shared helpers.
+- Produces:
+  - `activeSheetTab: 'stats'` — module property; not reset on a new character or load; never stored.
+  - `renderTabBar(visibleIds) -> string` — `<div class="sheet-tabbar" role="tablist" aria-label="Character sheet sections">` with one `<button type="button" class="sheet-tab-btn[ active]" role="tab" id="sheet-tab-<id>" aria-controls="sheet-pane-<id>" data-sheet-tab="<id>" aria-selected="true|false" tabindex="0|-1">Label</button>` per visible id (spec §6). Rendered by `renderStrip` inside `.sheet-strip-bar`, after `.sheet-strip-trackers`.
+  - Panes become `<div class="sheet-pane" role="tabpanel" id="sheet-pane-<id>" aria-labelledby="sheet-tab-<id>" tabindex="0"[ hidden]>`, `hidden` on every pane but the active one.
+  - `render()` applies the fallback first: if `activeSheetTab` is not in `getVisibleSheetTabs(character)`, set it to `'stats'`. It calls `this._scrollActiveTabIntoBar(container)` after the bind calls.
+  - `selectSheetTab(id) -> void` — no re-render. Sets `activeSheetTab`; over `container.querySelectorAll('.sheet-tab-btn')` sets `aria-selected`, `tabindex` (`setAttribute`) and toggles `active`; over `container.querySelectorAll('.sheet-pane')` sets `pane.hidden = pane.id !== 'sheet-pane-' + id`; calls `this._closeBreakdownPopup()` and, when `typeof Glossary !== 'undefined'`, `Glossary.closeAllPopups()`; then the scroll rule of spec §5.3 step 4 with `panes = container.querySelector('.sheet-panes')`, `pinned = this._pinnedElement(container)` and the scroller `#tab-character-sheet`; then `_scrollActiveTabIntoBar(container)`. `container` is `#character-sheet-content`.
+  - `_pinnedElement(container) -> Element` — `.sheet-strip-bar` when `window.getComputedStyle(strip).display === 'contents'` (compact mode, Task 4), else `.sheet-strip`. One source of truth: the CSS decides the mode; JS does not repeat the media query.
+  - `_nextSheetTabId(ids, currentId, key) -> string | null` — pure: `ArrowRight` next with wrap, `ArrowLeft` previous with wrap, `Home` first, `End` last, any other key null; `null` also when `currentId` is not in `ids` (for example `undefined`).
+  - `handleSheetTabKeydown(e) -> void` — `btn = e.target.closest('.sheet-tab-btn')`; when `btn` is null (the Notes textarea or any other control in the sheet) it returns at once, with no `preventDefault` and no tab change. The current id is `btn.dataset.sheetTab`, never `activeSheetTab`. Ids from the `data-sheet-tab` of `container.querySelectorAll('.sheet-tab-btn')` in DOM order; on a non-null next id: `e.preventDefault()`, `selectSheetTab(next)`, then `.focus()` on the button whose `dataset.sheetTab === next`.
+  - `init()` adds one `click` and one `keydown` listener to `#character-sheet-content`: click → `closest('.sheet-tab-btn')` → `selectSheetTab(btn.dataset.sheetTab)`; keydown → `handleSheetTabKeydown(e)`.
+  - `_scrollActiveTabIntoBar(container) -> void` — `bar = .sheet-tabbar`, `btn = .sheet-tab-btn.active`; returns when either is missing; when the button sticks out on one side, sets `bar.scrollLeft` so that the view edge lies 4px beyond the button's edge on the side it brings into view (room for the 2px outline at 2px offset), clamped to the scroll range `[0, bar.scrollWidth - bar.clientWidth]`: past the right edge → `btn.offsetLeft + btn.offsetWidth + 4 - bar.clientWidth`; past the left edge → `btn.offsetLeft - 4`; a button fully inside the view → no change. Never `scrollIntoView` (it would scroll the page).
+
+- [ ] **Step 1: Write the failing Task 3 block**
+
+Markup (spec §10.1 cases 3, 8, 9) on `render()` HTML with `stubBlocks`:
+- default `sheet.activeSheetTab === 'stats'`; `tagOf(html, 'role="tablist"')` includes `aria-label="Character sheet sections"`; the tab bar lies after `sheet-strip-trackers` and before `class="sheet-panes"`.
+- psyker plus one follower, `activeSheetTab = 'wargear'`: button labels in order (`/data-sheet-tab="[a-z]+"[^>]*>([^<]+)</g`) are `Character, Stats, Abilities, Wargear, Psychic Powers, Followers, Notes`; for each id, `tagOf(html, 'id="sheet-tab-' + id + '"')` includes `role="tab"`, `aria-controls="sheet-pane-<id>"` and `tabindex="0"` only for `wargear` (`tabindex="-1"` otherwise), `aria-selected="true"` only for `wargear`; `tagOf(html, 'id="sheet-pane-' + id + '"')` includes `role="tabpanel"`, `aria-labelledby="sheet-tab-<id>"`, `tabindex="0"`, and ` hidden` for every id but `wargear`; all seven panes are in the HTML in tab order (print needs them).
+- fallback: `activeSheetTab = 'powers'`, `psyker` false → after `render()` `activeSheetTab === 'stats'`, `count(html, /aria-selected="true"/g) === 1` on `sheet-tab-stats`, and the only pane without `hidden` is `sheet-pane-stats`. Same with `'companions'` and no followers.
+
+Keys (spec §10.1 case 8): `_nextSheetTabId(ids5, 'notes', 'ArrowRight') === 'character'`, `(ids5, 'character', 'ArrowLeft') === 'notes'`, `'Home'` → `'character'`, `'End'` → `'notes'`, `'ArrowRight'` from `'stats'` → `'abilities'`, `'a'` → `null`, `'ArrowRight'` with `currentId` `undefined` or `'powers'` (not in `ids5`) → `null`. `handleSheetTabKeydown`: five `stubEl` buttons in `dom.container.query('.sheet-tab-btn')`, `selectSheetTab` replaced by a recorder (restored in `finally`); an `ArrowRight` event on the `notes` button records `'character'`, focuses the `character` button once and calls `preventDefault`; key `'a'` records nothing and does not call `preventDefault`. Textarea (Review Focus), with the same five button stubs in the query and the same `selectSheetTab` recorder in place (so that a handler that does not test the event target and reads `activeSheetTab` would record a tab and fail): a `stubEl({ cls: ['sheet-notes-input'] })` target (its `closest('.sheet-tab-btn')` is null) with `activeSheetTab = 'notes'`; for each of ArrowRight, ArrowLeft, Home, End, `handleSheetTabKeydown` records no `selectSheetTab` call, focuses no button and does not call `preventDefault`.
+
+Selection: `stubEl` buttons and panes for five ids, a `.sheet-panes` stub with `rect: { top: 120 }`, a `.sheet-strip` stub (`display: 'block'`, `rect: { bottom: 300 }`) and a `.sheet-strip-bar` stub (`rect: { bottom: 150 }`), `dom.scroller.scrollTop = 900`; `sheet.render` and `sheet._closeBreakdownPopup` replaced by counters and `env.ctx.Glossary = { closeAllPopups: counter }` (all restored or deleted in `finally`). `selectSheetTab('wargear')`: `activeSheetTab === 'wargear'`; wargear button `aria-selected` `'true'`, `tabindex` `'0'`, class `active`; the others `'false'`, `'-1'`, no `active`; only the wargear pane has `hidden === false`; `render` count 0; each close counter 1; `scrollTop === 720` (900 + 120 − 300). With panes `top: 400` the `scrollTop` stays 900. With the strip `display: 'contents'` and panes `top: 100`, `scrollTop === 850` (uses the bar). Without `Glossary` in the context no error.
+
+`init()` wiring: `sheet.init()` on a fresh `makeDom()`; fire the container's `click` listener with `{ target: stubEl({ cls: ['sheet-tab-btn'], data: { sheetTab: 'notes' } }) }` → recorder gets `'notes'`; fire `keydown` with ArrowRight on that target → `handleSheetTabKeydown` called (recorder).
+
+`_scrollActiveTabIntoBar` (bar stub with `scrollWidth 1000`): bar `scrollLeft 0, clientWidth 300`, active button `offsetLeft 400, offsetWidth 80` → `scrollLeft === 184` (400 + 80 + 4 − 300); button `offsetLeft 50, offsetWidth 80` with bar `scrollLeft 100` → `46` (50 − 4); button `offsetLeft 2` with bar `scrollLeft 100` → `0` (clamped); button `offsetLeft 900, offsetWidth 98` with bar `scrollLeft 0` → `700` (1002 clamped to 1000 − 300); a button inside the view leaves `scrollLeft` unchanged; missing bar → no error.
+
+- [ ] **Step 2: Run the test to verify it fails**
+
+Run: `node scripts/test-sheet-tabs.js`
+Expected: exit 1, FAIL on `activeSheetTab` / `role="tablist"` or `_nextSheetTabId is not a function`.
+
+- [ ] **Step 3: Implement** the Produces members. In the `init()` test the TOC calls are still there; `makeDom()` supplies `MutationObserver` for them.
+
+- [ ] **Step 4: Run all tests**
+
+Run: `for f in scripts/test-*.js; do node "$f" > /dev/null || echo "FAIL $f"; done`
+Expected: no output.
+
+- [ ] **Step 5: Browser smoke**
+
+Browser procedure. 1. The sheet opens on Stats; the other panes are hidden. 2. Mark a pane node with `browser_evaluate` (`document.getElementById('sheet-pane-notes')._mark = 1`), click Wargear, then Notes: only the selected pane's blocks show each time, and `document.getElementById('sheet-pane-notes')._mark === 1` (the same node survived, so there was no re-render). 3. Tab to the bar, ArrowRight / ArrowLeft / Home / End move and select; Tab moves into the pane. 4. Remove the PSYKER keyword source while Psychic Powers is selected (or select it on a psyker, then load a non-psyker): the sheet shows Stats. 5. In the Notes textarea, ArrowLeft, ArrowRight, Home and End move the caret; the tab stays Notes. No console error.
+Expected until Task 4: the tab bar shows plain browser buttons and the strip is unstyled and not pinned. Expected until Task 7: print shows only the selected pane plus the tab bar (the browser's built-in `[hidden]` rule). Expected until Task 5: the jump-to-section list still links into hidden panes. Expected until Task 6: a box or Wrath click can move the scroll position and loses the focus. Do not report these.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add scripts/test-sheet-tabs.js creator/tabs/character-sheet-tab.js
+git commit --author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github.com>" -m "Add the sheet tab bar with click and arrow-key selection (#25)"
+```
+
+---
+
+### Task 4: Strip CSS — pinning, the two modes, boxes, tab pills, panes, focus
+
+**Model:** opus — the strip's layout modes: grid shapes, sticky with `display: contents`, the box sizes against the spec's size targets, and the browser measurements.
+
+**Files:**
+- Modify: `creator/css/styles.css` — append the new section at the end of the file
+- Test: `scripts/test-sheet-tabs.js` (Task 4 block)
+
+**Interfaces:**
+- Consumes: the markup of Tasks 2–3 (classes in Global Constraints; the flat child order of `.sheet-strip-trackers`); Task 3 `_pinnedElement` reads `display: contents` on `.sheet-strip`; Task 3 `_scrollActiveTabIntoBar` needs `.sheet-tabbar` to be the `offsetParent` of its buttons.
+- Produces: the section `/* ===== Character Sheet Tabs (issue #25) ===== */` at the end of `styles.css`; Task 7 appends its print blocks to it.
+
+Requirements (spec §2.1–2.3, §6; sizes are targets, exact look is the builder's):
+- Unscoped: `.sheet-pane[hidden] { display: none; }`; `.sheet-tab-btn:focus-visible, .tracker-btn:focus-visible { outline: 2px solid var(--accent-gold); outline-offset: 2px; }`; `.sheet-tabbar` flex row, `gap`, `position: relative`, wraps; `.sheet-tab-btn` pills in the `.wargear-tab-btn` style (same variables; `.active` gold); `.sheet-pane-columns` a plain block, and inside `@media (min-width: 1400px)` a `grid-template-columns: 1fr 1fr` grid with `gap: 15px; align-items: start`.
+- `@media screen` (full mode): `.sheet-strip { position: sticky; top: 0; z-index: 5; background: var(--bg-primary); }` (opaque; under every popup, modal and the drawer backdrop at 899); the name in the strip smaller than 28px (about 22px); `.sheet-strip-trackers` a grid `64px 1fr 110px` with Wounds in row 1, Shock in row 2 and `.sheet-strip-wrath` in column 3 spanning both rows; inside the strip `.tracking-boxes` has `max-width: none; justify-content: flex-start;` (18px boxes, 4px gap as today). `.sheet-strip-label` sets no `color`: the labels also carry `tracker-label` (Task 2), whose colour and light-theme print colour apply.
+- `@media screen and (max-width: 768px), screen and (max-height: 600px)` (compact mode): `.sheet-strip { display: contents; }`; `.sheet-strip-bar { position: sticky; top: 0; z-index: 5; background: var(--bg-primary); padding: 8px 12px; }`; trackers grid `52px 1fr`, `.sheet-strip-wrath` on row 3 across both columns, Wrath `.tracker-btn` at least 32×32px; boxes 22px with 4px gap; `.sheet-tabbar { flex-wrap: nowrap; overflow-x: auto; }` with at least 4px of padding on all four sides, so that the 2px focus outline at 2px offset is not clipped by the scroll box (one row, about 40px including that padding).
+- No `overflow` on any element between `#tab-character-sheet` and the strip. No raw colour (`#hex`, `rgb(`, a named colour) in the section.
+
+- [ ] **Step 1: Write the failing Task 4 block**
+
+```js
+const sec = tabsSection();
+check('section exists', sec.length > 0, true);
+check('hidden panes are hidden on screen', /\.sheet-pane\[hidden\]\s*\{\s*display:\s*none;?\s*\}/.test(sec), true);
+check('focus ring on tabs and tracker buttons', /\.sheet-tab-btn:focus-visible,\s*\.tracker-btn:focus-visible\s*\{[^}]*outline:\s*2px solid var\(--accent-gold\)[^}]*outline-offset:\s*2px/.test(sec), true);
+const full = mediaBlocks(sec, 'screen').join('\n');
+const compact = mediaBlocks(sec, 'screen and (max-width: 768px), screen and (max-height: 600px)').join('\n');
+check('full mode pins the strip', /\.sheet-strip\s*\{[^}]*position:\s*sticky[^}]*top:\s*0/.test(full), true);
+check('compact mode unwraps the strip and pins the bar', [/\.sheet-strip\s*\{[^}]*display:\s*contents/.test(compact), /\.sheet-strip-bar\s*\{[^}]*position:\s*sticky/.test(compact)], [true, true]);
+check('compact tab bar scrolls sideways', /\.sheet-tabbar\s*\{[^}]*flex-wrap:\s*nowrap[^}]*overflow-x:\s*auto/.test(compact), true);
+const barRule = (compact.match(/\.sheet-tabbar\s*\{([^}]*)\}/) || [])[1] || '';
+const sides = { top: 0, right: 0, bottom: 0, left: 0 };
+const short = barRule.match(/(?:^|;)\s*padding:\s*([^;]+)/);
+if (short) { const v = short[1].trim().split(/\s+/).map(parseFloat); [sides.top, sides.right, sides.bottom, sides.left] = [v[0], v[1] ?? v[0], v[2] ?? v[0], v[3] ?? v[1] ?? v[0]]; }
+for (const side of Object.keys(sides)) { const m = barRule.match(new RegExp(`padding-${side}:\\s*([\\d.]+)px`)); if (m) sides[side] = parseFloat(m[1]); }
+check('compact tab bar has 4px padding on every side for the focus ring', Object.values(sides).every(v => v >= 4), true);
+check('strip labels set no colour', /\.sheet-strip-label\s*\{[^}]*color:/.test(sec), false);
+check('sticky only inside screen blocks', count(sec.replace(/@media screen[^{]*\{(?:[^{}]|\{[^{}]*\})*\}/g, ''), /position:\s*sticky/g), 0);
+check('wide panes are two columns', /\.sheet-pane-columns\s*\{[^}]*grid-template-columns:\s*1fr 1fr/.test(mediaBlocks(sec, '(min-width: 1400px)').join('')), true);
+check('no raw colour', /#[0-9a-f]{3,8}\b|rgba?\(/i.test(sec), false);
+```
+
+- [ ] **Step 2: Run the test to verify it fails** — `node scripts/test-sheet-tabs.js` — Expected: exit 1, FAIL `section exists`.
+
+- [ ] **Step 3: Write the CSS** as listed in Requirements.
+
+- [ ] **Step 4: Run all tests** — `for f in scripts/test-*.js; do node "$f" > /dev/null || echo "FAIL $f"; done` — Expected: no output.
+
+- [ ] **Step 5: Browser measurements** (Browser procedure; viewport with `browser_resize`; heights via `browser_evaluate` of `getBoundingClientRect().height` on `.sheet-strip` in full mode and `.sheet-strip-bar` in compact mode; tolerance 20px). Report a table with one row per check:
+  1. 1280×800, a character with 8 keywords, ≤30 Wounds, ≤20 Shock: strip pinned on scroll, height ≤ 240px.
+  2. 800×800, a Tier 5 / Rank 5 character with 50 Wounds and 35 Shock and two chip rows (set Toughness and bonuses in the builder; or, for measurement only, `State.character` values via `browser_evaluate` then a re-render): height ≤ 300px, Wounds in 3 rows.
+  3. 360×740, 768×1024, 740×360, 1280×560, typical (14 / 9) and worst (50 / 35) characters: identity scrolls away, the bar stays pinned, heights within the spec §2.2 table (about 170 / 350, 145 / 225, 145 / 225, 145 / 200).
+  4. 360, 768, 800, 1024, 1280, 1440 widths: `document.documentElement.scrollWidth <= innerWidth` (no horizontal page scroll); at 1440 Character, Abilities and Wargear show two columns, Stats keeps its columns; compact tab bar scrolls sideways and the selected tab is in view.
+  5. Keyboard: Tab to a tab button and to Wrath "+": a gold focus ring shows. At 360×740, Tab to the first and the last tab button: the whole ring shows, not clipped by the sideways-scrolling bar (screenshot).
+  6. A glossary popup (a keyword chip) and a breakdown popup (Defence) open above the pinned part.
+  Expected until Task 6: a box or Wrath click can move the scroll position and loses the focus. Expected until Task 7: print shows only the selected pane plus the tab bar. Expected until Task 5: the jump-to-section button is still there. Do not report these.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add scripts/test-sheet-tabs.js creator/css/styles.css
+git commit --author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github.com>" -m "Pin the sheet strip and style the tabs for wide and narrow screens (#25)"
+```
+
+---
+
+### Task 5: Remove jump-to-section
+
+**Model:** sonnet
+
+Reason for this place in the order: from Task 3 on, the jump-to-section list links into hidden panes, so it goes right after the tabs and their CSS land (spec §11 also puts it early).
+
+**Files:**
+- Modify: `creator/tabs/character-sheet-tab.js` — the TOC members, the `init()` TOC calls, the end of `render()`, the `renderNotes` comment
+- Modify: `creator/css/styles.css` — the TOC section (about 5731–5833), the `@media (min-width: 1400px)` `.sheet-body` rule with its comment (about 4323–4329), the print `.sheet-body` rule with its comment (about 4831–4834)
+- Test: `scripts/test-sheet-tabs.js` (Task 5 block)
+
+**Interfaces:**
+- Consumes: shared helpers `readSource`.
+- Produces: nothing new. `escapeHtml` stays.
+
+- [ ] **Step 1: Write the failing Task 5 block** (spec §10.1 case 10)
+
+```js
+const src = readSource('creator/tabs/character-sheet-tab.js'), css = readSource('creator/css/styles.css');
+check('no TOC member in the sheet module', [/_toc/.test(src), /_assignSectionIds|_buildTocList|_slugifySection|_ensureTocElements|_observeTabVisibility/.test(src)], [false, false]);
+check('no sheet-body in the module', /sheet-body/.test(src), false);
+check('no TOC or sheet-body CSS', [/\.sheet-toc-/.test(css), /\.sheet-body\b/.test(css), /jump-to-section/.test(css)], [false, false, false]);
+check('Notes comment no longer mentions the table of contents', /table of contents/i.test(src), false);
+check('escapeHtml stays', /\n    escapeHtml\(text\) \{/.test(src), true);
+```
+
+- [ ] **Step 2: Run the test to verify it fails**
+
+Run: `node scripts/test-sheet-tabs.js` — Expected: exit 1, FAIL on the TOC checks.
+
+- [ ] **Step 3: Remove exactly spec §8**
+
+In the module: the four `_toc*` properties and their comment; the `_ensureTocElements()` / `_observeTabVisibility()` calls and comment in `init()`; the methods `_ensureTocElements`, `_observeTabVisibility`, `_slugifySection`, `_assignSectionIds`, `_buildTocList`, `_toggleTocPanel`, `_openTocPanel`, `_closeTocPanel` with the `// ===== Table of Contents (jump-to-section) =====` header; the `_assignSectionIds` / `_buildTocList` calls and comment at the end of `render()`; in the `renderNotes` comment, the words "always shown so it stays in the table of contents" become "always shown". In the CSS: the whole TOC section with its `@media (max-width: 768px)` and `@media print` blocks; the `.sheet-body` grid rule and its comment inside `@media (min-width: 1400px)` (the `.character-sheet { max-width: none; }` rule there stays); the print `.sheet-body` rule and its comment. Nothing else.
+
+- [ ] **Step 4: Run all tests, and check the diff**
+
+Run: `for f in scripts/test-*.js; do node "$f" > /dev/null || echo "FAIL $f"; done` — Expected: no output.
+Run: `git diff --stat` — Expected: only the module, `styles.css` and the test file; `git diff creator/css/styles.css | grep '^+' | grep -v '^+++'` prints nothing (removal only).
+
+- [ ] **Step 5: Browser smoke** — Browser procedure. Expected: no floating jump-to-section button on the sheet; tabs still work; at 1440px Stats keeps its `.sheet-columns` and Character, Abilities and Wargear show two columns (Task 4 CSS); no console error. Expected until Task 6: a box or Wrath click can move the scroll position and loses the focus. Expected until Task 7: print shows only the selected pane plus the tab bar. Do not report these.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add scripts/test-sheet-tabs.js creator/tabs/character-sheet-tab.js creator/css/styles.css
+git commit --author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github.com>" -m "Remove the jump-to-section button now that the sheet has tabs (#25)"
+```
+
+---
+
+### Task 6: Re-render keeps the view
+
+**Model:** opus — the state-keeping re-render and the focus-key helper: capture and restore around the full `innerHTML` write, key matching without selectors built from keys.
+
+**Files:**
+- Modify: `creator/tabs/character-sheet-tab.js` — `render()`, new members
+- Test: `scripts/test-sheet-tabs.js` (Task 6 block)
+
+**Interfaces:**
+- Consumes: Task 3 `activeSheetTab`, `_scrollActiveTabIntoBar`; Task 2 Wrath button markup; shared helpers `sheetSandbox`, `makeDom`, `stubEl`, `stubBlocks`.
+- Produces:
+  - `_FOCUS_SELECTOR: '.sheet-tab-btn, .tracker-btn, .weapon-equip-checkbox, .follower-living-btn'`.
+  - `_focusKeyOf(el) -> string | null` — spec §5.2 table: `tab:<data-sheet-tab>`; `tracker:<data-type>:minus|plus` (from class `tracker-minus` / `tracker-plus`); `equip:<data-wargear-index>`; `living:<closest('.sheet-follower').dataset.followerId>:<data-delta>`; null for anything else, for `null`, and for a living button outside a follower.
+  - `_captureViewState() -> { scrollTop: number, focusKey: string | null }` — scroller `#tab-character-sheet` (`scrollTop` 0 when missing); `focusKey` null when `document.activeElement` is not inside `#character-sheet-content` (`container.contains`).
+  - `_restoreViewState(state) -> void` — sets the scroller's `scrollTop`; when `focusKey` is not null, scans `container.querySelectorAll(this._FOCUS_SELECTOR)` for the first element with `_focusKeyOf(el) === focusKey`; if found and not `disabled`, `el.focus({ preventScroll: true })`.
+  - `render()` order: `_captureViewState()` → fallback → build and write `innerHTML` → the bind calls → `_restoreViewState(state)` → `_scrollActiveTabIntoBar(container)`.
+
+- [ ] **Step 1: Write the failing Task 6 block** (spec §10.1 case 7)
+
+Keys: `_focusKeyOf` on stubs gives `'tab:wargear'` (`sheet-tab-btn`, `sheetTab: 'wargear'`), `'tracker:wrath:plus'`, `'tracker:faith:minus'`, `'equip:3'` (`weapon-equip-checkbox`, `wargearIndex: '3'`), `'living:f1:-1'` (`follower-living-btn`, `delta: '-1'`, parent `stubEl({ cls: ['sheet-follower'], data: { followerId: 'f1' } })`), and `null` for a `tracking-box`, for `dom.body`, for `null`.
+
+Restore, with `stubBlocks` (restored in `finally`), `activeSheetTab = 'wargear'`, `dom.scroller.scrollTop = 420`:
+
+```js
+const oldPlus = stubEl({ cls: ['tracker-btn', 'tracker-plus'], data: { type: 'wrath' } });
+const newMinus = stubEl({ cls: ['tracker-btn', 'tracker-minus'], data: { type: 'wrath' } });
+const newPlus = stubEl({ cls: ['tracker-btn', 'tracker-plus'], data: { type: 'wrath' } });
+dom.document.activeElement = oldPlus;
+dom.container.query = sel => sel === sheet._FOCUS_SELECTOR ? [newMinus, newPlus] : [];
+sheet.render();
+check('scroll kept', dom.scroller.scrollTop, 420);   // the innerHTML stub resets it to 0
+check('Wrath + refocused without scroll', [newPlus.focusCalls, newMinus.focusCalls], [[{ preventScroll: true }], []]);
+check('tab kept', sheet.activeSheetTab, 'wargear');
+```
+
+Then: same with `newPlus.disabled = true` → `newPlus.focusCalls` empty, scroll 420. A box click (`activeElement = dom.body`) → no focus call, scroll 420. No match (query returns `[newMinus]`, focus key `tracker:wrath:plus`) → no error, no focus call. Focus outside the sheet (`dom.container.contains = () => false`, restored in `finally`) → no focus call.
+
+- [ ] **Step 2: Run the test to verify it fails**
+
+Run: `node scripts/test-sheet-tabs.js` — Expected: exit 1, `_focusKeyOf is not a function` and FAIL `scroll kept` (0).
+
+- [ ] **Step 3: Implement** the Produces members and the `render()` order. Compare computed keys; never build a selector from a key (a key holds player-controlled ids).
+
+- [ ] **Step 4: Run all tests** — `for f in scripts/test-*.js; do node "$f" > /dev/null || echo "FAIL $f"; done` — Expected: no output.
+
+- [ ] **Step 5: Browser smoke** — Browser procedure, 1280×800, a character with a weapon. Select Wargear. Drive each click through the page's script with `browser_evaluate` (the browser tool would scroll the target into view itself): set `document.getElementById('tab-character-sheet').scrollTop = 400`, then `document.querySelector('.tracking-box[data-type="wounds"]').click()`, then read `scrollTop`. Expected: 400 (or the largest possible value when the page is shorter), and Wargear still selected. Repeat for `.tracker-btn.tracker-plus[data-type="wrath"]` after calling `.focus()` on it: `scrollTop` kept, the Wrath value up by one, and `document.activeElement` is the new Wrath "+" (`matches('.tracker-plus[data-type="wrath"]')`). Repeat for `.weapon-equip-checkbox` after `.focus()`: `scrollTop` kept and `document.activeElement.classList.contains('weapon-equip-checkbox')`. Expected until Task 7: print shows only the selected pane plus the tab bar. No console error.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add scripts/test-sheet-tabs.js creator/tabs/character-sheet-tab.js
+git commit --author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github.com>" -m "Keep the sheet scroll, tab and focus across a re-render (#25)"
+```
+
+---
+
+### Task 7: Print
+
+**Model:** sonnet
+
+**Files:**
+- Modify: `creator/css/styles.css` — append to the Task 4 section
+- Test: `scripts/test-sheet-tabs.js` (Task 7 block)
+
+**Interfaces:**
+- Consumes: Task 4 section; classes of Tasks 1–3 (`sheet-details-section`, `sheet-strip`, `sheet-strip-bar`, `sheet-strip-trackers`, `sheet-tabbar`, `sheet-pane`).
+- Produces: nothing new.
+
+Requirements (spec §7): one `@media print` block at the end of the section with, in this order (the light-theme rule last, so that the checks find each plain rule first): `.sheet-strip, .sheet-strip-bar { position: static !important; }`, `.sheet-strip { display: block !important; }`, `.sheet-tabbar { display: none !important; }`, `.sheet-pane[hidden] { display: block !important; }`, `.sheet-details-section { display: none !important; }`, `.sheet-strip-trackers { page-break-inside: avoid; }`, and `body.print-light-theme .sheet-strip, body.print-light-theme .sheet-strip-bar, body.print-light-theme .sheet-strip-trackers { background: transparent !important; border: none !important; }`. The existing print rules (`.tracker-btn` hidden, `.sheet-header-section { page-break-after: avoid }`, light-theme `.tracking-box`) stay as they are.
+
+- [ ] **Step 1: Write the failing Task 7 block** (spec §10.1 case 9, CSS part)
+
+```js
+const print = mediaBlocks(tabsSection(), 'print').join('\n');
+const rule = sel => new RegExp(sel.replace(/[.[\]]/g, '\\$&') + '\\s*\\{([^}]*)\\}');
+check('hidden panes print', /display:\s*block\s*!important/.test((print.match(rule('.sheet-pane[hidden]')) || [])[1] || ''), true);
+check('tab bar does not print', /display:\s*none\s*!important/.test((print.match(rule('.sheet-tabbar')) || [])[1] || ''), true);
+check('Details does not print', /display:\s*none\s*!important/.test((print.match(rule('.sheet-details-section')) || [])[1] || ''), true);
+check('strip is static and block in print', [/\.sheet-strip,\s*\.sheet-strip-bar\s*\{[^}]*position:\s*static\s*!important/.test(print), /display:\s*block\s*!important/.test((print.match(rule('.sheet-strip')) || [])[1] || '')], [true, true]);
+check('trackers stay on one page', /page-break-inside:\s*avoid/.test((print.match(rule('.sheet-strip-trackers')) || [])[1] || ''), true);
+check('light theme clears the strip background', /body\.print-light-theme \.sheet-strip,[\s\S]*?background:\s*transparent/.test(print), true);
+```
+
+- [ ] **Step 2: Run the test to verify it fails** — Expected: exit 1, FAIL on every print check.
+
+- [ ] **Step 3: Write the print block.**
+
+- [ ] **Step 4: Run all tests** — Expected: no output from the loop.
+
+- [ ] **Step 5: Browser print check** — Browser procedure; on the Wargear tab at 1280×800, `browser_emulate_media` `print` and add `print-light-theme` to `body` via `browser_evaluate`, then screenshot; repeat at 360×740. Expected both times: strip with box rows and Wrath value, no tab bar, no Details block, all blocks in tab order (Character first), light background, no sticky strip over the content. Reset the media emulation afterwards.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add scripts/test-sheet-tabs.js creator/css/styles.css
+git commit --author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github.com>" -m "Print the whole sheet in tab order with the strip at the top (#25)"
+```
+
+---
+
+### Task 8: Cache bump and browser check
+
+**Model:** sonnet
+
+**Files:**
+- Modify: `creator/index.html` — every `?v=N` → `?v=N+1`
+
+**Interfaces:**
+- Consumes: everything above. Produces: nothing new.
+
+- [ ] **Step 1: Bump the versions**
+
+`grep -o '?v=[0-9]*' creator/index.html | sort | uniq -c` must print one line (expected `35 ?v=124`). Replace every `?v=N` with `?v=N+1`. Verify: the same command prints `35 ?v=125`; `git diff --stat $(git merge-base main HEAD) -- creator/js/web-api.js bestiary data shared` prints nothing; this step's diff lists only `creator/index.html`; `git diff $(git merge-base main HEAD) -- creator/tabs/character-sheet-tab.js` has no hunk inside `copySummary`.
+
+- [ ] **Step 2: Run all tests** — `for f in scripts/test-*.js; do node "$f" > /dev/null || echo "FAIL $f"; done` — Expected: no output.
+
+- [ ] **Step 3: Browser check (spec §10.2)**
+
+Browser procedure (the cache-disable step is still fine; the new `?v=` also busts). Characters: A — a psyker with two followers (one mob), a mutation, an injury, corruption, a holy relic and an augmetic; B — Tier 5, Rank 5 with about 50 Wounds and 35 Shock. Viewports: the four compact viewports 360×740, 768×1024, 740×360, 1280×560, plus 800×800, 1024×800, 1280×800 and 1440×900. The report holds one table row per numbered step: step, viewport, result, console errors.
+
+1. A at 1280×800: each tab shows the spec §3 blocks; Abilities reads Species Abilities, Archetype Abilities, Talents, Mutations (repeat at 360×740 and 1440×900). (A maximum of 0 Wounds or Shock does not occur in the app; the Task 2 Node check covers it.)
+2. Psychic Powers and Followers show and hide with the PSYKER keyword and the follower list.
+3. Select Followers, remove the last follower in the builder, return: Stats is selected, one pane shows.
+4. Full mode (1280×800), Wargear, scrolled down: click an empty Wounds box, a filled Wounds box, a Shock box — they fill and clear as spec §4.2; tab and scroll stay. Click Wrath "+": value changes; tab, scroll and focus stay.
+5. Click an equip checkbox: tab, scroll and focus stay.
+6. Click a mob member button until it reaches 0 living: tab and scroll stay; focus stays until the button becomes `disabled`, then it is lost with no error.
+7. Each compact viewport, Wargear, scrolled down: identity scrolled away; boxes, Wrath and tab bar pinned; tap a box — value changes, tab and scroll stay. With B, the box rows wrap and the pinned heights match the spec §2.2 table (±20px).
+8. Type in Notes: caret stays while typing; ArrowLeft, ArrowRight, Home and End in the textarea move the caret and do not change the tab; switch tabs and back: the text is there.
+9. Keyboard only: Tab to the bar, ArrowRight/ArrowLeft (wrap), Home, End, Tab into the pane; the gold focus ring shows on the tabs and on the Wrath buttons.
+10. Widths 360, 768, 800, 1024, 1280, 1440 and the 1280×560 window: size targets of spec §2.2, box rows wrap, no horizontal page scroll, pane layouts of spec §2.3, compact tab bar scrolls sideways with the selected tab in view.
+11. Open a glossary popup and a breakdown popup, then switch tabs: both close; while open they show above the pinned part.
+12. Print preview from the Wargear tab (Print button; or `browser_emulate_media` print + `print-light-theme`): strip with box rows and Wrath value, no tab bar, no Details block, all blocks in tab order, light theme.
+13. Copy Summary: Step 1 already showed no diff in `copySummary`. Stub the clipboard with `browser_evaluate` (`window._copied = null; navigator.clipboard.writeText = t => { window._copied = t; return Promise.resolve(); }`), click Copy Summary, read `window._copied`: it holds the name, the Tier and Rank line, the attributes and the wargear of A.
+14. New character, then Load of A while Wargear is selected: Wargear stays selected; load a non-psyker while Psychic Powers is selected: Stats.
+15. Reload the page (character has a name and species): the sheet opens on Stats; no `#` hash in the URL and no new `localStorage` key for the tab.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add creator/index.html
+git commit --author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github.com>" -m "Bump the creator asset versions for the sheet tabs (#25)"
+```
+
+---
+
+## Self-Review
+
+1. **Spec coverage.** §2.1 DOM → Tasks 2 (strip, panes), 3 (tab bar, attributes), 4 (sticky, z-index, no overflow). §2.2 modes and sizes → Task 4, measured in Task 4 step 5 and Task 8 steps 7, 10. §2.3 pane layouts → Task 2 (wrappers), Task 4 (grid). §3 mapping, `SHEET_TABS`, `renderPane`, `ctx` → Task 2. §3.1 Details and `getSpeciesDisplayName` → Task 1. §3.2 Mutations → Task 1. §3.3 visibility → Task 2; fallback → Task 3. §4 strip content and forms, subtitle Tier and Rank, aria-labels, Wrath never disabled → Task 2; §4.3 Traits → Task 2. §5.1 → Task 3 (and Task 8 step 15). §5.2 → Task 6. §5.3 → Task 3. §6 → Tasks 3 (markup, keys, textarea guard) and 4 (focus style, `[hidden]`, unclipped ring). §7 → Task 7. §8 → Task 5. §9 → Global Constraints (existing tests, block functions untouched, `escapeHtml` kept, the #33 fix wave). §10.1 cases: 1, 2, 4, 5 → Task 2; 3, 8, 9 markup → Task 3; 6 → Task 1; 7 → Task 6; 9 CSS → Task 7; 10 → Task 5. §10.2 → Task 8. §10.3 → Task 8.
+2. **Step scan.** Every code step names the file, the members and the pinned values; bodies are left to the implementer except the exact markup strings and the keyboard/scroll rules the spec fixes. Changed browser steps now prove what they claim: Task 3 marks a pane node to detect a re-render; Task 6 drives clicks with `el.click()` and reads `scrollTop`; Task 8 step 13 reads the copied text through a stubbed clipboard. Each task that leaves a planned incomplete state says "Expected until Task N".
+3. **Type consistency.** `renderPane(tabId, ctx)` and `ctx` defined in Task 2 and used in Tasks 3 and 6; `renderStrip(ctx, visibleIds)` gains `renderTabBar(visibleIds)` in Task 3; `_pinnedElement(container)` and `_scrollActiveTabIntoBar(container)` take `#character-sheet-content`, and Task 4 makes `.sheet-tabbar` their `offsetParent`; `_nextSheetTabId` returns `null` for an unknown id and `handleSheetTabKeydown` ignores a target outside `.sheet-tab-btn`; `_captureViewState()` returns `{ scrollTop, focusKey }`, consumed by `_restoreViewState(state)`; `_FOCUS_SELECTOR` is the one selector list; the strip labels carry `sheet-strip-label tracker-label` in Task 2 and Task 4 gives `.sheet-strip-label` no colour. `makeDom`'s `scroller` and `body` are `stubEl`s, and `sheetSandbox` reads the module with `vm.runInContext(src + '\n;CharacterSheetTab;', ctx)`. Task order 1, 2, 3, 4 (strip CSS), 5 (removal), 6 (re-render), 7 (print), 8; every cross-reference uses these numbers.
+4. **Review Focus.** Zero-max strip → Task 2 check; escaped player text → Task 1 checks; vanished tab → Task 3 fallback checks; narrow print → Task 4 `screen`-only sticky check and Task 7 print checks; keys in the Notes textarea → Task 3 textarea check and Task 8 step 8.
+5. **Proportion.** The plan is about 1.6 times the length of the spec (about 9,450 words against 5,835); the excess is the shared test-helper contract and the browser checklists. Code blocks are test assertions and exact strings only.

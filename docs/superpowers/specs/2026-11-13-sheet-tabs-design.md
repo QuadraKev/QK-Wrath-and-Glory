@@ -11,6 +11,11 @@ spec. Line references are to the tree at commit `079c581` and are evidence only.
 Wargear) and the `issues-31-32` branch merge first and move lines in `character-sheet-tab.js`, so
 every requirement names functions, classes and selectors, not lines.
 
+**Print is retired [Owner, 2026-11-14].** The owner decided: "Printing is a feature we can
+deprecate and retire. Let's keep this exclusively a web app." The creator has no Print button, no
+print styles and no print copy of the notes. Each statement about print in this document (§7 and
+the print lines of other sections) describes the design before that decision and no longer applies.
+
 ## 1. Goal and scope
 
 Today the Character Sheet is one long page: a header, then a left column (stats, powers, abilities,
@@ -550,6 +555,9 @@ Use the WAI-ARIA Tabs pattern with automatic activation (a switch is cheap, §5.
   transition of a tab button names its properties, so its focus ring shows gold at once.
 
 ## 7. Print
+
+**Retired [Owner, 2026-11-14].** Refer to the note at the head of this document. The text below is
+a record.
 
 Print shows the whole sheet, whichever tab is selected **[Designer]**:
 

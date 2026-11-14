@@ -28,11 +28,6 @@ const CharacterSheetTab = {
 
     // Initialize the tab
     init() {
-        // Print button
-        document.getElementById('btn-print').addEventListener('click', () => {
-            this.print();
-        });
-
         // Copy Summary button
         document.getElementById('btn-copy-summary').addEventListener('click', (e) => {
             this.copySummary(e.target);
@@ -226,8 +221,7 @@ const CharacterSheetTab = {
     },
 
     // Bind the editable notes box. Deliberately no this.render() here: re-rendering the
-    // sheet on every keystroke would replace the textarea and lose the caret. The only
-    // other thing that needs updating is the print-only copy, which is patched in place.
+    // sheet on every keystroke would replace the textarea and lose the caret.
     bindNotesInput(container) {
         const input = container.querySelector('.sheet-notes-input');
         if (!input) return;
@@ -236,10 +230,8 @@ const CharacterSheetTab = {
         // leading newline inside a <textarea>, which would silently trim the notes.
         input.value = State.getCharacter().notes || '';
 
-        const printCopy = container.querySelector('.sheet-notes-print');
         input.addEventListener('input', (e) => {
             State.setNotes(e.target.value);
-            if (printCopy) printCopy.textContent = e.target.value;
         });
     },
 
@@ -2004,24 +1996,8 @@ const CharacterSheetTab = {
             <div class="sheet-section">
                 <h2 class="sheet-section-title">Notes</h2>
                 <textarea class="sheet-notes-input" placeholder="Notes taken during play...">${this.escapeHtml(notes)}</textarea>
-                <div class="sheet-notes sheet-notes-print">${this.escapeHtml(notes)}</div>
             </div>
         `;
-    },
-
-    // Print the character sheet (with light theme for paper)
-    print() {
-        // Add light theme class for printer-friendly output
-        document.body.classList.add('print-light-theme');
-
-        // Use afterprint event to clean up
-        const cleanup = () => {
-            document.body.classList.remove('print-light-theme');
-            window.removeEventListener('afterprint', cleanup);
-        };
-        window.addEventListener('afterprint', cleanup);
-
-        window.print();
     },
 
     // Copy character summary as plain text to clipboard

@@ -160,7 +160,7 @@ function makeDom() {
         getElementById: (id) => {
             if (id === 'character-sheet-content') return container;
             if (id === 'tab-character-sheet') return scroller;
-            if (id === 'btn-print' || id === 'btn-copy-summary') return stubEl();
+            if (id === 'btn-copy-summary') return stubEl();
             return null;
         },
         querySelector: () => null,
@@ -300,7 +300,7 @@ function tabsSection() {
             { type: 'archetype', archetypeId: 'missing', targetTier: 5 }] });
         const html = sheet.renderDetails(ch, { name: 'Human' }, { name: 'Warrior' });
         check('Details has the title', titlesIn(html), ['Details']);
-        check('Details carries the sheet-details-section class (the print rules use it)', html.includes('sheet-details-section'), true);
+        check('Details carries the sheet-details-section class', html.includes('sheet-details-section'), true);
         check('Details rows', ['<strong>Name:</strong> Kaelen', '<strong>Species:</strong> Human', '<strong>Archetype:</strong> Warrior → Veteran (Tier 3)', '<strong>Tier:</strong> 3', '<strong>Rank:</strong> 2'].map(s => html.replace(/\s+/g, ' ').includes(s)), [true, true, true, true, true]);
         check('Details skips an unresolved ascension archetype', html.includes('Tier 5'), false);
         const plain = sheet.renderDetails(makeCharacter({ name: '', rank: undefined }), null, null).replace(/\s+/g, ' ');
@@ -556,7 +556,6 @@ function tabsSection() {
         const css = readSource('creator/css/styles.css');
         const baseRow = (css.match(/^\.tracker-row-horizontal\s*\{([^}]*)\}/m) || [])[1] || '';
         check('the base .tracker-row-horizontal rule exists and has no border-top, padding-top or margin-top', [baseRow.length > 0, /border-top/.test(baseRow), /padding-top/.test(baseRow), /margin-top/.test(baseRow)], [true, false, false, false]);
-        check('no print selector for .tracker-row-horizontal', css.includes('body.print-light-theme .tracker-row-horizontal'), false);
     }
 
     // Box clicks (spec §10.1 case 5)
@@ -1052,118 +1051,26 @@ function tabsSection() {
     }
 }
 
-// --- Task 7: Print ---
+// --- Print is retired (owner decision, 2026-11-14) ---
 {
-    const sec = tabsSection();
-    const print = mediaBlocks(sec, 'print').join('\n');
-    const rule = sel => new RegExp(sel.replace(/[.[\]]/g, '\\$&') + '\\s*\\{([^}]*)\\}');
-    const printRules = (css) => [...css.matchAll(/([^{}]+)\{([^}]*)\}/g)].map(m => ({ sels: m[1].replace(/\/\*[\s\S]*?\*\//g, '').split(',').map(x => x.trim()), body: m[2] }));
-    check('print block exists', print.length > 0, true);
-    check('hidden panes print', /display:\s*block\s*!important/.test((print.match(rule('.sheet-pane[hidden]')) || [])[1] || ''), true);
-    check('tab bar does not print', /display:\s*none\s*!important/.test((print.match(rule('.sheet-tabbar')) || [])[1] || ''), true);
-    // Of the Details block, only the Wealth line prints, under the Wrath line of the strip (controller ruling, 2026-11-14)
-    {
-        const detailsRule = (sel) => printRules(print).filter(r => r.sels.includes(sel)).map(r => r.body).join('\n');
-        check('print: the Details card itself is not hidden', /display:\s*none/.test(detailsRule('.sheet-details-section')), false);
-        check('print: the Details title and rows are hidden',
-            ['.sheet-details-section .sheet-section-title', '.sheet-details-section .sheet-background-content'].map(sel => /display:\s*none\s*!important/.test(detailsRule(sel))),
-            [true, true]);
-        check('print: the Details card has no border and no background, in both looks',
-            ['.sheet-details-section', 'body.print-light-theme .sheet-details-section'].map(sel => [/border:\s*none\s*!important/.test(detailsRule(sel)), /background:\s*none\s*!important/.test(detailsRule(sel))]),
-            [[true, true], [true, true]]);
-        const wealthLine = detailsRule('.sheet-details-section .sheet-tracking-section');
-        check('print: the Wealth line has no border-top, margin-top or padding-top',
-            [/border-top:\s*none\s*!important/.test(wealthLine), /margin-top:\s*0\s*!important/.test(wealthLine), /padding-top:\s*0\s*!important/.test(wealthLine)],
-            [true, true, true]);
-        check('print: the Wealth line is one left-aligned row like the Wrath row',
-            [/flex-direction:\s*row/.test(detailsRule('.sheet-details-section .tracker-column')), /text-align:\s*left/.test(detailsRule('.sheet-details-section .tracker-label')), /text-align:\s*left/.test(detailsRule('.sheet-details-section .tracker-value')), /justify-content:\s*flex-start/.test(detailsRule('.sheet-details-section .tracker-row-horizontal'))],
-            [true, true, true, true]);
-        // The Wealth label holds a hidden copy of the widest strip label, so that its width follows the font
-        const labelRule = detailsRule('.sheet-details-section .tracker-label'), afterRule = detailsRule('.sheet-details-section .tracker-label::after');
-        check('print: the Wealth label holds a hidden copy of the Wounds label, with no fixed width',
-            [/content:\s*'Wounds'/.test(afterRule), /height:\s*0/.test(afterRule), /visibility:\s*hidden/.test(afterRule), /display:\s*flex/.test(labelRule), /flex-direction:\s*column/.test(labelRule), /min-width/.test(labelRule), /51px/.test(print)],
-            [true, true, true, true, true, false, false]);
-        // A rule of the tabs print block that names a tracker class must name the Details card or the strip
-        const trackerSels = printRules(print).flatMap(r => r.sels).filter(x => /\.tracker-|\.sheet-tracking-section/.test(x));
-        check('print: each tracker rule is scoped to the Details card or the strip', [trackerSels.length > 0, trackerSels.every(x => /\.sheet-details-section|\.sheet-strip-trackers/.test(x))], [true, true]);
-    }
-    check('strip is static and block in print', [/\.sheet-strip,\s*\.sheet-strip-bar\s*\{[^}]*position:\s*static\s*!important/.test(print), /display:\s*block\s*!important/.test((print.match(rule('.sheet-strip')) || [])[1] || '')], [true, true]);
-    check('trackers stay on one page', /page-break-inside:\s*avoid/.test((print.match(rule('.sheet-strip-trackers')) || [])[1] || ''), true);
-    check('light theme clears the strip background', /body\.print-light-theme \.sheet-strip,[\s\S]*?background:\s*transparent/.test(print), true);
-    check('light theme clears the bar and the trackers too', [/body\.print-light-theme \.sheet-strip-bar,/.test(print), /body\.print-light-theme \.sheet-strip-trackers\s*\{[^}]*border:\s*none/.test(print)], [true, true]);
-    // Print never sees a screen rule: no sticky outside screen blocks (the Task 4 check), and the print block does not unpin a rule that is not there
-    check('print block has no sticky rule', /sticky/.test(print), false);
-    // Page breaks: the Stats blocks print whole, and a block title never stays alone at the foot of a page
-    const breakRule = (sel) => printRules(print).filter(r => r.sels.includes(sel)).map(r => r.body).join('\n');
-    check('print: the Stats blocks do not split across pages', [/page-break-inside:\s*avoid/.test(breakRule('.sheet-pane .sheet-column .sheet-section')), /(?:^|[;\s])break-inside:\s*avoid/.test(breakRule('.sheet-pane .sheet-column .sheet-section'))], [true, true]);
-    check('print: the Stats columns may start on a new page (the old keep-with-header rule no longer has a header above them)', [/page-break-before:\s*auto/.test(breakRule('.sheet-pane .sheet-columns')), /(?:^|[;\s])break-before:\s*auto/.test(breakRule('.sheet-pane .sheet-columns'))], [true, true]);
-    check('print: a block title stays with its block', [/page-break-after:\s*avoid/.test(breakRule('.sheet-section-title')), /(?:^|[;\s])break-after:\s*avoid/.test(breakRule('.sheet-section-title'))], [true, true]);
-    // The printed trackers line up with the text of the printed cards (15px padding and a 1px border)
-    check('print: the tracker block has the inset of the cards', /padding:\s*0 16px/.test(breakRule('.sheet-strip-trackers')), true);
-
-    // The trackers print as rows: a label, then its boxes (or the Wrath value) directly after it, left-aligned
-    const printDecls = (sel) => printRules(print).filter(r => r.sels.includes(sel)).map(r => r.body).join('\n');
-    const trackers = printDecls('.sheet-strip-trackers');
-    check('print trackers: a two-column grid, label then boxes', [/display:\s*grid/.test(trackers), /grid-template-columns:\s*auto 1fr/.test(trackers)], [true, true]);
-    check('print Wrath group joins the grid columns', /display:\s*contents/.test(printDecls('.sheet-strip-wrath')), true);
-    check('print tracker labels and the Wrath value are left-aligned', [printDecls('.sheet-strip-trackers .tracker-label'), printDecls('.sheet-strip-trackers .tracker-value')].map(d => /text-align:\s*left/.test(d)), [true, true]);
-    check('print tracker boxes and controls start at the left', [printDecls('.sheet-strip-trackers .tracking-boxes'), printDecls('.sheet-strip-trackers .tracker-controls')].map(d => /justify-content:\s*flex-start/.test(d)), [true, true]);
-    // No grid rule for the tracker container sits outside the @media screen blocks and the @media print block
-    const withoutMedia = (css, keep) => {
-        let out = '', from = 0;
-        while (true) {
-            const at = css.indexOf('@media', from);
-            if (at < 0) { out += css.slice(from); break; }
-            const open = css.indexOf('{', at);
-            let depth = 1, i = open + 1;
-            while (i < css.length && depth > 0) { if (css[i] === '{') depth++; else if (css[i] === '}') depth--; i++; }
-            out += css.slice(from, at);
-            if (!keep(css.slice(at + 6, open).trim())) out += css.slice(at, i);
-            from = i;
-        }
-        return out;
-    };
-    const outsideScreenAndPrint = withoutMedia(sec, q => /^screen\b/.test(q) || q === 'print');
-    const gridRuleOf = css => printRules(css).filter(r => r.sels.some(x => x.includes('.sheet-strip-trackers') && !x.includes('.sheet-strip-trackers ') ) ).some(r => /grid/.test(r.body));
-    check('no tracker grid rule outside the screen and print blocks', gridRuleOf(outsideScreenAndPrint), false);
-    check('the tracker grid rule finder sees a top-level rule, a screen rule and a print rule', [gridRuleOf('.sheet-strip-trackers { display: grid; }'), gridRuleOf(mediaBlocks(sec, 'screen').join('\n')), gridRuleOf(print)], [true, true, true]);
-
-    // The light print theme: injury subheads, injury and mutation text, and the mutation card
-    const light = (sel) => printRules(mediaBlocks(readSource('creator/css/styles.css'), 'print').join('\n')).filter(r => r.sels.includes('body.print-light-theme ' + sel)).map(r => r.body).join('\n');
-    const has = (decl, re) => re.test(decl);
-    check('light theme: injury subheads are dark with a light rule', [has(light('.sheet-subsection-title'), /(?:^|[;\s])color:\s*#333\s*!important/), has(light('.sheet-subsection-title'), /border-bottom-color:\s*#ccc\s*!important/)], [true, true]);
-    check('light theme: injury and mutation names are black', [light('.sheet-injury-name'), light('.sheet-mutation-name')].map(d => has(d, /(?:^|[;\s])color:\s*#000\s*!important/)), [true, true]);
-    check('light theme: injury and mutation descriptions are dark gray', [light('.sheet-injury-desc'), light('.sheet-mutation-desc')].map(d => has(d, /(?:^|[;\s])color:\s*#555\s*!important/)), [true, true]);
-    check('light theme: the mutation effect is black', has(light('.sheet-mutation-effect'), /(?:^|[;\s])color:\s*#000\s*!important/), true);
-    check('light theme: the mutation card is light', [has(light('.sheet-mutation-item'), /background:\s*#f0f0f0\s*!important/), has(light('.sheet-mutation-item'), /border-color:\s*#ccc\s*!important/)], [true, true]);
-
-    // The Ascension card, the Follower threat card (reached through .sheet-follower) and the equipment cards in print
-    const lightFollower = (sel) => light('.sheet-follower ' + sel);
-    const bgOf = (d, v) => new RegExp('background:\\s*' + v + '\\s*!important').test(d);
-    check('light theme: the Ascension card is light with dark text', [bgOf(light('.sheet-ascension-item'), '#f0f0f0'), has(light('.sheet-ascension-item'), /border-color:\s*#ccc\s*!important/), has(light('.sheet-ascension-name'), /(?:^|[;\s])color:\s*#000\s*!important/), ['.sheet-ascension-tier', '.sheet-ascension-cost', '.sheet-ascension-details'].map(c => has(light(c), /(?:^|[;\s])color:\s*#555\s*!important/)), has(light('.sheet-ascension-keywords'), /(?:^|[;\s])color:\s*#333\s*!important/)], [true, true, true, [true, true, true], true]);
-    check('light theme: the Follower threat card is light with dark text', [
-        bgOf(lightFollower('.threat-card'), '#fff'), bgOf(lightFollower('.threat-card-header'), '#f5f5f5'),
-        ['.threat-stat-table th', '.resilience-row', '.determination-row', '.abilities-header', '.bonuses-header'].map(c => bgOf(lightFollower(c), '#f0f0f0')),
-        [bgOf(lightFollower('.threat-stat-table td'), 'transparent'), has(lightFollower('.threat-stat-table td'), /(?:^|[;\s])color:\s*#000\s*!important/)],
-        [bgOf(lightFollower('.threat-keyword'), '#eee'), has(lightFollower('.threat-keyword'), /border-color:\s*#333\s*!important/)]
-    ], [true, true, [true, true, true, true, true], [true, true], [true, true]]);
-    // The borders that keep the light cards readable on paper
-    const borderOf = (d, prop, v) => new RegExp(prop + ':\\s*' + v + '\\s*!important').test(d);
-    check('light theme: the light cards keep visible borders', [
-        borderOf(lightFollower('.threat-card'), 'border-color', '#ccc'), borderOf(lightFollower('.threat-card-header'), 'border-bottom-color', '#333'),
-        ['.threat-stat-table th', '.resilience-row', '.determination-row', '.abilities-header', '.bonuses-header'].map(c => borderOf(lightFollower(c), 'border-color', '#ddd')),
-        borderOf(lightFollower('.threat-stat-table td'), 'border-color', '#ddd')
-    ], [true, true, [true, true, true, true, true], true]);
-    // Text that was pale on the dark cards of the screen becomes dark on the light cards
-    check('light theme: the follower ability names are black', has(lightFollower('.ability-name'), /(?:^|[;\s])color:\s*#000\s*!important/), true);
-    check('light theme: glossary terms in the Mutation and Follower cards are dark', ['.sheet-mutation-item .glossary-term', '.sheet-follower .glossary-term'].map(c => has(light(c), /(?:^|[;\s])color:\s*#333\s*!important/)), [true, true]);
-    check('light theme: the mutation severity badges are dark', has(light('.sheet-mutation-severity'), /(?:^|[;\s])color:\s*#333\s*!important/), true);
-    check('light theme: the Follower card rules never reach the card outside the sheet', /body\.print-light-theme \.threat-card\s*[,{]/.test(mediaBlocks(readSource('creator/css/styles.css'), 'print').join('\n')), false);
-    // In print the equipment group (a tbody) must stay a grid card. A display: contents tbody puts the name, the Effect cell and the value side by side.
-    const printAll = mediaBlocks(readSource('creator/css/styles.css'), 'print').join('\n');
-    const equipGroup = printRules(printAll).filter(r => r.sels.includes('.sheet-equipment-table .sheet-equip-group')).map(r => r.body).join('\n');
-    check('print: an equipment group is a grid card (not display: contents)', [has(equipGroup, /display:\s*grid\s*!important/), has(equipGroup, /width:\s*50%\s*!important/)], [true, true]);
-    check('print: an equipment group keeps its padding inside the 50% width', [has(equipGroup, /box-sizing:\s*border-box\s*!important/), has(equipGroup, /padding:\s*8px 10px\s*!important/)], [true, true]);
+    const css = readSource('creator/css/styles.css');
+    check('the creator stylesheet has no @media print block', /@media\s+print/.test(css), false);
+    check('the creator stylesheet has no print-light-theme class', css.includes('print-light-theme'), false);
+    check('the creator stylesheet has no @page rule', /@page/.test(css), false);
+    check('the creator page has no Print button', readSource('creator/index.html').includes('btn-print'), false);
+    check('the creator API has no exportPDF', readSource('creator/js/web-api.js').includes('exportPDF'), false);
+    const env = sheetSandbox();
+    check('the sheet object has no print method', typeof env.sheet.print, 'undefined');
+    const notesHtml = env.sheet.renderNotes(makeCharacter({ notes: 'Plan' }));
+    check('the Notes block has no print copy and keeps the notes input', [notesHtml.includes('sheet-notes-print'), notesHtml.includes('class="sheet-notes-input"')], [false, true]);
+    // The notes box still updates the state on input and does not render the sheet again
+    const input = stubEl({ cls: ['sheet-notes-input'] });
+    env.dom.container.query = sel => (sel === '.sheet-notes-input' ? [input] : []);
+    let renders = 0;
+    env.sheet.render = () => { renders++; };
+    env.sheet.bindNotesInput(env.dom.container);
+    (input.listeners.input || []).forEach(fn => fn({ target: { value: 'Plan B' } }));
+    check('the notes input sets the notes and does not render the sheet', [env.state.calls.filter(c => c[0] === 'setNotes'), renders], [[['setNotes', 'Plan B']], 0]);
 }
 
 // --- Final review fixes ---

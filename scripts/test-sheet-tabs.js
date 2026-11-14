@@ -775,6 +775,19 @@ function tabsSection() {
     check('sticky only inside screen blocks', count(sec.replace(/@media screen[^{]*\{(?:[^{}]|\{[^{}]*\})*\}/g, ''), /position:\s*sticky/g), 0);
     check('wide panes are two columns', /\.sheet-pane-columns\s*\{[^}]*grid-template-columns:\s*1fr 1fr/.test(mediaBlocks(sec, '(min-width: 1400px)').join('')), true);
     check('no raw colour', /#[0-9a-f]{3,8}\b|rgba?\(/i.test(sec), false);
+
+    // The sheet's scroller loses its top padding (a sticky element pins inside it) and the sheet gets the same space
+    const rest = readSource('creator/css/styles.css').replace(sec, '');
+    const topPad = (css) => {
+        const rule = (css.match(/(?:^|[}/])\s*\.tab-fullwidth\s*\{([^}]*)\}/) || [])[1] || '';
+        const m = rule.match(/padding-top:\s*([\d.]+)px/) || rule.match(/(?:^|;)\s*padding:\s*([\d.]+)px/);
+        return m ? m[1] + 'px' : null;
+    };
+    const sheetPad = (css) => ((css.match(/#tab-character-sheet \.character-sheet\s*\{[^}]*padding-top:\s*([\d.]+px)/) || [])[1] || null);
+    check('the sheet scroller has no top padding on screen', /#tab-character-sheet\s*\{[^}]*padding-top:\s*0;/.test(full), true);
+    check('the sheet gets the top padding of the scroller at each breakpoint',
+        [sheetPad(full), sheetPad(mediaBlocks(sec, 'screen and (max-width: 768px)').join('\n')), sheetPad(mediaBlocks(sec, 'screen and (max-width: 480px)').join('\n'))],
+        [topPad(rest), topPad(mediaBlocks(rest, '(max-width: 768px)').join('\n')), topPad(mediaBlocks(rest, '(max-width: 480px)').join('\n'))]);
 }
 
 console.log(failures ? `\n${failures} check(s) FAILED` : '\nAll checks passed');

@@ -6590,6 +6590,16 @@ textarea {
 
 /* Full mode: the whole strip is pinned. The z-index stays under every popup, modal and the drawer backdrop (899). */
 @media screen {
+    /* A sticky element pins inside the top padding of its scroller, and content then shows above it.
+       The scroller's top padding thus moves into the sheet, with the same value at each breakpoint. */
+    #tab-character-sheet {
+        padding-top: 0;
+    }
+
+    #tab-character-sheet .character-sheet {
+        padding-top: 20px;
+    }
+
     .sheet-strip {
         position: sticky;
         top: 0;
@@ -6707,5 +6717,18 @@ textarea {
         flex-wrap: nowrap;
         overflow-x: auto;
         padding: 4px;
+    }
+}
+
+/* The top padding that .tab-fullwidth has at these widths, moved into the sheet (refer to the full-mode block above) */
+@media screen and (max-width: 768px) {
+    #tab-character-sheet .character-sheet {
+        padding-top: 15px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    #tab-character-sheet .character-sheet {
+        padding-top: 10px;
     }
 }

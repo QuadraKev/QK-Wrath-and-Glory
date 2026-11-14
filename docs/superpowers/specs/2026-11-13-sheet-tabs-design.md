@@ -445,6 +445,19 @@ accepted **[Designer, new]**.
 The notes editor keeps its rule: `bindNotesInput` saves on `input` and does not re-render. A tracker
 click while the Notes tab is open re-renders the textarea from state, as today.
 
+**Additions after the task reviews [Controller rulings, 2026-11-14].**
+
+- The Notes textarea has a focus key too: `.sheet-notes-input` is in `_FOCUS_SELECTOR`, its key is
+  `notes`, and the view state also holds its `selectionStart` and `selectionEnd`, which the restore
+  sets again after the focus. Reason: the sheet re-renders one time when the threat data for
+  followers finishes its load, and a player who types in Notes at that moment lost the focus and
+  the caret.
+- When the selected tab went away and `render()` falls back to Stats, the captured scroll position
+  becomes 0, so that Stats shows from its top.
+- `renderFollower` escapes the values that come from the saved character (`follower.id`,
+  `follower.livingCount`, `follower.count`), because a character file can come from another
+  person.
+
 ### 5.3 Tab switch
 
 `selectSheetTab(id)` does not re-render. It:

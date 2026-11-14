@@ -36,6 +36,10 @@ const Glossary = {
     // same click handlers as the mouse. preventDefault stops Space from scrolling the page.
     handleActivationKey(e) {
         if (e.key !== 'Enter' && e.key !== ' ') return;
+        // A held key repeats the keydown. One press must open one popup.
+        if (e.repeat) return;
+        // The target can be the document, and the document has no matches function.
+        if (!e.target || typeof e.target.matches !== 'function') return;
         if (!e.target.matches('span[role="button"]')) return;
         e.preventDefault();
         e.target.click();
@@ -293,6 +297,9 @@ const Glossary = {
     showEntryPopup(type, key, anchorElement) {
         const entry = this.getEntry(type, key);
         if (!entry) return false;
+        // A close timer from a hover that just ended must not close this popup.
+        clearTimeout(this._hoverTimer);
+        clearTimeout(this._closeTimer);
         this.closeAllPopups();
         this._pinned = true;
         this.showPopup([{ ...entry, type, key }], anchorElement, `${type}-${key}`);

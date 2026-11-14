@@ -78,7 +78,7 @@ selected-tab storage (9) §5.1; Custom Wargear (10) §9.
 ├── div.sheet-strip                        ← pinned in full mode; display: contents in compact mode
 │   ├── div.sheet-section.sheet-header-section   ← identity: name, subtitle, keyword chips
 │   └── div.sheet-strip-bar                ← pinned in compact mode
-│       ├── div.sheet-strip-trackers       ← Wounds boxes, Shock boxes, Wrath counter
+│       ├── div.sheet-strip-trackers       ← Wounds and Shock groups, Wrath and Faith counters (§2.4)
 │       └── div.sheet-tabbar[role=tablist]
 │           └── button.sheet-tab-btn[role=tab] × visible tabs
 └── div.sheet-panes
@@ -98,6 +98,10 @@ sheet-header-section`, `sheet-character-name`, `sheet-subtitle`, `sheet-keywords
 `sheet-keyword`, so that the glossary enhancement and the existing print rules still apply.
 
 ### 2.2 The two modes, box sizes, and the pinned height
+
+**[Controller ruling, 2026-11-14]** §2.4 replaces the identity part and the tracker part of full mode
+and of compact mode in this section, the 600px limit of compact mode, and the sketches of §2.3. The
+box counts and the low mode stay.
 
 **Box counts to design for.** `calculateMaxWounds` (`creator/js/derived-stats.js:305-324`) is
 2 × Tier + Toughness + species `woundBonus` + background bonuses + Uncanny (Wounds) and Feel No Pain
@@ -294,6 +298,49 @@ selected tab is scrolled into view inside the bar without a vertical scroll of t
 - A window resize (for example a rotate) also scrolls the selected tab into view. The resize does
   nothing while the sheet is not displayed.
 
+### 2.4 The trackers in the name card
+
+**[Owner, 2026-11-14]** The trackers (Wounds, Shock, Wrath and Faith) are inside the name card. The
+owner chose the layout from mockups for laptop and tablet windows: "I prefer E2 the most." In layout
+E2, the identity (name, subtitle, keyword chips) is left-aligned in the left part of the card. A
+vertical divider separates it from the tracker grid in the right part. In the grid, the Wrath counter
+is above the Faith counter, and the Wounds group is above the Shock group. In a narrow window, the
+counts are in the name card below a horizontal divider, with a little more space between them.
+
+**[Controller ruling, 2026-11-14]**
+
+- The width selects the layout: E2 in a window wider than 768px, and the counts below the identity in
+  a window 768px wide or less.
+- The divider is at the middle of the card when the tracker grid fits in the right half. When the
+  grid needs more width, the right part grows to 58% of the card at most, and the divider moves left.
+  The left part keeps the remaining width, and the name and the chips wrap in it.
+- When the boxes of a group need more than one row, the rows have the same count, or the first rows
+  have one box more. A row with one box alone does not occur, unless the group has one box.
+- At 768px or less, the row gap between the counts is 10px (it was 6px).
+- A window wider than 768px and higher than 480px pins the whole strip: the card and the tab bar. At
+  768px or less, compact mode pins the counts part and the tab bar, and the identity scrolls away.
+  The pinned counts part keeps the card look, and the divider is its top edge. Low mode (480px high
+  or less) pins only the tab bar, at any width.
+- At 768px or less, the Faith counter comes after the Wrath counter, in the same row and in the same
+  form. When the two do not fit in one row, the Faith counter goes to the next row.
+
+**How one markup gives the two layouts [Designer, new]:**
+
+- `.sheet-strip-trackers` holds a `.sheet-strip-group` for Wounds and for Shock (a label and its
+  boxes), then `.sheet-strip-counters` with the Wrath counter and the Faith counter.
+- Wide: the identity and the trackers are two flex items in one row with one height. In full mode the
+  row is `.sheet-strip`; in low mode it is `#character-sheet-content`, so that the tab bar can pin.
+  Each part draws its half of the card. The gradient is as wide as the card (`100cqi`, with
+  `#character-sheet-content` as the size container) and starts at the left edge of the card in each
+  part, so the two parts join with no step. The divider is a 1px line in `var(--border-light)`, 11px
+  from the top and from the bottom of the card.
+- Narrow: the identity is the top of the card and the counts are the bottom. The two parts have the
+  same horizontal gradient, so they join with no step at any height.
+- Even rows: the markup gives the box count of each group (`--n`) and the index of each box (`--i`).
+  Each layout sets the count that fits in one row (`--box-max`), and CSS math gives each box its
+  column. A browser with no support for this math keeps the natural wrap. The even rows also apply
+  at 768px or less.
+
 ## 3. Block-to-tab mapping
 
 **[Designer]**, with the Details block and the Mutations split as **[Designer, new]**:
@@ -381,9 +428,10 @@ editor.
 ### 4.1 Content
 
 Identity part: name, subtitle (species • archetype • Tier • Rank), keyword chips, as `renderHeader`
-gives them today **[Owner]**. Tracker part: Wounds, Shock and Wrath **[Owner]**. Faith stays
-in Stats **[Owner]**. The Wealth counter is in the Character tab **[Owner, 2026-11-14]**, in the
-Details block (§3.1).
+gives them today **[Owner]**. Tracker part: Wounds, Shock and Wrath **[Owner]**, and Faith with
+them **[Owner, 2026-11-14]** (§2.4). The Faith counter shows only when `State.getMaxFaith() > 0`
+**[Controller ruling, 2026-11-14]**. The Wealth counter is in the Character tab
+**[Owner, 2026-11-14]**, in the Details block (§3.1).
 
 ### 4.2 Tracker forms
 
@@ -398,6 +446,10 @@ user to visualize their remaining wounds/shock. We can use counters for the othe
 - **Wrath** is a counter: the existing markup, `.tracker-btn tracker-minus` and `.tracker-btn
   tracker-plus` with `data-type="wrath"`, and `.tracker-value`. The `aria-label`s are "Remove Wrath"
   and "Add Wrath" **[Designer, new]**.
+- **Faith** is a counter in the same form as Wrath: `type="button"`, `data-type="faith"`, and the
+  `aria-label`s "Remove Faith" and "Add Faith". The value is
+  `escapeHtml(String(State.getCurrentFaith()))`, because an imported file can hold any value. The
+  focus order is Wrath −, Wrath +, Faith −, Faith + **[Controller ruling, 2026-11-14]**.
 
 The click handler for the player's boxes stays as it is: the `.tracking-box:not(.follower-box)` loop
 in `bindSessionTrackingControls`. It now serves the boxes in the strip. What a click does, as today:
@@ -415,9 +467,9 @@ the re-render (§5.2). Faith and Wealth counters do not change.
 
 ### 4.3 What Traits shows
 
-`renderTraits` keeps the static trait grid. It has a tracking section only when `State.getMaxFaith()
-> 0`: one line, then the Faith counter **[Controller ruling, 2026-11-14]**. The owner asked for
-the removal of the empty lines of the Traits card **[Owner, 2026-11-14]**. It has no Wealth
+`renderTraits` renders the static trait grid only. It has no tracking section and no Faith
+counter, because the Faith counter is in the strip **[Owner, 2026-11-14]** (§2.4). The owner asked
+for the removal of the empty lines of the Traits card **[Owner, 2026-11-14]**. It has no Wealth
 counter, because the Wealth counter is in the Character tab **[Owner, 2026-11-14]** (§3.1). It no
 longer renders the Wounds row, the Shock row or the Wrath counter. The boxes and the Wrath counter
 exist once in the page, in the strip.
@@ -650,8 +702,8 @@ composition without game data. Cases:
    `.tracker-btn` pair and the Wrath value. The trackers and the tab bar are inside
    `.sheet-strip-bar`, and the identity part is outside it.
    The whole sheet HTML has these boxes and the Wrath pair once; Traits has no `.tracking-box` and
-   no Wrath button and no `wealth` button, and has `faith` only when `getMaxFaith() > 0`
-   **[Owner, 2026-11-14]**. With max 50 the
+   no Wrath button, no `wealth` button and no `faith` button **[Owner, 2026-11-14]**. The strip has
+   the Faith pair once when `getMaxFaith() > 0`, and no Faith pair when it is 0. With max 50 the
    strip has 50 Wounds boxes.
 5. **Box clicks**: with stub box elements (class list, `dataset`, captured click listener) passed
    through `bindSessionTrackingControls`, and `render` stubbed: a click on empty Wounds box 4 calls

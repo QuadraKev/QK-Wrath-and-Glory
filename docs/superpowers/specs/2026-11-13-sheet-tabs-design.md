@@ -21,7 +21,7 @@ the print lines of other sections) describes the design before that decision and
 Today the Character Sheet is one long page: a header, then a left column (stats, powers, abilities,
 background, notes) and a right column (wargear, followers). In play, the player scrolls to find a
 block. This design splits the sheet into tabs, so that each block a player needs is one click away,
-and keeps the character identity and the three combat trackers at the top of every tab.
+and keeps the character identity and the combat trackers at the top of every tab.
 
 The owner's reasons **[Owner]**: players look at Attributes, Traits and Skills "when rolling tests";
 they look at Wargear "often since combat is a common part of the game"; they "need to reference
@@ -156,6 +156,10 @@ trackers, a 32px Wrath row, a 40px tab bar and 16px of vertical padding. "Typica
 | 740×360 (landscape phone) | 1 + 1 | about 145px (40%) | 3 + 2 | about 225px (62%) |
 | 1280×560 | 1 + 1 | about 145px (26%) | 2 + 2 | about 200px (36%) |
 
+**[Controller ruling, 2026-11-14]** The table gives the design values from before the trackers moved
+into the name card (§2.4). The row gap is now 10px, the counts part has the card padding, and a
+character with Faith has one more row. The measured values below are the current ones.
+
 **Low mode [Controller ruling, 2026-11-14; the owner can reverse it].** The first version of this
 section had no special case for a short window and said that the worst case in a landscape phone
 leaves about 135px for the pane. That figure was wrong: it did not count the app header, the tab
@@ -168,8 +172,10 @@ a narrow viewport (the boxes stay pinned and fill more rows) does not change. `_
 returns the strip in full mode, the strip bar in compact mode and the tab bar in low mode. The
 740×360 row of the table above describes compact mode and does not apply any more.
 
-Measured room for the pane (pinned height / room): 360×740 typical 176 / 434px, worst case
-358 / 252px. Before 2026-11-14 (compact mode in a 1280px wide window): 1280×560 typical
+Measured room for the pane (pinned height / room) at 360×740 with the trackers in the name card
+(2026-11-14): typical 198 / 412px with no Faith and 240 / 370px with Faith; worst case
+380 / 230px with no Faith and 422 / 188px with Faith. Before 2026-11-14: 360×740 typical
+176 / 434px, worst case 358 / 252px; compact mode in a 1280px wide window: 1280×560 typical
 150 / 280px, worst case 202 / 228px; 1280×481 worst case 202 / 149px. Only a Tier 5, Rank 5
 character with the largest bonuses reaches the worst case.
 
@@ -178,7 +184,7 @@ Size targets (browser check, §10.2), each with a tolerance of 20px for fonts an
 - Full mode at 1280×800, eight keyword chips, 30 Wounds or fewer and 20 Shock or fewer: the pinned
   part is at most 240px tall.
 - Full mode worst case at 800×800, two rows of chips, 50 Wounds and 35 Shock: at most 300px.
-- Compact mode: the heights of the table above.
+- Compact mode: the measured values above (the table is the design before 2026-11-14).
 
 ### 2.3 Sketches and pane layout per width
 
@@ -467,7 +473,7 @@ in `bindSessionTrackingControls`. It now serves the boxes in the strip. What a c
 
 The Wrath buttons are never `disabled` **[Designer, new]**; `State.setCurrentWrath` clamps at 0 and
 has no maximum, so a click at 0 on "−" is a no-op. Reason: a disabled button cannot keep focus after
-the re-render (§5.2). Faith and Wealth counters do not change.
+the re-render (§5.2). The Wealth counter does not change. The Faith counter is in the strip (§2.4).
 
 ### 4.3 What Traits shows
 
@@ -747,10 +753,11 @@ about 50 Wounds and 35 Shock.
 - Click an equip checkbox: the tab, the scroll and the focus stay. Click a follower mob button: the
   tab and the scroll stay; the focus stays unless the button became `disabled` (0 living or the full
   count), where the focus is lost.
-- Compact mode (360×740, 768×1024, 740×360 and 1280×560), on Wargear, scrolled down: the identity
+- Compact mode (360×740, 768×1024 and 740×360; since 2026-11-14 a 1280×560 window pins the whole
+  strip), on Wargear, scrolled down: the identity
   part has scrolled away; the boxes, the Wrath counter and the tab bar stay pinned; tap a box, the
   value changes, the tab and the scroll stay. With the worst-case character the box rows wrap and
-  the pinned heights match the table of §2.2.
+  the pinned heights match the measured values of §2.2.
 - Type in Notes; the caret stays; switch tabs and back; the text is there.
 - Keyboard only: Tab to the bar, arrows, Home, End, Tab into the pane; the focus ring shows on the tabs
   and the Wrath buttons.

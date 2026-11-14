@@ -761,3 +761,50 @@ Firefox and Safari print. Only Chromium is installed.
 | Task 1 | sonnet | 1 | 2 (1 brief defect: print; 1 fix round on 6 Minor items) | Review: spec holds, 0 Critical, 0 Important, 6 Minor; all corrected |
 | Task review | opus, xhigh | 1 | 0 | 6 Minor, 7 readings |
 | Final review | fable, xhigh | 1 | 0 | Ready to merge (0 Critical, 0 Important, 2 Minor: spec tags corrected by the controller, test gap parked) |
+
+## Owner feedback wave 2 (2026-11-14): print retired, the trackers in the name card
+
+The owner confirmed the place of the Wealth counter ("Wealth counter is in a good spot."), retired the print feature, and chose a new tracker layout from mockups. Branch `sheet-tracker-card`, commits `f983d36` (Task 1), `2a8b992`, `825a52a`, `c02b051` (Task 2), `168800e` (fix round) and one commit for the spec numbers and this record. Creator `?v=127`. `scripts/test-sheet-tabs.js` has 282 checks.
+
+### Owner decisions
+
+- "Printing is a feature we can deprecate and retire. Let's keep this exclusively a web app."
+- "Wounds/Shock/Wrath/Faith should be on a card rather than freely floating on the sheet." After the mockups A, B, C (one row, counters left, narrow card), D1 and D2 (stacked counters), E1 and E2 (trackers as a column of the name card): "I prefer E2 the most. It might be worth splitting the card down the middle with a vertical line divider."
+- "For mobile, the current layout is good overall. It could use a little spacing between the different counts (Wounds/Shock/Wrath/Faith), and the counts can be consolidated under the character information." "For mobile, a horizontal line divider can serve the same purpose."
+
+### Rulings
+
+26. Print retirement removes the Print button, `print()`, `exportPDF`, the print copy of the notes, the three `@media print` blocks and the print checks. Ctrl+P now gives an unformatted page. Rulings 8, 22 and 24 of this record, the print items of the deferred tables and the print decision for the owner no longer apply.
+27. Owner can reverse: width selects the layout. A window wider than 768 px shows the wide layout (identity, vertical divider, tracker grid). A window 768 px wide or less shows the narrow layout (identity, horizontal divider, counts). The queries are `min-width: 768.02px` and `max-width: 768px`.
+28. Owner can reverse: the divider is at the middle of the card when the tracker grid fits in the right half. The right part grows to about 58% at most.
+29. Owner can reverse: the rows of boxes break evenly (16 as 8 + 8), in the wide and in the narrow layout. The narrow part was the implementer's addition and is accepted. A browser without the CSS functions (typed division: before Chrome 140, Safari 26, Firefox 158) shows the natural wrap.
+30. Owner can reverse: the narrow layout keeps the pin behavior. The identity part scrolls away, and the counts part and the tab bar stay pinned. The row gap of the counts is 10 px. The narrow card has a horizontal gradient, because two parts of different heights cannot share one diagonal gradient.
+31. Owner can reverse: a wide window pins the whole strip in full mode and from 481 px to 600 px high. Low mode (480 px high or less) pins only the tab bar.
+32. Faith is in the strip in each layout, after Wrath in DOM and focus order, with `aria-label` attributes and an escaped value. In the narrow layout the Faith counter goes to the next row when the two counters do not fit (at 414 px and less).
+33. The class `.sheet-details-section` stays as the name of the Details block, with no style rule.
+34. Process: Task 2 was cut in two parts while the owner chose the layout. Part A held what the designs share. The fix round went before the final review, which also re-reviewed it.
+
+### Parked items
+
+| Item | Why it was left |
+|---|---|
+| Four rules have no check: the base box width against the wide 18 px columns; the narrow `.sheet-strip-group { display: contents }`; the wide `.sheet-tabbar { flex: 1 0 100% }`; `overflow-wrap: anywhere` on the name. | Test gaps only. The browser checks of three reviews cover the behavior. |
+| A very large character in a short wide window: 50 Wounds and 35 Shock leave 31 px of pane at 769x481 and 75 px at 1280x481. Ten keyword chips leave 88 px at 769x500. | The cost of ruling 31. No real character was seen at these sizes. |
+| A browser with no `cqi` (before Chrome 105, Firefox 110, Safari 16) shows the trackers half with no card background. | Old browsers. |
+| The `@supports` condition does not test the one-argument `round()` that the formulas use. | No engine that was run rejects it. Chrome 140 to 146 and Safari 26.0 were not run. |
+| One mixed pixel where the divider meets each gold side. The narrow tab pills are 4 px from the card edge (16 px before). | Cosmetic. |
+| A viewport inside the 0.02 px band between the layouts gets no card look; the guard keeps the boxes in rows. | Firefox can give 768.0167 px at some zoom values, by calculation. |
+
+### Not checked
+
+Classic scrollbars (headless Chromium has overlay scrollbars). Real phones and tablets: the owner tests these on the live site. The final review measured Chrome 147 and 158, Firefox 159 and WebKit 27.2.
+
+### Wave table
+
+| Task | Model | Dispatches | Send-backs | Gate |
+|---|---|---|---|---|
+| Mockups (spike, 3 rounds) | opus | 1 | 2 (owner asked for D, then E) | 5 stitched images; branch not merged |
+| Task 1 Print retirement | sonnet | 1 | 0 | Review: spec holds, 0 Critical, 0 Important, 1 Minor (ruled, kept) |
+| Task 2 Tracker layout | opus | 1 | 3 (scope cut to Part A; Part B after the owner's choice; fix round on 7 Minor) | Review: spec met, 0 Critical, 0 Important, 7 Minor; all corrected |
+| Task reviews | opus, xhigh | 2 | 0 | Task 1: 1 Minor, 9 readings. Task 2: 7 Minor |
+| Final review | fable, xhigh | 1 | 0 | Ready to merge (0 Critical, 0 Important, 2 Minor: spec numbers corrected by the controller, test gaps parked) |

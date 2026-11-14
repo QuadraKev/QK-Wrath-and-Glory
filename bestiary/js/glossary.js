@@ -269,7 +269,23 @@ const Glossary = {
         const definitions = this.gatherDefinitionsByName(clickedEntry.name);
         if (definitions.length === 0) return;
 
+        // The definition of the clicked kind comes first (the GRAV keyword shows the Keyword
+        // first, the Grav trait the Weapon Trait). The other definitions keep their order.
+        // A keyword moves only when its text is all caps. A mixed-case word such as "Human" gets
+        // the type keyword when the keyword is its only map entry, but it is not a keyword click.
+        const clickedIndex = definitions.findIndex(def => def.type === type && def.key === key);
+        if (clickedIndex > 0 && (type !== 'keyword' || this.isAllCaps(termElement.textContent))) {
+            definitions.unshift(...definitions.splice(clickedIndex, 1));
+        }
+
         this.showPopup(definitions, termElement, key);
+    },
+
+    // True when the text has letters and every letter is a capital. Digits, spaces, hyphens
+    // and other signs do not count.
+    isAllCaps(text) {
+        const letters = (text || '').replace(/[^\p{L}]/gu, '');
+        return letters.length > 0 && letters === letters.toUpperCase();
     },
 
     // Look up a single raw entry by its span type + data key.
@@ -331,8 +347,9 @@ const Glossary = {
     // Collect all entries whose name matches (case-insensitive) the given name.
     // Scans the glossary's own categories first, then the Compendium data files
     // (weapons/armor/talents/equipment/archetypes/species) via DataLoader, then
-    // keywords last so a mixed-case definition wins the popup title over an
-    // UPPERCASE keyword. psychicPowers and the Compendium categories are
+    // keywords last so a mixed-case definition comes before an UPPERCASE keyword.
+    // handleTermClick then moves the clicked kind to the front (a keyword only when
+    // its text is all caps), and the first definition gives the title. psychicPowers and the Compendium categories are
     // deliberately NOT in buildTermMap (names like "Doom"/"Knife"/"Human"/"Fear"
     // would turn common words into false links); they only surface here when a
     // clicked glossary term shares their name (e.g. tapping the AELDARI keyword
@@ -385,7 +402,8 @@ const Glossary = {
             }
         }
 
-        // 3. Keywords last so an earlier mixed-case match wins the popup title.
+        // 3. Keywords last so an earlier mixed-case match comes first, unless
+        // handleTermClick moves a clicked all-caps keyword to the front.
         if (this.data.keywords) {
             for (const [key, value] of Object.entries(this.data.keywords)) {
                 pushMatch(value, 'keyword', key);

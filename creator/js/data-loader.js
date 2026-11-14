@@ -98,20 +98,42 @@ const DataLoader = {
         return talents.find(t => t.id === id);
     },
 
+    // Get the custom item record of a custom_ id from the current character.
+    // Reads State at call time, because State loads after this file.
+    getCustomRecord(id) {
+        if (typeof id !== 'string' || !id.startsWith('custom_')) return undefined;
+        if (typeof State === 'undefined' || !State.character) return undefined;
+        const wargear = Array.isArray(State.character.wargear) ? State.character.wargear : [];
+        const entry = wargear.find(e => e && e.id === id && e.custom && typeof e.custom === 'object');
+        return entry ? entry.custom : undefined;
+    },
+
     // Get weapon by ID
     getWeapon(id) {
+        if (typeof id === 'string' && id.startsWith('custom_')) {
+            const custom = this.getCustomRecord(id);
+            return custom && custom.kind === 'weapon' ? custom : undefined;
+        }
         const weapons = this.cache['weapons.json'] || [];
         return weapons.find(w => w.id === id);
     },
 
     // Get armor by ID
     getArmor(id) {
+        if (typeof id === 'string' && id.startsWith('custom_')) {
+            const custom = this.getCustomRecord(id);
+            return custom && custom.kind === 'armor' ? custom : undefined;
+        }
         const armor = this.cache['armor.json'] || [];
         return armor.find(a => a.id === id);
     },
 
     // Get equipment by ID
     getEquipment(id) {
+        if (typeof id === 'string' && id.startsWith('custom_')) {
+            const custom = this.getCustomRecord(id);
+            return custom && (custom.kind === 'augmetic' || custom.kind === 'other') ? custom : undefined;
+        }
         const equipment = this.cache['equipment.json'] || [];
         return equipment.find(e => e.id === id);
     },
@@ -327,7 +349,8 @@ const DataLoader = {
         'shotguns': 'Departmento Munitorum Shotguns',
         'dh': 'Threat Assessment: Daemons & Heretics',
         'lex': 'Lex Imperialis',
-        'apocrypha': 'An Abundance of Apocrypha'
+        'apocrypha': 'An Abundance of Apocrypha',
+        'custom': 'Custom'
     },
 
     // Get display name for a source ID

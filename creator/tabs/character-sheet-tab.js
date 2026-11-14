@@ -11,6 +11,17 @@ const CharacterSheetTab = {
     // Guards against asking DataLoader for the threats more than once.
     _followerThreatLoad: 'idle',
 
+    // The sheet tabs, in tab order. Each tab is one pane built by renderPane.
+    SHEET_TABS: [
+        { id: 'character', label: 'Character' },
+        { id: 'stats', label: 'Stats' },
+        { id: 'abilities', label: 'Abilities' },
+        { id: 'wargear', label: 'Wargear' },
+        { id: 'powers', label: 'Psychic Powers' },
+        { id: 'companions', label: 'Followers' },
+        { id: 'notes', label: 'Notes' }
+    ],
+
     // Initialize the tab
     init() {
         // Print button
@@ -49,39 +60,22 @@ const CharacterSheetTab = {
         const resilienceBreakdown = DerivedStats.getResilienceBreakdown(character);
         const defenceBreakdown = DerivedStats.getDefenceBreakdown(character);
 
+        const ctx = {
+            character,
+            species,
+            archetype,
+            keywords,
+            derivedStats,
+            breakdowns: { resilience: resilienceBreakdown, defence: defenceBreakdown }
+        };
+        const visible = this.getVisibleSheetTabs(character);
+
         const container = document.getElementById('character-sheet-content');
 
         container.innerHTML = `
-            ${this.renderHeader(character, species, archetype, keywords)}
-            <div class="sheet-body">
-                <div class="sheet-body-left">
-                    <div class="sheet-columns">
-                        <div class="sheet-column">
-                            ${this.renderAttributes(character)}
-                            ${this.renderTraits(derivedStats, { resilience: resilienceBreakdown, defence: defenceBreakdown })}
-                        </div>
-                        <div class="sheet-column">
-                            ${this.renderSkills(character)}
-                        </div>
-                    </div>
-                    ${this.renderPsychicPowers(character)}
-                    ${this.renderSpeciesAbilities(character, species)}
-                    ${this.renderArchetypeAbilities(archetype)}
-                    ${this.renderAscensions(character)}
-                    ${this.renderTalents(character)}
-                    ${this.renderInjuriesCorruption(character)}
-                    ${this.renderMutations(character)}
-                    ${this.renderBackground(character)}
-                    ${this.renderNotes(character)}
-                </div>
-                <div class="sheet-body-right">
-                    ${this.renderWeapons(character)}
-                    ${this.renderArmor(character)}
-                    ${this.renderAugmetics(character)}
-                    ${this.renderEquipment(character)}
-                    ${this.renderHolyRelics(character)}
-                    ${this.renderFollowers(character)}
-                </div>
+            ${this.renderStrip(ctx, visible)}
+            <div class="sheet-panes">
+                ${visible.map(id => `<div class="sheet-pane" id="sheet-pane-${id}">${this.renderPane(id, ctx)}</div>`).join('')}
             </div>
         `;
 
@@ -463,6 +457,115 @@ const CharacterSheetTab = {
             : (archetype?.name || '-');
     },
 
+    // Get the ids of the tabs to show, in tab order
+    getVisibleSheetTabs(character) {
+        return this.SHEET_TABS.map(tab => tab.id).filter(id => {
+            if (id === 'powers') return State.isPsyker();
+            if (id === 'companions') return (character.followers || []).length > 0;
+            return true;
+        });
+    },
+
+    // Render the strip: the identity, then a bar with the trackers and the tab bar
+    renderStrip(ctx, visibleIds) {
+        return `
+            <div class="sheet-strip">
+                ${this.renderHeader(ctx.character, ctx.species, ctx.archetype, ctx.keywords)}
+                <div class="sheet-strip-bar">
+                    ${this.renderStripTrackers(ctx.derivedStats)}
+                </div>
+            </div>
+        `;
+    },
+
+    // Render the Wounds and Shock boxes and the Wrath counter of the strip.
+    // The children stay flat, because the strip grid places each one.
+    renderStripTrackers(stats) {
+        return `
+            <div class="sheet-strip-trackers">
+                <span class="sheet-strip-label tracker-label">Wounds</span>
+                <div class="tracking-boxes">${this.renderTrackingBoxes('wounds', State.getCurrentWounds(), stats.maxWounds)}</div>
+                <span class="sheet-strip-label tracker-label">Shock</span>
+                <div class="tracking-boxes">${this.renderTrackingBoxes('shock', State.getCurrentShock(), stats.maxShock)}</div>
+                <div class="sheet-strip-wrath">
+                    <span class="tracker-label">Wrath</span>
+                    <div class="tracker-controls">
+                        <button type="button" class="tracker-btn tracker-minus" data-type="wrath" aria-label="Remove Wrath">−</button>
+                        <span class="tracker-value">${State.getCurrentWrath()}</span>
+                        <button type="button" class="tracker-btn tracker-plus" data-type="wrath" aria-label="Add Wrath">+</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    // Render the blocks of one tab's pane. The two-column wrappers apply only on a wide screen.
+    renderPane(tabId, ctx) {
+        const { character } = ctx;
+        switch (tabId) {
+            case 'character':
+                return `
+                    <div class="sheet-pane-columns">
+                        <div class="sheet-pane-column">
+                            ${this.renderDetails(character, ctx.species, ctx.archetype)}
+                            ${this.renderAscensions(character)}
+                        </div>
+                        <div class="sheet-pane-column">
+                            ${this.renderInjuriesCorruption(character)}
+                            ${this.renderBackground(character)}
+                        </div>
+                    </div>
+                `;
+            case 'stats':
+                return `
+                    <div class="sheet-columns">
+                        <div class="sheet-column">
+                            ${this.renderAttributes(character)}
+                            ${this.renderTraits(ctx.derivedStats, ctx.breakdowns)}
+                        </div>
+                        <div class="sheet-column">
+                            ${this.renderSkills(character)}
+                        </div>
+                    </div>
+                `;
+            case 'abilities':
+                return `
+                    <div class="sheet-pane-columns">
+                        <div class="sheet-pane-column">
+                            ${this.renderSpeciesAbilities(character, ctx.species)}
+                            ${this.renderArchetypeAbilities(ctx.archetype)}
+                        </div>
+                        <div class="sheet-pane-column">
+                            ${this.renderTalents(character)}
+                            ${this.renderMutations(character)}
+                        </div>
+                    </div>
+                `;
+            case 'wargear':
+                return `
+                    ${this.renderWeapons(character)}
+                    <div class="sheet-pane-columns">
+                        <div class="sheet-pane-column">
+                            ${this.renderArmor(character)}
+                            ${this.renderAugmetics(character)}
+                        </div>
+                        <div class="sheet-pane-column">
+                            ${this.renderEquipment(character)}
+                            ${this.renderHolyRelics(character)}
+                        </div>
+                    </div>
+                `;
+            case 'powers':
+                return this.renderPsychicPowers(character);
+            case 'companions':
+                return this.renderFollowers(character);
+            case 'notes':
+                return this.renderNotes(character);
+            default:
+                return '';
+        }
+    },
+
     // Render the header section
     renderHeader(character, species, archetype, keywords) {
         const name = character.name || 'Unnamed Character';
@@ -525,9 +628,6 @@ const CharacterSheetTab = {
 
     // Render traits (formerly derived stats) in compact 2-column grid
     renderTraits(stats, breakdowns = {}) {
-        // Get current session values (wounds/shock count UP from 0)
-        const currentWounds = State.getCurrentWounds();
-        const currentShock = State.getCurrentShock();
         const currentWealth = State.getCurrentWealth();
 
         // Build tooltip text from breakdown
@@ -566,28 +666,9 @@ const CharacterSheetTab = {
             `;
         }).join('');
 
-        // Generate wound boxes
-        const woundBoxes = this.renderTrackingBoxes('wounds', currentWounds, stats.maxWounds);
-
-        // Generate shock boxes
-        const shockBoxes = this.renderTrackingBoxes('shock', currentShock, stats.maxShock);
-
-        // Get Wrath and Faith values
-        const currentWrath = State.getCurrentWrath();
+        // Get Faith values
         const currentFaith = State.getCurrentFaith();
         const maxFaith = State.getMaxFaith();
-
-        // Wrath tracker (always shown)
-        const wrathTracker = `
-            <div class="tracker-column">
-                <span class="tracker-label">Wrath</span>
-                <div class="tracker-controls">
-                    <button class="tracker-btn tracker-minus" data-type="wrath">−</button>
-                    <span class="tracker-value">${currentWrath}</span>
-                    <button class="tracker-btn tracker-plus" data-type="wrath">+</button>
-                </div>
-            </div>
-        `;
 
         // Faith tracker (only shown if character has Faith)
         const faithTracker = maxFaith > 0 ? `
@@ -620,16 +701,7 @@ const CharacterSheetTab = {
                     ${staticItems}
                 </div>
                 <div class="sheet-tracking-section">
-                    <div class="tracker-row">
-                        <span class="tracker-label">Wounds</span>
-                        <div class="tracking-boxes">${woundBoxes}</div>
-                    </div>
-                    <div class="tracker-row">
-                        <span class="tracker-label">Shock</span>
-                        <div class="tracking-boxes">${shockBoxes}</div>
-                    </div>
                     <div class="tracker-row-horizontal">
-                        ${wrathTracker}
                         ${faithTracker}
                         ${wealthTracker}
                     </div>

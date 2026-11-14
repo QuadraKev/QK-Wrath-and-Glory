@@ -76,10 +76,17 @@ function makeDataLoader() {
 
 function stubEl({ cls = [], data = {}, attrs = {}, parent = null, rect = null, display = 'block' } = {}) {
     const classes = new Set(cls);
-    const attributes = { ...attrs };
+    // A data-* attribute lives in dataset only, under its camelCase key, as in a browser.
+    const dataKey = (name) => (name.startsWith('data-') ? name.slice(5).replace(/-([a-z])/g, (m, ch) => ch.toUpperCase()) : null);
+    const dataset = { ...data };
+    const attributes = {};
+    for (const [name, value] of Object.entries(attrs)) {
+        const key = dataKey(name);
+        if (key) dataset[key] = String(value); else attributes[name] = value;
+    }
     const el = {
         parent,
-        dataset: { ...data },
+        dataset,
         listeners: {},
         focusCalls: [],
         disabled: false,
@@ -99,19 +106,25 @@ function stubEl({ cls = [], data = {}, attrs = {}, parent = null, rect = null, d
             }
         },
         getAttribute: (name) => {
-            if (name in attributes) return attributes[name];
-            if (name.startsWith('data-')) {
-                const key = name.slice(5).replace(/-([a-z])/g, (m, ch) => ch.toUpperCase());
-                if (key in el.dataset) return el.dataset[key];
-            }
-            return null;
+            const key = dataKey(name);
+            if (key) return key in el.dataset ? el.dataset[key] : null;
+            return name in attributes ? attributes[name] : null;
         },
-        setAttribute: (name, value) => { attributes[name] = String(value); },
-        removeAttribute: (name) => { delete attributes[name]; },
-        hasAttribute: (name) => name in attributes,
+        setAttribute: (name, value) => {
+            const key = dataKey(name);
+            if (key) el.dataset[key] = String(value); else attributes[name] = String(value);
+        },
+        removeAttribute: (name) => {
+            const key = dataKey(name);
+            if (key) delete el.dataset[key]; else delete attributes[name];
+        },
+        hasAttribute: (name) => {
+            const key = dataKey(name);
+            return key ? key in el.dataset : name in attributes;
+        },
         toggleAttribute: (name, force) => {
-            const on = force === undefined ? !(name in attributes) : !!force;
-            if (on) attributes[name] = ''; else delete attributes[name];
+            const on = force === undefined ? !el.hasAttribute(name) : !!force;
+            if (on) el.setAttribute(name, ''); else el.removeAttribute(name);
             return on;
         },
         closest: (sel) => {
@@ -333,6 +346,185 @@ function tabsSection() {
         check('Mutations block is empty for no mutations', sheet.renderMutations(makeCharacter({ mutations: [] })), '');
         env.dataLoader.getInjuriesCorruptionData = () => null;
         check('Mutations block is empty without injuries data', sheet.renderMutations(witheredOnly), '');
+    }
+}
+
+// --- Task 2: Pane structure and the strip ---
+{
+    const PANE_TITLES = {
+        character: ['Details', 'Ascension', 'Injuries & Corruption', 'Background'],
+        stats: ['Attributes', 'Traits', 'Skills'],
+        abilities: ['Species Abilities', 'Archetype Abilities', 'Talents', 'Mutations'],
+        wargear: ['Weapons', 'Armor', 'Augmetics', 'Equipment', 'Holy Relics'],
+        powers: ['Psychic Powers'], companions: ['Followers'], notes: ['Notes'] };
+
+    // Panes and their wrappers
+    {
+        const { sheet } = sheetSandbox();
+        const ctx = { character: makeCharacter(), species: null, archetype: null, keywords: [], derivedStats: DERIVED, breakdowns: { resilience: null, defence: null } };
+        const restore = stubBlocks(sheet);
+        try {
+            check('SHEET_TABS is the §3 table', sheet.SHEET_TABS, [
+                { id: 'character', label: 'Character' }, { id: 'stats', label: 'Stats' },
+                { id: 'abilities', label: 'Abilities' }, { id: 'wargear', label: 'Wargear' },
+                { id: 'powers', label: 'Psychic Powers' }, { id: 'companions', label: 'Followers' },
+                { id: 'notes', label: 'Notes' }]);
+            for (const [id, titles] of Object.entries(PANE_TITLES))
+                check(`renderPane(${id}) gives its blocks in order`, titlesIn(sheet.renderPane(id, ctx)), titles);
+            check('renderPane gives an empty string for an unknown id', sheet.renderPane('nope', ctx), '');
+
+            // Two-column panes: left column from the first to the second column wrapper, right column after it
+            const COL = 'class="sheet-pane-column"';
+            const columns = (html) => {
+                const first = html.indexOf(COL);
+                const second = html.indexOf(COL, first + 1);
+                return [titlesIn(html.slice(first, second)), titlesIn(html.slice(second))];
+            };
+            const wrappers = (html) => [count(html, /sheet-pane-columns/g), count(html, /class="sheet-pane-column"/g)];
+            const charHtml = sheet.renderPane('character', ctx);
+            check('character pane has one column pair', wrappers(charHtml), [1, 2]);
+            check('character pane columns', columns(charHtml), [['Details', 'Ascension'], ['Injuries & Corruption', 'Background']]);
+            const abilHtml = sheet.renderPane('abilities', ctx);
+            check('abilities pane has one column pair', wrappers(abilHtml), [1, 2]);
+            check('abilities pane columns', columns(abilHtml), [['Species Abilities', 'Archetype Abilities'], ['Talents', 'Mutations']]);
+            const gearHtml = sheet.renderPane('wargear', ctx);
+            check('wargear pane has one column pair', wrappers(gearHtml), [1, 2]);
+            check('wargear pane has Weapons before the columns', titlesIn(gearHtml.slice(0, gearHtml.indexOf('sheet-pane-columns'))), ['Weapons']);
+            check('wargear pane columns', columns(gearHtml), [['Armor', 'Augmetics'], ['Equipment', 'Holy Relics']]);
+
+            const statsHtml = sheet.renderPane('stats', ctx);
+            const statCols = statsHtml.split('class="sheet-column"');
+            check('stats pane keeps sheet-columns', [count(statsHtml, /class="sheet-columns"/g), statCols.length - 1], [1, 2]);
+            check('stats pane columns', [titlesIn(statCols[1]), titlesIn(statCols[2])], [['Attributes', 'Traits'], ['Skills']]);
+            check('single-column panes have no column wrapper',
+                ['powers', 'companions', 'notes'].map(id => sheet.renderPane(id, ctx).includes('sheet-pane-column')), [false, false, false]);
+
+            sheet.renderAscensions = () => '';
+            sheet.renderDetails = () => '';
+            check('an empty column still renders', count(sheet.renderPane('character', ctx), /class="sheet-pane-column"/g), 2);
+        } finally {
+            restore();
+        }
+    }
+
+    // Tab visibility (spec §10.1 case 2)
+    {
+        const env = sheetSandbox();
+        const sheet = env.sheet;
+        const areThreatsLoaded = env.dataLoader.areThreatsLoaded;
+        try {
+            check('visible tabs by default', sheet.getVisibleSheetTabs(makeCharacter()), ['character', 'stats', 'abilities', 'wargear', 'notes']);
+            env.state.psyker = true;
+            check('a psyker sees powers', sheet.getVisibleSheetTabs(makeCharacter()), ['character', 'stats', 'abilities', 'wargear', 'powers', 'notes']);
+            env.state.psyker = false;
+            const withFollower = makeCharacter({ followers: [{ id: 'f1' }] });
+            check('a follower shows companions', sheet.getVisibleSheetTabs(withFollower), ['character', 'stats', 'abilities', 'wargear', 'companions', 'notes']);
+            env.dataLoader.areThreatsLoaded = () => false;
+            check('companions shows while threats load', sheet.getVisibleSheetTabs(withFollower), ['character', 'stats', 'abilities', 'wargear', 'companions', 'notes']);
+        } finally {
+            env.dataLoader.areThreatsLoaded = areThreatsLoaded;
+        }
+    }
+
+    // render(): the strip, then one pane per visible tab
+    {
+        const env = sheetSandbox();
+        const sheet = env.sheet;
+        const restore = stubBlocks(sheet);
+        try {
+            env.state.psyker = true;
+            sheet.render();
+            const html = env.dom.container.innerHTML;
+            const ids = [...html.matchAll(/id="sheet-pane-([a-z]+)"/g)].map(m => m[1]);
+            const visible = ['character', 'stats', 'abilities', 'wargear', 'powers', 'notes'];
+            check('render writes one pane per visible tab, in order', ids, visible);
+            check('render gives every block in pane order', titlesIn(html), visible.flatMap(id => PANE_TITLES[id]));
+            check('the strip comes before the panes, with no sheet-body', [html.indexOf('class="sheet-strip"') >= 0, html.indexOf('class="sheet-strip"') < html.indexOf('class="sheet-panes"'), html.includes('sheet-body')], [true, true, false]);
+        } finally {
+            restore();
+        }
+    }
+
+    // The strip (spec §10.1 case 4)
+    {
+        const env = sheetSandbox();
+        const sheet = env.sheet;
+        const restore = stubBlocks(sheet);
+        try {
+            Object.assign(env.state, { wounds: 3, shock: 1, wrath: 4, keywords: ['IMPERIUM', 'ASTRA MILITARUM'] });
+            sheet.render();
+            const html = env.dom.container.innerHTML;
+            check('11 Wounds boxes', count(html, /data-type="wounds" data-index=/g), 11);
+            check('3 filled Wounds boxes', count(html, /tracking-box filled" data-type="wounds"/g), 3);
+            check('8 Shock boxes, 1 filled', [count(html, /data-type="shock" data-index=/g), count(html, /tracking-box filled" data-type="shock"/g)], [8, 1]);
+            check('one Wrath pair with labels', [count(html, /data-type="wrath"/g), html.includes('aria-label="Remove Wrath"'), html.includes('aria-label="Add Wrath"')], [2, true, true]);
+            check('Wrath value 4 in the strip', /sheet-strip-wrath[\s\S]*?tracker-value">4</.test(html), true);
+            check('identity outside the bar, trackers inside', [html.indexOf('sheet-character-name') < html.indexOf('sheet-strip-bar'), html.indexOf('sheet-strip-bar') < html.indexOf('data-type="wounds"'), html.lastIndexOf('data-type="wrath"') < html.indexOf('class="sheet-panes"')], [true, true, true]);
+            check('one chip per keyword', count(html, /class="sheet-keyword"/g), 2);
+            check('subtitle has Tier and Rank', [/sheet-subtitle[\s\S]*?Tier 1[\s\S]*?Rank 1/.test(html)], [true]);
+            check('Wrath buttons are never disabled', /data-type="wrath"[^>]*disabled|disabled[^>]*data-type="wrath"/.test(html), false);
+            check('Wrath buttons are type="button"', [tagOf(html, 'aria-label="Remove Wrath"').includes('type="button"'), tagOf(html, 'aria-label="Add Wrath"').includes('type="button"')], [true, true]);
+            check('strip labels carry tracker-label', count(html, /class="sheet-strip-label tracker-label"/g), 2);
+
+            env.state.wrath = 0;
+            sheet.render();
+            check('Wrath "−" at 0 is not disabled', tagOf(env.dom.container.innerHTML, 'aria-label="Remove Wrath"').includes('disabled'), false);
+
+            env.derived.maxWounds = 50;
+            sheet.render();
+            check('50 max Wounds gives 50 boxes', count(env.dom.container.innerHTML, /data-type="wounds" data-index=/g), 50);
+
+            // Zero max (Review Focus)
+            env.derived.maxWounds = 0;
+            env.derived.maxShock = 0;
+            sheet.render();
+            const zero = env.dom.container.innerHTML;
+            check('zero max: no boxes, both labels, Wrath pair',
+                [count(zero, /data-type="wounds"/g), count(zero, /data-type="shock"/g),
+                    zero.includes('sheet-strip-label tracker-label">Wounds<'), zero.includes('sheet-strip-label tracker-label">Shock<'),
+                    count(zero, /data-type="wrath"/g)],
+                [0, 0, true, true, 2]);
+        } finally {
+            restore();
+        }
+    }
+
+    // Traits keeps the trait grid, Faith and Wealth only
+    {
+        const env = sheetSandbox();
+        const html = env.sheet.renderTraits(DERIVED, {});
+        check('Traits has no boxes, no Wrath, has Wealth, no Faith',
+            [html.includes('tracking-box'), html.includes('data-type="wrath"'), html.includes('data-type="wealth"'), html.includes('data-type="faith"')],
+            [false, false, true, false]);
+        env.state.maxFaith = 2;
+        check('Traits has Faith when the max Faith is above 0', env.sheet.renderTraits(DERIVED, {}).includes('data-type="faith"'), true);
+    }
+
+    // Box clicks (spec §10.1 case 5)
+    {
+        const env = sheetSandbox();
+        const sheet = env.sheet;
+        const boxes = [
+            stubEl({ cls: ['tracking-box'], data: { type: 'wounds', index: '4' } }),
+            stubEl({ cls: ['tracking-box', 'filled'], data: { type: 'wounds', index: '1' } }),
+            stubEl({ cls: ['tracking-box'], data: { type: 'shock', index: '2' } }),
+            stubEl({ cls: ['tracking-box', 'filled'], data: { type: 'shock', index: '0' } })
+        ];
+        const query = env.dom.container.query;
+        const render = sheet.render;
+        let renders = 0;
+        try {
+            env.dom.container.query = sel => (sel === '.tracking-box:not(.follower-box)' ? boxes : []);
+            sheet.render = () => { renders++; };
+            sheet.bindSessionTrackingControls(env.dom.container);
+            boxes.forEach(box => box.listeners.click.forEach(fn => fn()));
+            check('box clicks set Wounds and Shock', env.state.calls,
+                [['setCurrentWounds', 5], ['setCurrentWounds', 1], ['setCurrentShock', 3], ['setCurrentShock', 0]]);
+            check('each box click renders', renders, 4);
+        } finally {
+            env.dom.container.query = query;
+            sheet.render = render;
+        }
     }
 }
 

@@ -187,7 +187,7 @@ Desktop, full mode (1000–1399px; `.character-sheet` max-width 900px as today):
 │ └────────────────────────┘ │                              │ │
 │ ┌ Traits ────────────────┐ │                              │ │
 │ │ Defence 3  Resil. 6 …  │ │                              │ │
-│ │ Faith [−] 1 [+]  Wealth [−] 2 [+]                       │ │
+│ │ Faith [−] 1 [+]                                         │ │
 │ └────────────────────────┘ └──────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────┘
 ```
@@ -314,7 +314,8 @@ their signatures.
 The owner's list for Character repeats name, race, Tier, Rank and class, which the strip already
 shows. The Character tab shows them again as a labelled **Details** block **[Designer, new]**, because
 the owner listed them and a labelled form reads more clearly than the strip's bullet line. The
-Details block has no trackers and no keyword chips.
+Details block has no Wounds, Shock or Wrath tracker and no keyword chips. It ends with the Wealth
+counter **[Owner, 2026-11-14]**.
 
 `renderDetails(character, species, archetype)` returns a `.sheet-section` titled "Details" with these
 rows, in a `<dl>` or the existing `.sheet-background-item` form:
@@ -371,8 +372,9 @@ editor.
 ### 4.1 Content
 
 Identity part: name, subtitle (species • archetype • Tier • Rank), keyword chips, as `renderHeader`
-gives them today **[Owner]**. Tracker part: Wounds, Shock and Wrath **[Owner]**. Faith and Wealth
-stay in Stats **[Owner]**.
+gives them today **[Owner]**. Tracker part: Wounds, Shock and Wrath **[Owner]**. Faith stays
+in Stats **[Owner]**. The Wealth counter is in the Details block of the Character tab
+**[Owner, 2026-11-14]**.
 
 ### 4.2 Tracker forms
 
@@ -404,9 +406,11 @@ the re-render (§5.2). Faith and Wealth counters do not change.
 
 ### 4.3 What Traits shows
 
-`renderTraits` keeps the static trait grid and the Faith (only when `State.getMaxFaith() > 0`) and
-Wealth counters. It no longer renders the Wounds row, the Shock row or the Wrath counter. The boxes
-and the Wrath counter exist once in the page, in the strip.
+`renderTraits` keeps the static trait grid. It has a tracking section only when `State.getMaxFaith()
+> 0`: one line, then the Faith counter **[Owner, 2026-11-14]**. It has no Wealth counter, because
+the Wealth counter is in the Details block of the Character tab **[Owner, 2026-11-14]**. It no
+longer renders the Wounds row, the Shock row or the Wrath counter. The boxes and the Wrath counter
+exist once in the page, in the strip.
 
 ## 5. Behaviour
 
@@ -628,7 +632,8 @@ composition without game data. Cases:
    `.tracker-btn` pair and the Wrath value. The trackers and the tab bar are inside
    `.sheet-strip-bar`, and the identity part is outside it.
    The whole sheet HTML has these boxes and the Wrath pair once; Traits has no `.tracking-box` and
-   no Wrath button, but has `wealth` (and `faith` only when `getMaxFaith() > 0`). With max 50 the
+   no Wrath button and no `wealth` button, and has `faith` only when `getMaxFaith() > 0`
+   **[Owner, 2026-11-14]**. With max 50 the
    strip has 50 Wounds boxes.
 5. **Box clicks**: with stub box elements (class list, `dataset`, captured click listener) passed
    through `bindSessionTrackingControls`, and `render` stubbed: a click on empty Wounds box 4 calls
@@ -706,7 +711,8 @@ bump. No `data/` file changes, so the creator data `?v=` in `creator/js/web-api.
 
 - **Strip content**: name, species, archetype, Tier, Rank and keyword chips, plus the Wounds, Shock
   and Wrath trackers, so that "a player on the Wargear tab can then mark a wound with no tab change".
-  Faith and Wealth stay in Stats.
+  Faith stays in Stats. The Wealth counter is in the Details block of the Character tab
+  **[Owner, 2026-11-14]**.
 - **Tracker forms**: "For wounds and shock specifically, I prefer the boxes to the counters. This
   allows the user to visualize their remaining wounds/shock. We can use counters for the other
   values." Wounds and Shock are box rows at every width; Wrath, Faith and Wealth are counters.

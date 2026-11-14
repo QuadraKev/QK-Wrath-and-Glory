@@ -3213,14 +3213,11 @@ textarea {
     border-color: var(--accent-red);
 }
 
-/* Horizontal tracker row for Wrath, Faith, Wealth */
+/* Horizontal tracker row for Faith and Wealth. The line above it comes from .sheet-tracking-section. */
 .tracker-row-horizontal {
     display: flex;
     justify-content: center;
     gap: 40px;
-    padding-top: 12px;
-    margin-top: 8px;
-    border-top: 1px solid var(--border-color);
 }
 
 .tracker-column {
@@ -5307,8 +5304,7 @@ textarea {
         border-bottom-color: #ddd !important;
     }
 
-    body.print-light-theme .sheet-tracking-section,
-    body.print-light-theme .tracker-row-horizontal {
+    body.print-light-theme .sheet-tracking-section {
         border-top-color: #ccc !important;
     }
 

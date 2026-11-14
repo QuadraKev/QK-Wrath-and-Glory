@@ -5973,10 +5973,12 @@ textarea {
         margin-bottom: 8px;
     }
 
+    /* A long word breaks, so that the name stays inside its part of the card */
     .sheet-strip .sheet-character-name {
         font-size: 22px;
         line-height: 1.2;
         margin-bottom: 2px;
+        overflow-wrap: anywhere;
     }
 
     .sheet-strip .sheet-subtitle {
@@ -6005,7 +6007,7 @@ textarea {
    part of the card: the gradient is as wide as the card (100cqi) and starts at the left edge of the card in
    each half, so the two parts join with no step. A line with the same inset at its top and its bottom is
    the divider. The trackers half is 50% of the card, or wider up to 58% when the boxes need the width. */
-@media screen and (min-width: 769px) {
+@media screen and (min-width: 768.02px) {
     .sheet-strip {
         display: flex;
         flex-wrap: wrap;
@@ -6115,8 +6117,11 @@ textarea {
     }
 
     /* The even rows (refer to the @supports block below): the count that fits in one row of the widest trackers
-       half (58% of the card, less the right border, the padding, the counters column and the column gap) */
+       half. 170px is the 1px right border, the 17px and 16px padding, the 112px counters column (two 28px
+       buttons, two 8px gaps and the 40px value), and the 28px column gap (174px), less one 4px box gap,
+       because the last box of a row has no gap after it. The pitch is the 18px box and the 4px gap. */
     .sheet-strip-trackers .tracking-boxes {
+        --box-layout: grid;
         --box-max: max(1, round(down, (58cqi - 170px) / 22px));
         grid-auto-columns: 18px;
     }
@@ -6124,7 +6129,7 @@ textarea {
 
 /* Low mode in a wide window: the strip is unwrapped, so the sheet content is the row that holds the two
    halves of the name card. The tab bar can then pin over the whole sheet. */
-@media screen and (min-width: 769px) and (max-height: 480px) {
+@media screen and (min-width: 768.02px) and (max-height: 480px) {
     #character-sheet-content {
         display: flex;
         flex-wrap: wrap;
@@ -6256,9 +6261,12 @@ textarea {
         height: 22px;
     }
 
-    /* The even rows (refer to the @supports block below): the count that fits in one row of the boxes column
-       (the card, less the borders, the padding, the label column and the column gap) */
+    /* The even rows (refer to the @supports block below): the count that fits in one row of the boxes column.
+       90px is the two 1px borders, the two 16px paddings, the 52px label column and the 8px column gap
+       (94px), less one 4px box gap, because the last box of a row has no gap after it. The pitch is the
+       22px box and the 4px gap. */
     .sheet-strip-trackers .tracking-boxes {
+        --box-layout: grid;
         --box-max: max(1, round(down, (100cqi - 90px) / 26px));
         grid-auto-columns: 22px;
     }
@@ -6295,16 +6303,17 @@ textarea {
 }
 
 /* Even rows of boxes in the strip, in each layout: the rows of a group have the same count, or the first rows
-   have one box more. Each layout sets --box-max, the count that fits in one row. Each box gets its column
-   from its index (--i), and a column that is not after the last one starts a new row. A browser with no
-   support for this math keeps the natural wrap. */
+   have one box more. Each layout sets --box-max, the count that fits in one row, and --box-layout: grid.
+   Each box gets its column from its index (--i), and a column that is not after the last one starts a new
+   row. With no layout block (--box-layout is not set), the boxes keep the flex row and its natural wrap.
+   A browser with no support for this math also keeps the natural wrap. */
 @supports (width: calc(100cqi / 1px * 1px)) and (width: calc(mod(3, 2) * 1px)) {
     @media screen {
         .sheet-strip-trackers .tracking-boxes {
             --rows: round(up, var(--n) / var(--box-max));
             --per-row: round(up, var(--n) / var(--rows));
             --cut: calc((var(--rows) - (var(--per-row) * var(--rows) - var(--n))) * var(--per-row));
-            display: grid;
+            display: var(--box-layout, flex);
             gap: 4px;
             align-content: center;
         }

@@ -101,7 +101,8 @@ sheet-header-section`, `sheet-character-name`, `sheet-subtitle`, `sheet-keywords
 
 **[Controller ruling, 2026-11-14]** §2.4 replaces the identity part and the tracker part of full mode
 and of compact mode in this section, the 600px limit of compact mode, and the sketches of §2.3. The
-box counts and the low mode stay.
+box counts and the low mode stay. **[Controller ruling, 2026-11-14]** A window wider than 768px and
+481px to 600px high pins the whole strip, as full mode does.
 
 **Box counts to design for.** `calculateMaxWounds` (`creator/js/derived-stats.js:305-324`) is
 2 × Tier + Toughness + species `woundBonus` + background bonuses + Uncanny (Wounds) and Feel No Pain
@@ -162,14 +163,15 @@ navigation and the footer (130px). Measured at 740×360, the scroller is 230px h
 part of compact mode left 80px for a typical character and 2px for the worst case. So a third mode
 exists: in `@media screen and (max-height: 480px)` the tracker rows are not pinned and scroll with
 the page, and only the tab bar stays pinned (48px), which leaves 182px for the pane at 740×360.
-Windows from 481px to 600px high keep compact mode. The owner's decision for a narrow viewport
-(the boxes stay pinned and fill more rows) does not change. `_pinnedElement` returns the strip in
-full mode, the strip bar in compact mode and the tab bar in low mode. The 740×360 row of the table
-above describes compact mode and does not apply any more.
+Windows 768px wide or less and from 481px to 600px high keep compact mode. The owner's decision for
+a narrow viewport (the boxes stay pinned and fill more rows) does not change. `_pinnedElement`
+returns the strip in full mode, the strip bar in compact mode and the tab bar in low mode. The
+740×360 row of the table above describes compact mode and does not apply any more.
 
 Measured room for the pane (pinned height / room): 360×740 typical 176 / 434px, worst case
-358 / 252px; 1280×560 typical 150 / 280px, worst case 202 / 228px; 1280×481 worst case
-202 / 149px. Only a Tier 5, Rank 5 character with the largest bonuses reaches the worst case.
+358 / 252px. Before 2026-11-14 (compact mode in a 1280px wide window): 1280×560 typical
+150 / 280px, worst case 202 / 228px; 1280×481 worst case 202 / 149px. Only a Tier 5, Rank 5
+character with the largest bonuses reaches the worst case.
 
 Size targets (browser check, §10.2), each with a tolerance of 20px for fonts and borders:
 
@@ -314,8 +316,9 @@ counts are in the name card below a horizontal divider, with a little more space
 - The divider is at the middle of the card when the tracker grid fits in the right half. When the
   grid needs more width, the right part grows to 58% of the card at most, and the divider moves left.
   The left part keeps the remaining width, and the name and the chips wrap in it.
-- When the boxes of a group need more than one row, the rows have the same count, or the first rows
-  have one box more. A row with one box alone does not occur, unless the group has one box.
+- In a window wider than 768px, when the boxes of a group need more than one row, the rows have the
+  same count, or the first rows have one box more. A row with one box alone does not occur, unless
+  the group has one box.
 - At 768px or less, the row gap between the counts is 10px (it was 6px).
 - A window wider than 768px and higher than 480px pins the whole strip: the card and the tab bar. At
   768px or less, compact mode pins the counts part and the tab bar, and the identity scrolls away.
@@ -324,7 +327,7 @@ counts are in the name card below a horizontal divider, with a little more space
 - At 768px or less, the Faith counter comes after the Wrath counter, in the same row and in the same
   form. When the two do not fit in one row, the Faith counter goes to the next row.
 
-**How one markup gives the two layouts [Designer, new]:**
+**How one markup gives the two layouts [Designer, new; accepted by controller ruling, 2026-11-14]:**
 
 - `.sheet-strip-trackers` holds a `.sheet-strip-group` for Wounds and for Shock (a label and its
   boxes), then `.sheet-strip-counters` with the Wrath counter and the Faith counter.
@@ -339,7 +342,8 @@ counts are in the name card below a horizontal divider, with a little more space
 - Even rows: the markup gives the box count of each group (`--n`) and the index of each box (`--i`).
   Each layout sets the count that fits in one row (`--box-max`), and CSS math gives each box its
   column. A browser with no support for this math keeps the natural wrap. The even rows also apply
-  at 768px or less.
+  at 768px or less **[Designer, new; accepted by controller ruling, 2026-11-14; the owner can
+  reverse it]**.
 
 ## 3. Block-to-tab mapping
 
@@ -782,9 +786,9 @@ bump. No `data/` file changes, so the creator data `?v=` in `creator/js/web-api.
 
 - **Strip content**: name, species, archetype, Tier, Rank and keyword chips, plus the Wounds, Shock
   and Wrath trackers, so that "a player on the Wargear tab can then mark a wound with no tab change".
-  Faith stays in Stats. The Wealth counter is in the Character tab **[Owner, 2026-11-14]**:
-  "Wealth counter should probably be moved to Character tab". Its place in the Details block is a
-  controller ruling.
+  Faith is in the strip with the other trackers **[Owner, 2026-11-14]** (§2.4). The Wealth counter
+  is in the Character tab **[Owner, 2026-11-14]**: "Wealth counter should probably be moved to
+  Character tab". Its place in the Details block is a controller ruling.
 - **Tracker forms**: "For wounds and shock specifically, I prefer the boxes to the counters. This
   allows the user to visualize their remaining wounds/shock. We can use counters for the other
   values." Wounds and Shock are box rows at every width; Wrath, Faith and Wealth are counters.

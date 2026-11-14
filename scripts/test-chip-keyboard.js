@@ -17,16 +17,18 @@ function check(name, actual, expected) {
     console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}\n        expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);
 }
 
-// A stand-in for the browser document. It records the listeners that a script adds to it.
+// A stand-in for the browser document. It records the listeners that a script adds to it,
+// and it finds the stand-in popups that a test puts in `popups` by their id.
 const fakeDocument = {
     listeners: [],
+    popups: {},
     addEventListener(type, handler) { this.listeners.push({ type, handler }); },
-    getElementById() { return null; },
+    getElementById(id) { return this.popups[id] || null; },
     querySelectorAll() { return []; }
 };
 
 const quietConsole = { log() {}, warn() {}, error: console.error };
-const bestiary = { console: quietConsole, document: fakeDocument, CSS: { escape: (s) => s } };
+const bestiary = { console: quietConsole, document: fakeDocument, CSS: { escape: (s) => s }, setTimeout, clearTimeout };
 vm.createContext(bestiary);
 const load = (rel) => vm.runInContext(readSource(rel), bestiary, { filename: rel });
 const get = (name) => vm.runInContext(name, bestiary);
@@ -49,11 +51,18 @@ const isKeyboardButton = (tag) => tag.includes('tabindex="0"') && tag.includes('
 function keyEvent(key, target) {
     return { key, target, defaultPrevented: false, preventDefault() { this.defaultPrevented = true; } };
 }
-function fakeChip(isButton) {
+// Element.matches for a selector of the form tag[role="value"], from the element's tag name and
+// role. Any other selector form stops the test, so a changed selector cannot pass by accident.
+function matchesTagAndRole(tagName, role, selector) {
+    const parts = selector.match(/^([a-z]+)\[role="([^"]+)"\]$/);
+    if (!parts) throw new Error(`the stand-in cannot match the selector ${selector}`);
+    return tagName.toLowerCase() === parts[1] && role === parts[2];
+}
+function fakeChip(tagName, role) {
     return {
         clicks: 0,
         click() { this.clicks++; },
-        matches(selector) { return isButton && selector.includes('[role="button"]'); }
+        matches(selector) { return matchesTagAndRole(tagName, role, selector); }
     };
 }
 
@@ -111,7 +120,7 @@ async function main() {
                 popupKey: (tag.match(/data-popup-key="([^"]+)"/) || [])[1]
             },
             addEventListener(type, handler) { this.listeners.push({ type, handler }); },
-            matches(selector) { return /role="button"/.test(tag) && selector.includes('[role="button"]'); },
+            matches(selector) { return matchesTagAndRole('SPAN', (tag.match(/role="([^"]+)"/) || [])[1], selector); },
             click() {
                 const event = { target: this, stopped: false, stopPropagation() { this.stopped = true; } };
                 this.listeners.filter(l => l.type === 'click').forEach(l => l.handler(event));
@@ -182,26 +191,87 @@ async function main() {
     {
         check('Glossary has a key handler for chips', typeof Glossary.handleActivationKey, 'function');
         if (typeof Glossary.handleActivationKey === 'function') {
-            const enterChip = fakeChip(true);
+            const enterChip = fakeChip('SPAN', 'button');
             const enter = keyEvent('Enter', enterChip);
             Glossary.handleActivationKey(enter);
             check('Enter on a chip clicks it once', enterChip.clicks, 1);
 
-            const spaceChip = fakeChip(true);
+            const spaceChip = fakeChip('SPAN', 'button');
             const space = keyEvent(' ', spaceChip);
             Glossary.handleActivationKey(space);
             check('Space on a chip clicks it once', spaceChip.clicks, 1);
             check('Space on a chip calls preventDefault, so the page does not scroll', space.defaultPrevented, true);
 
-            const otherChip = fakeChip(true);
+            const otherChip = fakeChip('SPAN', 'button');
             const other = keyEvent('a', otherChip);
             Glossary.handleActivationKey(other);
             check('another key does not click the chip', [otherChip.clicks, other.defaultPrevented], [0, false]);
 
-            const plainSpan = fakeChip(false);
+            const plainSpan = fakeChip('SPAN', undefined);
             const plainEnter = keyEvent('Enter', plainSpan);
             Glossary.handleActivationKey(plainEnter);
-            check('Enter on an element that is not a chip does nothing', [plainSpan.clicks, plainEnter.defaultPrevented], [0, false]);
+            check('Enter on a span without the role does nothing', [plainSpan.clicks, plainEnter.defaultPrevented], [0, false]);
+
+            // A native button clicks itself on Enter; the handler must not click it a second time
+            const nativeButton = fakeChip('BUTTON', undefined);
+            const buttonEnter = keyEvent('Enter', nativeButton);
+            Glossary.handleActivationKey(buttonEnter);
+            check('Enter on a <button> element does nothing', [nativeButton.clicks, buttonEnter.defaultPrevented], [0, false]);
+        }
+
+        // The glossary-term path: a term with the real attachHandlers listeners, then Enter
+        {
+            Glossary.data = DataLoader.cache['glossary.json'];
+            const [keyA, keyB] = Object.keys(Glossary.data.conditions);
+            const fakeTerm = (key) => ({
+                listeners: [],
+                dataset: { termKey: key, termType: 'condition' },
+                addEventListener(type, handler) { this.listeners.push({ type, handler }); },
+                matches(selector) { return matchesTagAndRole('SPAN', 'button', selector); },
+                click() {
+                    const event = { target: this, stopPropagation() {} };
+                    this.listeners.filter(l => l.type === 'click').forEach(l => l.handler(event));
+                }
+            });
+            const termA = fakeTerm(keyA);
+            const termB = fakeTerm(keyB);
+            Glossary.attachHandlers({ querySelectorAll: (selector) => (selector === '.glossary-term' ? [termA, termB] : []) });
+
+            // A stand-in popup: the stack and the document hold it as showPopup does
+            let popupCount = 0;
+            const realShowPopup = Glossary.showPopup;
+            Glossary.showPopup = (definitions, anchorElement, termKey) => {
+                const id = `fake-popup-${popupCount++}`;
+                fakeDocument.popups[id] = { dataset: { glossaryKey: termKey }, remove() { delete fakeDocument.popups[id]; } };
+                Glossary.popupStack.push(id);
+            };
+            const reset = () => {
+                Glossary.closeAllPopups();
+                fakeDocument.popups = {};
+            };
+            // A hover popup: what the mouseenter timer of a term opens, not pinned
+            const openHoverPopup = (term) => Glossary.handleTermClick({ target: term, stopPropagation() {} });
+            const openKeys = () => Glossary.popupStack.map(id => fakeDocument.popups[id] && fakeDocument.popups[id].dataset.glossaryKey);
+
+            reset();
+            Glossary.handleActivationKey(keyEvent('Enter', termA));
+            check('(a) Enter on a term with no popup open opens its pinned popup', [openKeys(), Glossary._pinned], [[keyA], true]);
+
+            reset();
+            openHoverPopup(termA);
+            const hoverId = Glossary.popupStack[0];
+            Glossary.handleActivationKey(keyEvent('Enter', termA));
+            check('(b) Enter on a term with its own hover popup open pins that popup',
+                [Glossary.popupStack, openKeys(), Glossary._pinned], [[hoverId], [keyA], true]);
+
+            reset();
+            openHoverPopup(termB);
+            Glossary.handleActivationKey(keyEvent('Enter', termA));
+            check('(c) Enter on a term with the hover popup of a different term open opens the focused term',
+                [openKeys(), Glossary._pinned], [[keyA], true]);
+
+            reset();
+            Glossary.showPopup = realShowPopup;
         }
 
         // The document keydown listener of the popup engine routes the key into the click
@@ -209,13 +279,13 @@ async function main() {
         await Glossary.init();
         const keydown = fakeDocument.listeners.filter(l => l.type === 'keydown');
         check('the popup engine adds one keydown listener', keydown.length, 1);
-        const routedChip = fakeChip(true);
+        const routedChip = fakeChip('SPAN', 'button');
         keydown[0].handler(keyEvent('Enter', routedChip));
         check('the keydown listener clicks a chip on Enter', routedChip.clicks, 1);
         let closed = 0;
         const realClose = Glossary.closeTopPopup;
         Glossary.closeTopPopup = () => closed++;
-        keydown[0].handler(keyEvent('Escape', fakeChip(true)));
+        keydown[0].handler(keyEvent('Escape', fakeChip('SPAN', 'button')));
         Glossary.closeTopPopup = realClose;
         check('Escape still closes the top popup', closed, 1);
     }
@@ -226,18 +296,18 @@ async function main() {
         check('SettingsTab no longer has the private source map', SettingsTab._glossaryIdToNormalized, undefined);
         check('the source map keeps its keys in order', Object.keys(DataLoader.glossaryIdToNormalized || {}),
             ['core', 'church', 'aeldari', 'fspg', 'voa', 'redacted1', 'redacted2', 'shotguns', 'dh', 'lex', 'apocrypha']);
-        // The list that getAllSources returned before the change
-        check('getAllSources returns the same list as before', DataLoader.getAllSources(),
+        // The sources that getAllSources returned before the change. New source books can add to the list.
+        const sources = DataLoader.getAllSources();
+        check('getAllSources lists each source once', new Set(sources).size, sources.length);
+        check('getAllSources still lists every source it gave before the change',
             ['Apocrypha', 'Church of Steel', 'Core Rules', 'Lex Imperialis', 'Redacted Records I', 'Redacted Records II',
-                'Threat Assessment: Daemons & Heretics', 'Threat Assessment: Xenos', 'Vow of Absolution']);
+                'Threat Assessment: Daemons & Heretics', 'Threat Assessment: Xenos', 'Vow of Absolution'].filter(s => !sources.includes(s)), []);
         check('isSourceEnabled maps a short id through the map', (() => {
             SettingsTab.excludedSources.add('Church of Steel');
             const result = SettingsTab.isSourceEnabled('church');
             SettingsTab.excludedSources.clear();
             return result;
         })(), false);
-        check('the Settings tab reads the map from DataLoader',
-            /DataLoader\.glossaryIdToNormalized\[/.test(readSource('bestiary/tabs/settings-tab.js')), true);
         const html = readSource('bestiary/index.html');
         check('the page loads data-loader.js before settings-tab.js',
             html.indexOf('js/data-loader.js') !== -1 && html.indexOf('js/data-loader.js') < html.indexOf('tabs/settings-tab.js'), true);

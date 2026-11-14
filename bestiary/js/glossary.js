@@ -205,8 +205,13 @@ const Glossary = {
                 clearTimeout(this._closeTimer);
                 // If hover popup is open, pin it instead of opening a new one
                 if (this.popupStack.length > 0 && !this._pinned) {
-                    this._pinned = true;
-                    return;
+                    const hoverPopup = document.getElementById(this.popupStack[this.popupStack.length - 1]);
+                    if (hoverPopup && hoverPopup.dataset.glossaryKey === term.dataset.termKey) {
+                        this._pinned = true;
+                        return;
+                    }
+                    // The hover popup is for a different term: close it and open this term as a plain click does
+                    this.closeAllPopups();
                 }
                 this._pinned = true;
                 this.handleTermClick(e);

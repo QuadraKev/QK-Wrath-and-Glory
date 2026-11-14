@@ -91,6 +91,73 @@ const CustomWargear = {
         return Object.values(list).map(t => t.name).sort((a, b) => a.localeCompare(b));
     },
 
+    // The list names that book wargear writes with a rating, as "Name (anything)". Sorted.
+    ratedTraits(kind) {
+        const records = kind === 'armor' ? DataLoader.getAllArmor() : DataLoader.getAllWeapons();
+        const written = [];
+        for (const record of records) {
+            for (const trait of Array.isArray(record.traits) ? record.traits : []) {
+                if (typeof trait === 'string') written.push(trait);
+            }
+        }
+        return this.traitNames(kind).filter(name => written.some(t => t.startsWith(`${name} (`) && t.endsWith(')')));
+    },
+
+    // Bonus entries in object order: +1 Strength, +Rank Resilience, +Double Rank Speed. '' when none.
+    formatBonuses(bonuses) {
+        return Object.entries(bonuses || {}).map(([key, value]) => {
+            const label = this.BONUS_LABELS[key] || key;
+            if (value === 'rank') return `+Rank ${label}`;
+            if (value === 'doubleRank') return `+Double Rank ${label}`;
+            return `${value > 0 ? '+' : ''}${value} ${label}`;
+        }).join(', ');
+    },
+
+    typeLabel(record) {
+        if (record.kind === 'weapon') return record.type === 'ranged' ? 'Ranged Weapon' : 'Melee Weapon';
+        if (record.kind === 'armor') return 'Armor';
+        return record.kind === 'augmetic' ? 'Augmetic' : 'Other';
+    },
+
+    // The stat line of a record in plain text, parts joined by " • ". '' for an Other item.
+    formatStatLine(record) {
+        const traits = (record.traits && record.traits.length) ? record.traits.join(', ') : '-';
+        if (record.kind === 'weapon') {
+            const ranged = record.type === 'ranged';
+            const damage = ranged ? `Damage ${record.damage.base}` : `Damage (S) +${record.damage.base}`;
+            const parts = [damage, `ED ${record.ed}`, `AP ${record.ap}`];
+            if (ranged) {
+                const r = record.range;
+                parts.push(r ? `Range ${r.short}/${r.medium}/${r.long}m` : 'Range -', `Salvo ${record.salvo}`);
+            } else if (record.reach !== undefined) {
+                parts.push(`Range ${record.reach}m`);
+            }
+            parts.push(traits);
+            return parts.join(' • ');
+        }
+        if (record.kind === 'armor') return `AR ${record.ar} • ${traits}`;
+        if (record.kind === 'augmetic') {
+            const parts = [];
+            if (record.effect && record.effect.trim() !== '') parts.push(record.effect);
+            const bonuses = this.formatBonuses(record.bonuses);
+            if (bonuses) parts.push(`Bonuses: ${bonuses}`);
+            return parts.join(' • ');
+        }
+        return '';
+    },
+
+    // The lines for copy as text and Markdown (spec §4.2).
+    textLines(record) {
+        const lines = [`- ${record.name} (Custom)`];
+        const stats = this.formatStatLine(record);
+        if (stats) lines.push(`    ${stats}`);
+        if (record.keywords && record.keywords.length) lines.push(`    Keywords: ${record.keywords.join(', ')}`);
+        if (record.description && record.description.trim() !== '') {
+            for (const line of record.description.split(/\r?\n/)) lines.push(`    ${line}`);
+        }
+        return lines;
+    },
+
     // A typed trait whose name part matches a list name (any case) takes the list spelling.
     normalizeTrait(text, kind) {
         const trimmed = String(text).trim();

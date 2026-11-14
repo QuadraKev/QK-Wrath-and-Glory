@@ -349,5 +349,60 @@ const spineRecordWithId = { ...spineRecord, id: 'custom_p7d2m0zt' };
     }
 }
 
+// --- display helpers ---
+{
+    const rw = CW.ratedTraits('weapon'), ra = CW.ratedTraits('armor');
+    check('weapon rated traits hold Rad, Rending, Blast, Inflict', ['Rad', 'Rending', 'Blast', 'Inflict'].every(n => rw.includes(n)), true);
+    check('weapon rated traits leave out Agonising and Brutal', ['Agonising', 'Brutal'].some(n => rw.includes(n)), false);
+    check('armour rated traits hold Bulk, not Shield', [ra.includes('Bulk'), ra.includes('Shield')], [true, false]);
+    check('every rated weapon trait is in the weapon list', rw.every(n => CW.traitNames('weapon').includes(n)), true);
+    check('every rated armour trait is in the armour list', ra.every(n => CW.traitNames('armor').includes(n)), true);
+    check('rated weapon traits are sorted', rw, rw.slice().sort((a, b) => a.localeCompare(b)));
+    check('rated armour traits are sorted', ra, ra.slice().sort((a, b) => a.localeCompare(b)));
+
+    check('Xenotech stat line', CW.formatStatLine(xenotechRecord), 'Damage (S) +4 • ED 4 • AP 0 • Range 2m • Agonising, Rad (2)');
+    check('ranged stat line', CW.formatStatLine(rangedRecord), 'Damage 7 • ED 1 • AP 0 • Range 12/24/36m • Salvo 2 • -');
+    check('ranged stat line with AP -1 and two traits',
+        CW.formatStatLine({ ...rangedRecord, ap: -1, traits: ['Rapid Fire (2)'] }), 'Damage 7 • ED 1 • AP -1 • Range 12/24/36m • Salvo 2 • Rapid Fire (2)');
+    {
+        const noRange = { ...rangedRecord };
+        delete noRange.range;
+        check('ranged stat line with no range', CW.formatStatLine(noRange), 'Damage 7 • ED 1 • AP 0 • Range - • Salvo 2 • -');
+    }
+    check('melee stat line with no reach and no traits', CW.formatStatLine(CW.buildRecord(F({ name: 'Club' }))), 'Damage (S) +0 • ED 0 • AP 0 • -');
+    check('armour stat line', CW.formatStatLine({ kind: 'armor', ar: 4, traits: ['Shield'] }), 'AR 4 • Shield');
+    check('armour record stat line with no traits', CW.formatStatLine({ ...armourRecord, traits: [] }), 'AR 4 • -');
+    check('§2.5 augmetic stat line', CW.formatStatLine(spineRecord), '+1 Strength, -1 Agility. • Bonuses: +1 Strength, -1 Agility');
+    check('augmetic with an effect and no bonuses', CW.formatStatLine({ kind: 'augmetic', effect: 'Hums.' }), 'Hums.');
+    check('augmetic with bonuses and no effect', CW.formatStatLine({ kind: 'augmetic', effect: '', bonuses: { speed: 1 } }), 'Bonuses: +1 Speed');
+    check('augmetic with no effect and no bonuses', CW.formatStatLine({ kind: 'augmetic', effect: '' }), '');
+    check('Other stat line is empty', CW.formatStatLine(otherRecord), '');
+
+    check('formatBonuses with no bonuses', [CW.formatBonuses(undefined), CW.formatBonuses({})], ['', '']);
+    check('integer bonuses print with a sign', CW.formatBonuses({ strength: 1, agility: -1 }), '+1 Strength, -1 Agility');
+    check('rank bonuses print as +Rank', CW.formatBonuses({ resilience: 'rank', speed: 'doubleRank' }), '+Rank Resilience, +Double Rank Speed');
+
+    check('typeLabel for the five shapes', [xenotechRecord, rangedRecord, armourRecord, spineRecord, otherRecord].map(r => CW.typeLabel(r)),
+        ['Melee Weapon', 'Ranged Weapon', 'Armor', 'Augmetic', 'Other']);
+
+    check('Xenotech text lines', CW.textLines({ ...xenotechRecord, description: 'Line one\nLine two', keywords: ['XENOS'] }), [
+        '- Xenotech Blade (Custom)', '    Damage (S) +4 • ED 4 • AP 0 • Range 2m • Agonising, Rad (2)', '    Keywords: XENOS', '    Line one', '    Line two']);
+    check('text lines split a CRLF description', CW.textLines({ ...otherRecord, description: 'A\r\nB' }), ['- Lucky Coin (Custom)', '    A', '    B']);
+    check('Other text lines with a description', CW.textLines({ ...otherRecord, description: 'Brings luck.' }), ['- Lucky Coin (Custom)', '    Brings luck.']);
+    check('Other text lines with no description and no keywords', CW.textLines({ ...otherRecord, keywords: [] }), ['- Lucky Coin (Custom)']);
+
+    // With no glossary, there is no trait list, so no rated trait. Restore the cache even if a check throws.
+    // The cache object is DATA itself, so keep the glossary in a local before the removal.
+    const cache = get(cwctx, 'DataLoader').cache;
+    const glossary = cache['glossary.json'];
+    try {
+        cache['glossary.json'] = undefined;
+        check('with no glossary, ratedTraits(weapon) is []', CW.ratedTraits('weapon'), []);
+    } finally {
+        cache['glossary.json'] = glossary;
+    }
+    check('the glossary is back in the cache', CW.ratedTraits('weapon').includes('Rad'), true);
+}
+
 console.log(failures === 0 ? '\nAll custom wargear checks passed.' : `\n${failures} custom wargear check(s) FAILED.`);
 process.exit(failures === 0 ? 0 : 1);

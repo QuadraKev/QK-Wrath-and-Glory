@@ -19,6 +19,9 @@ const CharacterSheetTab = {
         { id: 'notes', label: 'Notes' }
     ],
 
+    // The controls that can get the focus back after a re-render (refer to _focusKeyOf)
+    _FOCUS_SELECTOR: '.sheet-tab-btn, .tracker-btn, .weapon-equip-checkbox, .follower-living-btn',
+
     // Initialize the tab
     init() {
         // Print button
@@ -49,6 +52,9 @@ const CharacterSheetTab = {
 
     // Render the full character sheet
     render() {
+        // The rewrite below resets the scroll and the focus: keep them to put back after it
+        const viewState = this._captureViewState();
+
         const character = State.getCharacter();
 
         // Repair any background selections missing bonusType
@@ -101,6 +107,9 @@ const CharacterSheetTab = {
 
         // Bind the editable notes box
         this.bindNotesInput(container);
+
+        // Put back the scroll position and the focus from before the rewrite
+        this._restoreViewState(viewState);
 
         // A rewrite resets the scroll of the tab bar: bring the selected tab into view again
         this._scrollActiveTabIntoBar(container);
@@ -2545,6 +2554,49 @@ const CharacterSheetTab = {
         else if (left < bar.scrollLeft) target = left - 4;
         else return;
         bar.scrollLeft = Math.min(Math.max(0, target), Math.max(0, bar.scrollWidth - bar.clientWidth));
+    },
+
+    // ===== View state across a re-render =====
+
+    // A key that finds the same control in the new HTML, made from attributes of the markup. Null for other elements.
+    _focusKeyOf(el) {
+        if (!el || !el.classList) return null;
+        if (el.classList.contains('sheet-tab-btn')) return 'tab:' + el.dataset.sheetTab;
+        if (el.classList.contains('tracker-btn')) {
+            if (el.classList.contains('tracker-minus')) return 'tracker:' + el.dataset.type + ':minus';
+            if (el.classList.contains('tracker-plus')) return 'tracker:' + el.dataset.type + ':plus';
+            return null;
+        }
+        if (el.classList.contains('weapon-equip-checkbox')) return 'equip:' + el.dataset.wargearIndex;
+        if (el.classList.contains('follower-living-btn')) {
+            const item = el.closest('.sheet-follower');
+            return item ? 'living:' + item.dataset.followerId + ':' + el.dataset.delta : null;
+        }
+        return null;
+    },
+
+    // The scroll position of the sheet, and the focus key when the focus is inside the sheet
+    _captureViewState() {
+        const scroller = document.getElementById('tab-character-sheet');
+        const container = document.getElementById('character-sheet-content');
+        const active = document.activeElement;
+        return {
+            scrollTop: scroller ? scroller.scrollTop : 0,
+            focusKey: container && container.contains(active) ? this._focusKeyOf(active) : null
+        };
+    },
+
+    // Set the scroll position again, and focus the control with the same key when it is there and not disabled.
+    // The keys are compared, never put in a selector: a key can hold a follower id.
+    _restoreViewState(state) {
+        const scroller = document.getElementById('tab-character-sheet');
+        if (scroller) scroller.scrollTop = state.scrollTop;
+        if (state.focusKey === null) return;
+
+        const container = document.getElementById('character-sheet-content');
+        const match = Array.from(container.querySelectorAll(this._FOCUS_SELECTOR))
+            .find(el => this._focusKeyOf(el) === state.focusKey);
+        if (match && !match.disabled) match.focus({ preventScroll: true });
     },
 
     // Show a glossary-style breakdown popup for an element

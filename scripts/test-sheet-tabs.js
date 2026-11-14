@@ -854,5 +854,70 @@ function tabsSection() {
     check('escapeHtml stays', /\n    escapeHtml\(text\) \{/.test(src), true);
 }
 
+// --- Task 6: Re-render keeps the view ---
+{
+    // _focusKeyOf (spec §10.1 case 7, §5.2 table)
+    {
+        const { sheet, dom } = sheetSandbox();
+        const follower = stubEl({ cls: ['sheet-follower'], data: { followerId: 'f1' } });
+        check('focus key of a tab button', sheet._focusKeyOf(stubEl({ cls: ['sheet-tab-btn'], data: { sheetTab: 'wargear' } })), 'tab:wargear');
+        check('focus key of a Wrath +', sheet._focusKeyOf(stubEl({ cls: ['tracker-btn', 'tracker-plus'], data: { type: 'wrath' } })), 'tracker:wrath:plus');
+        check('focus key of a Faith -', sheet._focusKeyOf(stubEl({ cls: ['tracker-btn', 'tracker-minus'], data: { type: 'faith' } })), 'tracker:faith:minus');
+        check('focus key of an equip checkbox', sheet._focusKeyOf(stubEl({ cls: ['weapon-equip-checkbox'], data: { wargearIndex: '3' } })), 'equip:3');
+        check('focus key of a living button', sheet._focusKeyOf(stubEl({ cls: ['follower-living-btn'], data: { delta: '-1' }, parent: follower })), 'living:f1:-1');
+        check('no focus key for a living button outside a follower', sheet._focusKeyOf(stubEl({ cls: ['follower-living-btn'], data: { delta: '1' } })), null);
+        check('no focus key for a tracking box', sheet._focusKeyOf(stubEl({ cls: ['tracking-box'], data: { type: 'wounds', index: '0' } })), null);
+        check('no focus key for body', sheet._focusKeyOf(dom.body), null);
+        check('no focus key for null', sheet._focusKeyOf(null), null);
+    }
+
+    // render() keeps the scroll, the tab and the focus (spec §10.1 case 7, §5.2)
+    {
+        const run = ({ focus, matches, disabled = false, inside = true }) => {
+            const env = sheetSandbox();
+            const sheet = env.sheet;
+            const dom = env.dom;
+            const restore = stubBlocks(sheet);
+            const contains = dom.container.contains;
+            const oldPlus = stubEl({ cls: ['tracker-btn', 'tracker-plus'], data: { type: 'wrath' } });
+            const newMinus = stubEl({ cls: ['tracker-btn', 'tracker-minus'], data: { type: 'wrath' } });
+            const newPlus = stubEl({ cls: ['tracker-btn', 'tracker-plus'], data: { type: 'wrath' } });
+            newPlus.disabled = disabled;
+            const found = { newMinus, newPlus };
+            let error = null;
+            try {
+                sheet.activeSheetTab = 'wargear';
+                dom.scroller.scrollTop = 420;
+                dom.document.activeElement = focus === 'body' ? dom.body : oldPlus;
+                if (!inside) dom.container.contains = () => false;
+                dom.container.query = sel => (sel === sheet._FOCUS_SELECTOR ? matches.map(name => found[name]) : []);
+                try { sheet.render(); } catch (e) { error = e.message; }
+            } finally {
+                restore();
+                dom.container.contains = contains;
+            }
+            return { sheet, dom, newMinus, newPlus, error };
+        };
+
+        const a = run({ focus: 'plus', matches: ['newMinus', 'newPlus'] });
+        check('render gives no error', a.error, null);
+        check('scroll kept', a.dom.scroller.scrollTop, 420);   // the innerHTML stub resets it to 0
+        check('Wrath + refocused without scroll', [a.newPlus.focusCalls, a.newMinus.focusCalls], [[{ preventScroll: true }], []]);
+        check('tab kept', a.sheet.activeSheetTab, 'wargear');
+
+        const d = run({ focus: 'plus', matches: ['newMinus', 'newPlus'], disabled: true });
+        check('a disabled match gets no focus, scroll kept', [d.newPlus.focusCalls, d.newMinus.focusCalls, d.dom.scroller.scrollTop], [[], [], 420]);
+
+        const b = run({ focus: 'body', matches: ['newMinus', 'newPlus'] });
+        check('a box click (focus on body) restores no focus, scroll kept', [b.newPlus.focusCalls, b.newMinus.focusCalls, b.dom.scroller.scrollTop], [[], [], 420]);
+
+        const n = run({ focus: 'plus', matches: ['newMinus'] });
+        check('no match gives no error and no focus', [n.error, n.newMinus.focusCalls], [null, []]);
+
+        const o = run({ focus: 'plus', matches: ['newMinus', 'newPlus'], inside: false });
+        check('focus outside the sheet restores no focus', [o.newPlus.focusCalls, o.newMinus.focusCalls], [[], []]);
+    }
+}
+
 console.log(failures ? `\n${failures} check(s) FAILED` : '\nAll checks passed');
 process.exit(failures ? 1 : 0);

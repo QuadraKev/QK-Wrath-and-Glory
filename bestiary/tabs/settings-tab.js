@@ -53,30 +53,13 @@ const SettingsTab = {
         });
     },
 
-    // Map lowercase glossary source IDs to the normalized source names used by getAllSources().
-    // sourceDisplayNames maps "core" → "Core Rulebook" but threat sources use "Core Rules" —
-    // so we need this separate mapping for glossary source filtering.
-    _glossaryIdToNormalized: {
-        'core': 'Core Rules',
-        'church': 'Church of Steel',
-        'aeldari': 'Aeldari Inheritance of Embers',
-        'fspg': "Forsaken System Player's Guide",
-        'voa': 'Vow of Absolution',
-        'redacted1': 'Redacted Records I',
-        'redacted2': 'Redacted Records II',
-        'shotguns': 'Departmento Munitorum Shotguns',
-        'dh': 'Threat Assessment: Daemons & Heretics',
-        'lex': 'Lex Imperialis',
-        'apocrypha': 'Apocrypha'
-    },
-
     // Check if a source is enabled. Handles both normalized threat source names
     // (e.g. "Core Rules", "Apocrypha") and lowercase glossary IDs (e.g. "core", "apocrypha").
     isSourceEnabled(source) {
         if (!source) return true;
 
         // If it's a lowercase glossary ID, map it to the normalized threat source name
-        const mapped = this._glossaryIdToNormalized[source];
+        const mapped = DataLoader.glossaryIdToNormalized[source];
         if (mapped) {
             return !this.excludedSources.has(mapped);
         }

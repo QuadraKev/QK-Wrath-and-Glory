@@ -410,6 +410,23 @@ const DataLoader = {
         'apocrypha': 'An Abundance of Apocrypha'
     },
 
+    // Map lowercase glossary source IDs to the normalized source names used by getAllSources().
+    // sourceDisplayNames maps "core" → "Core Rulebook" but threat sources use "Core Rules" —
+    // so we need this separate mapping for glossary source filtering.
+    glossaryIdToNormalized: {
+        'core': 'Core Rules',
+        'church': 'Church of Steel',
+        'aeldari': 'Aeldari Inheritance of Embers',
+        'fspg': "Forsaken System Player's Guide",
+        'voa': 'Vow of Absolution',
+        'redacted1': 'Redacted Records I',
+        'redacted2': 'Redacted Records II',
+        'shotguns': 'Departmento Munitorum Shotguns',
+        'dh': 'Threat Assessment: Daemons & Heretics',
+        'lex': 'Lex Imperialis',
+        'apocrypha': 'Apocrypha'
+    },
+
     // Get display name for a source (handles both lowercase IDs and full names)
     getSourceDisplayName(source) {
         return this.sourceDisplayNames[source] || source || '';
@@ -525,7 +542,7 @@ const DataLoader = {
         });
         this.getVehicles().forEach(vehicle => {
             if (vehicle.source) {
-                sourceSet.add(SettingsTab._glossaryIdToNormalized[vehicle.source] || this.normalizeSource(vehicle.source));
+                sourceSet.add(this.glossaryIdToNormalized[vehicle.source] || this.normalizeSource(vehicle.source));
             }
         });
         return Array.from(sourceSet).sort();

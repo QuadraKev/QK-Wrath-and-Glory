@@ -162,6 +162,19 @@ const State = {
             this.character.ascensions = [];
         }
 
+        // Repair the custom wargear entries in place. Never drop an entry: talent choices store indices.
+        // The first holder of a duplicate custom id keeps it.
+        if (Array.isArray(this.character.wargear)) {
+            const usedIds = new Set();
+            this.character.wargear.forEach((entry, index) => {
+                if (!entry || typeof entry !== 'object' || Array.isArray(entry)) return;
+                const isCustom = 'custom' in entry || (typeof entry.id === 'string' && entry.id.startsWith('custom_'));
+                if (isCustom && CustomWargear.normalizeEntry(entry, usedIds)) {
+                    console.warn(`Custom wargear entry ${index} was repaired on load.`);
+                }
+            });
+        }
+
         this.notifyListeners('load');
         this.isDirty = false;
     },
@@ -400,7 +413,32 @@ const State = {
     setCustomArchetype() {
         this.character.archetype = { id: 'custom', xpCost: 0 };
         this.character.customArchetype = { name: '', abilityArchetypeId: null, keywords: [], wargear: [] };
-        this.character.wargear = [];
+
+        // Keep the custom items in order, and move the owned-item talent choices to their new indices.
+        // A choice on a removed entry becomes null, so the player picks again.
+        const oldWargear = Array.isArray(this.character.wargear) ? this.character.wargear : [];
+        const newIndex = new Map();
+        const kept = [];
+        oldWargear.forEach((w, index) => {
+            if (w && w.custom) {
+                newIndex.set(index, kept.length);
+                kept.push(w);
+            }
+        });
+        this.character.wargear = kept;
+        for (const talent of Array.isArray(this.character.talents) ? this.character.talents : []) {
+            if (!talent || typeof talent !== 'object') continue;
+            const choiceType = DataLoader.getTalent(talent.id)?.choiceType;
+            if (choiceType !== 'weapon_owned' && choiceType !== 'armor_owned') continue;
+            if (talent.choice === null || talent.choice === undefined) continue;
+            const old = /^\d+$/.test(String(talent.choice)) ? parseInt(talent.choice, 10) : -1;
+            if (!newIndex.has(old)) {
+                talent.choice = null;
+            } else {
+                talent.choice = typeof talent.choice === 'string' ? String(newIndex.get(old)) : newIndex.get(old);
+            }
+        }
+
         this.resetStats();
         this.notifyListeners('archetype');
     },
@@ -784,6 +822,33 @@ const State = {
         }
         item.improvised = entry.improvised;
         this.notifyListeners('wargear', entry.id);
+    },
+
+    // Add a custom wargear entry (the record lives on the entry as custom), return its index
+    addCustomItem(record) {
+        const usedIds = new Set(this.character.wargear.filter(w => w).map(w => w.id));
+        const id = CustomWargear.newId(usedIds);
+        const entry = { id, isStarting: false, custom: record };
+        this.character.wargear.push(entry);
+        CustomWargear.normalizeEntry(entry, usedIds);
+        this.notifyListeners('wargear', id);
+        return this.character.wargear.length - 1;
+    },
+
+    // Update a custom wargear entry in place (edit flow); the id and the kind do not change
+    updateCustomItem(wargearIndex, record) {
+        if (wargearIndex < 0 || wargearIndex >= this.character.wargear.length) return false;
+        const entry = this.character.wargear[wargearIndex];
+        if (!entry || !entry.custom || !record || record.kind !== entry.custom.kind) return false;
+        record.id = entry.id;
+        if (record.type !== entry.custom.type) {
+            entry.upgrades = [];
+        }
+        entry.custom = record;
+        const usedIds = new Set(this.character.wargear.filter((w, index) => w && index !== wargearIndex).map(w => w.id));
+        CustomWargear.normalizeEntry(entry, usedIds);
+        this.notifyListeners('wargear', entry.id);
+        return true;
     },
 
     // Toggle weapon equipped status (for Simultaneous Strike tracking)

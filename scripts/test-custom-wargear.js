@@ -404,5 +404,123 @@ const spineRecordWithId = { ...spineRecord, id: 'custom_p7d2m0zt' };
     check('the glossary is back in the cache', CW.ratedTraits('weapon').includes('Rad'), true);
 }
 
+// --- State: add, update, load, custom archetype reset ---
+{
+    // state.js touches localStorage and the timers through the auto-save, and uses Followers as a
+    // bare global, so the sandbox stubs those and runs followers.js first (as in test-notes.js).
+    // The console wrapper counts the console.warn calls of a load.
+    const store = {};
+    const warnings = [];
+    const sctx = creatorSandbox({
+        console: { log: console.log, error: console.error, warn: (...args) => { warnings.push(args.join(' ')); } },
+        localStorage: {
+            getItem: k => (k in store ? store[k] : null),
+            setItem: (k, v) => { store[k] = String(v); },
+            removeItem: k => { delete store[k]; }
+        },
+        setTimeout: () => 0,
+        clearTimeout: () => {}
+    });
+    load(sctx, 'creator/js/followers.js');
+    load(sctx, 'creator/js/custom-wargear.js');
+    load(sctx, 'creator/js/state.js');
+    const State = get(sctx, 'State'), DL = get(sctx, 'DataLoader');
+    const idOk = id => /^custom_[a-z0-9]{8}$/.test(id);
+    const copy = o => JSON.parse(JSON.stringify(o));
+    const loadWarnings = data => {
+        warnings.length = 0;
+        State.loadCharacter(data);
+        return warnings.length;
+    };
+
+    // addCustomItem
+    State.character = State.createNewCharacter();
+    const i = State.addCustomItem(CW.buildRecord(xenotech));
+    const e = State.character.wargear[i];
+    check('addCustomItem pushes one entry', State.character.wargear.length, 1);
+    check('addCustomItem gives a fresh custom id', /^custom_[a-z0-9]{8}$/.test(e.id) && e.custom.id === e.id && e.isStarting === false, true);
+    check('the resolver finds the new item', DL.getWeapon(e.id).name, 'Xenotech Blade');
+    const j = State.addCustomItem(CW.buildRecord(xenotech));
+    check('two adds give two ids', State.character.wargear[j].id !== e.id, true);
+
+    // updateCustomItem
+    const id = e.id;
+    e.upgrades = ['x'];
+    check('updateCustomItem with a melee record returns true', State.updateCustomItem(i, CW.buildRecord(F({ name: 'Renamed' }))), true);
+    check('updateCustomItem keeps the id', [e.id, e.custom.id], [id, id]);
+    check('updateCustomItem sets the name', DL.getWeapon(id).name, 'Renamed');
+    check('updateCustomItem with the same type keeps the upgrades', e.upgrades, ['x']);
+    check('updateCustomItem with a ranged record returns true', State.updateCustomItem(i, CW.buildRecord(ranged)), true);
+    check('a type change clears the upgrades', [e.upgrades, e.custom.type, e.id], [[], 'ranged', id]);
+    {
+        const before = canon(e);
+        check('updateCustomItem with an armour record returns false', State.updateCustomItem(i, CW.buildRecord(armour)), false);
+        check('a kind change leaves the entry unchanged', canon(e), before);
+    }
+    check('updateCustomItem with an index out of range returns false',
+        [State.updateCustomItem(5, CW.buildRecord(xenotech)), State.updateCustomItem(-1, CW.buildRecord(xenotech))], [false, false]);
+    State.addWargear('chainsword');
+    check('updateCustomItem on a book entry returns false', State.updateCustomItem(2, CW.buildRecord(xenotech)), false);
+
+    // loadCharacter
+    {
+        const saved = JSON.parse(JSON.stringify(State.character));
+        const count = loadWarnings(JSON.parse(JSON.stringify(saved)));
+        check('a save round trip keeps the wargear', canon(State.character.wargear), canon(saved.wargear));
+        check('a save round trip logs no warning', count, 0);
+    }
+    {
+        const count = loadWarnings({ wargear: [{ id: 'chainsword' }, { id: 'bad id', custom: 'oops' }, { id: 'custom_x', isStarting: false }] });
+        const w = State.character.wargear;
+        check('a broken save keeps the entry count', w.length, 3);
+        check('a book entry is not changed', w[0], { id: 'chainsword' });
+        check('custom "oops" becomes an unreadable item with a new id', [w[1].custom.name, idOk(w[1].id), w[1].custom.id === w[1].id],
+            ['Unreadable custom item', true, true]);
+        check('a custom_ id with no custom gets an Other record', w[2].custom.kind, 'other');
+        check('two repaired entries log two warnings', count, 2);
+    }
+    {
+        const wargear = [null, { id: 'chainsword' }];
+        let threw = false;
+        try { State.loadCharacter({ wargear }); } catch (err) { threw = true; }
+        check('a null entry does not throw and stays', [threw, State.character.wargear], [false, [null, { id: 'chainsword' }]]);
+        threw = false;
+        try { State.loadCharacter({ wargear: {} }); } catch (err) { threw = true; }
+        check('wargear {} does not throw and stays', [threw, State.character.wargear], [false, {}]);
+    }
+    {
+        const first = { id: 'custom_same0001', isStarting: false, custom: { ...copy(xenotechRecord), id: 'custom_same0001' } };
+        const second = { id: 'custom_same0001', isStarting: false, custom: { ...copy(xenotechRecord), id: 'custom_same0001' } };
+        const count = loadWarnings({ wargear: [first, second] });
+        const w = State.character.wargear;
+        check('the first holder of a duplicate id keeps it', w[0].id, 'custom_same0001');
+        check('the second holder of a duplicate id gets a new id', [w[1].id !== 'custom_same0001', idOk(w[1].id)], [true, true]);
+        check('a duplicate id logs one warning', count, 1);
+    }
+
+    // setCustomArchetype keeps the custom items and remaps the owned-item talent choices
+    State.resetStats = () => {};
+    const resetWith = talents => {
+        State.character = State.createNewCharacter();
+        State.addWargear('chainsword');
+        State.addCustomItem(CW.buildRecord(F({ name: 'Custom A' })));
+        State.addWargear('flak_armour');
+        State.addCustomItem(CW.buildRecord(F({ name: 'Custom B' })));
+        State.character.talents = talents;
+        State.setCustomArchetype();
+    };
+    resetWith([{ id: 'trademark_weapon', choice: '3' }, { id: 'armourmonger_aoa', choice: 2 }, { id: 'uncanny', choice: 'Defence' }, 'some_plain_id']);
+    check('reset keeps the custom items in order', State.character.wargear.map(w => w.custom.name), ['Custom A', 'Custom B']);
+    check('Trademark Weapon on custom B moves to index 1', State.character.talents[0].choice, '1');
+    check('Armour-Monger on a book item is cleared', State.character.talents[1].choice, null);
+    check('a non-index choice is kept', State.character.talents[2].choice, 'Defence');
+    check('a plain talent id is kept', State.character.talents[3], 'some_plain_id');
+    check('reset still sets the custom archetype', State.character.archetype, { id: 'custom', xpCost: 0 });
+    resetWith([{ id: 'trademark_weapon', choice: 3 }, { id: 'trademark_weapon', choice: '1' }, { id: 'trademark_weapon', choice: null }]);
+    check('a numeric choice 3 becomes 1', State.character.talents[0].choice, 1);
+    check('a choice on custom A moves to index 0', State.character.talents[1].choice, '0');
+    check('an empty choice stays empty', State.character.talents[2].choice, null);
+}
+
 console.log(failures === 0 ? '\nAll custom wargear checks passed.' : `\n${failures} custom wargear check(s) FAILED.`);
 process.exit(failures === 0 ? 0 : 1);

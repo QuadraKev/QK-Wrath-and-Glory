@@ -276,7 +276,10 @@ selected tab is scrolled into view inside the bar without a vertical scroll of t
 - In compact and low mode, the tab bar stays one row and shows a 24px edge fade on each side that
   has more tabs. Reason: at 360px the bar showed four whole tabs and a clean right edge, so nothing
   told the player about the other tabs. The fade has the bar background (`var(--bg-primary)`), takes
-  no pointer events and exists only in the screen rules. The state comes from `scrollLeft`,
+  no pointer events and exists only in the screen rules. Each fade also shows a gold arrow (`‹` on the
+  left, `›` on the right) at its outer edge, on the solid outer 12px, as in the sketch above. A fade
+  alone was too weak at 360px. The arrow is decoration, so its alternative text is empty and a screen
+  reader does not speak it. The state comes from `scrollLeft`,
   `clientWidth` and `scrollWidth` of the bar. It changes after a render, after a switch, when the bar
   scrolls, and on a window resize. When all tabs fit, no fade shows.
 - The scroll into view keeps 32px of room on a side that has more tabs, so the selected tab is clear

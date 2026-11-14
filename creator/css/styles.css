@@ -6708,28 +6708,45 @@ textarea {
     /* The edge cue: a fade on each side of the bar that has more tabs (_updateTabBarCue sets the classes).
        Each fade is a sticky flex item with a net width of 0 (24px, less 24px and the 6px gap), so the tab
        positions and the scroll width do not change. The inset is the negative padding, so the fade starts
-       at the bar edge. The fade has the bar background, var(--bg-primary), in compact and in low mode. */
+       at the bar edge. The fade has the bar background, var(--bg-primary), in compact and in low mode.
+       An arrow sits at the outer edge on the solid outer 12px, so it never sits on a pill. The arrow is
+       decoration: the empty alternative text keeps it silent for a screen reader, and the plain content
+       before it is the fallback for a browser that does not know that syntax. */
     .sheet-tabbar::before,
     .sheet-tabbar::after {
-        content: '';
         position: sticky;
         z-index: 1;
         flex: 0 0 24px;
+        box-sizing: border-box;
         align-self: stretch;
+        display: flex;
+        align-items: center;
+        color: var(--accent-gold);
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1;
         pointer-events: none;
         opacity: 0;
     }
 
     .sheet-tabbar::before {
+        content: '‹';
+        content: '‹' / '';
         left: -4px;
         margin-right: -30px;
-        background: linear-gradient(to right, var(--bg-primary), transparent);
+        justify-content: flex-start;
+        padding-left: 3px;
+        background: linear-gradient(to right, var(--bg-primary) 12px, transparent);
     }
 
     .sheet-tabbar::after {
+        content: '›';
+        content: '›' / '';
         right: -4px;
         margin-left: -30px;
-        background: linear-gradient(to left, var(--bg-primary), transparent);
+        justify-content: flex-end;
+        padding-right: 3px;
+        background: linear-gradient(to left, var(--bg-primary) 12px, transparent);
     }
 
     .sheet-tabbar.sheet-tabbar-more-left::before,

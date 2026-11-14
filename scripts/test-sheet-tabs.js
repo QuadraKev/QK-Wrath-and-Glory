@@ -1256,8 +1256,16 @@ function tabsSection() {
         const both = ruleBody(compact, '.sheet-tabbar::before');
         check('F2: the cue is sticky, takes no pointer events, and has no width in the flow',
             [/position:\s*sticky/, /pointer-events:\s*none/, /flex:\s*0 0 24px/].map(re => re.test(both)), [true, true, true]);
-        check('F2: the cue fades to the bar background',
-            [/linear-gradient\(to right,\s*var\(--bg-primary\),\s*transparent\)/.test(ruleBody(compact, '.sheet-tabbar::before')), /linear-gradient\(to left,\s*var\(--bg-primary\),\s*transparent\)/.test(ruleBody(compact, '.sheet-tabbar::after'))], [true, true]);
+        check('F2: the cue is solid bar background under the arrow (outer 12px), then fades',
+            [/linear-gradient\(to right,\s*var\(--bg-primary\)\s+12px,\s*transparent\)/.test(ruleBody(compact, '.sheet-tabbar::before')), /linear-gradient\(to left,\s*var\(--bg-primary\)\s+12px,\s*transparent\)/.test(ruleBody(compact, '.sheet-tabbar::after'))], [true, true]);
+        // The arrow: a plain content declaration as the fallback, then the same arrow with an empty alternative text
+        const arrow = (body, ch) => new RegExp(`content:\\s*'${ch}';[\\s\\S]*content:\\s*'${ch}'\\s*/\\s*'';`).test(body);
+        check('F2: the cue shows an arrow on each side, silent for a screen reader',
+            [arrow(ruleBody(compact, '.sheet-tabbar::before'), '‹'), arrow(ruleBody(compact, '.sheet-tabbar::after'), '›')], [true, true]);
+        check('F2: the arrow is gold and bold, at the outer edge, centered vertically',
+            [/color:\s*var\(--accent-gold\)/, /font-weight:\s*700/, /align-items:\s*center/].map(re => re.test(both))
+                .concat([/justify-content:\s*flex-start/.test(ruleBody(compact, '.sheet-tabbar::before')), /justify-content:\s*flex-end/.test(ruleBody(compact, '.sheet-tabbar::after'))]),
+            [true, true, true, true, true]);
         check('F2: the cue shows only on a side with more tabs',
             [/opacity:\s*0/.test(both), /opacity:\s*1/.test(ruleBody(compact, '.sheet-tabbar.sheet-tabbar-more-left::before'))], [true, true]);
         check('F2: the cue starts at the bar edge in compact and low mode (the negative padding)',

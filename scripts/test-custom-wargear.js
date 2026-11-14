@@ -925,5 +925,61 @@ for (const rel of ['character-sheet-tab.js', 'wargear-tab.js', 'talents-tab.js']
     check('the card button opens the builder', tab.includes('CustomWargear.open()'), true);
 }
 
+// --- owned list: Custom badge, stat line, Edit ---
+{
+    const WT = get(sctx, 'WargearTab');
+    const owned = (rec, i) => ({ ...rec, wargearIndex: i, isStarting: false, upgrades: [], custom: rec });
+    const wHtml = WT.renderOwnedWeapon(owned(xenotechRecordWithId, 0));
+    check('a custom weapon row has the Custom badge', wHtml.includes('<span class="badge-relic">Custom</span>'), true);
+    check('a custom weapon row has the type line', wHtml.includes('<div class="wargear-type">Melee Weapon</div>'), true);
+    check('a custom weapon row has the stat line', wHtml.includes('Damage (S) +4 • ED 4 • AP 0 • Range 2m • Agonising, Rad (2)'), true);
+    check('a custom weapon row has Edit, Upgrades and Remove',
+        ['btn-edit-custom', 'btn-manage-upgrades', 'btn-remove-wargear'].every(c => wHtml.includes(c)), true);
+    check('a custom weapon row has no relic or improvised Edit', [wHtml.includes('btn-edit-relic'), wHtml.includes('btn-edit-improvised')], [false, false]);
+    check('a custom weapon Edit button carries the entry index', WT.renderOwnedWeapon(owned(xenotechRecordWithId, 3)).includes('btn-edit-custom" data-index="3"'), true);
+    const rHtml = WT.renderOwnedWeapon(owned({ ...rangedRecord, id: 'custom_r4nged01' }, 0));
+    check('a custom ranged weapon row has the ranged type and stat line',
+        [rHtml.includes('<div class="wargear-type">Ranged Weapon</div>'), rHtml.includes('Damage 7 • ED 1 • AP 0 • Range 12/24/36m • Salvo 2')], [true, true]);
+    const aHtml = WT.renderOwnedItem(owned(spineRecordWithId, 1), 'augmetic');
+    check('a custom augmetic row has the Custom badge and type line',
+        [aHtml.includes('<span class="badge-relic">Custom</span>'), aHtml.includes('<div class="wargear-type">Augmetic</div>')], [true, true]);
+    check('a custom augmetic row shows its bonuses', aHtml.includes('Bonuses: +1 Strength, -1 Agility'), true);
+    check('a custom augmetic row has Edit and no Upgrades', [aHtml.includes('btn-edit-custom'), aHtml.includes('btn-manage-upgrades')], [true, false]);
+    const arHtml = WT.renderOwnedItem(owned({ ...armourRecord, id: 'custom_arm0r001' }, 2), 'armor');
+    check('a custom armour row has the Armor type line and the AR stat line',
+        [arHtml.includes('<div class="wargear-type">Armor</div>'), arHtml.includes('AR 4 • Shield')], [true, true]);
+    const oHtml = WT.renderOwnedItem(owned({ ...otherRecord, id: 'custom_0th3r001' }, 2), 'equipment');
+    check('an Other row has the Other type line, the badge and Edit', [oHtml.includes('<div class="wargear-type">Other</div>'),
+        oHtml.includes('<span class="badge-relic">Custom</span>'), oHtml.includes('btn-edit-custom')], [true, true, true]);
+    check('an Other row has no detail line', oHtml.includes('wargear-relic-detail'), false);
+
+    // A book item has no custom branch.
+    const bookWeapon = DATA['weapons.json'].find(w => w.type === 'melee');
+    const bookHtml = WT.renderOwnedWeapon({ ...bookWeapon, wargearIndex: 0, isStarting: false, upgrades: [] });
+    check('a book weapon row has no Custom badge and no custom Edit', [bookHtml.includes('Custom'), bookHtml.includes('btn-edit-custom')], [false, false]);
+    const bookItem = DATA['armor.json'][0];
+    const bookItemHtml = WT.renderOwnedItem({ ...bookItem, wargearIndex: 0, isStarting: false, upgrades: [] }, 'armor');
+    check('a book armour row has no Custom badge and no custom Edit', [bookItemHtml.includes('Custom'), bookItemHtml.includes('btn-edit-custom')], [false, false]);
+    check('renderCustomInfo gives null for no custom', WT.renderCustomInfo(undefined), null);
+
+    // Text safety: the name, the stat line (traits, effect) and the type line are escaped.
+    const evilWeapon = { ...CW.buildRecord(F({ name: EVIL, weaponTraits: [EVIL] })), id: 'custom_evilweap' };
+    const evilWeaponHtml = WT.renderOwnedWeapon(owned(evilWeapon, 0));
+    check('a custom weapon row escapes the name and the trait',
+        [evilWeaponHtml.includes(SAFE), RAW_TAG.test(evilWeaponHtml)], [true, false]);
+    check('a custom weapon row holds the EVIL text twice (name and trait)', evilWeaponHtml.split(SAFE).length - 1, 2);
+    const evilAug = { ...CW.buildRecord(F({ kind: 'augmetic', name: EVIL, effect: EVIL })), id: 'custom_evilaugm' };
+    const evilAugHtml = WT.renderOwnedItem(owned(evilAug, 1), 'augmetic');
+    check('a custom augmetic row escapes the name and the effect',
+        [evilAugHtml.split(SAFE).length - 1, RAW_TAG.test(evilAugHtml)], [2, false]);
+    const evilOtherHtml = WT.renderOwnedItem(owned({ ...CW.buildRecord(F({ kind: 'other', name: EVIL })), id: 'custom_evilothr' }, 2), 'equipment');
+    check('a custom Other row escapes the name', [evilOtherHtml.includes(SAFE), RAW_TAG.test(evilOtherHtml)], [true, false]);
+
+    // The tab code binds Edit to CustomWargear.open and keeps the custom field on the entry.
+    const tabSource = readSource('creator/tabs/wargear-tab.js');
+    check('the owned entry carries the custom field', tabSource.includes('custom: item.custom'), true);
+    check('the Edit button opens the builder at its index', tabSource.includes("CustomWargear.open(parseInt(btn.dataset.index, 10))"), true);
+}
+
 console.log(failures === 0 ? '\nAll custom wargear checks passed.' : `\n${failures} custom wargear check(s) FAILED.`);
 process.exit(failures === 0 ? 0 : 1);

@@ -733,6 +733,7 @@ const CharacterSheetTab = {
     // Render attributes in compact 2-column grid
     renderAttributes(character) {
         const equipBonuses = DerivedStats.getEquipmentBonuses(character);
+        const mutationBonuses = DerivedStats.getMutationBonuses(character);
 
         const attributes = [
             { key: 'strength', name: 'Strength', abbrev: 'STR' },
@@ -746,14 +747,13 @@ const CharacterSheetTab = {
 
         const items = attributes.map(attr => {
             const baseValue = character.attributes?.[attr.key] || 1;
-            const attrBonuses = equipBonuses[attr.key] || [];
-            const equipTotal = attrBonuses.reduce((sum, b) => sum + b.value, 0);
-            const effectiveValue = baseValue + equipTotal;
+            const attrBonuses = [...(equipBonuses[attr.key] || []), ...(mutationBonuses[attr.key] || [])];
+            const effectiveValue = DerivedStats.getEffectiveAttribute(character, attr.key);
 
-            // Build tooltip for attributes with equipment bonuses
+            // Build tooltip for attributes with equipment or mutation bonuses
             let tooltipAttr = '';
             let tappableClass = '';
-            if (equipTotal !== 0) {
+            if (attrBonuses.length > 0) {
                 const lines = [`Base: ${baseValue}`];
                 for (const b of attrBonuses) {
                     lines.push(`${b.value > 0 ? '+' : ''}${b.value} ${b.source}`);
@@ -2004,7 +2004,7 @@ const CharacterSheetTab = {
         // Attributes
         lines.push('ATTRIBUTES');
         const attrNames = { strength: 'STR', toughness: 'TOU', agility: 'AGI', initiative: 'INI', willpower: 'WIL', intellect: 'INT', fellowship: 'FEL' };
-        const attrParts = Object.entries(attrNames).map(([key, abbr]) => `${abbr}: ${character.attributes[key]}`);
+        const attrParts = Object.entries(attrNames).map(([key, abbr]) => `${abbr}: ${DerivedStats.getEffectiveAttribute(character, key)}`);
         lines.push(attrParts.join(' | '));
         lines.push('');
 

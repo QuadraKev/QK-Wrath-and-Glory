@@ -2647,32 +2647,39 @@ const CharacterSheetTab = {
         const container = document.getElementById('character-sheet-content');
         const active = document.activeElement;
         const focusKey = container && container.contains(active) ? this._focusKeyOf(active) : null;
+        const notes = container ? container.querySelector('.sheet-notes-input') : null;
         return {
             scrollTop: scroller ? scroller.scrollTop : 0,
             focusKey,
-            selection: focusKey === 'notes' ? [active.selectionStart, active.selectionEnd] : null
+            selection: focusKey === 'notes' ? [active.selectionStart, active.selectionEnd] : null,
+            notesScrollTop: notes ? notes.scrollTop : null
         };
     },
 
     // Set the scroll position again, and focus the control with the same key when it is there and not disabled.
     // The keys are compared, never put in a selector: a key can hold a follower id.
+    // The scroll of the Notes box comes back with or without the focus.
     _restoreViewState(state) {
         const scroller = document.getElementById('tab-character-sheet');
         if (scroller) scroller.scrollTop = state.scrollTop;
-        if (state.focusKey === null) return;
 
         const container = document.getElementById('character-sheet-content');
-        const match = Array.from(container.querySelectorAll(this._FOCUS_SELECTOR))
+        const match = state.focusKey === null ? null : Array.from(container.querySelectorAll(this._FOCUS_SELECTOR))
             .find(el => this._focusKeyOf(el) === state.focusKey);
-        if (!match || match.disabled) return;
-        this._restoringFocus = true;
-        try {
-            match.focus({ preventScroll: true });
-        } finally {
-            this._restoringFocus = false;
+        if (match && !match.disabled) {
+            this._restoringFocus = true;
+            try {
+                match.focus({ preventScroll: true });
+            } finally {
+                this._restoringFocus = false;
+            }
+            // The caret of the new Notes box is at 0: the restore sets the old range
+            if (state.selection) match.setSelectionRange(state.selection[0], state.selection[1]);
         }
-        // The new Notes box has its caret at the end of the text: put the old caret back
-        if (state.selection) match.setSelectionRange(state.selection[0], state.selection[1]);
+
+        // Last, because setSelectionRange scrolls the box to the caret
+        const notes = container.querySelector('.sheet-notes-input');
+        if (notes && typeof state.notesScrollTop === 'number') notes.scrollTop = state.notesScrollTop;
     },
 
     // Show a glossary-style breakdown popup for an element

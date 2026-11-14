@@ -4948,9 +4948,10 @@ textarea {
     }
 
     /* The group (a tbody) is the card. This rule stays here, outside the light theme, because it
-       corrects the layout of every print, with or without the light class. It must come after the
-       old rule "tbody, display: contents" above, which it overrides for the equipment groups: with
-       display: contents the card dissolves, and the name, the Effect cell and the value sit side by side. */
+       corrects the layout of every print, with or without the light class. It overrides the old rule
+       "tbody, display: contents" above for the equipment groups. Specificity decides, not the order:
+       (0,2,0) against (0,1,1), both !important. The rule sits beside the old rule so that a reader finds
+       both. With display: contents the card dissolves, and the name, the Effect cell and the value sit side by side. */
     .sheet-equipment-table .sheet-equip-group {
         display: grid !important;
         width: 50% !important;
@@ -6536,7 +6537,8 @@ textarea {
     font-family: inherit;
     font-size: 12px;
     white-space: nowrap;
-    transition: all 0.2s;
+    /* Not "all": the focus ring must show gold at once, with no fade from the default ring color */
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 
 .sheet-tab-btn:hover {
@@ -6575,6 +6577,13 @@ textarea {
 
     #tab-character-sheet .character-sheet {
         padding-top: 20px;
+    }
+
+    /* The focus ring of a pane, in the gold of the other sheet controls. The negative offset draws it
+       inside the pane, so the scroller does not clip it. */
+    .sheet-pane:focus-visible {
+        outline: 2px solid var(--accent-gold);
+        outline-offset: -2px;
     }
 
     .sheet-strip {

@@ -949,7 +949,8 @@ function tabsSection() {
             try {
                 env.sheet.activeSheetTab = 'notes';
                 env.dom.document.activeElement = oldNotes;
-                env.dom.container.query = sel => (sel === env.sheet._FOCUS_SELECTOR || sel === '.sheet-notes-input' ? [newNotes] : []);
+                // The query reads the selector list, so a selector without .sheet-notes-input finds no box
+                env.dom.container.query = sel => (sel.split(',').map(s => s.trim()).includes('.sheet-notes-input') ? [newNotes] : []);
                 env.sheet.render();
             } finally {
                 restore();
@@ -1264,6 +1265,59 @@ function tabsSection() {
                 /left:\s*-16px/.test(ruleBody(low, '.sheet-tabbar::before')), /right:\s*-16px/.test(ruleBody(low, '.sheet-tabbar::after'))], [true, true, true, true]);
         const outsideCompact = sec.replace(/@media screen and \((?:max-width: 768px\), screen and \(max-height: 600px|max-height: 480px)\)\s*\{(?:[^{}]|\{[^{}]*\})*\}/g, '');
         check('F2: no cue rule outside the compact and low screen blocks', /sheet-tabbar[^{,]*::(?:before|after)/.test(outsideCompact), false);
+    }
+
+    // F7: the scroll of the Notes box stays across a re-render, with or without the focus
+    {
+        const notesBox = (scrollTop) => Object.assign(stubEl({ cls: ['sheet-notes-input'] }), {
+            value: 'abc', selectionStart: 1, selectionEnd: 1, scrollTop,
+            // In a browser, setSelectionRange scrolls the box to the caret
+            setSelectionRange() { this.scrollTop = 0; }
+        });
+        const run = (focus, withBox = true) => {
+            const env = sheetSandbox();
+            const restore = stubBlocks(env.sheet);
+            const oldNotes = notesBox(500);
+            const newNotes = notesBox(0);
+            let box = oldNotes;
+            let error = null;
+            try {
+                env.sheet.activeSheetTab = 'notes';
+                if (focus) env.dom.document.activeElement = oldNotes;
+                env.dom.container.query = sel => (withBox && sel.split(',').map(s => s.trim()).includes('.sheet-notes-input') ? [box] : []);
+                // render binds the Notes box after the rewrite: from then on the query finds the new box
+                env.sheet.bindNotesInput = () => { box = newNotes; };
+                try { env.sheet.render(); } catch (e) { error = e.message; }
+            } finally {
+                restore();
+            }
+            return { newNotes, error };
+        };
+        const noFocus = run(false);
+        check('F7: the Notes box scroll stays without the focus', [noFocus.error, noFocus.newNotes.scrollTop, noFocus.newNotes.focusCalls], [null, 500, []]);
+        const withFocus = run(true);
+        check('F7: the Notes box scroll stays with the focus, after the caret is set', [withFocus.error, withFocus.newNotes.scrollTop, withFocus.newNotes.focusCalls.length], [null, 500, 1]);
+        check('F7: no Notes box gives no error', run(false, false).error, null);
+    }
+
+    // F11: an ascension package never shows in the Archetype row, also with an archetype id
+    {
+        const env = sheetSandbox();
+        env.dataLoader.getArchetype = id => (id === 'veteran' ? { name: 'Veteran' } : null);
+        const html = env.sheet.renderDetails(makeCharacter({ ascensions: [{ type: 'package', packageId: 'x', archetypeId: 'veteran', targetTier: 4 }] }), null, null);
+        check('F11: a package with an archetype id is not in the Archetype row', [html.includes('Veteran'), html.includes('Tier 4')], [false, false]);
+    }
+
+    // F8: the pane ring and the tab transition
+    {
+        const sec = tabsSection();
+        const screen = mediaBlocks(sec, 'screen').join('\n');
+        const paneRing = (screen.match(/\.sheet-pane:focus-visible\s*\{([^}]*)\}/) || [])[1] || '';
+        check('F8: the focused pane has the gold ring, drawn inside it', [/outline:\s*2px solid var\(--accent-gold\)/.test(paneRing), /outline-offset:\s*-\d+px/.test(paneRing)], [true, true]);
+        check('F8: the pane ring is a screen rule only', /\.sheet-pane:focus-visible/.test(sec.replace(/@media screen\s*\{(?:[^{}]|\{[^{}]*\})*\}/g, '')), false);
+        const tabRule = (sec.match(/(?:^|[}/])\s*\.sheet-tab-btn\s*\{([^}]*)\}/) || [])[1] || '';
+        const transition = (tabRule.match(/transition:\s*([^;]+);/) || [])[1] || '';
+        check('F8: the tab transition names its properties and not the outline', [transition !== '', /\ball\b/.test(transition), /outline/.test(transition)], [true, false, false]);
     }
 }
 

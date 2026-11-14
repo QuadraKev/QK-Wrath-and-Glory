@@ -609,10 +609,14 @@ body {
     letter-spacing: 0.5px;
     margin-right: 6px;
     margin-bottom: 6px;
+}
+
+/* A keyword chip with a glossary entry opens it */
+.threat-keyword[data-popup-type] {
     cursor: pointer;
 }
 
-.threat-keyword:hover {
+.threat-keyword[data-popup-type]:hover {
     background: var(--accent-gold);
     color: var(--bg-primary);
 }

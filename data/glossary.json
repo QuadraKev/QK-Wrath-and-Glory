@@ -2983,6 +2983,18 @@
       "source": "aeldari",
       "page": 92,
       "description": "Armour that inspires terror in onlookers. Enemies that can see the wearer must pass a Fear Test with a DN equal to the rating."
+    },
+    "agile": {
+      "name": "Agile",
+      "source": "apocrypha",
+      "page": 398,
+      "description": "A few types of armour listed in this section have the Agile trait. A character wearing Agile armour may use their Agility to calculate their Determination instead of their Toughness."
+    },
+    "void": {
+      "name": "Void",
+      "source": "apocrypha",
+      "page": 398,
+      "description": "A number of types of armour listed in this section have the Void trait. A character with Void armour reduces the AP of incoming attacks by one step (i.e., from AP -1 to 0, or from AP -3 to -2). Void armour also benefits from the Built-in Tech rule."
     }
   },
   "weaponTraits": {
@@ -3046,11 +3058,29 @@
       "page": 209,
       "description": "Brutal weapons inflict appalling, traumatic wounds. When you roll Extra Damage Dice for a Brutal weapon: Results of 1 and 2 inflict 0 Damage. Results of 3 and 4 inflict 1 Damage. Results of 5 and 6 inflict 2 Damage."
     },
+    "cacophony": {
+      "name": "Cacophony",
+      "source": "apocrypha",
+      "page": 326,
+      "description": "Cacophony weapons use destructive wavelengths of sound to tear targets apart, and it is nigh-impossible to hide from them. Attacks with a Cacophony weapon ignore cover bonuses to defence."
+    },
+    "careful": {
+      "name": "Careful",
+      "source": "apocrypha",
+      "page": 326,
+      "description": "A Careful Weapon requires precision and care to wield and cannot easily be used to make multiple rapid attacks. A Careful Weapon cannot be used to make a Multi-Attack."
+    },
     "cognis": {
       "name": "Cognis",
       "source": "church",
       "page": 112,
       "description": "The Machine Spirits encased in these weapons have been permanently awakened by the will of the Omnissiah through the arcane rituals of the Adeptus Mechanicus. Through a miracle of the Motive Force, these weapons possess a measure of intelligence, and act as though alive even when uncontrolled. At the end of any Round in which a Cognis weapon was not fired, any Agent can declare that the Machine Spirit of the weapon activated and attempted to fire on a random enemy, as determined by the GM. The uncontrolled Cognis weapon has a Ballistic Skill (A) dice pool of 5ds, plus the number of Glory in the group pool. Agents cannot spend Wrath or Glory on this attack."
+    },
+    "corrupting": {
+      "name": "Corrupting",
+      "source": "apocrypha",
+      "page": 326,
+      "description": "This weapon directs the corrupting power of the Warp. For each Exalted Icon rolled on the weapon's damage roll, the target gains 1 Corruption."
     },
     "flamer": {
       "name": "Flamer",
@@ -3070,11 +3100,35 @@
       "page": 209,
       "description": "Psykers can channel the power of the Warp through the etheric circuit patterns and psycho-reactive materials of these weapons. If you have the PSYKER Keyword, you may add half of your (Wil) Rating to a Force weapon's Damage Value. If you don't have the PSYKER Keyword, a Force weapon's damage is decreased by 2."
     },
+    "gas": {
+      "name": "Gas",
+      "source": "apocrypha",
+      "page": 326,
+      "description": "A Gas weapon deploys clouds of aerosolised or gaseous chemical agents. To use a Gas weapon, make a Ballistic Skill test to target a specific location; if it hits, that is where the gas emerges, filling the blast area and affecting creatures within. The gas dissipates over time, reducing the Blast Rating by 2 at the end of each round. Strong winds may make the gas dissipate more quickly, at GM's discretion. Characters wearing a rebreather or a void suit, or armour which includes such features, automatically succeed at any tests required to resist Gas weapon's effects, as are creatures which do not need to breathe, such as unliving automata, NECRONS, or DAEMONS, or creatures impervious to chemical weapons like TYRANIDS."
+    },
+    "grav_weapon": {
+      "name": "Grav",
+      "source": "apocrypha",
+      "page": 326,
+      "description": "Grav weaponry turn their targets' own mass against them. The weapon gains additional ED equal to half the target's Resilience, and the target is Staggered until the end of its next turn if they suffer any wounds or shock from the attack."
+    },
     "gruesome": {
       "name": "Gruesome",
       "source": "aeldari",
       "page": 79,
       "description": "Drukhari weapons, especially Haemonculus weapons, don't merely kill, they torture the target and terrify onlookers to feed the Drukhari soul debt. Weapons with the Gruesome Trait cause a DN 3 Fear Test for the target and allies within 10m on a Wrath Critical."
+    },
+    "guided": {
+      "name": "Guided",
+      "source": "Abundant Apocryphal Adversaries: The T'au Empire (Apocrypha)",
+      "page": 6,
+      "description": "The weapon can be fired automatically in response to a markerlight signal. When the Marked condition is placed on a target, you may spend 1 Ruin to allow a single weapon with this Trait to be fired as a Free Action, making an immediate attack with a Ballistic Skill of 10 (which includes the +2 for the target being Marked."
+    },
+    "haywire": {
+      "name": "Haywire",
+      "source": "apocrypha",
+      "page": 327,
+      "description": "Haywire weapons generate destructive electromagnetic pulses. When attacking a vehicle or mechanical foe, roll a number of d6 equal to the trait's rating. Each Icon inflicts a Mortal Wound."
     },
     "heavy": {
       "name": "Heavy",
@@ -3112,6 +3166,12 @@
       "page": 113,
       "description": "Lance weapons blast targets with beams of concentrated energy. The vaporised mass fuelling the blast bores through the thickest armour. Weapons with the Lance Trait ignore the Invulnerable Armour trait. Lance weapons cause Mortal Wounds, and they always inflict 1 Mortal Wound even if it does not damage its target."
     },
+    "luminagen": {
+      "name": "Luminagen",
+      "source": "apocrypha",
+      "page": 327,
+      "description": "Phosphor weapons illuminate their targets with a searing light. A character hit by a Luminagen weapon cannot benefit from being in cover until the start of their next turn."
+    },
     "melta": {
       "name": "Melta",
       "source": "core",
@@ -3129,6 +3189,24 @@
       "source": "church",
       "page": 113,
       "description": "Mounted weapons only function when attached to a weapons platform such as a vehicle. These weapons depend on the sophisticated machinery, excessive power, or other logistical requirement provided by a larger machine and cannot typically be handled by an individual warrior. The (X) in the Trait determines the minimum Size of vehicle the weapon must be mounted on to function."
+    },
+    "nemesis": {
+      "name": "Nemesis",
+      "source": "apocrypha",
+      "page": 327,
+      "description": "Nemesis weapons are created to be bane to daemons. DAEMONS may not roll Determination to negate wounds or mortal wounds inflicted by Nemesis weapons."
+    },
+    "overwhelming": {
+      "name": "Overwhelming",
+      "source": "apocrypha",
+      "page": 327,
+      "description": "The weapon can batter past even the most proficient defence. When you make an attack with an Overwhelming weapon, the target does not benefit from the Parry trait of any of their weapons or the Defence bonus from Shields."
+    },
+    "paired": {
+      "name": "Paired",
+      "source": "apocrypha",
+      "page": 327,
+      "description": "The weapon is designed to be used in a pair—two weapons of that type, one in each hand. When a character makes an attack while wielding both weapons in a pair, either count it as a Simultaneous Strike (as per the talent) or reduce the DN of a multi-attack by 2. If you have the Signature Weapon talent, you may apply it to both weapons in a pair."
     },
     "parry": {
       "name": "Parry",
@@ -3159,6 +3237,12 @@
       "source": "apocrypha",
       "page": 327,
       "description": "The weapon is intended to scythe through groups of foes. When you make a Multi-Attack with this weapon, the DN increases by +1 per additional target, rather than +2."
+    },
+    "recharge": {
+      "name": "Recharge",
+      "source": "apocrypha",
+      "page": 327,
+      "description": "The weapon's rate of fire is slowed by a need to recharge or cool down after use. When a Recharge weapon has been used to attack, it may not be used to attack again during the next round of combat."
     },
     "reliable": {
       "name": "Reliable",
@@ -3214,6 +3298,12 @@
       "page": 327,
       "description": "The weapon rips and tears at their enemies, inflicting horrific wounds. When you roll for damage with this weapon, you may re-roll any number of ED."
     },
+    "tesla_weapon": {
+      "name": "Tesla",
+      "source": "apocrypha",
+      "page": 327,
+      "description": "The weapon fires arcs of crackling lightning, leaping from foe to foe. When you shift Exalted Icons from a successful attack, you may shift Exalted Icons to hit enemies within 3m of an existing target as well as the main target, using the weapon's normal damage and AP. Each Exalted Icon shifted may only be used to hit additional enemies or to gain +ED, not both."
+    },
     "two_handed": {
       "name": "Two-Handed",
       "source": "core",
@@ -3225,6 +3315,12 @@
       "source": "core",
       "page": 210,
       "description": "Whether unbalanced or too large, some weapons are harder to use. Attacks made with Unwieldy weapons have their DN increased by an amount equal to their Unwieldy rating."
+    },
+    "volatile": {
+      "name": "Volatile",
+      "source": "apocrypha",
+      "page": 328,
+      "description": "The weapon's power is barely-contained, and it can be harmful to an unwary wielder. If you suffer a Complication when wielding this weapon, you immediately suffer X Mortal Wounds. X may either be a static value, or it may be a die roll, such as d3 or d6. If a Volatile weapon has the Blast trait, then a Complication inflicts X Mortal Wounds to all creatures within the weapon's Blast rating, centred on the wielder."
     },
     "waaagh": {
       "name": "Waaagh!",

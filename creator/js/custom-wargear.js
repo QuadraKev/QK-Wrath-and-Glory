@@ -127,20 +127,20 @@ const CustomWargear = {
         if (kind === 'weapon') {
             stats = `
                 <div class="custom-item-grid">
-                    ${this._inputHtml(form, 'damage', melee ? 'Damage: S +' : 'Damage', { numeric: true })}
-                    ${this._inputHtml(form, 'ed', 'ED', { numeric: true })}
-                    ${this._inputHtml(form, 'ap', 'AP', { numeric: true, placeholder: 'e.g. -2' })}
+                    ${this._inputHtml(form, 'damage', melee ? 'Damage: S +' : 'Damage', { limit: this.LIMITS.damage })}
+                    ${this._inputHtml(form, 'ed', 'ED', { limit: this.LIMITS.ed })}
+                    ${this._inputHtml(form, 'ap', 'AP', { limit: this.LIMITS.ap, placeholder: 'e.g. -2' })}
                     ${melee
-                        ? this._inputHtml(form, 'reach', 'Range (m)', { numeric: true, placeholder: 'Optional' })
-                        : this._inputHtml(form, 'salvo', 'Salvo', { numeric: true })}
+                        ? this._inputHtml(form, 'reach', 'Range (m)', { limit: this.LIMITS.reach, placeholder: 'Optional' })
+                        : this._inputHtml(form, 'salvo', 'Salvo', { limit: this.LIMITS.salvo })}
                 </div>
                 ${melee ? '' : `
                 <div class="form-group">
                     <label>Range (m)</label>
                     <div class="custom-item-grid">
-                        ${this._inputHtml(form, 'rangeShort', 'Short', { numeric: true, error: false })}
-                        ${this._inputHtml(form, 'rangeMedium', 'Medium', { numeric: true, error: false })}
-                        ${this._inputHtml(form, 'rangeLong', 'Long', { numeric: true, error: false })}
+                        ${this._inputHtml(form, 'rangeShort', 'Short', { limit: this.LIMITS.range, error: false })}
+                        ${this._inputHtml(form, 'rangeMedium', 'Medium', { limit: this.LIMITS.range, error: false })}
+                        ${this._inputHtml(form, 'rangeLong', 'Long', { limit: this.LIMITS.range, error: false })}
                     </div>
                     ${this._errorHtml('range')}
                 </div>`}
@@ -148,7 +148,7 @@ const CustomWargear = {
             `;
         } else if (kind === 'armor') {
             stats = `
-                <div class="custom-item-grid">${this._inputHtml(form, 'ar', 'AR', { numeric: true })}</div>
+                <div class="custom-item-grid">${this._inputHtml(form, 'ar', 'AR', { limit: this.LIMITS.ar })}</div>
                 ${this._traitsHtml(form)}
             `;
         } else if (kind === 'augmetic') {
@@ -176,7 +176,7 @@ const CustomWargear = {
                 ${this._errorHtml('description')}
             </div>
             <div class="custom-item-grid">
-                ${this._inputHtml(form, 'value', 'Value', { numeric: true, placeholder: 'Optional' })}
+                ${this._inputHtml(form, 'value', 'Value', { limit: this.LIMITS.value, placeholder: 'Optional' })}
                 ${this._selectHtml(form, 'rarity', 'Rarity', rarityOptions)}
             </div>
             <div class="relic-summary-block">
@@ -202,9 +202,10 @@ const CustomWargear = {
         return `<span class="custom-item-error" data-error-for="${field}"></span>`;
     },
 
-    // A text input bound to form[key]. A number field is a text box, so validateForm sees the typed text.
+    // A text input bound to form[key]. A number field (options.limit, its LIMITS range) is a text box,
+    // so validateForm sees the typed text.
     _inputHtml(form, key, label, options = {}) {
-        const numeric = options.numeric ? ' inputmode="numeric"' : '';
+        const numeric = options.limit ? this._inputModeAttr(options.limit) : '';
         const placeholder = options.placeholder ? ` placeholder="${this.escapeAttr(options.placeholder)}"` : '';
         return `
             <div class="form-group">
@@ -212,6 +213,12 @@ const CustomWargear = {
                 <input type="text" id="custom-item-${key}" class="search-input" data-field="${key}"${numeric}${placeholder} value="${this.escapeAttr(form[key])}">
                 ${options.error === false ? '' : this._errorHtml(key)}
             </div>`;
+    },
+
+    // The inputmode of a number field. A range with a negative value gets none, because some phone
+    // keypads for inputmode="numeric" have no minus key.
+    _inputModeAttr(limit) {
+        return limit.min >= 0 ? ' inputmode="numeric"' : '';
     },
 
     // A select bound to form[key]; options is a list of [value, label]
@@ -293,7 +300,7 @@ const CustomWargear = {
                 <div class="custom-item-bonus-row">
                     <select data-bonus-index="${i}" data-bonus-part="key" aria-label="Stat"><option value="">Select a stat</option>${keys}</select>
                     <select data-bonus-index="${i}" data-bonus-part="mode" aria-label="Bonus type">${modes}</select>
-                    ${mode === 'number' ? `<input type="text" class="search-input" inputmode="numeric" data-bonus-index="${i}" data-bonus-part="value" aria-label="Bonus value" value="${this.escapeAttr(row.value)}">` : ''}
+                    ${mode === 'number' ? `<input type="text" class="search-input"${this._inputModeAttr(this.LIMITS.bonus)} data-bonus-index="${i}" data-bonus-part="value" aria-label="Bonus value" value="${this.escapeAttr(row.value)}">` : ''}
                     <button type="button" class="btn-small" data-action="remove-bonus" data-index="${i}" aria-label="Remove bonus">&times;</button>
                 </div>`;
         }).join('');

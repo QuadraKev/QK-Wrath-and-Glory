@@ -849,10 +849,26 @@ for (const rel of ['character-sheet-tab.js', 'wargear-tab.js', 'talents-tab.js']
         const html = CW.bodyHtml(F({ kind: 'augmetic', bonuses: [{ key: 'resilience', value: 'rank' }] }));
         return [html.includes('data-bonus-part="value"'), /<option value="rank" selected>/.test(html)];
     })(), [false, true]);
-    for (const [label, form] of [['xenotech', xenotech], ['ranged', ranged], ['spine', spine]]) {
-        const html = CW.bodyHtml(form);
-        check(`bodyHtml of ${label} uses inputmode="numeric" and no type="number"`, [html.includes('inputmode="numeric"'), html.includes('type="number"')], [true, false]);
+    // Every number field is a text box. A field whose range holds a negative value (min < 0 in LIMITS)
+    // has no inputmode, so that a phone shows a keyboard with a minus key; the others are numeric.
+    const limitOf = { damage: 'damage', ed: 'ed', ap: 'ap', reach: 'reach', rangeShort: 'range', rangeMedium: 'range', rangeLong: 'range',
+        salvo: 'salvo', ar: 'ar', value: 'value', bonusValue: 'bonus' };
+    const numberInputs = html => (html.match(/<input[^>]*>/g) || []).map(tag => {
+        const field = (tag.match(/data-field="([^"]+)"/) || [])[1] || (/data-bonus-part="value"/.test(tag) ? 'bonusValue' : null);
+        return { field, tag };
+    }).filter(input => input.field in limitOf);
+    check('the LIMITS ranges with a negative value are AP and the bonus value',
+        Object.keys(limitOf).filter(field => CW.LIMITS[limitOf[field]].min < 0), ['ap', 'bonusValue']);
+    for (const [label, form] of [['xenotech', xenotech], ['ranged', ranged], ['spine', spine], ['armour', armour]]) {
+        const inputs = numberInputs(CW.bodyHtml(form));
+        check(`bodyHtml of ${label}: each number field is type="text", with inputmode="numeric" only when its min >= 0`,
+            inputs.filter(({ field, tag }) => !tag.includes('type="text"') ||
+                tag.includes('inputmode="numeric"') !== (CW.LIMITS[limitOf[field]].min >= 0) ||
+                (CW.LIMITS[limitOf[field]].min < 0 && tag.includes('inputmode'))).map(input => input.field), []);
+        check(`bodyHtml of ${label} has number fields and no type="number"`, [inputs.length > 0, CW.bodyHtml(form).includes('type="number"')], [true, false]);
     }
+    check('the AP and bonus value inputs are in the checked forms', [numberInputs(CW.bodyHtml(xenotech)).some(i => i.field === 'ap'),
+        numberInputs(CW.bodyHtml(spine)).filter(i => i.field === 'bonusValue').length], [true, 2]);
     check('every data-field of a ranged form has an error span or is a picker box', (() => {
         const html = CW.bodyHtml(ranged);
         const fields = ['name', 'damage', 'ed', 'ap', 'range', 'salvo', 'traits', 'keywords', 'description', 'value', 'rarity'];

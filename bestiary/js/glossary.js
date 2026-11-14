@@ -123,7 +123,7 @@ const Glossary = {
     addTermVariations(name, data) {
         const lowerName = name.toLowerCase();
 
-        const skipVariations = ['powered', 'spread'];
+        const skipVariations = ['powered', 'spread', 'paired', 'overwhelming', 'corrupting'];
 
         if (skipVariations.includes(lowerName)) {
             if (lowerName.includes('(')) {

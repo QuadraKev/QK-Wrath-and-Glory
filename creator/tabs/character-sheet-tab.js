@@ -20,7 +20,7 @@ const CharacterSheetTab = {
     ],
 
     // The controls that can get the focus back after a re-render (refer to _focusKeyOf)
-    _FOCUS_SELECTOR: '.sheet-tab-btn, .tracker-btn, .weapon-equip-checkbox, .follower-living-btn',
+    _FOCUS_SELECTOR: '.sheet-tab-btn, .tracker-btn, .weapon-equip-checkbox, .follower-living-btn, .sheet-notes-input',
 
     // Initialize the tab
     init() {
@@ -79,7 +79,11 @@ const CharacterSheetTab = {
         const visible = this.getVisibleSheetTabs(character);
 
         // The selected tab can go away (no PSYKER keyword, no follower): fall back to Stats
-        if (!visible.includes(this.activeSheetTab)) this.activeSheetTab = 'stats';
+        // and show the Stats pane from its top, not at the scroll position of the old pane
+        if (!visible.includes(this.activeSheetTab)) {
+            this.activeSheetTab = 'stats';
+            viewState.scrollTop = 0;
+        }
 
         const container = document.getElementById('character-sheet-content');
 
@@ -653,7 +657,7 @@ const CharacterSheetTab = {
                     Members:
                     <button class="follower-living-btn" data-delta="-1" title="One more casualty"
                             ${follower.livingCount <= 0 ? 'disabled' : ''}>&minus;</button>
-                    <span class="sheet-follower-living">${follower.livingCount} / ${follower.count}</span>
+                    <span class="sheet-follower-living">${this.escapeHtml(String(follower.livingCount))} / ${this.escapeHtml(String(follower.count))}</span>
                     <button class="follower-living-btn" data-delta="1" title="One more living member"
                             ${follower.livingCount >= follower.count ? 'disabled' : ''}>+</button>
                 </span>
@@ -671,7 +675,7 @@ const CharacterSheetTab = {
         ` : '';
 
         return `
-            <div class="sheet-follower" data-follower-id="${follower.id}">
+            <div class="sheet-follower" data-follower-id="${this.escapeHtml(follower.id)}">
                 <div class="sheet-follower-header">
                     <span class="sheet-follower-name">${this.escapeHtml(displayName)}</span>
                     <span class="sheet-follower-type">${isMob ? 'Mob' : 'Individual'}</span>
@@ -2572,17 +2576,21 @@ const CharacterSheetTab = {
             const item = el.closest('.sheet-follower');
             return item ? 'living:' + item.dataset.followerId + ':' + el.dataset.delta : null;
         }
+        if (el.classList.contains('sheet-notes-input')) return 'notes';
         return null;
     },
 
-    // The scroll position of the sheet, and the focus key when the focus is inside the sheet
+    // The scroll position of the sheet, the focus key when the focus is inside the sheet,
+    // and the selection of the Notes box when it has the focus
     _captureViewState() {
         const scroller = document.getElementById('tab-character-sheet');
         const container = document.getElementById('character-sheet-content');
         const active = document.activeElement;
+        const focusKey = container && container.contains(active) ? this._focusKeyOf(active) : null;
         return {
             scrollTop: scroller ? scroller.scrollTop : 0,
-            focusKey: container && container.contains(active) ? this._focusKeyOf(active) : null
+            focusKey,
+            selection: focusKey === 'notes' ? [active.selectionStart, active.selectionEnd] : null
         };
     },
 
@@ -2596,7 +2604,10 @@ const CharacterSheetTab = {
         const container = document.getElementById('character-sheet-content');
         const match = Array.from(container.querySelectorAll(this._FOCUS_SELECTOR))
             .find(el => this._focusKeyOf(el) === state.focusKey);
-        if (match && !match.disabled) match.focus({ preventScroll: true });
+        if (!match || match.disabled) return;
+        match.focus({ preventScroll: true });
+        // The new Notes box has its caret at the end of the text: put the old caret back
+        if (state.selection) match.setSelectionRange(state.selection[0], state.selection[1]);
     },
 
     // Show a glossary-style breakdown popup for an element

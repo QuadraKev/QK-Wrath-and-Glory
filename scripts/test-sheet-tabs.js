@@ -917,6 +917,80 @@ function tabsSection() {
         const o = run({ focus: 'plus', matches: ['newMinus', 'newPlus'], inside: false });
         check('focus outside the sheet restores no focus', [o.newPlus.focusCalls, o.newMinus.focusCalls], [[], []]);
     }
+
+    // The Notes box keeps the focus and the caret across a re-render (the threat load re-renders once)
+    {
+        const notesBox = (start, end) => Object.assign(stubEl({ cls: ['sheet-notes-input'] }), {
+            value: 'abcdef', selectionStart: start, selectionEnd: end, ranges: [],
+            setSelectionRange(a, b) { this.ranges.push([a, b]); }
+        });
+        const { sheet } = sheetSandbox();
+        check('focus key of the Notes box', sheet._focusKeyOf(notesBox(0, 0)), 'notes');
+        for (const [start, end] of [[3, 3], [2, 5]]) {
+            const env = sheetSandbox();
+            const restore = stubBlocks(env.sheet);
+            const oldNotes = notesBox(start, end);
+            const newNotes = notesBox(6, 6);
+            try {
+                env.sheet.activeSheetTab = 'notes';
+                env.dom.document.activeElement = oldNotes;
+                env.dom.container.query = sel => (sel === env.sheet._FOCUS_SELECTOR || sel === '.sheet-notes-input' ? [newNotes] : []);
+                env.sheet.render();
+            } finally {
+                restore();
+            }
+            check(`Notes box refocused with the selection ${start}-${end}`, [newNotes.focusCalls, newNotes.ranges], [[{ preventScroll: true }], [[start, end]]]);
+        }
+    }
+
+    // A fallback to Stats starts the new pane at its top; no fallback keeps the scroll
+    {
+        const env = sheetSandbox();
+        const restore = stubBlocks(env.sheet);
+        const scrolls = [];
+        try {
+            for (const tab of ['companions', 'wargear']) {
+                env.sheet.activeSheetTab = tab;   // no follower: companions is not a visible tab
+                env.dom.scroller.scrollTop = 420;
+                env.sheet.render();
+                scrolls.push([env.sheet.activeSheetTab, env.dom.scroller.scrollTop]);
+            }
+        } finally {
+            restore();
+        }
+        check('a fallback scrolls to 0, no fallback keeps 420', scrolls, [['stats', 0], ['wargear', 420]]);
+    }
+
+    // Saved follower values are escaped in renderFollower; the living keys stay unique
+    {
+        const env = sheetSandbox();
+        const id = '"><img src=x onerror=1>';
+        const decode = (s) => s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
+        let html = '';
+        let evil = '';
+        let none = '';
+        try {
+            env.dataLoader.getThreat = () => ({ name: 'Thug', wounds: 2, shock: 1 });
+            env.ctx.Followers = { mobAttackBonus: () => 0, alternativeStatValue: () => 3 };
+            env.ctx.ThreatCard = { render: () => '' };
+            const follower = { id, threatId: 'thug', name: '', kind: 'mob', count: 3, livingCount: 2, useAlternativeStats: false, currentWounds: null, currentShock: null, notes: '' };
+            html = env.sheet.renderFollower(follower, env.state.character);
+            evil = env.sheet.renderFollower({ ...follower, id: 'f1', count: EVIL, livingCount: EVIL }, env.state.character);
+            none = env.sheet.renderFollower({ ...follower, id: 'f1', livingCount: 0 }, env.state.character);
+        } finally {
+            env.dataLoader.getThreat = makeDataLoader().getThreat;
+            delete env.ctx.Followers;
+            delete env.ctx.ThreatCard;
+        }
+        const attr = (html.match(/data-follower-id="([^"]*)"/) || [])[1];
+        check('follower id is escaped, no raw tag', [attr, /<img/i.test(html)], [env.sheet.escapeHtml(id), false]);
+        const item = stubEl({ cls: ['sheet-follower'], data: { followerId: decode(attr || '') } });
+        const keys = [...html.matchAll(/class="follower-living-btn" data-delta="(-?1)"/g)]
+            .map(m => env.sheet._focusKeyOf(stubEl({ cls: ['follower-living-btn'], data: { delta: m[1] }, parent: item })));
+        check('the mob buttons get unique living keys with the decoded id', keys, ['living:' + id + ':-1', 'living:' + id + ':1']);
+        check('saved living count and count are escaped', [evil.includes(SAFE + ' / ' + SAFE), RAW_TAG.test(evil)], [true, false]);
+        check('a living count of 0 still prints 0', none.includes('>0 / 3<'), true);
+    }
 }
 
 console.log(failures ? `\n${failures} check(s) FAILED` : '\nAll checks passed');

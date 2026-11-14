@@ -271,6 +271,20 @@ The tab bar: a flex row of pill buttons in the style of `.wargear-tab-btn`
 `flex-wrap: nowrap` and `overflow-x: auto` **[Designer]**; after a render and after a switch, the
 selected tab is scrolled into view inside the bar without a vertical scroll of the page.
 
+**Additions after the final review [Controller rulings, 2026-11-14].**
+
+- In compact and low mode, the tab bar stays one row and shows a 24px edge fade on each side that
+  has more tabs. Reason: at 360px the bar showed four whole tabs and a clean right edge, so nothing
+  told the player about the other tabs. The fade has the bar background (`var(--bg-primary)`), takes
+  no pointer events and exists only in the screen rules. The state comes from `scrollLeft`,
+  `clientWidth` and `scrollWidth` of the bar. It changes after a render, after a switch, when the bar
+  scrolls, and on a window resize. When all tabs fit, no fade shows.
+- The scroll into view keeps 32px of room on a side that has more tabs, so the selected tab is clear
+  of the fade and a part of the next tab shows. At the first and the last tab, the 4px padding of the
+  bar keeps the room for the focus ring.
+- A window resize (for example a rotate) also scrolls the selected tab into view. The resize does
+  nothing while the sheet is not displayed.
+
 ## 3. Block-to-tab mapping
 
 **[Designer]**, with the Details block and the Mutations split as **[Designer, new]**:
@@ -458,6 +472,14 @@ click while the Notes tab is open re-renders the textarea from state, as today.
   `follower.livingCount`, `follower.count`), because a character file can come from another
   person.
 
+**Additions after the final review [Controller rulings, 2026-11-14].**
+
+- The view state also holds the `scrollTop` of the Notes box, when the box exists. The restore sets
+  it on the new box, with or without the focus, after the caret. Reason: a tracker click while the
+  Notes tab is open re-renders the box, and the box went back to its first line.
+- The strip and the Details block escape the Wrath value, the Rank and the target tier of an
+  ascension, because a character file can come from another person.
+
 ### 5.3 Tab switch
 
 `selectSheetTab(id)` does not re-render. It:
@@ -495,6 +517,21 @@ Use the WAI-ARIA Tabs pattern with automatic activation (a switch is cheap, §5.
   `:2398`, a gold border); no button has one.
 - `.sheet-pane[hidden] { display: none; }` is stated in CSS, so no later rule shows a hidden pane on
   screen.
+
+**Additions after the final review [Controller rulings, 2026-11-14].**
+
+- A keyboard focus inside the panes goes under the pinned part. Reason: the browser scrolls a
+  focused control into the scrollport, and the pinned part covers the top of the scrollport, so a
+  control could have the focus and change with no part of it visible. One `focusin` listener on
+  `#character-sheet-content` compares the top of the target with the bottom of the pinned part at
+  that moment and scrolls the page up by the difference: a control goes 4px under the pinned part for
+  its focus ring, a pane goes directly under it. No height is stored, and no `scroll-padding-top` is
+  used, because it scrolls the page for each focus on a control of the pinned part.
+- Only the focus move of a Tab key press starts this scroll. A mouse or touch focus, the focus
+  restore of a re-render, and a control of the pinned part do not move the page.
+- A focused pane shows the gold ring of the other sheet controls, drawn inside the pane
+  (`outline-offset: -2px`), so the scroller does not clip it. This is a screen rule only. The
+  transition of a tab button names its properties, so its focus ring shows gold at once.
 
 ## 7. Print
 

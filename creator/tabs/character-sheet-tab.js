@@ -374,8 +374,9 @@ const CharacterSheetTab = {
     },
 
     // Render the Wounds and Shock boxes, the Wrath counter and, with a max Faith above 0, the Faith counter of the strip.
-    // The labels and the boxes stay flat, because the strip grid places each one. The counters have a wrapper,
-    // so that the Faith counter can follow the Wrath counter in one row and wrap to the next row.
+    // One markup for all modes. Each boxes group has a wrapper for the grid of the wide layout, and the counters have
+    // a wrapper, so that the Faith counter can follow the Wrath counter in one row and wrap to the next row.
+    // The box count (--n) and the box index (--i) let the CSS make even rows of boxes.
     renderStripTrackers(stats) {
         const counter = (type, label, value) => `
                     <div class="sheet-strip-counter sheet-strip-${type}">
@@ -388,10 +389,14 @@ const CharacterSheetTab = {
                     </div>`;
         return `
             <div class="sheet-strip-trackers">
-                <span class="sheet-strip-label tracker-label">Wounds</span>
-                <div class="tracking-boxes">${this.renderTrackingBoxes('wounds', State.getCurrentWounds(), stats.maxWounds)}</div>
-                <span class="sheet-strip-label tracker-label">Shock</span>
-                <div class="tracking-boxes">${this.renderTrackingBoxes('shock', State.getCurrentShock(), stats.maxShock)}</div>
+                <div class="sheet-strip-group sheet-strip-wounds">
+                    <span class="sheet-strip-label tracker-label">Wounds</span>
+                    <div class="tracking-boxes" style="--n: ${this.escapeHtml(String(stats.maxWounds))}">${this.renderTrackingBoxes('wounds', State.getCurrentWounds(), stats.maxWounds)}</div>
+                </div>
+                <div class="sheet-strip-group sheet-strip-shock">
+                    <span class="sheet-strip-label tracker-label">Shock</span>
+                    <div class="tracking-boxes" style="--n: ${this.escapeHtml(String(stats.maxShock))}">${this.renderTrackingBoxes('shock', State.getCurrentShock(), stats.maxShock)}</div>
+                </div>
                 <div class="sheet-strip-counters">${counter('wrath', 'Wrath', State.getCurrentWrath())}${State.getMaxFaith() > 0 ? counter('faith', 'Faith', State.getCurrentFaith()) : ''}
                 </div>
             </div>
@@ -716,7 +721,7 @@ const CharacterSheetTab = {
         let boxes = '';
         for (let i = 0; i < max; i++) {
             const filled = i < current ? 'filled' : '';
-            boxes += `<span class="tracking-box ${filled}" data-type="${type}" data-index="${i}"></span>`;
+            boxes += `<span class="tracking-box ${filled}" data-type="${type}" data-index="${i}" style="--i: ${i}"></span>`;
         }
         return boxes;
     },

@@ -481,6 +481,15 @@ function tabsSection() {
             check('Wrath buttons are never disabled', /data-type="wrath"[^>]*disabled|disabled[^>]*data-type="wrath"/.test(html), false);
             check('Wrath buttons are type="button"', [tagOf(html, 'aria-label="Remove Wrath"').includes('type="button"'), tagOf(html, 'aria-label="Add Wrath"').includes('type="button"')], [true, true]);
             check('strip labels carry tracker-label', count(html, /class="sheet-strip-label tracker-label"/g), 2);
+            check('the strip has the identity, the trackers and the tab bar one time each (one markup for all modes)',
+                [count(html, /class="sheet-section sheet-header-section"/g), count(html, /class="sheet-strip-trackers"/g), count(html, /class="sheet-tabbar"/g)], [1, 1, 1]);
+            check('each boxes group has its label and its boxes in one wrapper',
+                [/<div class="sheet-strip-group sheet-strip-wounds">\s*<span class="sheet-strip-label tracker-label">Wounds<\/span>\s*<div class="tracking-boxes"/.test(html),
+                    /<div class="sheet-strip-group sheet-strip-shock">\s*<span class="sheet-strip-label tracker-label">Shock<\/span>\s*<div class="tracking-boxes"/.test(html)],
+                [true, true]);
+            check('the even rows get the box count and each box index (B3)',
+                [html.includes('<div class="tracking-boxes" style="--n: 11">'), html.includes('<div class="tracking-boxes" style="--n: 8">'), count(html, /data-type="wounds" data-index="(\d+)" style="--i: \1"/g)],
+                [true, true, 11]);
 
             env.state.wrath = 0;
             sheet.render();
@@ -869,7 +878,6 @@ function tabsSection() {
     const full = mediaBlocks(sec, 'screen').join('\n');
     const compact = mediaBlocks(sec, 'screen and (max-width: 768px), screen and (max-height: 600px)').join('\n');
     check('full mode pins the strip', /\.sheet-strip\s*\{[^}]*position:\s*sticky[^}]*top:\s*0/.test(full), true);
-    check('compact mode unwraps the strip and pins the bar', [/\.sheet-strip\s*\{[^}]*display:\s*contents/.test(compact), /\.sheet-strip-bar\s*\{[^}]*position:\s*sticky/.test(compact)], [true, true]);
     check('compact tab bar scrolls sideways', /\.sheet-tabbar\s*\{[^}]*flex-wrap:\s*nowrap[^}]*overflow-x:\s*auto/.test(compact), true);
     const paddingSides = (rule) => {
         const sides = { top: 0, right: 0, bottom: 0, left: 0 };
@@ -902,25 +910,127 @@ function tabsSection() {
     const low = mediaBlocks(sec, 'screen and (max-height: 480px)').join('\n');
     check('full mode: the strip is opaque', has(ruleOf(full, '.sheet-strip'), /background:\s*var\(--bg-primary\)/), true);
     check('full mode: the strip has z-index 5', has(ruleOf(full, '.sheet-strip'), /z-index:\s*5;/), true);
-    check('compact mode: the bar is opaque', has(ruleOf(compact, '.sheet-strip-bar'), /background:\s*var\(--bg-primary\)/), true);
-    check('compact mode: the bar has z-index 5', has(ruleOf(compact, '.sheet-strip-bar'), /z-index:\s*5;/), true);
-    // Width selects the tracker layout (controller ruling 1, 2026-11-14): the flat layout applies at 768px or less
-    check('full mode tracker grid: label, boxes, counters', has(ruleOf(full, '.sheet-strip-trackers'), /grid-template-columns:\s*64px 1fr 112px;/), true);
+    // Width selects the layout (controller rulings B1-B5, 2026-11-14): the E2 card above 768px, the flat counts at 768px or less
+    const wide = mediaBlocks(sec, 'screen and (min-width: 769px)').join('\n');
     const narrow = mediaBlocks(sec, 'screen and (max-width: 768px)').join('\n');
-    check('narrow tracker grid: label, boxes', has(ruleOf(narrow, '.sheet-strip-trackers'), /grid-template-columns:\s*52px 1fr;/), true);
+    const wideLow = mediaBlocks(sec, 'screen and (min-width: 769px) and (max-height: 480px)').join('\n');
+    check('narrow compact mode: the bar is opaque', has(ruleOf(narrow, '.sheet-strip-bar'), /background:\s*var\(--bg-primary\)/), true);
+    check('narrow compact mode: the bar has z-index 5', has(ruleOf(narrow, '.sheet-strip-bar'), /z-index:\s*5;/), true);
+    check('narrow compact mode unwraps the strip and pins the bar',
+        [has(ruleOf(narrow, '.sheet-strip'), /display:\s*contents/), has(ruleOf(narrow, '.sheet-strip-bar'), /position:\s*sticky/), has(ruleOf(narrow, '.sheet-strip-bar'), /top:\s*0;/)], [true, true, true]);
+    // A wide window above 480px high pins the whole strip: no rule outside the narrow and low blocks unwraps the strip
+    const outsideNarrowLow = sec.replace(/@media screen and \((?:max-width: 768px|max-height: 480px)\)\s*\{(?:[^{}]|\{[^{}]*\})*\}/g, '');
+    check('a wide window above 480px high pins the whole strip',
+        [/\.sheet-strip\s*\{[^}]*display:\s*contents/.test(outsideNarrowLow), /\.sheet-strip-bar\s*\{[^}]*position:\s*sticky/.test(outsideNarrowLow),
+            /\.sheet-strip\s*\{[^}]*display:\s*contents/.test(compact), /\.sheet-strip-bar\s*\{[^}]*position:\s*sticky/.test(compact)],
+        [false, false, false, false]);
+    check('low mode unwraps the strip at any width', has(ruleOf(low, '.sheet-strip'), /display:\s*contents/), true);
+
+    // The wide layout: the identity and the trackers are the two halves of the name card, with a vertical divider
+    const wideHeader = ruleOf(wide, '.sheet-strip .sheet-header-section');
+    const wideTrackers = ruleOf(wide, '.sheet-strip-trackers');
+    check('wide: the strip is a row that wraps, and the bar is unwrapped',
+        [has(ruleOf(wide, '.sheet-strip'), /display:\s*flex/), has(ruleOf(wide, '.sheet-strip'), /flex-wrap:\s*wrap/), has(ruleOf(wide, '.sheet-strip-bar'), /display:\s*contents/)], [true, true, true]);
+    check('wide: the identity is the left half, left-aligned, at least 42%',
+        [/min-width:\s*42%/, /border-right:\s*0/, /text-align:\s*left/, /justify-content:\s*center/].map(re => has(wideHeader, re)), [true, true, true, true]);
+    check('wide: the trackers are the right half, 50% to 58% of the card',
+        [/min-width:\s*50%/, /max-width:\s*58%/, /border-left:\s*0/, /display:\s*grid/, /grid-template-columns:\s*auto minmax\(0, auto\);/, /justify-content:\s*center/, /align-content:\s*center/].map(re => has(wideTrackers, re)),
+        [true, true, true, true, true, true, true]);
+    check('wide: the two halves show one gradient, the full width of the card',
+        [/100cqi 100%/.test(wideHeader), /100cqi 100%/.test(wideTrackers), /left top/.test(wideHeader), /right top/.test(wideTrackers), has(ruleOf(full, '#character-sheet-content'), /container-type:\s*inline-size/)],
+        [true, true, true, true, true]);
+    check('wide: the divider is a line with the same inset at its top and its bottom',
+        /linear-gradient\(var\(--border-light\), var\(--border-light\)\) left center \/ 1px calc\(100% - 22px\)/.test(wideTrackers), true);
+    check('wide: Wrath and Wounds in row 1, Faith and Shock in row 2, the counters in column 1',
+        [has(ruleOf(wide, '.sheet-strip-counters'), /display:\s*contents/), has(ruleOf(wide, '.sheet-strip-counter'), /grid-column:\s*1;/), has(ruleOf(wide, '.sheet-strip-group'), /grid-column:\s*2;/),
+            /\.sheet-strip-wrath,\s*\.sheet-strip-wounds\s*\{[^}]*grid-row:\s*1;/.test(wide), /\.sheet-strip-faith,\s*\.sheet-strip-shock\s*\{[^}]*grid-row:\s*2;/.test(wide)],
+        [true, true, true, true, true]);
+    check('wide: with no Faith, the Wrath counter spans the two rows and is centered',
+        [/grid-row:\s*1 \/ span 2/, /align-self:\s*center/].map(re => has(ruleOf(wide, '.sheet-strip-wrath:only-child'), re)), [true, true]);
+    check('wide: the box row has the height of the buttons (28px)', has(ruleOf(wide, '.sheet-strip-trackers .tracking-boxes'), /min-height:\s*28px/), true);
+    check('wide low mode: the sheet content is the row that wraps, so the tab bar can pin',
+        [has(ruleOf(wideLow, '#character-sheet-content'), /display:\s*flex/), has(ruleOf(wideLow, '#character-sheet-content'), /flex-wrap:\s*wrap/)], [true, true]);
+    const outsideWide = sec.replace(/\/\*[\s\S]*?\*\//g, '').replace(/@media screen and \(min-width: 769px\)[^{]*\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\}/g, '');
+    check('the wide rules are only in the wide screen blocks',
+        [/minmax\(0, auto\)/.test(outsideWide), /\.sheet-strip-counters\s*\{[^}]*display:\s*contents/.test(outsideWide), /100cqi 100%/.test(outsideWide), /max-width:\s*58%/.test(outsideWide), /64px 1fr 112px/.test(sec)],
+        [false, false, false, false, false]);
+
+    // The narrow layout: the counts are the lower part of the name card, below a horizontal divider
+    const narrowHeader = ruleOf(narrow, '.sheet-strip .sheet-header-section');
+    const narrowTrackers = ruleOf(narrow, '.sheet-strip-trackers');
+    check('narrow: the identity is the top of the card, with no bottom border and no margin',
+        [/border-bottom:\s*0/, /margin-bottom:\s*0/, /border-radius:\s*var\(--radius-md\) var\(--radius-md\) 0 0/].map(re => has(narrowHeader, re)), [true, true, true]);
+    check('narrow: the counts are the bottom of the card, with the divider as the top edge',
+        [/border:\s*1px solid var\(--accent-gold\)/, /border-top:\s*1px solid var\(--border-light\)/, /border-radius:\s*0 0 var\(--radius-md\) var\(--radius-md\)/].map(re => has(narrowTrackers, re)), [true, true, true]);
+    const horiz = /linear-gradient\(90deg, var\(--bg-tertiary\) 0%, var\(--bg-secondary\) 100%\)/;
+    check('narrow: the two parts have one horizontal gradient, so they join with no step', [horiz.test(narrowHeader), horiz.test(narrowTrackers)], [true, true]);
+    check('narrow: the bar has no top or side padding, so the parts join and align', paddingSides(ruleOf(narrow, '.sheet-strip-bar')), { top: 0, right: 0, bottom: 8, left: 0 });
+    check('narrow tracker grid: label, boxes, with a 10px row gap',
+        [/display:\s*grid/, /grid-template-columns:\s*52px 1fr;/, /gap:\s*10px 8px;/].map(re => has(narrowTrackers, re)), [true, true, true]);
     check('narrow boxes are 22px', [/width:\s*22px/, /height:\s*22px/].map(re => has(ruleOf(narrow, '.sheet-strip-trackers .tracking-box'), re)), [true, true]);
     check('narrow: the counters are one row under the boxes, and the Faith counter can wrap to the next row',
-        [/grid-column:\s*1 \/ -1/, /grid-row:\s*3;/, /flex-direction:\s*row/, /flex-wrap:\s*wrap/].map(re => has(ruleOf(narrow, '.sheet-strip-counters'), re))
-            .concat([has(ruleOf(full, '.sheet-strip-counters'), /display:\s*flex/)]), [true, true, true, true, true]);
+        [/grid-column:\s*1 \/ -1/, /grid-row:\s*3;/, /display:\s*flex/, /flex-wrap:\s*wrap/, /gap:\s*10px 16px;/].map(re => has(ruleOf(narrow, '.sheet-strip-counters'), re)), [true, true, true, true, true]);
     check('narrow counter buttons are 32px', [/width:\s*32px/, /height:\s*32px/].map(re => has(ruleOf(narrow, '.sheet-strip-counter .tracker-btn'), re)), [true, true]);
     const outsideNarrow = sec.replace(/@media screen and \(max-width: 768px\)\s*\{(?:[^{}]|\{[^{}]*\})*\}/g, '');
     check('the flat tracker rules apply only at 768px wide or less, not at 600px high alone',
-        [/52px 1fr/.test(outsideNarrow), /\.sheet-strip-trackers \.tracking-box\s*\{/.test(outsideNarrow), /\.sheet-strip-(?:wrath|counters?)\b[^{]*\{[^}]*grid-row:\s*3/.test(outsideNarrow),
-            /sheet-strip-(?:trackers|wrath|counters?|label)/.test(compact)],
-        [false, false, false, false]);
-    check('compact mode keeps its pin rules at 768px wide or 600px high',
-        [has(ruleOf(compact, '.sheet-strip'), /display:\s*contents/), has(ruleOf(compact, '.sheet-strip-bar'), /position:\s*sticky/), has(ruleOf(compact, '.sheet-strip-bar'), /top:\s*0;/)], [true, true, true]);
+        [/52px 1fr/.test(outsideNarrow), /\.sheet-strip-trackers \.tracking-box\s*\{[^}]*22px/.test(outsideNarrow), /\.sheet-strip-(?:wrath|counters?)\b[^{]*\{[^}]*grid-row:\s*3/.test(outsideNarrow),
+            /sheet-strip-(?:trackers|wrath|counters?|label)/.test(compact), /90deg/.test(outsideNarrow)],
+        [false, false, false, false, false]);
 
+    // B3: even rows of boxes in the wide layout. The test evaluates the CSS formulas for a maximum per row.
+    {
+        const evenBlock = mediaBlocks((sec.replace(/\/\*[\s\S]*?\*\//g, '').match(/@supports[^{]*\{((?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*)\}/) || [])[1] || '', 'screen').join('\n');
+        const decl = (sel, prop) => {
+            const body = ruleOf(evenBlock, sel);
+            const m = body.match(new RegExp(`(?:^|;)\\s*${prop.replace(/[-]/g, '\\-')}:\\s*([^;]+);`));
+            return m ? m[1].trim() : null;
+        };
+        const boxesSel = '.sheet-strip-trackers .tracking-boxes';
+        // All the rules of one selector in a block, joined
+        const rulesOf = (css, selector) => {
+            const esc = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            return [...css.matchAll(new RegExp(`(?:^|[};/])\\s*${esc}\\s*\\{([^}]*)\\}`, 'g'))].map(m => m[1]).join('\n');
+        };
+        const boxSel = '.sheet-strip-trackers .tracking-box';
+        const formulas = {
+            rows: decl(boxesSel, '--rows'), perRow: decl(boxesSel, '--per-row'), cut: decl(boxesSel, '--cut'),
+            long: decl(boxSel, '--long'), col: decl(boxSel, 'grid-column-start')
+        };
+        check('B3: the even-row formulas exist in an @supports block, and each layout sets the count for one row',
+            [Object.values(formulas).every(f => f !== null),
+                /--box-max:\s*max\(1, round\(down, \(58cqi - 170px\) \/ 22px\)\)/.test(rulesOf(wide, boxesSel)), has(rulesOf(wide, boxesSel), /grid-auto-columns:\s*18px/),
+                /--box-max:\s*max\(1, round\(down, \(100cqi - 90px\) \/ 26px\)\)/.test(rulesOf(narrow, boxesSel)), has(rulesOf(narrow, boxesSel), /grid-auto-columns:\s*22px/),
+                has(ruleOf(full, '#character-sheet-content'), /container-type:\s*inline-size/)],
+            [true, true, true, true, true, true]);
+        // CSS math to JS: var(--x) reads a value, round(up|down, a) is ceil|floor, mod takes the sign of the divisor
+        const toJs = (css) => css
+            .replace(/var\(--([a-z-]+)\)/g, (m, name) => `v['${name}']`)
+            .replace(/calc\(/g, '(').replace(/round\(up,/g, 'Math.ceil(').replace(/round\(down,/g, 'Math.floor(')
+            .replace(/\bmod\(/g, 'mod(').replace(/\bclamp\(/g, 'clamp(').replace(/\bmax\(/g, 'Math.max(');
+        const evalCss = (css, v) => new Function('v', 'mod', 'clamp', `return (${toJs(css)});`)(v, (a, b) => a - b * Math.floor(a / b), (lo, x, hi) => Math.min(Math.max(x, lo), hi));
+        const rowSizes = (n, max) => {
+            if (Object.values(formulas).some(f => f === null)) return null;
+            const v = { n, 'box-max': max };
+            v.rows = evalCss(formulas.rows, v); v['per-row'] = evalCss(formulas.perRow, v); v.cut = evalCss(formulas.cut, v);
+            // Grid auto-placement with a set column: a column that is not after the last one starts a new row
+            const sizes = [];
+            let last = Infinity;
+            for (let i = 0; i < n; i++) {
+                const col = evalCss(formulas.col, { ...v, i, long: evalCss(formulas.long, { ...v, i }) });
+                if (col <= last) sizes.push(0);
+                sizes[sizes.length - 1]++;
+                last = col;
+            }
+            return sizes;
+        };
+        check('B3: the examples of the ruling', [rowSizes(16, 12), rowSizes(24, 16), rowSizes(24, 11), rowSizes(11, 10), rowSizes(50, 16), rowSizes(10, 16), rowSizes(1, 16)],
+            [[8, 8], [12, 12], [8, 8, 8], [6, 5], [13, 13, 12, 12], [10], [1]]);
+        const even = (sizes, n, max) => sizes !== null && sizes.length === Math.ceil(n / max) && sizes.reduce((a, b) => a + b, 0) === n &&
+            sizes.every((s, i) => s <= max && (i === 0 || s === sizes[i - 1] || s === sizes[i - 1] - 1)) && (n === 1 || !sizes.includes(1));
+        const bad = [];
+        for (const n of [1, 10, 11, 16, 24, 50]) for (const max of [8, 10, 11, 12, 16, 20]) if (!even(rowSizes(n, max), n, max)) bad.push(`${n}/${max}: ${JSON.stringify(rowSizes(n, max))}`);
+        check('B3: for 1, 10, 11, 16, 24 and 50 boxes, the rows are even (the first rows can have one box more) and no row has one box alone', bad, []);
+    }
     // Low mode (a window 480px high or less): only the tab bar is pinned
     const lowBar = ruleOf(low, '.sheet-strip-bar');
     const lowTabbar = ruleOf(low, '.sheet-tabbar');

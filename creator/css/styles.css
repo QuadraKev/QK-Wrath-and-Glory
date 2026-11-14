@@ -5873,12 +5873,15 @@ textarea {
 
 /* ===== Character Sheet Tabs (issue #25) ===== */
 /* The strip (identity, trackers, tab bar) and one pane per tab. Pinning and the layout
-   modes are screen-only. Three modes:
+   modes are screen-only. The width selects the layout of the name card: above 768px, the identity and
+   the trackers are side by side; at 768px or less, the counts are below the identity. Three modes:
    - Full mode, "screen": the whole strip is pinned. These rules are the base of all modes.
-   - Compact mode, "screen and (max-width: 768px), screen and (max-height: 600px)":
-     the identity scrolls away, and the strip bar (trackers and tab bar) is pinned.
-   - Low mode, "screen and (max-height: 480px)": compact mode, but the trackers scroll
-     away too, and only the tab bar is pinned. */
+     A window wider than 768px and higher than 480px uses full mode.
+   - Compact mode, "screen and (max-width: 768px)": the identity scrolls away, and the strip
+     bar (the counts and the tab bar) is pinned. Below 601px high, the tab bar is one row also in
+     a wide window ("screen and (max-width: 768px), screen and (max-height: 600px)").
+   - Low mode, "screen and (max-height: 480px)": the strip and the strip bar are unwrapped,
+     and only the tab bar is pinned. */
 .sheet-pane[hidden] { display: none; }
 
 .sheet-tab-btn:focus-visible,
@@ -5991,59 +5994,150 @@ textarea {
         gap: 8px;
     }
 
-    /* Label | boxes | counters. Wounds is row 1, Shock is row 2, the counters span both.
-       The Faith counter is below the Wrath counter. This is an interim layout for a window wider than 768px. */
-    .sheet-strip-trackers {
-        display: grid;
-        grid-template-columns: 64px 1fr 112px;
-        gap: 6px 8px;
-        align-items: start;
-    }
-
-    .sheet-strip-label {
-        grid-column: 1;
-        line-height: 18px;
-        text-align: left;
-    }
-
-    .sheet-strip-trackers > .tracking-boxes {
-        grid-column: 2;
-        max-width: none;
-        justify-content: flex-start;
-    }
-
-    .sheet-strip-counters {
-        grid-column: 3;
-        grid-row: 1 / span 2;
-        align-self: center;
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-    }
-
-    .sheet-strip-counter {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 2px;
+    /* The width of the card (100cqi) sets the gradient of the name card and the count of boxes in one row */
+    #character-sheet-content {
+        container-type: inline-size;
     }
 }
 
-/* Compact mode: the identity scrolls away, and the bar (trackers and tab bar) is pinned */
-@media screen and (max-width: 768px), screen and (max-height: 600px) {
+/* The name card in a window wider than 768px (layout E2). The identity and the trackers are the two halves
+   of the card, side by side in one row with one height. The tab bar is the next row. Each half draws its
+   part of the card: the gradient is as wide as the card (100cqi) and starts at the left edge of the card in
+   each half, so the two parts join with no step. A line with the same inset at its top and its bottom is
+   the divider. The trackers half is 50% of the card, or wider up to 58% when the boxes need the width. */
+@media screen and (min-width: 769px) {
     .sheet-strip {
-        display: contents;
+        display: flex;
+        flex-wrap: wrap;
+        row-gap: 8px;
     }
 
     .sheet-strip-bar {
-        position: sticky;
-        top: 0;
-        z-index: 5;
-        background: var(--bg-primary);
-        padding: 8px 12px;
-        gap: 6px;
+        display: contents;
     }
 
+    .sheet-strip .sheet-header-section {
+        flex: 1 1 0;
+        min-width: 42%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: left;
+        border-right: 0;
+        border-radius: var(--radius-md) 0 0 var(--radius-md);
+        background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%) left top / 100cqi 100% no-repeat border-box;
+    }
+
+    .sheet-strip .sheet-keywords {
+        justify-content: flex-start;
+    }
+
+    /* Row 1 is Wrath | Wounds, and row 2 is Faith | Shock. Each label is above its controls. The box row has
+       the height of the buttons (28px), so a counter stays level with its boxes group, also when the boxes wrap. */
+    .sheet-strip-trackers {
+        flex: 0 0 auto;
+        min-width: 50%;
+        max-width: 58%;
+        display: grid;
+        grid-template-columns: auto minmax(0, auto);
+        justify-content: center;
+        align-content: center;
+        align-items: start;
+        gap: 8px 28px;
+        /* The 17px left padding is the 16px padding and the 1px right border of the card, so the grid is
+           centered between the divider and the right edge */
+        padding: 10px 16px 10px 17px;
+        border: 1px solid var(--accent-gold);
+        border-left: 0;
+        border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        background:
+            linear-gradient(var(--border-light), var(--border-light)) left center / 1px calc(100% - 22px) no-repeat border-box,
+            linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%) right top / 100cqi 100% no-repeat border-box;
+    }
+
+    .sheet-tabbar {
+        flex: 1 0 100%;
+    }
+
+    /* The grid places each counter */
+    .sheet-strip-counters {
+        display: contents;
+    }
+
+    .sheet-strip-group,
+    .sheet-strip-counter {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+    }
+
+    .sheet-strip-counter {
+        grid-column: 1;
+        align-items: center;
+    }
+
+    .sheet-strip-group {
+        grid-column: 2;
+        align-items: flex-start;
+    }
+
+    .sheet-strip-wrath,
+    .sheet-strip-wounds {
+        grid-row: 1;
+    }
+
+    .sheet-strip-faith,
+    .sheet-strip-shock {
+        grid-row: 2;
+    }
+
+    /* With no Faith, the Wrath counter is centered against the two boxes groups */
+    .sheet-strip-wrath:only-child {
+        grid-row: 1 / span 2;
+        align-self: center;
+    }
+
+    .sheet-strip-trackers .tracker-label {
+        line-height: 18px;
+    }
+
+    .sheet-strip-label {
+        text-align: left;
+    }
+
+    .sheet-strip-trackers .tracking-boxes {
+        max-width: none;
+        justify-content: flex-start;
+        align-items: center;
+        min-height: 28px;
+    }
+
+    /* The even rows (refer to the @supports block below): the count that fits in one row of the widest trackers
+       half (58% of the card, less the right border, the padding, the counters column and the column gap) */
+    .sheet-strip-trackers .tracking-boxes {
+        --box-max: max(1, round(down, (58cqi - 170px) / 22px));
+        grid-auto-columns: 18px;
+    }
+}
+
+/* Low mode in a wide window: the strip is unwrapped, so the sheet content is the row that holds the two
+   halves of the name card. The tab bar can then pin over the whole sheet. */
+@media screen and (min-width: 769px) and (max-height: 480px) {
+    #character-sheet-content {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .sheet-panes {
+        flex: 1 0 100%;
+        min-width: 0;
+    }
+}
+
+/* The tab bar of compact mode, and of a window 600px high or less at any width */
+@media screen and (max-width: 768px), screen and (max-height: 600px) {
     /* One row that scrolls sideways. The 4px padding keeps the focus ring inside the scroll box. */
     .sheet-tabbar {
         flex-wrap: nowrap;
@@ -6101,16 +6195,60 @@ textarea {
     }
 }
 
-/* The flat trackers, in each mode of a window 768px wide or less. A window wider than 768px keeps the
-   full-mode grid, also in compact and low mode. */
+/* The name card in a window 768px wide or less. The identity is the top of the card, and the counts are the
+   bottom, below a horizontal divider (the top border of the counts). In compact mode, the identity scrolls
+   away, and the strip bar (the counts and the tab bar) is pinned. The two parts have the same horizontal
+   gradient, so they join with no step at any height. The bar has no top or side padding, so the parts join
+   and their side edges align. */
 @media screen and (max-width: 768px) {
+    .sheet-strip {
+        display: contents;
+    }
+
+    .sheet-strip-bar {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        background: var(--bg-primary);
+        padding: 0 0 8px;
+        gap: 6px;
+    }
+
+    .sheet-strip .sheet-header-section {
+        margin-bottom: 0;
+        border-bottom: 0;
+        border-radius: var(--radius-md) var(--radius-md) 0 0;
+        background: linear-gradient(90deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+    }
+
     /* Label | boxes. Wounds is row 1, Shock is row 2, the counters are row 3 across both columns. */
     .sheet-strip-trackers {
+        display: grid;
         grid-template-columns: 52px 1fr;
+        gap: 10px 8px;
+        align-items: start;
+        padding: 10px 16px;
+        border: 1px solid var(--accent-gold);
+        border-top: 1px solid var(--border-light);
+        border-radius: 0 0 var(--radius-md) var(--radius-md);
+        background: linear-gradient(90deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+    }
+
+    /* The grid places the label and the boxes of each group */
+    .sheet-strip-group {
+        display: contents;
     }
 
     .sheet-strip-label {
+        grid-column: 1;
         line-height: 22px;
+        text-align: left;
+    }
+
+    .sheet-strip-trackers .tracking-boxes {
+        grid-column: 2;
+        max-width: none;
+        justify-content: flex-start;
     }
 
     .sheet-strip-trackers .tracking-box {
@@ -6118,17 +6256,25 @@ textarea {
         height: 22px;
     }
 
+    /* The even rows (refer to the @supports block below): the count that fits in one row of the boxes column
+       (the card, less the borders, the padding, the label column and the column gap) */
+    .sheet-strip-trackers .tracking-boxes {
+        --box-max: max(1, round(down, (100cqi - 90px) / 26px));
+        grid-auto-columns: 22px;
+    }
+
     /* The Faith counter follows the Wrath counter, and goes to the next row when the two do not fit */
     .sheet-strip-counters {
         grid-column: 1 / -1;
         grid-row: 3;
-        flex-direction: row;
+        display: flex;
         flex-wrap: wrap;
-        gap: 6px 16px;
+        gap: 10px 16px;
     }
 
     .sheet-strip-counter {
-        flex-direction: row;
+        display: flex;
+        align-items: center;
         gap: 8px;
     }
 
@@ -6148,6 +6294,28 @@ textarea {
     }
 }
 
+/* Even rows of boxes in the strip, in each layout: the rows of a group have the same count, or the first rows
+   have one box more. Each layout sets --box-max, the count that fits in one row. Each box gets its column
+   from its index (--i), and a column that is not after the last one starts a new row. A browser with no
+   support for this math keeps the natural wrap. */
+@supports (width: calc(100cqi / 1px * 1px)) and (width: calc(mod(3, 2) * 1px)) {
+    @media screen {
+        .sheet-strip-trackers .tracking-boxes {
+            --rows: round(up, var(--n) / var(--box-max));
+            --per-row: round(up, var(--n) / var(--rows));
+            --cut: calc((var(--rows) - (var(--per-row) * var(--rows) - var(--n))) * var(--per-row));
+            display: grid;
+            gap: 4px;
+            align-content: center;
+        }
+
+        .sheet-strip-trackers .tracking-box {
+            --long: clamp(0, var(--cut) - var(--i), 1);
+            grid-column-start: calc(var(--long) * mod(var(--i), var(--per-row)) + (1 - var(--long)) * mod(var(--i) - var(--cut), max(var(--per-row) - 1, 1)) + 1);
+        }
+    }
+}
+
 /* The top padding that .tab-fullwidth has at these widths, moved into the sheet (refer to the full-mode block above) */
 @media screen and (max-width: 768px) {
     #tab-character-sheet .character-sheet {
@@ -6161,16 +6329,16 @@ textarea {
     }
 }
 
-/* Low mode: in a window this low, the pinned bar would take most of the scroller. The strip bar
-   is unwrapped too, so the trackers scroll away and only the tab bar is pinned. The 16px side
+/* Low mode: in a window this low, the pinned bar would take most of the scroller. The strip and the
+   strip bar are unwrapped, so the name card scrolls away and only the tab bar is pinned. The 16px side
    padding keeps the buttons where compact mode puts them. */
 @media screen and (max-height: 480px) {
-    .sheet-strip-bar {
+    .sheet-strip {
         display: contents;
     }
 
-    .sheet-strip-trackers {
-        padding: 8px 12px 0;
+    .sheet-strip-bar {
+        display: contents;
     }
 
     .sheet-tabbar {

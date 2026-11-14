@@ -637,13 +637,14 @@ for (const rel of ['character-sheet-tab.js', 'wargear-tab.js', 'talents-tab.js']
         check('CharacterSheetTab.renderTalents holds no raw <b> tag', RAW_TAG.test(html), false);
         sheetCharacter.talents = [];
     }
+    // TalentsTab.renderSelected builds DOM nodes, so run it against a minimal document stub.
+    const nodes = [];
+    let container, tctx;
     {
-        // TalentsTab.renderSelected builds DOM nodes, so run it against a minimal document stub.
-        const nodes = [];
         const stub = () => { const n = { className: '', style: {}, children: [], dataset: {}, set innerHTML(v) { this._html = v; }, get innerHTML() { return this._html || ''; },
             appendChild(c) { this.children.push(c); }, addEventListener() {}, querySelector: () => stub(), querySelectorAll: () => [], setAttribute() {}, classList: { add() {}, remove() {} } }; nodes.push(n); return n; };
-        const container = stub();
-        const tctx = creatorSandbox({
+        container = stub();
+        tctx = creatorSandbox({
             State: { character: sheetCharacter, getCharacter: () => sheetCharacter },
             ImprovisedBuilder: { talentProfilesHtml: () => '' },
             Glossary: { enhanceElement() {}, enhance() {} },
@@ -658,6 +659,26 @@ for (const rel of ['character-sheet-tab.js', 'wargear-tab.js', 'talents-tab.js']
         check('TalentsTab.renderSelected holds no raw <b> tag', RAW_TAG.test(html), false);
         sheetCharacter.talents = [];
         sheetCharacter.wargear = [];
+    }
+    {
+        // A choice name with $& or $1 must show as typed in a talent name that has a [placeholder].
+        // No book talent has both a placeholder and an owned-item choice, so give the talent one here.
+        const dollarEntry = entryOf(F({ name: 'A$&B$1C' }), 'custom_dollar01');
+        const talent = get(tctx, 'DataLoader').getTalent('trademark_weapon');
+        const savedName = talent.name;
+        talent.name = 'Trademark [Weapon]';
+        try {
+            sheetCharacter.talents = [{ id: 'trademark_weapon', choice: '0' }];
+            sheetCharacter.wargear = [dollarEntry];
+            get(tctx, 'TalentsTab').renderSelected();
+            const html = container.children.map(c => c.innerHTML).join('');
+            check('TalentsTab.renderSelected keeps $& and $1 of a choice name as typed',
+                html.includes('<span class="selected-talent-name">Trademark (A$&amp;B$1C) </span>'), true);
+        } finally {
+            talent.name = savedName;
+            sheetCharacter.talents = [];
+            sheetCharacter.wargear = [];
+        }
     }
 }
 

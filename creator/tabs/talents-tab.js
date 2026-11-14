@@ -326,7 +326,7 @@ const TalentsTab = {
                 }
 
                 // Replace [Any], [Skill], [Trait], etc. with the actual choice
-                displayName = displayName.replace(/\[.*?\]/, `(${choiceDisplay})`);
+                displayName = displayName.replace(/\[.*?\]/, () => `(${choiceDisplay})`);
                 if (displayName === talent.name) {
                     // If no placeholder found, append the choice
                     displayName = `${talent.name} (${choiceDisplay})`;

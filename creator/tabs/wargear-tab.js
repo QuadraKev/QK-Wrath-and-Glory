@@ -10,6 +10,7 @@ const WargearTab = {
         this.initUpgradeModal();
         RelicWizard.onSaved = () => this.render();
         ImprovisedBuilder.onSaved = () => this.render();
+        CustomWargear.onSaved = () => this.render();
         this.render();
     },
 
@@ -73,7 +74,7 @@ const WargearTab = {
             const wargear = DataLoader.getWargearItem(item.id);
             if (!wargear) continue;
 
-            const entry = { ...wargear, wargearIndex: i, isStarting: item.isStarting, upgrades: item.upgrades || [], relic: item.relic, improvised: item.improvised };
+            const entry = { ...wargear, wargearIndex: i, isStarting: item.isStarting, upgrades: item.upgrades || [], relic: item.relic, improvised: item.improvised, custom: item.custom };
 
             if (DataLoader.getWeapon(item.id)) {
                 grouped.weapons.push(entry);
@@ -152,13 +153,19 @@ const WargearTab = {
                 ImprovisedBuilder.open(parseInt(btn.dataset.index, 10));
             });
         });
+
+        container.querySelectorAll('.btn-edit-custom').forEach(btn => {
+            btn.addEventListener('click', () => {
+                CustomWargear.open(parseInt(btn.dataset.index, 10));
+            });
+        });
     },
 
     // Render an owned weapon with upgrade info
     renderOwnedWeapon(weapon) {
         const upgradeNames = weapon.upgrades.map(id => {
             const upgrade = DataLoader.getWeaponUpgrade(id);
-            return upgrade ? upgrade.name : id;
+            return this.escapeHtml(upgrade ? upgrade.name : id);
         });
 
         const upgradeText = upgradeNames.length > 0
@@ -169,14 +176,15 @@ const WargearTab = {
         const startingBadge = weapon.isStarting ? '<span class="badge-starting">Starting</span>' : '';
 
         const relicHtml = this.renderRelicInfo(weapon.relic, weapon.name)
-            || this.renderImprovisedInfo(weapon.improvised, weapon.name, typeLabel);
-        const editClass = weapon.relic ? 'btn-edit-relic' : 'btn-edit-improvised';
+            || this.renderImprovisedInfo(weapon.improvised, weapon.name, typeLabel)
+            || this.renderCustomInfo(weapon.custom);
+        const editClass = weapon.relic ? 'btn-edit-relic' : (weapon.custom ? 'btn-edit-custom' : 'btn-edit-improvised');
 
         return `
             <div class="wargear-item wargear-item-owned">
                 <div class="wargear-info">
-                    <div class="wargear-name">${relicHtml ? relicHtml.nameLine : weapon.name} ${startingBadge}</div>
-                    <div class="wargear-type">${relicHtml ? relicHtml.typeLine : `${typeLabel} Weapon${weapon.category ? ' • ' + weapon.category : ''}`}</div>
+                    <div class="wargear-name">${relicHtml ? relicHtml.nameLine : this.escapeHtml(weapon.name)} ${startingBadge}</div>
+                    <div class="wargear-type">${relicHtml ? relicHtml.typeLine : `${typeLabel} Weapon${weapon.category ? ' • ' + this.escapeHtml(weapon.category) : ''}`}</div>
                     ${relicHtml ? relicHtml.detailLine : ''}
                     ${upgradeText}
                 </div>
@@ -194,17 +202,18 @@ const WargearTab = {
         const startingBadge = item.isStarting ? '<span class="badge-starting">Starting</span>' : '';
         const typeLabel = type === 'armor' ? 'Armor' : (item.category || 'Equipment');
 
-        const relicHtml = this.renderRelicInfo(item.relic, item.name);
+        const relicHtml = this.renderRelicInfo(item.relic, item.name) || this.renderCustomInfo(item.custom);
+        const editClass = item.custom ? 'btn-edit-custom' : 'btn-edit-relic';
 
         return `
             <div class="wargear-item wargear-item-owned">
                 <div class="wargear-info">
-                    <div class="wargear-name">${relicHtml ? relicHtml.nameLine : item.name} ${startingBadge}</div>
-                    <div class="wargear-type">${relicHtml ? relicHtml.typeLine : typeLabel}</div>
+                    <div class="wargear-name">${relicHtml ? relicHtml.nameLine : this.escapeHtml(item.name)} ${startingBadge}</div>
+                    <div class="wargear-type">${relicHtml ? relicHtml.typeLine : this.escapeHtml(typeLabel)}</div>
                     ${relicHtml ? relicHtml.detailLine : ''}
                 </div>
                 <div class="wargear-actions">
-                    ${relicHtml ? `<button class="btn-small btn-edit-relic" data-index="${item.wargearIndex}">Edit</button>` : ''}
+                    ${relicHtml ? `<button class="btn-small ${editClass}" data-index="${item.wargearIndex}">Edit</button>` : ''}
                     <button class="btn-small btn-remove-wargear" data-index="${item.wargearIndex}">Remove</button>
                 </div>
             </div>
@@ -238,6 +247,20 @@ const WargearTab = {
             nameLine: `${this.escapeHtml(improvised.name)} <span class="badge-relic">Improvised</span>`,
             typeLine: `${typeLabel} Weapon • ${this.escapeHtml(baseItemName)}`,
             detailLine: `<div class="wargear-relic-detail text-muted">${this.escapeHtml(ImprovisedBuilder.summary(improvised))}</div>${details}`
+        };
+    },
+
+    // Build the name/type/detail line HTML for a custom item entry, or null if not custom.
+    // formatStatLine returns raw player text, so it is escaped here.
+    renderCustomInfo(custom) {
+        if (!custom) return null;
+
+        const stats = CustomWargear.formatStatLine(custom);
+
+        return {
+            nameLine: `${this.escapeHtml(custom.name)} <span class="badge-relic">Custom</span>`,
+            typeLine: this.escapeHtml(CustomWargear.typeLabel(custom)),
+            detailLine: stats ? `<div class="wargear-relic-detail text-muted">${this.escapeHtml(stats)}</div>` : ''
         };
     },
 
@@ -356,11 +379,23 @@ const WargearTab = {
             </div>
         ` : '';
 
+        // Custom Wargear entry card (issue #33): always shown, it needs no source book and no talent
+        const customCtaHtml = `
+            <div class="holy-relic-cta">
+                <div class="holy-relic-cta-text">
+                    <h4>Custom Wargear</h4>
+                    <p>Make your own weapon, armor, augmetic or other item, with its own stats, traits and keywords.</p>
+                </div>
+                <button class="btn-primary" id="btn-build-custom">Create Custom Wargear</button>
+            </div>
+        `;
+
         container.innerHTML = `
             ${startingGearHtml}
             ${ascensionGearHtml}
             ${holyRelicCtaHtml}
             ${improvisedCtaHtml}
+            ${customCtaHtml}
             <div class="wargear-browser">
                 <div class="wargear-browser-controls">
                     <input type="text" id="wargear-search" class="search-input" placeholder="Search wargear..." value="${this.escapeHtml(this.searchQuery)}">
@@ -390,6 +425,12 @@ const WargearTab = {
         if (document.getElementById('btn-build-improvised')) {
             document.getElementById('btn-build-improvised').addEventListener('click', () => {
                 ImprovisedBuilder.open();
+            });
+        }
+
+        if (document.getElementById('btn-build-custom')) {
+            document.getElementById('btn-build-custom').addEventListener('click', () => {
+                CustomWargear.open();
             });
         }
 
@@ -909,8 +950,11 @@ const WargearTab = {
     // Helper: Escape HTML for safe insertion
     escapeHtml(text) {
         if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     }
 };

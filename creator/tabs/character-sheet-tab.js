@@ -912,17 +912,16 @@ const CharacterSheetTab = {
             // Filter out "Power Field" - it's a keyword, not a trait
             allTraits = allTraits.filter(t => t.toUpperCase() !== 'POWER FIELD');
             const traits = allTraits.length > 0
-                ? `<span class="sheet-traits-cell">${allTraits.join(', ')}</span>`
+                ? `<span class="sheet-traits-cell">${allTraits.map(t => this.escapeHtml(t)).join(', ')}</span>`
                 : '-';
 
-            const range = weapon.type === 'ranged' && weapon.range
-                ? (typeof weapon.range === 'string' ? weapon.range
-                    : `${weapon.range.short ?? '-'}/${weapon.range.medium ?? '-'}/${weapon.range.long ?? '-'}m`)
-                : '-';
+            const salvoText = this.weaponSalvoText(weapon);
+            const range = this.escapeHtml(this.weaponRangeText(weapon))
+                + (salvoText ? `<div class="sheet-weapon-salvo">${this.escapeHtml(salvoText)}</div>` : '');
 
             // Build upgrade names display (each name is a glossary term with a popout)
             const upgradeNames = weapon.upgradeDetails.map(u =>
-                `<span class="glossary-term" data-term-key="${u.id}" data-term-type="weaponUpgrade">${u.name}</span>`
+                `<span class="glossary-term" data-term-key="${this.escapeHtml(u.id)}" data-term-type="weaponUpgrade">${this.escapeHtml(u.name)}</span>`
             ).join(', ');
             const upgradesDisplay = upgradeNames
                 ? `<div class="sheet-weapon-upgrades">${upgradeNames}</div>`
@@ -949,9 +948,9 @@ const CharacterSheetTab = {
             // Build description and keywords row (an improvised weapon shows its player details)
             const description = weapon.improvised
                 ? this.escapeHtml(weapon.improvised.details || '')
-                : (weapon.description || '');
+                : this.escapeHtml(weapon.description || '');
             const keywords = weapon.keywords?.length > 0
-                ? weapon.keywords.map(k => `<span class="sheet-mini-keyword">${k}</span>`).join(' ')
+                ? weapon.keywords.map(k => `<span class="sheet-mini-keyword">${this.escapeHtml(k)}</span>`).join(' ')
                 : '';
             const hasDescOrKeywords = description || keywords;
             const colSpan = hasSimultaneousStrike ? 7 : 6;
@@ -964,10 +963,10 @@ const CharacterSheetTab = {
 
             // Relic weapons display under their custom name with the base weapon in parentheses
             const displayName = weapon.relic
-                ? `${this.escapeHtml(weapon.relic.name)} (${weapon.name})`
+                ? `${this.escapeHtml(weapon.relic.name)} (${this.escapeHtml(weapon.name)})`
                 : weapon.improvised
                     ? this.escapeHtml(ImprovisedBuilder.displayName(weapon.improvised.name, weapon.baseName))
-                    : weapon.name;
+                    : this.escapeHtml(weapon.name);
 
             const descRow = hasDescOrKeywords ? `
                 <tr class="sheet-weapon-desc-row">
@@ -1037,6 +1036,29 @@ const CharacterSheetTab = {
         };
     },
 
+    // Plain text of the Range cell. Ranged: the stored string, or short/medium/long. Melee: reach, else range.
+    // An integer or an all-digit string prints as <n>m. Any other string prints as stored.
+    weaponRangeText(weapon) {
+        if (weapon.type === 'ranged') {
+            const range = weapon.range;
+            if (!range) return '-';
+            return typeof range === 'string' ? range
+                : `${range.short ?? '-'}/${range.medium ?? '-'}/${range.long ?? '-'}m`;
+        }
+        const value = weapon.reach ?? weapon.range;
+        if (value === undefined || value === null || value === '') return '-';
+        return typeof value === 'number' || /^\d+$/.test(value) ? `${value}m` : String(value);
+    },
+
+    // Plain text of the Salvo line: a ranged weapon with a number above 0, or a string other than "", "-" or zeros.
+    // The book prints "-" for a salvo of 0, so the sheet shows no Salvo line for it.
+    weaponSalvoText(weapon) {
+        if (weapon.type !== 'ranged') return '';
+        const salvo = weapon.salvo;
+        if (typeof salvo === 'number') return salvo > 0 ? `Salvo ${salvo}` : '';
+        return typeof salvo === 'string' && salvo !== '' && salvo !== '-' && !/^0+$/.test(salvo) ? `Salvo ${salvo}` : '';
+    },
+
     // Check if weapon is compatible with Simultaneous Strike
     isWeaponCompatibleWithSimultaneousStrike(weapon, ssInfo) {
         if (!ssInfo) return false;
@@ -1091,7 +1113,7 @@ const CharacterSheetTab = {
 
         const rows = armors.map(armor => {
             const traits = armor.traits?.length > 0
-                ? `<span class="sheet-traits-cell">${armor.traits.join(', ')}</span>`
+                ? `<span class="sheet-traits-cell">${armor.traits.map(t => this.escapeHtml(t)).join(', ')}</span>`
                 : '-';
 
             // Rarity display
@@ -1102,13 +1124,13 @@ const CharacterSheetTab = {
 
             // Relic armour displays under its custom name with the base item in parentheses
             const displayName = armor.relic
-                ? `${this.escapeHtml(armor.relic.name)} (${armor.name})`
-                : armor.name;
+                ? `${this.escapeHtml(armor.relic.name)} (${this.escapeHtml(armor.name)})`
+                : this.escapeHtml(armor.name);
 
             // Build description and keywords row
-            const description = armor.description || '';
+            const description = this.escapeHtml(armor.description || '');
             const keywords = armor.keywords?.length > 0
-                ? armor.keywords.map(k => `<span class="sheet-mini-keyword">${k}</span>`).join(' ')
+                ? armor.keywords.map(k => `<span class="sheet-mini-keyword">${this.escapeHtml(k)}</span>`).join(' ')
                 : '';
             const hasDescOrKeywords = description || keywords;
 
@@ -1184,12 +1206,12 @@ const CharacterSheetTab = {
 
             // Relic augmetics display under their custom name with the base item in parentheses
             const displayName = aug.relic
-                ? `${this.escapeHtml(aug.relic.name)} (${aug.name})`
-                : aug.name;
+                ? `${this.escapeHtml(aug.relic.name)} (${this.escapeHtml(aug.name)})`
+                : this.escapeHtml(aug.name);
 
-            const description = aug.description || '';
+            const description = this.escapeHtml(aug.description || '');
             const keywords = aug.keywords?.length > 0
-                ? aug.keywords.map(k => `<span class="sheet-mini-keyword">${k}</span>`).join(' ')
+                ? aug.keywords.map(k => `<span class="sheet-mini-keyword">${this.escapeHtml(k)}</span>`).join(' ')
                 : '';
             const hasDescOrKeywords = description || keywords;
 
@@ -1208,7 +1230,7 @@ const CharacterSheetTab = {
                 <tbody class="sheet-equip-group">
                     <tr>
                         <td class="sheet-equip-name">${displayName}${rarityDisplay}<div class="source-ref">${DataLoader.formatSourcePage(aug)}</div></td>
-                        <td class="sheet-equip-effect">${aug.effect || '-'}</td>
+                        <td class="sheet-equip-effect">${this.escapeHtml(aug.effect) || '-'}</td>
                         <td class="sheet-equip-bonuses">${bonusText}</td>
                     </tr>
                     ${descRow}
@@ -1261,13 +1283,13 @@ const CharacterSheetTab = {
 
             // Relic equipment displays under its custom name with the base item in parentheses
             const displayName = equip.relic
-                ? `${this.escapeHtml(equip.relic.name)} (${equip.name})`
-                : equip.name;
+                ? `${this.escapeHtml(equip.relic.name)} (${this.escapeHtml(equip.name)})`
+                : this.escapeHtml(equip.name);
 
             // Build description and keywords row
-            const description = equip.description || '';
+            const description = this.escapeHtml(equip.description || '');
             const keywords = equip.keywords?.length > 0
-                ? equip.keywords.map(k => `<span class="sheet-mini-keyword">${k}</span>`).join(' ')
+                ? equip.keywords.map(k => `<span class="sheet-mini-keyword">${this.escapeHtml(k)}</span>`).join(' ')
                 : '';
             const hasDescOrKeywords = description || keywords;
 
@@ -1286,7 +1308,7 @@ const CharacterSheetTab = {
                 <tbody class="sheet-equip-group">
                     <tr>
                         <td class="sheet-equip-name">${displayName}${rarityDisplay}<div class="source-ref">${DataLoader.formatSourcePage(equip)}</div></td>
-                        <td class="sheet-equip-effect">${equip.effect || '-'}</td>
+                        <td class="sheet-equip-effect">${this.escapeHtml(equip.effect) || '-'}</td>
                     </tr>
                     ${descRow}
                 </tbody>
@@ -1644,7 +1666,7 @@ const CharacterSheetTab = {
             if (!talent) return '';
 
             // For weapon_owned/armor_owned choices, convert wargear index to item name
-            let choiceDisplay = choice;
+            let choiceDisplay = this.escapeHtml(choice);
             if (choice !== null && choice !== undefined && (talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned')) {
                 const wargearIndex = parseInt(choice, 10);
                 if (!isNaN(wargearIndex) && character.wargear[wargearIndex]) {
@@ -1652,7 +1674,7 @@ const CharacterSheetTab = {
                         ? DataLoader.getWeapon(character.wargear[wargearIndex].id)
                         : DataLoader.getArmor(character.wargear[wargearIndex].id);
                     if (item) {
-                        choiceDisplay = item.name;
+                        choiceDisplay = this.escapeHtml(item.name);
                     }
                 }
             }
@@ -2064,6 +2086,8 @@ const CharacterSheetTab = {
                     if (item.improvised.details) {
                         for (const line of item.improvised.details.split(/\r?\n/)) lines.push(`    ${line}`);
                     }
+                } else if (item.custom) {
+                    for (const line of CustomWargear.textLines(wargear)) lines.push(line);
                 } else {
                     lines.push(`  ${wargear.name}`);
                 }
@@ -2584,9 +2608,12 @@ const CharacterSheetTab = {
     // Helper: Escape HTML
     escapeHtml(text) {
         if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     },
 
     // Repair any background selections that are missing bonusType

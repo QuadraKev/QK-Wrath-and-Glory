@@ -312,7 +312,7 @@ const TalentsTab = {
             let displayName = talent.name;
             if (talentChoice !== null && talentChoice !== undefined) {
                 // For weapon_owned choices, convert wargear index to weapon name
-                let choiceDisplay = talentChoice;
+                let choiceDisplay = this.escapeHtml(String(talentChoice));
                 if (talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned') {
                     const wargearIndex = parseInt(talentChoice, 10);
                     if (!isNaN(wargearIndex) && character.wargear[wargearIndex]) {
@@ -320,13 +320,13 @@ const TalentsTab = {
                             ? DataLoader.getWeapon(character.wargear[wargearIndex].id)
                             : DataLoader.getArmor(character.wargear[wargearIndex].id);
                         if (item) {
-                            choiceDisplay = item.name;
+                            choiceDisplay = this.escapeHtml(item.name);
                         }
                     }
                 }
 
                 // Replace [Any], [Skill], [Trait], etc. with the actual choice
-                displayName = displayName.replace(/\[.*?\]/, `(${choiceDisplay})`);
+                displayName = displayName.replace(/\[.*?\]/, () => `(${choiceDisplay})`);
                 if (displayName === talent.name) {
                     // If no placeholder found, append the choice
                     displayName = `${talent.name} (${choiceDisplay})`;
@@ -588,5 +588,15 @@ const TalentsTab = {
 
     refresh() {
         this.render();
+    },
+
+    escapeHtml(text) {
+        if (!text) return '';
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     }
 };

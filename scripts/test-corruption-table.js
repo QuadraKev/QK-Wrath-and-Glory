@@ -24,6 +24,12 @@ for (let i = 1; i < table.length; i++) {
     check(`row ${i} (level ${table[i].level}) starts one above the end of row ${i - 1}`,
         table[i].min, table[i - 1].max + 1);
 }
+// The checks above let a row such as 12-11 pass, so each range must also hold at least one value.
+for (let i = 0; i < table.length; i++) {
+    if (table[i].max === null) continue;
+    check(`row ${i} (level ${table[i].level}) has a maximum of at least its minimum`,
+        table[i].max >= table[i].min, true);
+}
 check('the last row has no maximum', table[table.length - 1].max, null);
 
 console.log(failures === 0 ? '\nAll checks passed.' : `\n${failures} check(s) failed.`);

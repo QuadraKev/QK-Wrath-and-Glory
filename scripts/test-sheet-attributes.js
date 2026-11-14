@@ -114,6 +114,43 @@ check('an equipment-only bonus renders as before',
     '<span class="sheet-compact-name">Strength</span> <span class="sheet-compact-value">4</span> ' +
     '<span class="sheet-compact-abbrev">[STR]</span> </div>');
 
+// --- the shapes that real saves have ---
+// a. a mutation with a sub-choice: the breakdown names the sub-choice
+const horseHtml = CharacterSheetTab.renderAttributes(makeCharacter({ mutations: [{ id: 'aberration', subChoice: 'horse' }] }));
+const horseTou = cellFor(horseHtml, 'Toughness');
+check('a sub-choice mutation shows Toughness 4', horseTou.includes('<span class="sheet-compact-value">4</span>'), true);
+check('a sub-choice mutation names the sub-choice in the breakdown',
+    horseTou.includes('title="Base: 3 +1 Aberration (Equidae (Horse)) Total: 4"'), true);
+
+// b. a save with no mutations key renders the same as one with an empty list
+const noKeyCharacter = makeCharacter();
+delete noKeyCharacter.mutations;
+check('a character with no mutations key renders the same as one with an empty list',
+    CharacterSheetTab.renderAttributes(noKeyCharacter) === plainHtml, true);
+
+// c. a mutation id that is not in the data is ignored
+let unknownHtml = null;
+let unknownError = null;
+try {
+    unknownHtml = CharacterSheetTab.renderAttributes(makeCharacter({ mutations: [{ id: 'not_a_mutation' }] }));
+} catch (error) {
+    unknownError = error.message;
+}
+check('an unknown mutation id does not throw', unknownError, null);
+check('an unknown mutation id renders the plain cells', unknownHtml === plainHtml, true);
+
+// d. equipment bonuses that cancel, with no mutation: the breakdown still shows
+const cancelHtml = CharacterSheetTab.renderAttributes(
+    makeCharacter({ wargear: [{ id: 'autodogmatic_cortex' }, { id: 'neuro_aethyric_inhibitor_aaa' }] }));
+const cancelWil = cellFor(cancelHtml, 'Willpower');
+check('the two equipment records exist in the data',
+    [equipmentById.autodogmatic_cortex?.bonuses, equipmentById.neuro_aethyric_inhibitor_aaa?.bonuses],
+    [{ willpower: 1 }, { willpower: -1 }]);
+check('cancelling equipment bonuses leave Willpower 3', cancelWil.includes('<span class="sheet-compact-value">3</span>'), true);
+check('cancelling equipment bonuses keep the modified styling', cancelWil.includes('sheet-trait-tappable'), true);
+check('cancelling equipment bonuses list both sources in the breakdown',
+    cancelWil.includes('title="Base: 3 +1 Autodogmatic Cortex -1 Neuro-aethyric Inhibitor Total: 3"'), true);
+
 // --- the plain-text copy holds the effective values ---
 currentCharacter = withered;
 CharacterSheetTab.copySummary({ innerHTML: '' });

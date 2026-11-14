@@ -726,3 +726,38 @@ The scoped re-review of the fix wave (commits `cc1f242..91cf5c4`, with the brows
 | The Tab flag listens on `#character-sheet-content` only. Shift+Tab from the footer into a pane control that is under the pinned part gets no scroll (steps: Wargear at scroll 994, click the footer XP text, Shift+Tab, Space). | A narrow entry path. A `keydown` listener on the document closes it. Spec §6 states the limit (commit `d57cbfe`). |
 | A hidden Notes box reads `scrollTop` 0. Notes scrolled, then another tab, then a tracker click, then Notes: the box shows line 1. | The same as before the fix wave. |
 | Five mutations stay green: the -30px margins of the cue pseudo-elements (two forms), a Tab flag with no Shift+Tab, a transition with no `border-color`, a left tolerance of `> 0`. | Test gaps only. The browser checks cover the behavior. |
+
+## Owner feedback wave (2026-11-14): the Wealth counter and the lines of the Traits card
+
+The owner looked at the live sheet and asked for two changes: remove the extra horizontal lines of the Traits card, and move the Wealth counter to the Character tab. Branch `sheet-wealth-move`, commits `a223b17`, `02dca9e`, `2f2a6df` and one commit for the spec tags and this record. Creator `?v=126`. `scripts/test-sheet-tabs.js` has 279 checks.
+
+### Rulings
+
+20. Owner can reverse: the Wealth counter is at the foot of the Details card. The owner named the tab, not the place. If this is wrong, the cost is one markup move.
+21. Owner can reverse: the Faith counter stays in the Traits card, with one line above it. The Traits card has no tracking section when the max Faith is 0. The owner did not ask to move Faith.
+22. Owner can reverse: the Wealth value prints as one line directly below the Wrath line of the strip, in the same form. The remainder of the Details card does not print. Reason: the Wealth value printed before the move, and the printed strip carries the Details facts.
+23. The Wealth value of the Details card goes through `escapeHtml(String())`, as the other values of the Details block do.
+24. The printed Wealth label holds a hidden copy of the text "Wounds" (`::after`, print only). This gives the label the width of the label column of the strip in any font. The copy must stay equal to the widest label of the strip.
+25. Process: fix round 2 (six Minor items of the task review) went first. The final whole-branch review then examined the full diff and served as the scoped re-review of that round.
+
+### Parked items
+
+| Item | Why it was left |
+|---|---|
+| Print of a character with Faith: the bottom borders of the last trait row are 5 px above the line of the Faith section, and they look like a close pair of lines. | Older print behavior (old rule `margin-top: 5px !important`), not the pair that the owner reported on screen. A print change past the request has a risk. |
+| The Faith value is written with no escape (`renderTraits`), and `State.getCurrentFaith` returns the raw value of an imported file. | Older code. It belongs to the open owner decision on imported-file safety. |
+| No check pins the numbers that put the printed Wealth line in its place (card padding with `!important`, card margin, the `gap` values). Four mutations pass all checks. | A test gap only. Real PDFs (A4 in two orientations, A6, Letter, two looks) show the correct place. |
+| No check compares the hidden "Wounds" copy with the labels of the strip. | A comment at the rule states the dependence. |
+| The base-rule check does not catch a `margin` or `padding` shorthand on `.tracker-row-horizontal`. | A test gap only. |
+
+### Not checked
+
+Firefox and Safari print. Only Chromium is installed.
+
+### Wave table
+
+| Task | Model | Dispatches | Send-backs | Gate |
+|---|---|---|---|---|
+| Task 1 | sonnet | 1 | 2 (1 brief defect: print; 1 fix round on 6 Minor items) | Review: spec holds, 0 Critical, 0 Important, 6 Minor; all corrected |
+| Task review | opus, xhigh | 1 | 0 | 6 Minor, 7 readings |
+| Final review | fable, xhigh | 1 | 0 | Ready to merge (0 Critical, 0 Important, 2 Minor: spec tags corrected by the controller, test gap parked) |

@@ -37,7 +37,7 @@ Non-goals:
 
 - No change to any block's content, except the move of Mutations out of Injuries & Corruption
   (§3.2), the move of the Wounds, Shock and Wrath trackers from Traits to the strip (§4.3), the
-  move of the Wealth counter from Traits to the Details block (§4.3) **[Owner, 2026-11-14]**, and
+  move of the Wealth counter from Traits to the Character tab (§4.3) **[Owner, 2026-11-14]**, and
   the new Details block (§3.1).
 - No markup change inside the blocks that #33 owns or that this feature only moves: `renderWeapons`,
   `renderArmor`, `renderAugmetics`, `renderEquipment`, `renderHolyRelics`, `renderFollowers` and
@@ -316,7 +316,9 @@ The owner's list for Character repeats name, race, Tier, Rank and class, which t
 shows. The Character tab shows them again as a labelled **Details** block **[Designer, new]**, because
 the owner listed them and a labelled form reads more clearly than the strip's bullet line. The
 Details block has no Wounds, Shock or Wrath tracker and no keyword chips. It ends with the Wealth
-counter **[Owner, 2026-11-14]**.
+counter. The owner moved the counter to the Character tab **[Owner, 2026-11-14]**. Its place at
+the foot of the Details block is a ruling **[Controller ruling, 2026-11-14; the owner can reverse
+it]**.
 
 `renderDetails(character, species, archetype)` returns a `.sheet-section` titled "Details" with these
 rows, in a `<dl>` or the existing `.sheet-background-item` form:
@@ -375,8 +377,8 @@ editor.
 
 Identity part: name, subtitle (species • archetype • Tier • Rank), keyword chips, as `renderHeader`
 gives them today **[Owner]**. Tracker part: Wounds, Shock and Wrath **[Owner]**. Faith stays
-in Stats **[Owner]**. The Wealth counter is in the Details block of the Character tab
-**[Owner, 2026-11-14]**.
+in Stats **[Owner]**. The Wealth counter is in the Character tab **[Owner, 2026-11-14]**, in the
+Details block (§3.1).
 
 ### 4.2 Tracker forms
 
@@ -409,8 +411,9 @@ the re-render (§5.2). Faith and Wealth counters do not change.
 ### 4.3 What Traits shows
 
 `renderTraits` keeps the static trait grid. It has a tracking section only when `State.getMaxFaith()
-> 0`: one line, then the Faith counter **[Owner, 2026-11-14]**. It has no Wealth counter, because
-the Wealth counter is in the Details block of the Character tab **[Owner, 2026-11-14]**. It no
+> 0`: one line, then the Faith counter **[Controller ruling, 2026-11-14]**. The owner asked for
+the removal of the empty lines of the Traits card **[Owner, 2026-11-14]**. It has no Wealth
+counter, because the Wealth counter is in the Character tab **[Owner, 2026-11-14]** (§3.1). It no
 longer renders the Wounds row, the Shock row or the Wrath counter. The boxes and the Wrath counter
 exist once in the page, in the strip.
 
@@ -488,7 +491,7 @@ click while the Notes tab is open re-renders the textarea from state, as today.
   Notes tab is open re-renders the box, and the box went back to its first line.
 - The strip and the Details block escape the Wrath value, the Wealth value of the Details block,
   the Rank and the target tier of an ascension, because a character file can come from another
-  person **[Owner, 2026-11-14]**.
+  person **[Controller ruling, 2026-11-14, for the Wealth value]**.
 
 ### 5.3 Tab switch
 
@@ -719,8 +722,9 @@ bump. No `data/` file changes, so the creator data `?v=` in `creator/js/web-api.
 
 - **Strip content**: name, species, archetype, Tier, Rank and keyword chips, plus the Wounds, Shock
   and Wrath trackers, so that "a player on the Wargear tab can then mark a wound with no tab change".
-  Faith stays in Stats. The Wealth counter is in the Details block of the Character tab
-  **[Owner, 2026-11-14]**.
+  Faith stays in Stats. The Wealth counter is in the Character tab **[Owner, 2026-11-14]**:
+  "Wealth counter should probably be moved to Character tab". Its place in the Details block is a
+  controller ruling.
 - **Tracker forms**: "For wounds and shock specifically, I prefer the boxes to the counters. This
   allows the user to visualize their remaining wounds/shock. We can use counters for the other
   values." Wounds and Shock are box rows at every width; Wrath, Faith and Wealth are counters.

@@ -44,7 +44,7 @@ const fakeDocument = {
 
 // The bestiary scripts share one context, as the page's <script> tags share one window.
 const quietConsole = { log() {}, warn() {}, error: console.error };
-const bestiary = { console: quietConsole, document: fakeDocument, CSS: { escape: (s) => s } };
+const bestiary = { console: quietConsole, document: fakeDocument, CSS: { escape: (s) => s }, setTimeout, clearTimeout };
 vm.createContext(bestiary);
 const load = (rel) => vm.runInContext(readSource(rel), bestiary, { filename: rel });
 const get = (name) => vm.runInContext(name, bestiary);

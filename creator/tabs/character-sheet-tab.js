@@ -70,6 +70,7 @@ const CharacterSheetTab = {
                     ${this.renderAscensions(character)}
                     ${this.renderTalents(character)}
                     ${this.renderInjuriesCorruption(character)}
+                    ${this.renderMutations(character)}
                     ${this.renderBackground(character)}
                     ${this.renderNotes(character)}
                 </div>
@@ -425,9 +426,8 @@ const CharacterSheetTab = {
         }
     },
 
-    // Render the header section
-    renderHeader(character, species, archetype, keywords) {
-        const name = character.name || 'Unnamed Character';
+    // Helper: Species name for display, with the chapter or path in parentheses (raw text)
+    getSpeciesDisplayName(character, species) {
         let speciesName = species?.name || '-';
 
         // Add chapter/path info to species name if applicable
@@ -453,15 +453,27 @@ const CharacterSheetTab = {
             }
         }
 
-        const archetypeName = character.archetype?.id === 'custom'
+        return speciesName;
+    },
+
+    // Helper: Archetype name for display (raw text)
+    getArchetypeDisplayName(character, archetype) {
+        return character.archetype?.id === 'custom'
             ? (character.customArchetype?.name || 'Custom Archetype')
             : (archetype?.name || '-');
+    },
+
+    // Render the header section
+    renderHeader(character, species, archetype, keywords) {
+        const name = character.name || 'Unnamed Character';
+        const speciesName = this.getSpeciesDisplayName(character, species);
+        const archetypeName = this.getArchetypeDisplayName(character, archetype);
         const tier = character.tier || 1;
         const effectiveTier = State.getEffectiveTier();
         const rank = character.rank || 1;
 
         const keywordHtml = keywords.length > 0
-            ? keywords.map(k => `<span class="sheet-keyword">${k}</span>`).join('')
+            ? keywords.map(k => `<span class="sheet-keyword">${this.escapeHtml(k)}</span>`).join('')
             : '<span class="sheet-keyword">-</span>';
 
         const tierDisplay = `Tier ${effectiveTier}`;
@@ -470,10 +482,42 @@ const CharacterSheetTab = {
             <div class="sheet-section sheet-header-section">
                 <h1 class="sheet-character-name">${this.escapeHtml(name)}</h1>
                 <div class="sheet-subtitle">
-                    ${speciesName} &bull; ${archetypeName} &bull; ${tierDisplay} &bull; Rank ${rank}
+                    ${this.escapeHtml(speciesName)} &bull; ${this.escapeHtml(archetypeName)} &bull; ${tierDisplay} &bull; Rank ${rank}
                 </div>
                 <div class="sheet-keywords">
                     ${keywordHtml}
+                </div>
+            </div>
+        `;
+    },
+
+    // Render the Details block (name, species, archetype, tier, rank)
+    renderDetails(character, species, archetype) {
+        const name = character.name || 'Unnamed Character';
+        let archetypeText = this.escapeHtml(this.getArchetypeDisplayName(character, archetype));
+
+        // Add each ascension archetype that resolves, in array order
+        for (const asc of character.ascensions || []) {
+            if (asc.type !== 'archetype') continue;
+            const ascArchetype = DataLoader.getArchetype(asc.archetypeId);
+            if (ascArchetype) {
+                archetypeText += ` → ${this.escapeHtml(ascArchetype.name)} (Tier ${asc.targetTier})`;
+            }
+        }
+
+        const rows = [
+            ['Name', this.escapeHtml(name)],
+            ['Species', this.escapeHtml(this.getSpeciesDisplayName(character, species))],
+            ['Archetype', archetypeText],
+            ['Tier', State.getEffectiveTier()],
+            ['Rank', character.rank || 1]
+        ];
+
+        return `
+            <div class="sheet-section sheet-details-section">
+                <h2 class="sheet-section-title">Details</h2>
+                <div class="sheet-background-content">
+                    ${rows.map(([label, value]) => `<p class="sheet-background-item"><strong>${label}:</strong> ${value}</p>`).join('')}
                 </div>
             </div>
         `;
@@ -1783,10 +1827,9 @@ const CharacterSheetTab = {
         const memorableInjuries = character.memorableInjuries || [];
         const traumaticInjuries = character.traumaticInjuries || [];
         const corruption = character.corruption || 0;
-        const mutations = character.mutations || [];
 
         // Hide section entirely if nothing to show
-        if (memorableInjuries.length === 0 && traumaticInjuries.length === 0 && corruption === 0 && mutations.length === 0) {
+        if (memorableInjuries.length === 0 && traumaticInjuries.length === 0 && corruption === 0) {
             return '';
         }
 
@@ -1853,60 +1896,68 @@ const CharacterSheetTab = {
             `;
         }
 
-        // Mutations
-        if (mutations.length > 0) {
-            const allMutations = data.mutations || [];
-            const items = mutations.map(entry => {
-                const mutation = allMutations.find(m => m.id === entry.id);
-                if (!mutation) return '';
-
-                let subChoiceLabel = '';
-                let effectText = mutation.effect;
-                let activeBonuses = mutation.bonuses;
-
-                if (entry.subChoice && mutation.subChoices) {
-                    const sub = mutation.subChoices.find(s => s.id === entry.subChoice);
-                    if (sub) {
-                        subChoiceLabel = ` — ${sub.name}`;
-                        effectText = sub.effect;
-                        activeBonuses = sub.bonuses || null;
-                    }
-                }
-
-                const severityClass = `sheet-mutation-severity-${mutation.severity}`;
-
-                let bonusDisplay = '';
-                if (activeBonuses) {
-                    const bonusParts = Object.entries(activeBonuses).map(([key, val]) => {
-                        const name = this.formatMutationBonusKey(key);
-                        return `${val > 0 ? '+' : ''}${val} ${name}`;
-                    });
-                    bonusDisplay = `<div class="sheet-mutation-bonuses">${bonusParts.join(', ')}</div>`;
-                }
-
-                return `
-                    <div class="sheet-mutation-item">
-                        <div class="sheet-mutation-header">
-                            <span class="sheet-mutation-name">${mutation.name}${subChoiceLabel}</span>
-                            <span class="sheet-mutation-severity ${severityClass}">${mutation.severity}</span>
-                        </div>
-                        <div class="sheet-mutation-desc">${mutation.description}</div>
-                        <div class="sheet-mutation-effect">${effectText}</div>
-                        ${bonusDisplay}
-                    </div>
-                `;
-            }).join('');
-
-            sections += `
-                <h3 class="sheet-subsection-title">Mutations</h3>
-                ${items}
-            `;
-        }
-
         return `
             <div class="sheet-section">
                 <h2 class="sheet-section-title">Injuries & Corruption</h2>
                 ${sections}
+            </div>
+        `;
+    },
+
+    // Render the mutations section
+    renderMutations(character) {
+        const data = DataLoader.getInjuriesCorruptionData();
+        if (!data) return '';
+
+        const mutations = character.mutations || [];
+        if (mutations.length === 0) return '';
+
+        const allMutations = data.mutations || [];
+        const items = mutations.map(entry => {
+            const mutation = allMutations.find(m => m.id === entry.id);
+            if (!mutation) return '';
+
+            let subChoiceLabel = '';
+            let effectText = mutation.effect;
+            let activeBonuses = mutation.bonuses;
+
+            if (entry.subChoice && mutation.subChoices) {
+                const sub = mutation.subChoices.find(s => s.id === entry.subChoice);
+                if (sub) {
+                    subChoiceLabel = ` — ${sub.name}`;
+                    effectText = sub.effect;
+                    activeBonuses = sub.bonuses || null;
+                }
+            }
+
+            const severityClass = `sheet-mutation-severity-${mutation.severity}`;
+
+            let bonusDisplay = '';
+            if (activeBonuses) {
+                const bonusParts = Object.entries(activeBonuses).map(([key, val]) => {
+                    const name = this.formatMutationBonusKey(key);
+                    return `${val > 0 ? '+' : ''}${val} ${name}`;
+                });
+                bonusDisplay = `<div class="sheet-mutation-bonuses">${bonusParts.join(', ')}</div>`;
+            }
+
+            return `
+                <div class="sheet-mutation-item">
+                    <div class="sheet-mutation-header">
+                        <span class="sheet-mutation-name">${mutation.name}${subChoiceLabel}</span>
+                        <span class="sheet-mutation-severity ${severityClass}">${mutation.severity}</span>
+                    </div>
+                    <div class="sheet-mutation-desc">${mutation.description}</div>
+                    <div class="sheet-mutation-effect">${effectText}</div>
+                    ${bonusDisplay}
+                </div>
+            `;
+        }).join('');
+
+        return `
+            <div class="sheet-section">
+                <h2 class="sheet-section-title">Mutations</h2>
+                ${items}
             </div>
         `;
     },

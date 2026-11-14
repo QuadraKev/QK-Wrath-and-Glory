@@ -6528,3 +6528,184 @@ textarea {
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+/* ===== Character Sheet Tabs (issue #25) ===== */
+/* The strip (identity, trackers, tab bar) and one pane per tab. Pinning and the two
+   layout modes are screen-only, so that print never sees them. */
+.sheet-pane[hidden] { display: none; }
+
+.sheet-tab-btn:focus-visible,
+.tracker-btn:focus-visible {
+    outline: 2px solid var(--accent-gold);
+    outline-offset: 2px;
+}
+
+/* The tab bar is the offsetParent of its buttons: _scrollActiveTabIntoBar reads offsetLeft */
+.sheet-tabbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    position: relative;
+}
+
+/* Pills in the .wargear-tab-btn style */
+.sheet-tab-btn {
+    flex: 0 0 auto;
+    padding: 6px 14px;
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+
+.sheet-tab-btn:hover {
+    border-color: var(--accent-gold);
+    color: var(--text-primary);
+}
+
+.sheet-tab-btn.active {
+    background: var(--accent-gold);
+    color: var(--bg-primary);
+    border-color: var(--accent-gold);
+}
+
+/* Two-column panes: a plain block below the wide breakpoint */
+.sheet-pane-columns {
+    display: block;
+}
+
+@media (min-width: 1400px) {
+    .sheet-pane-columns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        align-items: start;
+    }
+}
+
+/* Full mode: the whole strip is pinned. The z-index stays under every popup, modal and the drawer backdrop (899). */
+@media screen {
+    .sheet-strip {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        background: var(--bg-primary);
+        padding-bottom: 8px;
+        margin-bottom: 7px;
+    }
+
+    .sheet-strip .sheet-header-section {
+        padding: 10px 16px;
+        margin-bottom: 8px;
+    }
+
+    .sheet-strip .sheet-character-name {
+        font-size: 22px;
+        line-height: 1.2;
+        margin-bottom: 2px;
+    }
+
+    .sheet-strip .sheet-subtitle {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .sheet-strip .sheet-keywords {
+        gap: 6px;
+    }
+
+    .sheet-strip-bar {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    /* Label | boxes | Wrath. Wounds is row 1, Shock is row 2, Wrath spans both. */
+    .sheet-strip-trackers {
+        display: grid;
+        grid-template-columns: 64px 1fr 110px;
+        gap: 6px 8px;
+        align-items: start;
+    }
+
+    .sheet-strip-label {
+        grid-column: 1;
+        line-height: 18px;
+        text-align: left;
+    }
+
+    .sheet-strip-trackers > .tracking-boxes {
+        grid-column: 2;
+        max-width: none;
+        justify-content: flex-start;
+    }
+
+    .sheet-strip-wrath {
+        grid-column: 3;
+        grid-row: 1 / span 2;
+        align-self: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+    }
+}
+
+/* Compact mode: the identity scrolls away, and the bar (trackers and tab bar) is pinned */
+@media screen and (max-width: 768px), screen and (max-height: 600px) {
+    .sheet-strip {
+        display: contents;
+    }
+
+    .sheet-strip-bar {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        background: var(--bg-primary);
+        padding: 8px 12px;
+        gap: 6px;
+    }
+
+    /* Label | boxes. Wounds is row 1, Shock is row 2, Wrath is row 3 across both columns. */
+    .sheet-strip-trackers {
+        grid-template-columns: 52px 1fr;
+    }
+
+    .sheet-strip-label {
+        line-height: 22px;
+    }
+
+    .sheet-strip-trackers .tracking-box {
+        width: 22px;
+        height: 22px;
+    }
+
+    .sheet-strip-wrath {
+        grid-column: 1 / -1;
+        grid-row: 3;
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    .sheet-strip-wrath .tracker-label {
+        flex: 0 0 52px;
+        text-align: left;
+    }
+
+    .sheet-strip-wrath .tracker-btn {
+        width: 32px;
+        height: 32px;
+    }
+
+    /* One row that scrolls sideways. The 4px padding keeps the focus ring inside the scroll box. */
+    .sheet-tabbar {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding: 4px;
+    }
+}

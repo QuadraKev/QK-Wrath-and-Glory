@@ -754,5 +754,28 @@ function tabsSection() {
     }
 }
 
+// --- Task 4: Strip CSS (pinning, the two modes, boxes, tab buttons, panes, focus) ---
+{
+    const sec = tabsSection();
+    check('section exists', sec.length > 0, true);
+    check('hidden panes are hidden on screen', /\.sheet-pane\[hidden\]\s*\{\s*display:\s*none;?\s*\}/.test(sec), true);
+    check('focus ring on tabs and tracker buttons', /\.sheet-tab-btn:focus-visible,\s*\.tracker-btn:focus-visible\s*\{[^}]*outline:\s*2px solid var\(--accent-gold\)[^}]*outline-offset:\s*2px/.test(sec), true);
+    const full = mediaBlocks(sec, 'screen').join('\n');
+    const compact = mediaBlocks(sec, 'screen and (max-width: 768px), screen and (max-height: 600px)').join('\n');
+    check('full mode pins the strip', /\.sheet-strip\s*\{[^}]*position:\s*sticky[^}]*top:\s*0/.test(full), true);
+    check('compact mode unwraps the strip and pins the bar', [/\.sheet-strip\s*\{[^}]*display:\s*contents/.test(compact), /\.sheet-strip-bar\s*\{[^}]*position:\s*sticky/.test(compact)], [true, true]);
+    check('compact tab bar scrolls sideways', /\.sheet-tabbar\s*\{[^}]*flex-wrap:\s*nowrap[^}]*overflow-x:\s*auto/.test(compact), true);
+    const barRule = (compact.match(/\.sheet-tabbar\s*\{([^}]*)\}/) || [])[1] || '';
+    const sides = { top: 0, right: 0, bottom: 0, left: 0 };
+    const short = barRule.match(/(?:^|;)\s*padding:\s*([^;]+)/);
+    if (short) { const v = short[1].trim().split(/\s+/).map(parseFloat); [sides.top, sides.right, sides.bottom, sides.left] = [v[0], v[1] ?? v[0], v[2] ?? v[0], v[3] ?? v[1] ?? v[0]]; }
+    for (const side of Object.keys(sides)) { const m = barRule.match(new RegExp(`padding-${side}:\\s*([\\d.]+)px`)); if (m) sides[side] = parseFloat(m[1]); }
+    check('compact tab bar has 4px padding on every side for the focus ring', Object.values(sides).every(v => v >= 4), true);
+    check('strip labels set no colour', /\.sheet-strip-label\s*\{[^}]*color:/.test(sec), false);
+    check('sticky only inside screen blocks', count(sec.replace(/@media screen[^{]*\{(?:[^{}]|\{[^{}]*\})*\}/g, ''), /position:\s*sticky/g), 0);
+    check('wide panes are two columns', /\.sheet-pane-columns\s*\{[^}]*grid-template-columns:\s*1fr 1fr/.test(mediaBlocks(sec, '(min-width: 1400px)').join('')), true);
+    check('no raw colour', /#[0-9a-f]{3,8}\b|rgba?\(/i.test(sec), false);
+}
+
 console.log(failures ? `\n${failures} check(s) FAILED` : '\nAll checks passed');
 process.exit(failures ? 1 : 0);

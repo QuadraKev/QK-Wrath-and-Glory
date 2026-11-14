@@ -10,6 +10,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const vm = require('vm');
 
 const ROOT = path.join(__dirname, '..');
 function readJson(rel) {
@@ -102,6 +103,53 @@ check('no trait key repeats a key of another Rules Reference section, except the
     collisions.filter(c => !KEY_COLLISION_ALLOWLIST[c]), []);
 check('every key collision allowlist entry is still a collision',
     Object.keys(KEY_COLLISION_ALLOWLIST).filter(c => !collisions.includes(c)), []);
+
+// Each script runs in its own context, as a page's <script> tags share one window.
+function loadScripts(files, globals) {
+    const sandbox = { console: { log() {}, warn() {}, error: console.error }, ...globals };
+    vm.createContext(sandbox);
+    for (const rel of files) {
+        vm.runInContext(fs.readFileSync(path.join(ROOT, rel), 'utf8'), sandbox, { filename: rel });
+    }
+    return (name) => vm.runInContext(name, sandbox);
+}
+
+// Both popup engines register a shortened form of a name that ends in "ed" or "ing". For these
+// three traits the short forms ("a pair of") are common words, so the engines must skip them.
+for (const app of ['creator', 'bestiary']) {
+    const Glossary = loadScripts([`${app}/js/glossary.js`], {})('Glossary');
+    Glossary.data = glossary;
+    Glossary.termMap = new Map();
+    Glossary.buildTermMap();
+    for (const short of ['pair', 'overwhelm', 'corrupt']) {
+        check(`${app} engine does not link the short form "${short}"`, Glossary.termMap.has(short), false);
+    }
+    for (const name of ['paired', 'overwhelming', 'corrupting']) {
+        check(`${app} engine links the trait name "${name}"`, Glossary.termMap.has(name), true);
+    }
+}
+
+// The creator's Rules Reference source filter: a full Apocrypha book title (Guided cites the
+// T'au Empire Adversaries manuscript) counts as the apocrypha source.
+let enabledSources = [];
+const getCreator = loadScripts(['creator/js/data-loader.js', 'creator/tabs/glossary-tab.js'],
+    { State: { isSourceEnabled: (s) => enabledSources.includes(s) } });
+const CreatorLoader = getCreator('DataLoader');
+const GlossaryTab = getCreator('GlossaryTab');
+const guided = { name: 'Guided', description: '', ...glossary.weaponTraits.guided, category: 'weaponTraits' };
+const heavy = { name: 'Heavy', description: '', ...glossary.weaponTraits.heavy, category: 'weaponTraits' };
+GlossaryTab.allEntries = [guided, heavy];
+GlossaryTab.currentCategory = 'all';
+GlossaryTab.searchQuery = '';
+const shown = () => GlossaryTab.getFilteredEntries().map(e => e.name);
+enabledSources = ['core', 'apocrypha'];
+check('creator filter keeps Guided while apocrypha is on', shown(), ['Guided', 'Heavy']);
+enabledSources = ['core'];
+check('creator filter hides Guided while apocrypha is off', shown(), ['Heavy']);
+enabledSources = ['apocrypha'];
+check('creator filter still hides a core entry while core is off', shown(), ['Guided']);
+check('the Guided row still shows the full book title and page 6', CreatorLoader.formatSourcePage(guided),
+    "Abundant Apocryphal Adversaries: The T'au Empire (Apocrypha), p. 6");
 
 console.log(failures === 0 ? '\nAll trait glossary checks passed.' : `\n${failures} check(s) failed.`);
 process.exit(failures === 0 ? 0 : 1);

@@ -112,7 +112,7 @@ const GlossaryTab = {
             }
 
             // Source filter — entries with a source must pass; entries without source always pass
-            if (entry.source && !State.isSourceEnabled(entry.source)) {
+            if (entry.source && !State.isSourceEnabled(this._filterSource(entry.source))) {
                 return false;
             }
 
@@ -410,5 +410,12 @@ const GlossaryTab = {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    },
+
+    // A full Apocrypha book title (e.g. an Abundant Apocryphal Adversaries manuscript) is not a
+    // source code; filter it under 'apocrypha', as the bestiary's normalizeSource does. The only
+    // short code that contains "apocrypha" is 'apocrypha' itself, which this leaves unchanged.
+    _filterSource(source) {
+        return source.toLowerCase().includes('apocrypha') ? 'apocrypha' : source;
     }
 };

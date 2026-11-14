@@ -113,7 +113,7 @@ const Glossary = {
         const lowerName = name.toLowerCase();
 
         // Skip variations for terms that would create overly common word matches
-        const skipVariations = ['powered', 'spread'];
+        const skipVariations = ['powered', 'spread', 'paired', 'overwhelming', 'corrupting'];
 
         if (skipVariations.includes(lowerName)) {
             // Only add parenthetical variations, not suffix-stripping

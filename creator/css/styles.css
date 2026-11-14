@@ -6817,8 +6817,8 @@ textarea {
 
     /* Of the Details block, only the Wealth line prints. It sits directly under the Wrath line
        of the strip, in the same form: the label, then the value, on one row. The title, the rows
-       and the card frame do not print, because the printed strip carries the same facts. The
-       tracker buttons are hidden by the print rule for .tracker-btn. */
+       and the card frame do not print, because the printed strip carries the same facts.
+       The print rule for .tracker-btn hides the buttons. */
     .sheet-details-section,
     body.print-light-theme .sheet-details-section {
         background: none !important;
@@ -6850,11 +6850,20 @@ textarea {
         gap: 10px;
     }
 
-    /* The label has the width of the printed "Wounds" label, which sets the label column of the
-       strip, so that the Wealth value lines up with the Wrath value. */
+    /* The widest label of the strip sets the label column of the strip. The Wealth label holds a
+       hidden copy of that label, so that the Wealth value lines up with the Wrath value in any
+       font. The copy must stay equal to the widest label of the strip ("Wounds"). */
     .sheet-details-section .tracker-label {
-        min-width: 51px;
+        display: flex;
+        flex-direction: column;
         text-align: left;
+    }
+
+    .sheet-details-section .tracker-label::after {
+        content: 'Wounds';
+        height: 0;
+        overflow: hidden;
+        visibility: hidden;
     }
 
     .sheet-details-section .tracker-value {

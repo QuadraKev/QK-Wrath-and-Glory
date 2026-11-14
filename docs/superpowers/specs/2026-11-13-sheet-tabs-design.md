@@ -36,8 +36,9 @@ Goals:
 Non-goals:
 
 - No change to any block's content, except the move of Mutations out of Injuries & Corruption
-  (§3.2), the move of the Wounds, Shock and Wrath trackers from Traits to the strip (§4.3), and the
-  new Details block (§3.1).
+  (§3.2), the move of the Wounds, Shock and Wrath trackers from Traits to the strip (§4.3), the
+  move of the Wealth counter from Traits to the Details block (§4.3) **[Owner, 2026-11-14]**, and
+  the new Details block (§3.1).
 - No markup change inside the blocks that #33 owns or that this feature only moves: `renderWeapons`,
   `renderArmor`, `renderAugmetics`, `renderEquipment`, `renderHolyRelics`, `renderFollowers` and
   `renderFollower` (§5.2, §9).
@@ -485,8 +486,9 @@ click while the Notes tab is open re-renders the textarea from state, as today.
 - The view state also holds the `scrollTop` of the Notes box, when the box exists. The restore sets
   it on the new box, with or without the focus, after the caret. Reason: a tracker click while the
   Notes tab is open re-renders the box, and the box went back to its first line.
-- The strip and the Details block escape the Wrath value, the Rank and the target tier of an
-  ascension, because a character file can come from another person.
+- The strip and the Details block escape the Wrath value, the Wealth value of the Details block,
+  the Rank and the target tier of an ascension, because a character file can come from another
+  person **[Owner, 2026-11-14]**.
 
 ### 5.3 Tab switch
 
@@ -559,8 +561,9 @@ Print shows the whole sheet, whichever tab is selected **[Designer]**:
   Each block keeps its own `<h2>`; no pane title is added.
 - Of the Details block, only the Wealth line prints, directly under the Wrath line of the strip, in
   the same form: the label, then the value, on one row. The title, the rows and the card frame do
-  not print (§3.1). The print rules for `.sheet-details-section` set this. The Wealth label has the
-  width of the "Wounds" label, so that the two values line up **[Controller ruling, 2026-11-14]**.
+  not print (§3.1). The print rules for `.sheet-details-section` set this. The Wealth label holds a
+  hidden copy of the "Wounds" label (the widest label of the strip), so that the two values line up
+  in any font **[Controller ruling, 2026-11-14]**.
 - The existing print rules keep working because the block classes do not change. Remove the print
   rule for `.sheet-body` (it no longer exists, §8). Keep `.sheet-header-section { page-break-after:
   avoid }`, and add `page-break-inside: avoid` for `.sheet-strip-trackers`.
@@ -688,8 +691,9 @@ about 50 Wounds and 35 Shock.
   rows wrap and never cause a horizontal page scroll, the pane layouts of §2.3, the tab bar scrolls
   sideways in compact mode.
 - A glossary popup and a breakdown popup close on a tab switch and show above the pinned part.
-- Print preview from the Wargear tab: strip with the box rows, the Wrath value and the Wealth value, no tab bar, no
-  Details title and rows, all blocks in tab order, light theme.
+- Print preview from the Wargear tab: strip with the box rows and the Wrath value, the Wealth value
+  under the strip, no tab bar, no Details title and rows, all blocks in tab order, light theme
+  **[Controller ruling, 2026-11-14]**.
 - Copy Summary output is the same as before the change.
 - New character and Load: the selected tab stays when the new character has it.
 

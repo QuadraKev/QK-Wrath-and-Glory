@@ -527,9 +527,11 @@ function tabsSection() {
         const html = env.sheet.renderDetails(makeCharacter(), null, null);
         check('Details has one Wealth minus and one Wealth plus button', wealthOf(html), [1, 1]);
         check('Details shows the Wealth value', /tracker-label">Wealth<[\s\S]*?tracker-value">3</.test(html), true);
+        // Nesting: at the start of the tracking section, the card and the tracking section are open, and nothing else
+        const beforeSection = html.slice(0, html.indexOf('sheet-tracking-section'));
         check('the Wealth counter is inside the Details card, after the background rows',
-            [html.indexOf('sheet-background-content') < html.indexOf('sheet-tracking-section'), count(html, /sheet-tracking-section/g)],
-            [true, 1]);
+            [html.indexOf('sheet-background-content') < html.indexOf('sheet-tracking-section'), count(html, /sheet-tracking-section/g), count(beforeSection, /<div/g) - count(beforeSection, /<\/div>/g)],
+            [true, 1, 2]);
         env.state.wealth = 0;
         check('Details shows a Wealth of 0 as 0', /tracker-label">Wealth<[\s\S]*?tracker-value">0</.test(env.sheet.renderDetails(makeCharacter(), null, null)), true);
         env.state.wealth = '<img src=x onerror=alert(1)>';
@@ -553,7 +555,7 @@ function tabsSection() {
         // CSS: one line above the Faith counter, none from the row
         const css = readSource('creator/css/styles.css');
         const baseRow = (css.match(/^\.tracker-row-horizontal\s*\{([^}]*)\}/m) || [])[1] || '';
-        check('the base .tracker-row-horizontal rule exists and has no border-top', [baseRow.length > 0, /border-top/.test(baseRow)], [true, false]);
+        check('the base .tracker-row-horizontal rule exists and has no border-top, padding-top or margin-top', [baseRow.length > 0, /border-top/.test(baseRow), /padding-top/.test(baseRow), /margin-top/.test(baseRow)], [true, false, false, false]);
         check('no print selector for .tracker-row-horizontal', css.includes('body.print-light-theme .tracker-row-horizontal'), false);
     }
 
@@ -1076,9 +1078,14 @@ function tabsSection() {
         check('print: the Wealth line is one left-aligned row like the Wrath row',
             [/flex-direction:\s*row/.test(detailsRule('.sheet-details-section .tracker-column')), /text-align:\s*left/.test(detailsRule('.sheet-details-section .tracker-label')), /text-align:\s*left/.test(detailsRule('.sheet-details-section .tracker-value')), /justify-content:\s*flex-start/.test(detailsRule('.sheet-details-section .tracker-row-horizontal'))],
             [true, true, true, true]);
-        check('print: the Wealth label is as wide as the label column of the strip', /min-width:\s*51px/.test(detailsRule('.sheet-details-section .tracker-label')), true);
-        check('print: every new Details rule is scoped to the Details card',
-            printRules(print).filter(r => r.sels.some(x => /sheet-details-section/.test(x))).every(r => r.sels.every(x => /sheet-details-section/.test(x))), true);
+        // The Wealth label holds a hidden copy of the widest strip label, so that its width follows the font
+        const labelRule = detailsRule('.sheet-details-section .tracker-label'), afterRule = detailsRule('.sheet-details-section .tracker-label::after');
+        check('print: the Wealth label holds a hidden copy of the Wounds label, with no fixed width',
+            [/content:\s*'Wounds'/.test(afterRule), /height:\s*0/.test(afterRule), /visibility:\s*hidden/.test(afterRule), /display:\s*flex/.test(labelRule), /flex-direction:\s*column/.test(labelRule), /min-width/.test(labelRule), /51px/.test(print)],
+            [true, true, true, true, true, false, false]);
+        // A rule of the tabs print block that names a tracker class must name the Details card or the strip
+        const trackerSels = printRules(print).flatMap(r => r.sels).filter(x => /\.tracker-|\.sheet-tracking-section/.test(x));
+        check('print: each tracker rule is scoped to the Details card or the strip', [trackerSels.length > 0, trackerSels.every(x => /\.sheet-details-section|\.sheet-strip-trackers/.test(x))], [true, true]);
     }
     check('strip is static and block in print', [/\.sheet-strip,\s*\.sheet-strip-bar\s*\{[^}]*position:\s*static\s*!important/.test(print), /display:\s*block\s*!important/.test((print.match(rule('.sheet-strip')) || [])[1] || '')], [true, true]);
     check('trackers stay on one page', /page-break-inside:\s*avoid/.test((print.match(rule('.sheet-strip-trackers')) || [])[1] || ''), true);

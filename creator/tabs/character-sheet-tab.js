@@ -1353,7 +1353,7 @@ const CharacterSheetTab = {
             return `
                 <div class="sheet-talent">
                     <div class="sheet-talent-header">
-                        <span class="sheet-talent-name">${this.escapeHtml(relic.name)} &mdash; Relic ${this.escapeHtml(parts.formName)} (${baseName})</span>
+                        <span class="sheet-talent-name">${this.escapeHtml(relic.name)} &mdash; Relic ${this.escapeHtml(parts.formName)} (${this.escapeHtml(baseName)})</span>
                     </div>
                     <div class="sheet-talent-content">
                         <div class="text-muted">Original Owner: ${this.escapeHtml(parts.ownerName)} &bull; Anointment: ${this.escapeHtml(parts.anointmentName)}</div>
@@ -1817,7 +1817,7 @@ const CharacterSheetTab = {
             const items = traumaticInjuries.map(entry => {
                 const inj = (data.traumaticInjuries || []).find(i => i.id === entry.id);
                 if (!inj) return '';
-                const sideLabel = entry.side ? ` (${entry.side})` : '';
+                const sideLabel = entry.side ? ` (${this.escapeHtml(entry.side)})` : '';
                 return `
                     <div class="sheet-injury-item">
                         <span class="sheet-injury-name">${inj.name}${sideLabel}</span>
@@ -1954,7 +1954,7 @@ const CharacterSheetTab = {
 
         // Languages
         const languages = character.languages || ['low_gothic'];
-        const langNames = languages.map(l => l.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase()));
+        const langNames = languages.map(l => this.escapeHtml(l.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase())));
         parts.push(`<strong>Languages:</strong> ${langNames.join(', ')}`);
 
         if (parts.length === 1) { // Only languages

@@ -1521,5 +1521,40 @@ function tabsSection() {
     }
 }
 
+// Load check, Task 2: three sites of the sheet print a value of a loaded file
+{
+    const stubRenderData = (env) => {
+        env.dataLoader.getWargearItem = () => null;
+        env.dataLoader.getHolyRelics = () => null;
+        env.dataLoader.getBackgrounds = () => ({ origins: [], accomplishments: [], goals: [] });
+    };
+
+    // S1: a relic entry whose base id is not in the data
+    {
+        const env = sheetSandbox();
+        stubRenderData(env);
+        const html = env.sheet.renderHolyRelics(makeCharacter({ wargear: [{ id: EVIL, isStarting: false, relic: { name: 'R', form: 'f', originalOwner: 'a', anointment: 'b', power: 'c', oddities: [] } }] }));
+        check('S1 relic base id is escaped', [RAW_TAG.test(html), html.includes(SAFE)], [false, true]);
+    }
+
+    // S2: the injury side
+    {
+        const env = sheetSandbox();
+        stubRenderData(env);
+        const id = INJURIES.traumaticInjuries[0].id;
+        const html = env.sheet.renderInjuriesCorruption(makeCharacter({ traumaticInjuries: [{ id, side: EVIL }] }));
+        check('S2 injury side is escaped', [RAW_TAG.test(html), html.includes(SAFE)], [false, true]);
+    }
+
+    // S3: a language (free text, title-cased before the escape)
+    {
+        const env = sheetSandbox();
+        stubRenderData(env);
+        const html = env.sheet.renderBackground(makeCharacter({ languages: ['low_gothic', EVIL] }));
+        check('S3 language is escaped', RAW_TAG.test(html), false);
+        check('S3 low_gothic still shows as Low Gothic', html.includes('Low Gothic'), true);
+    }
+}
+
 console.log(failures ? `\n${failures} check(s) FAILED` : '\nAll checks passed');
 process.exit(failures ? 1 : 0);

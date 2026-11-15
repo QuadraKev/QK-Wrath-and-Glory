@@ -173,13 +173,19 @@ returns the strip in full mode, the strip bar in compact mode and the tab bar in
 740×360 row of the table above describes compact mode and does not apply any more.
 
 Measured room for the pane (pinned height / room) at 360×740 with the trackers in the name card
-(2026-11-14): typical 198 / 412px with no Faith and 240 / 370px with Faith; worst case
-380 / 230px with no Faith and 422 / 188px with Faith. These values are from after the scrollbar
-removal (2026-11-14). The test browser hides scrollbars, so the tab bar was 40px high before and
-after the removal, and the scrollbar took 0px there. In a Chromium window with a classic scrollbar,
-the scrollbar took 8px: the tab bar was 48px high before the removal and is 40px high after it, so
-the pinned height and the room each change by 8px (typical with no Faith: 232 / 378px before, 224 /
-386px after). Before 2026-11-14: 360×740 typical
+(2026-11-14). The headless Playwright browser hides all scrollbars. Two sets of values exist, and a
+check uses the set that matches its browser.
+
+- Hidden scrollbars (the headless Playwright browser): typical 198 / 412px with no Faith and
+  240 / 370px with Faith. Worst case 380 / 230px with no Faith and 422 / 188px with Faith. The
+  scrollbar removal did not change these values, because this browser showed no scrollbar before it.
+- Classic scrollbars (Chromium without `--hide-scrollbars`, measured after the scrollbar removal):
+  typical 224 / 386px with no Faith and 266 / 344px with Faith. Worst case 432 / 178px with no Faith
+  and 474 / 136px with Faith. The scroller `#tab-character-sheet` has an 8px vertical scrollbar, so
+  the sheet is narrower and the boxes fill more rows. Before the scrollbar removal, each pinned
+  height of this set was 8px more, because the tab bar was 48px high. It is 40px high now.
+
+Before 2026-11-14: 360×740 typical
 176 / 434px, worst case 358 / 252px; compact mode in a 1280px wide window: 1280×560 typical
 150 / 280px, worst case 202 / 228px; 1280×481 worst case 202 / 149px. Only a Tier 5, Rank 5
 character with the largest bonuses reaches the worst case.
@@ -311,10 +317,11 @@ selected tab is scrolled into view inside the bar without a vertical scroll of t
 - **[Owner, 2026-11-14]** In compact and low mode, the tab bar shows no scrollbar. The owner said:
   "I think we can get rid of the horizontal scroll bar for the tabs. The tabs fading to the sides +
   the side indicator arrows should be sufficient for the user to understand that it can be scrolled."
-  Two CSS rules do this: `scrollbar-width: none` on `.sheet-tabbar`, and
-  `.sheet-tabbar::-webkit-scrollbar { display: none; }`. The bar stays an `overflow-x: auto` scroll
-  box. The player can still scroll it by touch, by Shift + wheel and by the arrow keys. A click on a
-  tab that is partly in view selects it and scrolls it fully into view.
+  **[Controller ruling, 2026-11-14]** Two CSS rules hide the scrollbar: `scrollbar-width: none` on
+  `.sheet-tabbar`, and `.sheet-tabbar::-webkit-scrollbar { display: none; }`. The bar stays an
+  `overflow-x: auto` scroll box. The player can still scroll it by touch, by Shift + wheel and by the
+  arrow keys. A click on a tab that is partly in view selects it and scrolls it fully into view. A
+  click on an edge arrow goes through to the tab under it, because the arrow takes no pointer events.
 - A window resize (for example a rotate) also scrolls the selected tab into view. The resize does
   nothing while the sheet is not displayed.
 

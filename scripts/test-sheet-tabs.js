@@ -942,8 +942,12 @@ function tabsSection() {
     const wideTrackers = ruleOf(wide, '.sheet-strip-trackers');
     check('wide: the strip is a row that wraps, and the bar is unwrapped',
         [has(ruleOf(wide, '.sheet-strip'), /display:\s*flex/), has(ruleOf(wide, '.sheet-strip'), /flex-wrap:\s*wrap/), has(ruleOf(wide, '.sheet-strip-bar'), /display:\s*contents/)], [true, true, true]);
-    check('wide: the identity is the left half, left-aligned, at least 42%',
-        [/min-width:\s*42%/, /border-right:\s*0/, /text-align:\s*left/, /justify-content:\s*center/].map(re => has(wideHeader, re)), [true, true, true, true]);
+    // The centered look comes from the base rules, so the wide block sets no text-align and no chip alignment
+    const allCss = readSource('creator/css/styles.css');
+    check('wide: the identity is the left half, centered, at least 42%',
+        [/min-width:\s*42%/, /border-right:\s*0/, /justify-content:\s*center/].map(re => has(wideHeader, re)).concat([!/text-align/.test(wideHeader)]), [true, true, true, true]);
+    check('wide: the keyword rows are not left-aligned, and the base rules center the identity',
+        [!/justify-content:\s*flex-start/.test(ruleOf(wide, '.sheet-strip .sheet-keywords')), has(ruleOf(allCss, '.sheet-header-section'), /text-align:\s*center/), has(ruleOf(allCss, '.sheet-keywords'), /justify-content:\s*center/)], [true, true, true]);
     check('wide: the trackers are the right half, 50% to 58% of the card',
         [/min-width:\s*50%/, /max-width:\s*58%/, /border-left:\s*0/, /display:\s*grid/, /grid-template-columns:\s*auto minmax\(0, auto\);/, /justify-content:\s*center/, /align-content:\s*center/].map(re => has(wideTrackers, re)),
         [true, true, true, true, true, true, true]);

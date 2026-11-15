@@ -4,7 +4,7 @@
 
 **Goal:** `State.loadCharacter` gives each known field of a loaded character the type that the code expects, and each render site that prints a raw id or raw free text escapes it.
 
-**Architecture:** A new global object `CharacterCheck` (`creator/js/character-check.js`) repairs a merged character in place and returns the repaired paths. `State.loadCharacter` calls it directly after the merge, before the existing migrations and the custom wargear repair. A top level that is not a plain object throws, and the import path shows the existing error message. Twenty render sites (S1-S20) in nine files get an escape.
+**Architecture:** A new global object `CharacterCheck` (`creator/js/character-check.js`) repairs a merged character in place and returns the repaired paths. `State.loadCharacter` calls it directly after the merge, before the existing migrations and the custom wargear repair. A top level that is not a plain object throws, and the import path shows the existing error message. Twenty render sites (S1-S20) in eight files get an escape.
 
 **Tech Stack:** Vanilla JS, global-object modules, no build step. Tests are plain Node scripts that load the browser files into a `vm` context.
 
@@ -204,7 +204,7 @@ const HOSTILE = [
     ...['strength', 'toughness', 'agility', 'initiative', 'willpower', 'intellect', 'fellowship'].map(k => [['attributes', k], INT_BAD, 1]),
     ...Object.keys(base().skills).map(k => [['skills', k], INT_BAD, 0]),
     // R10: an unknown key in attributes or skills keeps its key; a value that is not a finite number or null becomes null
-    [['skills', 'choice1'], [EVIL, {}, []], null], [['attributes', 'luck'], [EVIL, {}, []], null],
+    [['skills', 'choice1'], NUM_NULL_BAD, null], [['attributes', 'luck'], NUM_NULL_BAD, null],
     [['background'], OBJ_BAD, { origin: null, accomplishment: null, goal: null, bonusUsed: null }],
     [['background', 'origin'], [EVIL, [], 5, true], null], [['background', 'origin', 'id'], STR_BAD, null, ['background', 'origin']],
     [['background', 'accomplishment', 'bonusType'], STR_NULL_BAD, null], [['background', 'bonusUsed'], STR_NULL_BAD, null],
@@ -396,8 +396,8 @@ Record the seven results in the commit body as one line each.
 
 - `scripts/test-notes.js`: before line 37 (`const stateSource = …`), add `vm.runInContext(fs.readFileSync(path.join(ROOT, 'creator/js/character-check.js'), 'utf8'), sandbox);`.
 - `scripts/test-custom-wargear.js`: before line 426 (`load(sctx, 'creator/js/state.js');`), add `load(sctx, 'creator/js/character-check.js');`.
-- `scripts/test-custom-wargear.js:486`: the check becomes `check('a null entry does not throw and becomes a placeholder', [threw, State.character.wargear], [false, [{ id: '', isStarting: false }, { id: 'chainsword' }]]);` (spec §6.4: never drop, replace in place; `isStarting` is optional, so `{ id: 'chainsword' }` stays).
-- `scripts/test-custom-wargear.js:489`: the check becomes `check('wargear {} does not throw and becomes []', [threw, State.character.wargear], [false, []]);` (spec §6.1 row 36).
+- `scripts/test-custom-wargear.js`, the check `'a null entry does not throw and stays'` (line 486 before the edit above): the check becomes `check('a null entry does not throw and becomes a placeholder', [threw, State.character.wargear], [false, [{ id: '', isStarting: false }, { id: 'chainsword' }]]);` (spec §6.4: never drop, replace in place; `isStarting` is optional, so `{ id: 'chainsword' }` stays).
+- `scripts/test-custom-wargear.js`, the check `'wargear {} does not throw and stays'` (line 489 before the edit above): the check becomes `check('wargear {} does not throw and becomes []', [threw, State.character.wargear], [false, []]);` (spec §6.1 row 36).
 
 The other scripts that load `state.js` (`test-improvised.js:149`, `test-followers.js:87`, `test-custom-wargear.js:1099`) do not call `loadCharacter`, so they need no change.
 
@@ -411,7 +411,7 @@ Run the command of the Global Constraints. Expected: no `FAIL` line, then `done`
 git add creator/js/character-check.js creator/js/state.js creator/js/character-io.js creator/js/app.js creator/index.html scripts/test-load-check.js scripts/test-notes.js scripts/test-custom-wargear.js
 git commit --author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github.com>" -m "Check the types of a loaded character
 
-The new CharacterCheck module repairs each known field of a loaded character to the type that the code expects. State.loadCharacter calls it after the merge and before the old steps. A file whose top level is not an object now shows an error. <four mutation-proof lines>"
+The new CharacterCheck module repairs each known field of a loaded character to the type that the code expects. State.loadCharacter calls it after the merge and before the old steps. A file whose top level is not an object now shows an error. <seven mutation-proof lines>"
 ```
 
 ---
@@ -618,7 +618,7 @@ Run the command of the Global Constraints. Expected: no `FAIL` line.
 git add creator/tabs/followers-tab.js creator/tabs/archetype-tab.js creator/tabs/ascension-tab.js creator/tabs/background-tab.js creator/tabs/injuries-tab.js creator/tabs/powers-tab.js creator/tabs/species-tab.js scripts/test-tab-escapes.js
 git commit --author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github.com>" -m "Escape the raw ids and the free text of a loaded file in seven tabs
 
-The follower id, the keyword choices, the custom archetype values, the languages, the injury side, the disciplines, the sub-option ids and the prerequisite values of the Ascension tab now get an escape. A value inside a double-quoted attribute also escapes the quote. <mutation-proof line>"
+The follower id, the keyword choices, the custom archetype values, the languages, the injury side, the disciplines, the sub-option ids and the prerequisite values of the Ascension tab now get an escape. A value inside a double-quoted attribute also escapes the quote. <two mutation-proof lines>"
 ```
 
 ---
@@ -704,7 +704,7 @@ Expected: `All checks passed`.
 1. In `creator/js/state.js`, comment out the `CharacterCheck.repair` call (and its warning). Run the test. Expected: a `(b) … no raw tag` FAIL for each of `attributes on the sheet`, `skills on the sheet`, `Ascension card targetTier`, `stats tab attributes` and `injuries tab corruption`. Restore the line.
 2. The two Ascension prerequisite rows have two guards: the check (Task 1) and the S20 escapes (Task 3). So the first mutation alone cannot fail them. Comment out the `CharacterCheck.repair` call AND undo the four S20 escapes in `creator/tabs/ascension-tab.js` (`:374`, `:403`, `:472`, `:483`, back to `(have ${current})`). Run the test. Expected: `(b) ascension tab package prerequisites: no raw tag` and `(b) ascension tab archetype prerequisites: no raw tag` FAIL. Restore both files.
 
-Record the FAIL lists of both mutations in the commit body. Run `git diff --stat` after the restore: it must show only `scripts/test-load-check-render.js`.
+Record the FAIL lists of both mutations in the commit body. Run `git status --short` after the restore: it must show only `?? scripts/test-load-check-render.js`.
 
 - [ ] **Step 5: Run all test scripts**
 
@@ -716,5 +716,5 @@ Run the command of the Global Constraints. Expected: no `FAIL` line.
 git add scripts/test-load-check-render.js
 git commit --author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github.com>" -m "Test the number sinks through the real character load
 
-Each test loads a hostile value through State.loadCharacter and renders the site. The HTML must not hold the raw tag. <mutation-proof line>"
+Each test loads a hostile value through State.loadCharacter and renders the site. The HTML must not hold the raw tag. <two mutation-proof lines>"
 ```

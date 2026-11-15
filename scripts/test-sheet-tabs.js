@@ -1537,6 +1537,15 @@ function tabsSection() {
         check('S1 relic base id is escaped', [RAW_TAG.test(html), html.includes(SAFE)], [false, true]);
     }
 
+    // S1: a relic entry whose base item is in the data, with a name that holds markup
+    {
+        const env = sheetSandbox();
+        stubRenderData(env);
+        env.dataLoader.getWargearItem = () => ({ name: EVIL });
+        const html = env.sheet.renderHolyRelics(makeCharacter({ wargear: [{ id: 'x', isStarting: false, relic: { name: 'R', form: 'f', originalOwner: 'a', anointment: 'b', power: 'c', oddities: [] } }] }));
+        check('S1 relic base name is escaped', [RAW_TAG.test(html), html.includes(SAFE)], [false, true]);
+    }
+
     // S2: the injury side
     {
         const env = sheetSandbox();
@@ -1553,6 +1562,7 @@ function tabsSection() {
         const html = env.sheet.renderBackground(makeCharacter({ languages: ['low_gothic', EVIL] }));
         check('S3 language is escaped', RAW_TAG.test(html), false);
         check('S3 low_gothic still shows as Low Gothic', html.includes('Low Gothic'), true);
+        check('S3 language shows escaped once', html.includes(SAFE_UPPER), true);
     }
 }
 

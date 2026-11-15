@@ -339,7 +339,7 @@ Autosave path: load `creator/js/app.js` into a context with `document: { addEven
 ```js
 let threw = false; try { App.checkAutoSave(); } catch (e) { threw = true; }
 check('autosave: a bad character does not throw', threw, false);
-check('autosave: the warning names the reason', warns.includes('The auto-save was not loaded: The file does not contain a character.'), true);
+check('autosave: the warning names the reason', warns.includes('The auto-save was not loaded: it does not contain a character.'), true);
 ```
 
 End the file with the summary lines of `scripts/test-custom-wargear.js` (`All checks passed` and `process.exit(failures ? 1 : 0)`). Wrap the file body in an `async` main function for the `await`.
@@ -360,7 +360,7 @@ Add step 1 (the gate) and step 3 (the call and the one warning) of spec §7.1. D
 - [ ] **Step 8: Change the two load paths**
 
 - `creator/js/character-io.js:55`: `if (result.success && result.character)` becomes `if (result.success)`.
-- `creator/js/app.js:485-487`: put `State.loadCharacter(saved.character)` in a `try`. The `catch (e)` writes `console.warn('The auto-save was not loaded: ' + e.message)`. The lines after it (`SettingTab.refresh()` and on) do not change.
+- `creator/js/app.js:485-487`: call `State.loadCharacter(saved.character)` only if `CharacterCheck.isPlainObject(saved.character)` is true, with no `try`. If it is false, write `console.warn('The auto-save was not loaded: it does not contain a character.')` (spec §7.2, controller ruling after the review of Task 1). An error that is not the gate goes out of `checkAutoSave`. The lines after it (`SettingTab.refresh()` and on) do not change.
 
 - [ ] **Step 9: Add the script tag and bump the cache keys in `creator/index.html`**
 

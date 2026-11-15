@@ -6,7 +6,7 @@ Status: spec for review. Line references are to the tree at `f6a3be0`.
 Marks used below:
 
 - **[Owner, 2026-11-15]** is the owner's word.
-- **[Controller ruling, 2026-11-15]** is a binding ruling of the controller (R1-R9).
+- **[Controller ruling, 2026-11-15]** is a binding ruling of the controller (R1-R10).
 - **[Design agent]** is a decision of the agent that wrote this spec. Each one gives the cost if it is wrong.
 
 ## 1. Intent
@@ -50,7 +50,7 @@ Then it calls `CharacterSheetTab.renderAscensions(State.character)`. The result 
 
 ## 3. Rulings
 
-Each ruling is binding. **[Controller ruling, 2026-11-15]** applies to R1-R9.
+Each ruling is binding. **[Controller ruling, 2026-11-15]** applies to R1-R10.
 
 - **R1. No harm to a real save.** The check never changes a value that some version of this app can have written. This rule has the highest priority. The owner asks for caution with saved-character data, and a lost character has no recovery. Each field has evidence (§5, §6). Where a constraint is not proven safe, the check enforces the type only.
 - **R2. Repair, do not reject.** A value of the wrong type gets a safe value, and the file still loads. For a top-level scalar, the safe value is the default of `createNewCharacter()`. For an entry of a list, the check repairs in place where possible. It drops an entry only from a list that no other part of the character references by index. The wargear list is index-referenced by talent choices (`state.js:165`). One exception: a top-level value that is not a plain object has nothing to repair (§7.2).
@@ -61,12 +61,13 @@ Each ruling is binding. **[Controller ruling, 2026-11-15]** applies to R1-R9.
 - **R7. No new UI.** A repair writes one `console.warn` that names the repaired paths, as the custom wargear repair does today (`state.js:173`).
 - **R8. Scope.** The creator only. `CharacterIO.validateCharacterData` is dead code: do not use, change or delete it. No cleanup of adjacent code. No change to a stored shape. No new migration.
 - **R9. Honest claim.** §8.1 states which files the inventory covered and how. §12 states what is not covered.
+- **R10. Unknown keys in `attributes` and `skills`.** Inside `attributes` and `skills`, the key of an unknown entry stays (R6). Its value must be a finite number or `null`. Another value becomes `null`, and the path goes into the repaired list. Why: code reads these two maps through a key that comes from the data (`character.skills[key]`, `ascension-tab.js:479-483`), and the first inventory missed one such read. This rule closes that class at the load. R1 evidence: each writer of the two maps writes a `Math.max` result or a count (`state.js:236`, `:348`, `:355`, `:580`-`:658`), so a real save holds a number, or `null` from `NaN`. Cost if wrong: an unknown key with another value in a real save becomes `null`. No writer makes such a value. The known keys keep their rule (integer, else the default). **[Controller ruling, 2026-11-15]**
 
 ## 4. Design summary
 
 - A new file `creator/js/character-check.js` holds one global object, `CharacterCheck`. Its method `repair(character, defaults)` changes the character in place and returns the list of repaired paths. **[Design agent]** A separate file keeps the field rules in one place, and a Node test can load it alone. Cost if wrong: one more script tag.
 - `State.loadCharacter` calls `CharacterCheck.repair` directly after the merge, before the existing steps (§7.1).
-- Escapes go into 19 render sites in 9 files (§8.4).
+- Escapes go into 20 render sites (S1-S20) in 9 files (§8.4).
 - `State.loadCharacter` throws an `Error` for a top level that is not a plain object. The import path shows the existing error message. The autosave path keeps the blank character (§7.2).
 
 ### 4.1 Rules that apply to each field
@@ -75,18 +76,19 @@ These rules apply to each row of §5 and §6.
 
 1. **Plain object.** "Plain object" means `value !== null && typeof value === 'object' && !Array.isArray(value)`.
 2. **Present with a wrong type.** The check replaces the value with the repair value of its row. It adds the path to the repaired list.
-3. **Absent optional key.** An optional key that is absent stays absent. The app wrote shapes without these keys (for example a follower before `cb56749` has no `mobCount`, and a background entry from before the web app has no `bonusType`).
-4. **Absent key with a default.** A key that `createNewCharacter()` holds inside `species`, `archetype`, `customArchetype`, `attributes`, `skills` or `background` gets its default when it is absent. The path goes into the repaired list. No app version wrote these objects without these keys: the initial web commit `3b17bac` has the same keys in `createNewCharacter()`.
-5. **Defaults.** The check takes each default from a fresh `createNewCharacter()` object (`defaults` argument). The check uses one default value at most one time, so no two fields share one array or object.
-6. **Strings.** The check never trims, cuts or changes a string. A string of any content is a legal string.
-7. **Numbers.** "Finite number" means `typeof v === 'number' && Number.isFinite(v)`. "Integer" means `Number.isInteger(v)`. JSON cannot carry `NaN`. JSON text `1e999` parses to `Infinity`, which fails "finite". A numeric string such as `"3"` is a wrong type: the check does not convert it (R2: the safe value is the default).
-8. **Unknown keys.** The check does not read, change or delete an unknown key (R6).
+3. **Absent optional key.** An optional key that is absent stays absent. Each optional key has the word "optional" in its row. The app wrote shapes without these keys (for example a follower before `cb56749` has no `mobCount`, and a background entry from before the web app has no `bonusType`).
+4. **Absent key with a default.** A key that `createNewCharacter()` holds inside `species`, `archetype`, `customArchetype`, `attributes`, `skills` or `background` gets its default when it is absent. The path goes into the repaired list. No app version from Electron 1.0.0 on wrote these objects without these keys: the 1.0.0 build and the initial web commit `3b17bac` have the same keys in `createNewCharacter()`. The period before 1.0.0 is not proven. There, the cost is one default key and one warning (the 1.0.0 `loadCharacter` already fills a missing `subOptions`, which hints at an older shape).
+5. **Absent key that is not optional, inside a list entry or an overlay.** Inside a list entry, a `relic` or an `improvised` overlay, an absent key that its row does not mark "optional" gets the repair value of its row. The path goes into the repaired list. Where the repair of the key is "drop the entry", an absent key drops the entry. Why: the goal includes "no throw at render", and an absent `relic.oddities` is the same risk as a wrong type. R1: no real save without these keys was found (`followers.js` at `cac2cb3` and `cb56749`; `state.js:999`, `:1024`, `:1055` since `214c3e8`; the 1.0.0 build). The cost for a save from before 1.0.0 is a default key and one warning. **[Controller ruling, 2026-11-15]** (C8)
+6. **Defaults.** The check takes each default from a fresh `createNewCharacter()` object (`defaults` argument). The check uses one default value at most one time, so no two fields share one array or object.
+7. **Strings.** The check never trims, cuts or changes a string. A string of any content is a legal string.
+8. **Numbers.** "Finite number" means `typeof v === 'number' && Number.isFinite(v)`. "Integer" means `Number.isInteger(v)`. JSON cannot carry `NaN`. JSON text `1e999` parses to `Infinity`, which fails "finite". A numeric string such as `"3"` is a wrong type: the check does not convert it (R2: the safe value is the default).
+9. **Unknown keys.** The check does not read, change or delete an unknown key (R6). One exception: the value of an unknown key inside `attributes` or `skills` must be a finite number or `null` (R10).
 
 ## 5. Field table
 
 "Legal shapes" lists each value that some app version writes, with the evidence. "Repair" is the value for a present value of the wrong type.
 
-History that the evidence covers: the monorepo `git log` from `74924bb` (2026-06-13), and the old repo `/root/projects/wrath-and-glory/wrath-and-glory-creator-web` from `3b17bac` (2026-02-13). The app before the web version (an Electron app) is not in either history. For that period, the evidence is the readers that accept two shapes, and the repairs that the code does at render (§12).
+History that the evidence covers: the monorepo `git log` from `74924bb` (2026-06-13), the old repo `/root/projects/wrath-and-glory/wrath-and-glory-creator-web` from `3b17bac` (2026-02-13), and the Electron build "Wrath and Glory Character Creator 1.0.0" (2026-01-28). That build is on the owner's machine (`/mnt/c/Users/QuadraKev/OneDrive/Wrath and Glory Character Creator 1.0.0.exe`). The review of round 1 extracted its `app.asar` source into the scratch folder; none of it is in the repo. Its writers match `3b17bac` for each row of §5 and §6. The app before 1.0.0 is not in any history. For that period, the evidence is the readers that accept two shapes, and the repairs that the code does at render (§12).
 
 ### 5.1 Top-level scalars
 
@@ -96,9 +98,9 @@ History that the evidence covers: the monorepo `git log` from `74924bb` (2026-06
 | 2 | `setting` | string | Text input: `setSetting` (`state.js:218-220`), `setting-tab.js:27`. | `''` |
 | 3 | `notes` | string | Textarea: `setNotes` (`state.js:989-991`), `notes-tab.js:7`, sheet notes box. | `''` |
 | 4 | `tier` | integer | `parseInt(tier) \|\| 1` (`state.js:196`). The select has 1-4 (`index.html:195-200`, same in `3b17bac`). `WARGEAR_BUDGET` and `TIER_STARTING_XP` know 5. No range: the Electron period is not proven. | `1` |
-| 5 | `rank` | integer | `parseInt(rank) \|\| 1` (`state.js:207`). The input `min 1 max 5` is not enforced on typed text, so a negative integer is legal. | `1` |
-| 6 | `additionalXp` | integer | `parseInt(xp) \|\| 0` (`state.js:213`). A negative integer is legal. | `0` |
-| 7 | `corruption` | integer | `Math.max(0, parseInt(value) \|\| 0)` (`state.js:1048`). Integer ≥ 0, but no range is added (R5: not needed by a sink). | `0` |
+| 5 | `rank` | integer or `null` | `parseInt(rank) \|\| 1` (`state.js:207`). The input `min 1 max 5` is not enforced on typed text, so a negative integer is legal. A typed number of 309 digits gives `parseInt(...) = Infinity`, which JSON saves as `null`. A `null` stays (R1). Each reader uses `rank \|\| 1` or `Number(rank) \|\| 1`. | `1` |
+| 6 | `additionalXp` | integer or `null` | `parseInt(xp) \|\| 0` (`state.js:213`). A negative integer is legal. `null` as for row 5. It reaches the page only through `textContent` (`app.js:363-376`). | `0` |
+| 7 | `corruption` | integer or `null` | `Math.max(0, parseInt(value) \|\| 0)` (`state.js:1048`). Integer ≥ 0, but no range is added (R5: not needed by a sink). `null` as for row 5. Each reader uses `corruption \|\| 0` (`derived-stats.js:457`, `injuries-tab.js:129`, `character-sheet-tab.js:1781`). | `0` |
 | 8 | `currentWounds` | finite number or `null` | `setCurrentWounds` (`state.js:1133-1140`): `Math.max(0, Math.min(value, max))`, `null` for 0. `NaN` and `Infinity` save as `null`. Not proven integer: `max` is a derived number. | `null` |
 | 9 | `currentShock` | finite number or `null` | `setCurrentShock` (`state.js:1154-1161`), same form. | `null` |
 | 10 | `currentWealth` | finite number or `null` | `setCurrentWealth` (`state.js:1179-1187`): `null` at base, else `Math.max(0, value)`. | `null` |
@@ -121,8 +123,10 @@ History that the evidence covers: the monorepo `git log` from `74924bb` (2026-06
 | 22 | `archetypeKeywordChoices` | optional plain object, each value a string | Not in `createNewCharacter()`. `{}` from `setArchetype` (`state.js:343`). Values: `''`, a data option value, or typed text in upper case (`archetype-tab.js:321-338`). | not a plain object: `{}`. A value that is not a string: `''`. |
 | 23 | `attributes` | plain object | Seven keys, each written by `state.js` setters only (`:236`, `:348`, `:580`, `:604`, `:628`) from integers. All data base values and bonuses are integers. | default object |
 | 24 | `attributes.<strength … fellowship>` (7 keys) | integer | As row 23. No range: `increaseAttribute` caps at the species maximum or 8, but `setSpecies`/`setArchetype` use `Math.max` with data values. | `1` |
+| 24a | `attributes.<unknown key>` | optional; finite number or `null` (R10) | No writer makes an unknown attribute key from the data today; R10 applies the same rule as row 26a. | `null` |
 | 25 | `skills` | plain object | Eighteen keys, `state.js` setters only (`:355`, `:589`, `:643`, `:658`). | default object |
 | 26 | `skills.<athletics … weaponSkill>` (18 keys) | integer | As row 25. | `0` |
+| 26a | `skills.<unknown key>` | optional; finite number or `null` (R10) | Real saves hold `choice`, `choice1` and `choice2` with `null`. `setArchetype` writes `Math.max(undefined, 2)`, which is `NaN`, for the data keys of `skillBonus` (`state.js:355`; for example `inquisitorial_acolyte` has `choice`, `inquisitor` has `choice1` and `choice2`). JSON saves `NaN` as `null`. The Electron 1.0.0 data has the same keys. `resetStats` (`state.js:584-589`) can then write a number into such a key. | `null` |
 | 27 | `background` | plain object | `{ origin, accomplishment, goal, bonusUsed }`. | default object |
 | 28 | `background.origin`, `.accomplishment`, `.goal` | `null` or plain object | `{ id, bonusType }` or `null` (`state.js:945`). A pre-web save has `{ id }` with no `bonusType`: `repairMissingBonusTypes` exists since `3b17bac` (`background-tab.js:251-276`). | not `null` and not a plain object, or an `id` that is not a string: `null` |
 | 29 | `background.<entry>.bonusType` | optional; string or `null` | Data `bonusType \|\| null` (all strings), or written at render by `repairMissingBonusTypes`. | `null` |
@@ -148,7 +152,7 @@ The list fields (`species.subOptions`, `customArchetype.keywords`, `customArchet
 | 38 | `freePowers` | no | array | `[]` | string | drop |
 | 39 | `unlockedDisciplines` | no | array | `[]` | string, a discipline name (`powers-tab.js:224`, `state.js:1363-1366`) | drop |
 | 40 | `memorableInjuries` | no | array | `[]` | `{ id: string, escalated: boolean }` (`state.js:999`, `:1016`) | drop if not a plain object with a string `id`; `escalated` not a boolean: `false` |
-| 41 | `traumaticInjuries` | no | array | `[]` | `{ id: string, side: string \| null, reconstructed?: boolean }` (`state.js:1024`, `:1041`). The UI writes `'Left'`, `'Right'` or `null` (`injuries-tab.js:115-119`, `:307`). | drop if not a plain object with a string `id`; `side` not a string and not `null`: `null`; `reconstructed` present and not a boolean: `false` |
+| 41 | `traumaticInjuries` | no | array | `[]` | `{ id: string, side: string \| null, reconstructed: optional boolean }` (`state.js:1024`, `:1041`). The UI writes `'Left'`, `'Right'` or `null` (`injuries-tab.js:115-119`, `:307`). | drop if not a plain object with a string `id`; `side` not a string and not `null`, or absent: `null`; `reconstructed` present and not a boolean: `false` |
 | 42 | `mutations` | no | array | `[]` | `{ id: string, subChoice: string \| null }` (`state.js:1055`) | drop if not a plain object with a string `id`; `subChoice` not a string and not `null`: `null` |
 | 43 | `followers` | no (keyed by `id`) | array | `[]` | §6.5 | drop if not a plain object or if `id` is not a string; else repair keys |
 | 44 | `languages` | no | array | `['low_gothic']` (default) | string. `'low_gothic'` or free text that the user types (`background-tab.js:30-35`). | drop |
@@ -175,7 +179,7 @@ The list fields (`species.subOptions`, `customArchetype.keywords`, `customArchet
 |---|---|---|---|
 | (entry) | string, or plain object | String id (`state.js:686`), or object (`:684`, `:1329`). Two-shape readers: `state.js:673`, `:698`, `:721`, `:1211`, `prerequisite.js:62-64`. | §6.1 row 35 |
 | `id` | string | Data talent id. | not a string: drop the entry |
-| `choice` | optional; string, finite number or `null` | The talents tab writes a string (`talents-tab.js:254-279`: `dataset.value`, `textContent` or typed text). `setCustomArchetype` keeps a number choice as a number and writes `null` (`state.js:433-438`), so a number choice exists in older saves. | `null` (the value that `state.js:436` writes for "pick again") |
+| `choice` | optional; string, finite number or `null` | The talents tab writes a string (`talents-tab.js:254-279`: `dataset.value`, `textContent` or typed text). `setCustomArchetype` keeps a number choice as a number and writes `null` (`state.js:433-438`). No writer that stores a number was found (Electron 1.0.0 `talents-tab.js:239` and each web version store `dataset.value`, a string). The number type is kept for safety. | `null` (the value that `state.js:436` writes for "pick again") |
 | `choice` of `warped_mind` or `tormented_manifestation_aoa` | optional; string or `null` | The choice is a discipline name. `getUnlockedDisciplines` pushes it (`state.js:1636-1641`), and `powers-tab.js:19` calls `d.toLowerCase()` on it. | `null` |
 | `ascensionGranted` | optional boolean | `true` only (`state.js:1329`). | `false` |
 
@@ -247,7 +251,7 @@ Today (evidence: `probe-legacy.js` and `character-io.js:55`):
 After this change **[Design agent]**:
 
 - **Import path.** `character-io.js:55` becomes `if (result.success)`. `loadCharacter` then throws for each value that is not a plain object. The `catch` at `character-io.js:66-69` returns `{ success: false, error: 'The file does not contain a character.' }`. The click handler (`app.js:164-165`) shows "Error loading character: The file does not contain a character." This is the existing error path. `State.character` does not change, because the gate is step 1.
-- **Autosave path.** `checkAutoSave` (`app.js:485-487`) calls `State.loadCharacter(saved.character)` inside a `try`. On a throw, it writes `console.warn('The auto-save was not loaded: ' + e.message)` and keeps the blank character. Today a throw there stops `App.init` at each start. The autosave entry stays in `localStorage` until the next autosave writes over it.
+- **Autosave path.** `checkAutoSave` (`app.js:485-487`) calls `State.loadCharacter(saved.character)` inside a `try`. On a throw, it writes `console.warn('The auto-save was not loaded: ' + e.message)`. For a throw of the gate (step 1), the blank character stays. A throw after the merge (for example in a `'load'` listener at `state.js:178`) leaves the autosave in `State.character`; the warning then says "not loaded" although the character is in place. After the check, no such throw is known. Today a throw there stops `App.init` at each start. The autosave entry stays in `localStorage` until the next autosave writes over it.
 
 Cost if wrong: a file whose top level is an array or a string loaded as a blank character before. It now shows an error. Such a file holds no character data, so nothing is lost.
 
@@ -260,6 +264,7 @@ Covered: every `.js` file in `creator/js/` (16 files) and `creator/tabs/` (16 fi
 - `creator/tabs/character-sheet-tab.js`: read in full in 7 parts, then a `grep -n '\${'` of each line without `escapeHtml`.
 - The wargear group (`wargear-tab.js`, `custom-wargear.js`, `relic-wizard.js`, `improvised-builder.js`, `threat-card.js`, `followers-tab.js`, `followers.js`): read in full, except `relic-wizard.js`. In that file, a grep of each `${`, `innerHTML`, `relic.`, `entry.`, `State.` and `wargear[` line came first, then a read of all render and prefill code.
 - All other files: a grep of `innerHTML`, `insertAdjacentHTML`, `outerHTML`, `textContent`, `${`, `character.` and `State.`, then a read of each render function that a grep found.
+- Fix round 1 (C3): one more search for reads of the character through a key that is not a literal, over `creator/js` and `creator/tabs`. The greps: `(skills|attributes|choices|Choices|bonuses)\[[^'"0-9]`, `(skills|attributes)\?\.\[`, `getEffectiveAttribute\(<x>, <variable>`, and `Object.entries|Object.keys|Object.values|for … in` over the character or one of its objects. Each read was traced to HTML. Result: four reads reach HTML raw, all in `ascension-tab.js` (`:370`→`:374`, `:497`→`:403`, `:468`→`:472`, `:479`→`:483`). They are S20 (§8.4). The key comes from the data: package prerequisites and archetype `attributeBonus`/`skillBonus`. The data holds three skill keys that are not known keys (`choice`, `choice1`, `choice2` in `skillBonus`) and one package skill key `deceive` (`harlequin` package). `deceive` goes to the `skillRequirement` branch (`:381-396`), which compares only. The other reads compare only, sum numbers into a number, or use a fixed key list (sheet `:745`, `:815`, `:2037`, `:2157`; `talents-tab.js:199`; `stats-tab.js:87`, `:187`; `prerequisite.js:20`, `:30`, `:231`, `:252`; `xp-calculator.js:84`, `:104`; `state.js:572`, `:584`). The `choices[...]` reads are S7, S8 and S12-S14, and sheet `:1593` prints a data label only.
 
 Each `${…}` was traced to its source: the character, a data file, a constant or UI state. The helpers that hand character values back were followed: `DataLoader` lookups (a `custom_` id gives the custom record), `DerivedStats`, `XPCalculator`, `State.getEffectiveTier`, `PrerequisiteChecker.getCharacterKeywords`, `Followers`, `ImprovisedBuilder.resolve`/`displayName`. No inline handler (`onclick=` and others) exists in `creator/`. No site uses `insertAdjacentHTML` or `outerHTML` with a character value.
 
@@ -272,9 +277,11 @@ Data text reached by a valid id is not a character value. The fallback branch fo
 | Class | Sites | Action |
 |---|---|---|
 | (a) already escaped | 71 | none |
-| (b) safe after the check | 55 | none; the check makes the field a finite number (§5, §6) |
+| (b) safe after the check | 51 | none; the check makes the field a finite number (§5, §6) |
 | (c) id raw | 10 | escape at the site for 8; 2 need nothing (an exact lookup finds the id first) |
-| (d) free text raw | 13 | escape at the site |
+| (d) free text raw | 17 | escape at the site |
+
+Fix round 1 moved four rows from (b) to (d): `ascension-tab.js:374`, `:403`, `:472` and `:483` (S20). Through a key from the data, these sites can print the value of an unknown key, which is free text in a hostile file. R10 also types that value at the load; the escape stays as a second guard (C1).
 
 A "site" is one row of the inventory notes. A row can cover a group of cells (for example the 18 skill rows of one template). `archetype-tab.js:389` is in both (c) and (d). Two sites that use a DOM `textContent` helper inside a double-quoted attribute are counted in (d), because that helper does not escape `"`.
 
@@ -307,6 +314,9 @@ The four helpers that drop `0` (`escapeHtml(0)` returns `''`) are used with `Str
 | S17 | `tabs/powers-tab.js:151` | `unlockedDisciplines[i]`, text and `data-discipline` | c | escape both uses (new helper) |
 | S18 | `tabs/species-tab.js:93` (built at `:91`) | `species.subOptions[i].optionId` via `option?.name \|\| sel.optionId` | c | escape each name (new helper) |
 | S19 | `tabs/species-tab.js:264` | as S18 | c | as S18 |
+| S20 | `tabs/ascension-tab.js:374`, `:403`, `:472`, `:483` | `attributes[key]`, `skills[key]` with a key from the data (`choice1` and `choice2` are unknown keys) in `(have ${current})` | d | `this.escapeHtml(String(current))` at each of the four lines (new helper) |
+
+S12 (`:225`) runs only for a keyword category that has options and `allowCustom`. `demanding_patron` (`[ANY]`, category `any` with 0 options) does not reach it. `agent_of_inquisition_aoa` (`[ORDO]`, 3 options, `allowCustom`) does.
 
 Helpers **[Design agent]**:
 
@@ -322,12 +332,12 @@ These sites need no code change. After the check, the field is a finite number, 
 
 | Field (type after the check) | Sites |
 |---|---|
-| `attributes.*` (integer) | sheet `:578` traits, `:765` attributes (7 cells), `:831` skill totals, `:983` dice, `:984` damage; stats-tab `:113`, `:165`, `:215`; ascension-tab `:374`, `:472` |
-| `skills.*` (integer) | sheet `:829`, `:831`, `:983`; stats-tab `:165`, `:212`, `:215`; ascension-tab `:403`, `:483` |
-| `rank` (integer) | sheet `:578`, `:831`, `:984`, `:990` (through talent and path bonuses); improvised-builder `:182`, `:376` (through `resolve`) |
+| `attributes.*` (integer) | sheet `:578` traits, `:765` attributes (7 cells), `:831` skill totals, `:983` dice, `:984` damage; stats-tab `:113`, `:165`, `:215` |
+| `skills.*` (integer) | sheet `:829`, `:831`, `:983`; stats-tab `:165`, `:212`, `:215` |
+| `rank` (integer or `null`; each reader uses `rank \|\| 1`) | sheet `:578`, `:831`, `:984`, `:990` (through talent and path bonuses); improvised-builder `:182`, `:376` (through `resolve`) |
 | `tier` (integer) | ascension-tab `:21`, `:30`, `:44`, the 9 `data-target-tier`/`name` lines (`:63`-`:333`); archetype-tab `:404` |
 | `ascensions[i].targetTier` (integer) | sheet `:1625` |
-| `corruption` (integer) | stats-tab `:165` (through `getCorruption`); injuries-tab `:153` |
+| `corruption` (integer or `null`; each reader uses `corruption \|\| 0`) | stats-tab `:165` (through `getCorruption`); injuries-tab `:153` |
 | `followers[i].count`, `.livingCount` (finite number or `null`) | followers-tab `:78`, `:79` |
 | `wargear[i].improvised.halfTime` (integer) | improvised-builder `:177`, `:206` |
 
@@ -350,20 +360,20 @@ No range limit is added (§5). These number fields can make a render loop very l
 
 ## 10. Unknown keys (R6)
 
-Unknown keys stay. This is safe, because no site in `creator/` prints an unknown key or its value as HTML. Evidence from the three inventory parts:
+Unknown keys stay. No site in `creator/` prints an unknown key as HTML. One class of site prints the value of an unknown key: `ascension-tab.js:374`, `:403`, `:472` and `:483` read `attributes[key]` and `skills[key]` with a key from the data, and the data has the unknown skill keys `choice`, `choice1` and `choice2`. The first inventory missed this class (review finding P1). Two guards close it: R10 makes each unknown value in `attributes` and `skills` a finite number or `null` at the load, and S20 escapes the four sites. Evidence for the rest, from the three inventory parts and the C3 search (§8.1):
 
-- The attribute and skill rows use fixed name lists (sheet `:734`, `:783`; stats tab).
+- The attribute and skill rows of the sheet and the stats tab use fixed name lists (sheet `:734`, `:783`; stats tab).
 - `Object.entries(asc.choices)` (sheet `:1593`) prints only the label of a data option whose value matches. `getExtraKeywordKeys` (`ascension-tab.js:253`) prints a key only when it is a data placeholder plus digits.
 - `Object.entries(archetypeKeywordChoices)` and `Object.entries(asc.choices)` (`prerequisite.js:231`, `:251`) add a string value to the keyword list. After the check, each value is a string, and each keyword sink escapes (§8.6).
 - The custom repair rebuilds `entry.custom` and drops unknown keys inside the custom record. This is existing behavior (`custom-wargear.js:770-773`). Unknown keys on the wargear entry stay.
 
-Unknown keys have one effect outside HTML: `xp-calculator.js:84`, `:104` sum `Object.entries(character.attributes)` and `skills`. An unknown key with a value changes the XP total, which `app.js` writes with `textContent`. This is existing behavior, and R6 keeps it (§11, F5).
+Unknown keys have one effect outside HTML: `xp-calculator.js:84`, `:104` sum `Object.entries(character.attributes)` and `skills`. An unknown key with a number value changes the XP total, which `app.js` writes with `textContent`. This is existing behavior, and R6 keeps it (§11, F5).
 
 ## 11. Findings not solved
 
 | # | Finding | Why it stays |
 |---|---|---|
-| F1 | The legacy `ascensionPackages` migration is dead since `c744cd0`. A save from 2026-02-13 to 2026-02-16 loses its packages at load. | R8: no new migration. The owner can decide. |
+| F1 | The legacy `ascensionPackages` migration is dead since `c744cd0`. Each save with `ascensionPackages` loses its packages at load: the Electron 1.0.0 saves (its `state.js:42`, `:804-805` write `ascensionPackages`) and the web saves from 2026-02-13 to 2026-02-16. | R8: no new migration. The owner can decide. |
 | F2 | `ascension-tab.js:27` loops from `tier + 1` to 5 with no lower bound. A large negative tier hangs the tab. | R5: list, do not design a limit. |
 | F3 | `renderTrackingBoxes` (`character-sheet-tab.js:722`) has no upper bound. A large toughness or willpower hangs the sheet. | R5. |
 | F4 | The comment at `state.js:107` says the injury side is `"left"`/`"right"`. The UI writes `'Left'`/`'Right'`. | R8: no cleanup of adjacent code. The spec uses an escape, not an enum. |
@@ -373,9 +383,10 @@ Unknown keys have one effect outside HTML: `xp-calculator.js:84`, `:104` sum `Ob
 | F8 | `app.js:471` spreads `saved.enabledSources`. A value that is truthy and not iterable throws at start. | Not a character value (R8 scope). |
 | F9 | `CharacterIO.validateCharacterData`, `getCharacterSummary` and `createCharacterSheet` have no caller. | R8: mention only. |
 | F10 | `repairMissingBonusTypes` (`background-tab.js:251-276`, `character-sheet-tab.js:2798`) writes `bonusType` into the character at render. | Existing behavior. A no-op test must load only, not render. |
+| F11 | `setArchetype` writes `Math.max(undefined, value)`, which is `NaN`, for the data keys `choice`, `choice1` and `choice2` of `skillBonus` (`state.js:355`). JSON saves it as `null`. | R8: this change does not correct it. R10 keeps the `null`. |
 
 ## 12. What this spec does not prove
 
-- The app before the web version (the Electron app before 2026-02-13) is not in any history on this machine. For that period, the evidence is the readers in today's code that accept two shapes (talents as a string or an object, a background entry with no `bonusType`, `customKeywords`). The check enforces only types that these readers also need. It enforces no range and no pattern.
+- The Electron build 1.0.0 (2026-01-28) is evidence (§5). Its writers match `3b17bac` for each row. The app before 1.0.0 is not in any history and not in any build on this machine. For that period, the evidence is the readers in today's code that accept two shapes (talents as a string or an object, a background entry with no `bonusType`, `customKeywords`). The check enforces only types that these readers also need. It enforces no range and no pattern.
 - No real `.character` file from a user is on this machine. The no-op corpus of the plan uses shapes from the setters and the readers.
 - `relic-wizard.js` was searched with grep first, then read in the render and prefill parts only.

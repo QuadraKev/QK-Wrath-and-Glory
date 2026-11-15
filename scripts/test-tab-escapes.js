@@ -105,8 +105,7 @@ const state = {
     isSourceEnabled: () => true,
     getKrootMutationCount: () => 1,
     canAddCustomWargear: () => true,
-    getFreePowerChoiceStatus: () => [],
-    getExtraKeywordKeys: () => []
+    getFreePowerChoiceStatus: () => []
 };
 const ctx = vm.createContext({ console, document: rec.document, State: state });
 load(ctx, 'creator/js/data-loader.js');
@@ -134,6 +133,8 @@ function record(fn) {
 // --- S4-S6: follower id ---
 check('S4-S6 follower id is escaped in data-follower-id and name',
     RAW_TAG.test(FollowersTab.renderRosterItem({ id: EVIL, threatId: 'x', name: '', kind: 'mob', count: 2, livingCount: 1, notes: '' }, character)), false);
+check('S4-S6 follower id cannot break the data-follower-id and name attributes',
+    FollowersTab.renderRosterItem({ id: QUOTE_BREAK, threatId: 'x', name: '', kind: 'mob', count: 2, livingCount: 1, notes: '' }, character).includes(QUOTE_BREAK), false);
 
 // --- S7, S8: archetype keyword choices ---
 const acolyte = DataLoader.getArchetype('inquisitorial_acolyte');

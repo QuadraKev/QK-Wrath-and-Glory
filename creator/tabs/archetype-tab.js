@@ -303,11 +303,11 @@ const ArchetypeTab = {
                 }
                 html += `</select>`;
                 if (category.allowCustom) {
-                    html += `<input type="text" class="keyword-choice-custom" placeholder="Enter keyword" value="${isCustom ? currentValue : ''}" style="display: ${isCustom ? 'block' : 'none'}; margin-top: 8px;">`;
+                    html += `<input type="text" class="keyword-choice-custom" placeholder="Enter keyword" value="${isCustom ? this.escapeAttr(currentValue) : ''}" style="display: ${isCustom ? 'block' : 'none'}; margin-top: 8px;">`;
                 }
                 html += KeywordBonus.renderPanel(currentValue);
             } else {
-                html += `<input type="text" class="keyword-choice-text" placeholder="Enter keyword (e.g., IMPERIUM)" value="${currentValue}">`;
+                html += `<input type="text" class="keyword-choice-text" placeholder="Enter keyword (e.g., IMPERIUM)" value="${this.escapeAttr(currentValue)}">`;
             }
 
             html += `</div>`;
@@ -353,7 +353,7 @@ const ArchetypeTab = {
 
         // Build keywords display
         const keywordsHtml = custom.keywords.map((k, i) =>
-            `<span class="custom-keyword-tag">${k}<button class="custom-keyword-remove" data-index="${i}">&times;</button></span>`
+            `<span class="custom-keyword-tag">${this.escapeHtml(k)}<button class="custom-keyword-remove" data-index="${i}">&times;</button></span>`
         ).join('');
 
         // Build ability selector
@@ -386,7 +386,7 @@ const ArchetypeTab = {
             const item = DataLoader.getWargearItem(itemId);
             return `
                 <div class="custom-wargear-item">
-                    <span>${item?.name || itemId} (Value: ${item?.value || 0})</span>
+                    <span>${this.escapeHtml(item?.name || itemId)} (Value: ${item?.value || 0})</span>
                     <button class="btn-small custom-wargear-remove" data-index="${i}">&times;</button>
                 </div>
             `;
@@ -409,7 +409,7 @@ const ArchetypeTab = {
             <!-- Name -->
             <div class="custom-section">
                 <div class="custom-section-title">Archetype Name</div>
-                <input type="text" id="custom-archetype-name" class="custom-input" placeholder="Enter a name for your archetype" value="${this.escapeHtml(custom.name)}">
+                <input type="text" id="custom-archetype-name" class="custom-input" placeholder="Enter a name for your archetype" value="${this.escapeAttr(custom.name)}">
             </div>
 
             <!-- Keywords -->
@@ -757,6 +757,11 @@ const ArchetypeTab = {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    },
+
+    // Escape for a value inside a double-quoted attribute. The DOM helper above leaves the quote raw.
+    escapeAttr(text) {
+        return this.escapeHtml(text).replace(/"/g, '&quot;');
     },
 
     refresh() {

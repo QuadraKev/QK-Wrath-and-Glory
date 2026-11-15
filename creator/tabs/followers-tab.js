@@ -64,7 +64,7 @@ const FollowersTab = {
         const isMob = follower.kind === 'mob';
         const bonus = isMob ? Followers.mobAttackBonus(follower.livingCount) : 0;
         return `
-            <div class="follower-item" data-follower-id="${follower.id}">
+            <div class="follower-item" data-follower-id="${this.escapeHtml(follower.id)}">
                 <div class="follower-item-header">
                     <input type="text" class="follower-name" value="${this.escapeHtml(follower.name)}"
                            placeholder="${this.escapeHtml(threatName)}" data-field="name">
@@ -72,8 +72,8 @@ const FollowersTab = {
                     <button class="btn-remove follower-remove" title="Remove follower">&times;</button>
                 </div>
                 <div class="follower-item-controls">
-                    <label><input type="radio" name="kind-${follower.id}" value="individual" data-field="kind" ${!isMob ? 'checked' : ''}> Individual</label>
-                    <label><input type="radio" name="kind-${follower.id}" value="mob" data-field="kind" ${isMob ? 'checked' : ''}> Mob</label>
+                    <label><input type="radio" name="kind-${this.escapeHtml(follower.id)}" value="individual" data-field="kind" ${!isMob ? 'checked' : ''}> Individual</label>
+                    <label><input type="radio" name="kind-${this.escapeHtml(follower.id)}" value="mob" data-field="kind" ${isMob ? 'checked' : ''}> Mob</label>
                     ${isMob ? `
                         <label>Members <input type="number" class="follower-count" min="1" value="${follower.count}" data-field="count"></label>
                         <label>Living <input type="number" class="follower-living" min="0" max="${follower.count}" value="${follower.livingCount}" data-field="livingCount"></label>

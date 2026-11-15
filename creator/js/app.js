@@ -483,7 +483,11 @@ const App = {
             State.setIgnorePrerequisites(true);
         }
         if (saved.character) {
-            State.loadCharacter(saved.character);
+            try {
+                State.loadCharacter(saved.character);
+            } catch (e) {
+                console.warn('The auto-save was not loaded: ' + e.message);
+            }
         }
 
         SettingTab.refresh();

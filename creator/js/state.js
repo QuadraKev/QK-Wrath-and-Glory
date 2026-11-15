@@ -137,8 +137,18 @@ const State = {
 
     // Load a character from data
     loadCharacter(data) {
+        // A top level that is not a plain object has nothing to repair. The current character stays.
+        if (!CharacterCheck.isPlainObject(data)) {
+            throw new Error('The file does not contain a character.');
+        }
         const newChar = this.createNewCharacter();
         this.character = { ...newChar, ...data };
+
+        // Repair the type of each known field before the migrations below read them
+        const repaired = CharacterCheck.repair(this.character, this.createNewCharacter());
+        if (repaired.length > 0) {
+            console.warn('Character data was repaired on load: ' + repaired.join(', '));
+        }
 
         // Ensure species subOptions is properly initialized
         if (this.character.species && !this.character.species.subOptions) {

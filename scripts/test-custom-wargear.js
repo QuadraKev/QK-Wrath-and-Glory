@@ -423,6 +423,7 @@ const spineRecordWithId = { ...spineRecord, id: 'custom_p7d2m0zt' };
     });
     load(sctx, 'creator/js/followers.js');
     load(sctx, 'creator/js/custom-wargear.js');
+    load(sctx, 'creator/js/character-check.js');
     load(sctx, 'creator/js/state.js');
     const State = get(sctx, 'State'), DL = get(sctx, 'DataLoader');
     const idOk = id => /^custom_[a-z0-9]{8}$/.test(id);
@@ -483,10 +484,10 @@ const spineRecordWithId = { ...spineRecord, id: 'custom_p7d2m0zt' };
         const wargear = [null, { id: 'chainsword' }];
         let threw = false;
         try { State.loadCharacter({ wargear }); } catch (err) { threw = true; }
-        check('a null entry does not throw and stays', [threw, State.character.wargear], [false, [null, { id: 'chainsword' }]]);
+        check('a null entry does not throw and becomes a placeholder', [threw, State.character.wargear], [false, [{ id: '', isStarting: false }, { id: 'chainsword' }]]);
         threw = false;
         try { State.loadCharacter({ wargear: {} }); } catch (err) { threw = true; }
-        check('wargear {} does not throw and stays', [threw, State.character.wargear], [false, {}]);
+        check('wargear {} does not throw and becomes []', [threw, State.character.wargear], [false, []]);
     }
     {
         const first = { id: 'custom_same0001', isStarting: false, custom: { ...copy(xenotechRecord), id: 'custom_same0001' } };

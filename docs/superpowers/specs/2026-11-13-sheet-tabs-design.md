@@ -174,7 +174,12 @@ returns the strip in full mode, the strip bar in compact mode and the tab bar in
 
 Measured room for the pane (pinned height / room) at 360×740 with the trackers in the name card
 (2026-11-14): typical 198 / 412px with no Faith and 240 / 370px with Faith; worst case
-380 / 230px with no Faith and 422 / 188px with Faith. Before 2026-11-14: 360×740 typical
+380 / 230px with no Faith and 422 / 188px with Faith. These values are from after the scrollbar
+removal (2026-11-14). The test browser hides scrollbars, so the tab bar was 40px high before and
+after the removal, and the scrollbar took 0px there. In a Chromium window with a classic scrollbar,
+the scrollbar took 8px: the tab bar was 48px high before the removal and is 40px high after it, so
+the pinned height and the room each change by 8px (typical with no Faith: 232 / 378px before, 224 /
+386px after). Before 2026-11-14: 360×740 typical
 176 / 434px, worst case 358 / 252px; compact mode in a 1280px wide window: 1280×560 typical
 150 / 280px, worst case 202 / 228px; 1280×481 worst case 202 / 149px. Only a Tier 5, Rank 5
 character with the largest bonuses reaches the worst case.
@@ -303,6 +308,13 @@ selected tab is scrolled into view inside the bar without a vertical scroll of t
 - The scroll into view keeps 32px of room on a side that has more tabs, so the selected tab is clear
   of the fade and a part of the next tab shows. At the first and the last tab, the 4px padding of the
   bar keeps the room for the focus ring.
+- **[Owner, 2026-11-14]** In compact and low mode, the tab bar shows no scrollbar. The owner said:
+  "I think we can get rid of the horizontal scroll bar for the tabs. The tabs fading to the sides +
+  the side indicator arrows should be sufficient for the user to understand that it can be scrolled."
+  Two CSS rules do this: `scrollbar-width: none` on `.sheet-tabbar`, and
+  `.sheet-tabbar::-webkit-scrollbar { display: none; }`. The bar stays an `overflow-x: auto` scroll
+  box. The player can still scroll it by touch, by Shift + wheel and by the arrow keys. A click on a
+  tab that is partly in view selects it and scrolls it fully into view.
 - A window resize (for example a rotate) also scrolls the selected tab into view. The resize does
   nothing while the sheet is not displayed.
 

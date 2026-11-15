@@ -879,6 +879,8 @@ function tabsSection() {
     const compact = mediaBlocks(sec, 'screen and (max-width: 768px), screen and (max-height: 600px)').join('\n');
     check('full mode pins the strip', /\.sheet-strip\s*\{[^}]*position:\s*sticky[^}]*top:\s*0/.test(full), true);
     check('compact tab bar scrolls sideways', /\.sheet-tabbar\s*\{[^}]*flex-wrap:\s*nowrap[^}]*overflow-x:\s*auto/.test(compact), true);
+    check('compact tab bar shows no scrollbar (standard)', /\.sheet-tabbar\s*\{[^}]*scrollbar-width:\s*none/.test(compact), true);
+    check('compact tab bar shows no scrollbar (WebKit)', /\.sheet-tabbar::-webkit-scrollbar\s*\{\s*display:\s*none;?\s*\}/.test(compact), true);
     const paddingSides = (rule) => {
         const sides = { top: 0, right: 0, bottom: 0, left: 0 };
         const short = rule.match(/(?:^|;)\s*padding:\s*([^;]+)/);

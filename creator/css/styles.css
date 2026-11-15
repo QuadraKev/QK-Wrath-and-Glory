@@ -6143,11 +6143,17 @@ textarea {
 
 /* The tab bar of compact mode, and of a window 600px high or less at any width */
 @media screen and (max-width: 768px), screen and (max-height: 600px) {
-    /* One row that scrolls sideways. The 4px padding keeps the focus ring inside the scroll box. */
+    /* One row that scrolls sideways. The 4px padding keeps the focus ring inside the scroll box.
+       The bar shows no scrollbar, because the edge cue shows that more tabs exist. */
     .sheet-tabbar {
         flex-wrap: nowrap;
         overflow-x: auto;
         padding: 4px;
+        scrollbar-width: none;
+    }
+
+    .sheet-tabbar::-webkit-scrollbar {
+        display: none;
     }
 
     /* The edge cue: a fade on each side of the bar that has more tabs (_updateTabBarCue sets the classes).

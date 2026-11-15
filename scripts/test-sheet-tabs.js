@@ -942,13 +942,15 @@ function tabsSection() {
     const wideTrackers = ruleOf(wide, '.sheet-strip-trackers');
     check('wide: the strip is a row that wraps, and the bar is unwrapped',
         [has(ruleOf(wide, '.sheet-strip'), /display:\s*flex/), has(ruleOf(wide, '.sheet-strip'), /flex-wrap:\s*wrap/), has(ruleOf(wide, '.sheet-strip-bar'), /display:\s*contents/)], [true, true, true]);
-    // The centered look comes from the base rules, so the wide block sets no text-align and no chip alignment
+    // The centered look comes from the base rules, so the wide block sets no text-align and no chip alignment for the identity
     const allCss = readSource('creator/css/styles.css');
     check('wide: the identity is the left half, centered, at least 42%',
         [/min-width:\s*42%/, /border-right:\s*0/, /justify-content:\s*center/].map(re => has(wideHeader, re)).concat([!/text-align/.test(wideHeader)]), [true, true, true, true]);
     check('wide: the keyword rows are not left-aligned, and the base rules center the identity',
         [!/justify-content:\s*flex-start/.test(ruleOf(wide, '.sheet-strip .sheet-keywords')), has(ruleOf(allCss, '.sheet-header-section'), /text-align:\s*center/), has(ruleOf(allCss, '.sheet-keywords'), /justify-content:\s*center/)], [true, true, true]);
     // No rule of the section, in any block, left-aligns the identity. The two base rules are outside the section, so they are scanned by name.
+    // The check is strict on purpose: it does not know the flex axis, and it also reads a rule that has an identity class as an ancestor,
+    // so a correct rule can fail it. It pins only text-align, justify-content and align-items.
     const identityRules = (css) => [...css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{([^{}]*)\}/g)]
         .filter(m => m[1].split(',').some(sel => /\.(sheet-header-section|sheet-character-name|sheet-subtitle|sheet-keywords)(?![\w-])/.test(sel)))
         .map(m => m[2]);

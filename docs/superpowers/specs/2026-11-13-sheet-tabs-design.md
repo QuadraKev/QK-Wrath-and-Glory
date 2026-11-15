@@ -337,13 +337,17 @@ counts are in the name card below a horizontal divider, with a little more space
 **[Owner, 2026-11-14]** The owner then asked for the identity to be centered in its half: "Upon
 further inspection, let's go ahead and center each half of this card as well. I think the character
 info would look better centered along with the counts." The identity is now centered in its half.
-The rest of E2 does not change: the divider at the middle and the tracker grid.
 
 **[Controller ruling, 2026-11-14; the owner can reverse it]** The identity is centered in the left
-half, as in mockup E1. The text of the identity is center-aligned. The name, the subtitle and each
-row of keyword chips are centered on the middle of the half. This is the same alignment as in the
-narrow layout. The wide block sets no `text-align` and no chip alignment for the identity, so the
-base rules of `.sheet-header-section` and `.sheet-keywords` apply.
+half, as in mockup E1. The rest of E2 does not change: the divider stays at the middle, and the
+tracker grid stays as it is, because it is centered in its half already. The text of the identity is
+center-aligned. The name, the subtitle and each row of keyword chips are centered on the middle of
+the half. This is the same alignment as in the narrow layout. The wide block sets no `text-align`
+and no chip alignment for the identity, so the base rules of `.sheet-header-section` and
+`.sheet-keywords` apply.
+
+**[Owner, 2026-11-14]** The owner saw an image of the real build with the centered identity and
+confirmed it: "Looks good."
 
 **[Controller ruling, 2026-11-14]**
 

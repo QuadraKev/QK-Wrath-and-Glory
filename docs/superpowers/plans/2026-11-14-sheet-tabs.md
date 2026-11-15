@@ -808,3 +808,54 @@ Classic scrollbars (headless Chromium has overlay scrollbars). Real phones and t
 | Task 2 Tracker layout | opus | 1 | 3 (scope cut to Part A; Part B after the owner's choice; fix round on 7 Minor) | Review: spec met, 0 Critical, 0 Important, 7 Minor; all corrected |
 | Task reviews | opus, xhigh | 2 | 0 | Task 1: 1 Minor, 9 readings. Task 2: 7 Minor |
 | Final review | fable, xhigh | 1 | 0 | Ready to merge (0 Critical, 0 Important, 2 Minor: spec numbers corrected by the controller, test gaps parked) |
+
+## Owner feedback wave 3 (2026-11-14): no scrollbar on the tab bar, the identity centered
+
+The owner tested the live site (creator `?v=127`) on a phone and on a laptop, confirmed the build, and told the controller to close #25, #31, #32 and #33 as complete. Two changes came from that test. Branch `sheet-tabbar-scrollbar`, commits `1cb55ec` (Task 1), `a0dcdac` (fix round 1), `41fe9e7` (Task 2), `c30aa88` (fix round 2), then the controller's commit with the last corrections and this record.
+
+### Owner decisions
+
+- "Phone looks good overall. I think we can get rid of the horizontal scroll bar for the tabs. The tabs fading to the sides + the side indicator arrows should be sufficient for the user to understand that it can be scrolled."
+- "The even rows are a good call. I think it looks more sensible than 1 full row + 1 row of 1 square, for example." This confirms ruling 29.
+- "Aside from that, I haven't noticed any other problems. We can close the issues as complete, and users will follow up if there are additional problems."
+- "Upon further inspection, let's go ahead and center each half of this card as well. I think the character info would look better centered along with the counts." After an image of the real build: "Looks good."
+- On the browser checks: "When inspecting pages in the browser, is there a way for you to do it headlessly? I see the window pop up, and it can be distracting if I'm working on something." Then: "Or perhaps a virtual display that I can't see".
+
+### Rulings
+
+35. The scrollbar rule has `scrollbar-width: none` and `.sheet-tabbar::-webkit-scrollbar { display: none }`, and no `-ms-overflow-style`. No browser that needs that property can run the sheet. Measured: Chromium and WebKit hide the scrollbar with one of the two rules, and Firefox needs `scrollbar-width`.
+36. "Centered" means that the text of the identity is center-aligned in the left half, as in mockup E1 and in the narrow layout. The change deletes the two overrides of the wide block. The owner confirmed the image of the real build.
+37. No padding corrects the 0.5 px offset that the 1 px left border gives. The text is 0 px from the center of the content box.
+38. The spec gives two sets of measured strip values: one for a browser that hides scrollbars (the headless Playwright browser) and one for classic scrollbars. A check uses the set that matches its browser. The reviewer's shorter text ("26 px from the values above") was true only for the typical cases.
+39. The test gap of Task 2 was taken, not parked: one check fails when a rule of the section left-aligns the identity. The gap came from the brief.
+40. Parked: a keyword chip that is one word of 50 letters passes the two edges of the left half at 769 px. The longest real keyword has 28 characters with spaces, and the narrow layout behaves the same.
+41. Parked: the check of ruling 39 pins only `text-align`, `justify-content` and `align-items`. Other properties can move the identity off the center and pass (for example `align-self`, `place-items`, `justify-content: normal`, `text-align: right`, or a rule on `.sheet-character-name` outside the section). The check is strict on purpose, so a correct rule can fail it. The comment of the check says so.
+42. Process: no browser window on the owner's desktop. A review agent started Firefox and WebKit with a window under `xvfb-run`, but `WAYLAND_DISPLAY` was still set, so the windows opened through WSLg. The rule for each brief: `headless: true`, or a headed run only as `env -u WAYLAND_DISPLAY xvfb-run -a node <script>`. Headless Chromium with `ignoreDefaultArgs: ['--hide-scrollbars']` shows classic scrollbars.
+43. Process: Task 2 arrived while Task 1 was in review. It went to the Task 1 implementer after that review, together with fix round 1, as two commits. The final review also re-reviewed fix round 2.
+
+### Items of earlier records that this wave closes
+
+- "The compact tab bar with a visible scrollbar adds to its height" (deferred items) and the tab bar part of "Windows classic scrollbars": closed. The tab bar shows no scrollbar. With classic scrollbars it was 48 px high, and it is 40 px now.
+- The box wrap with classic scrollbars is now measured in Chromium: the 8 px page scrollbar makes the sheet narrower, so the boxes can fill one row more. The spec has those values.
+
+### Parked items
+
+| Item | Why it was left |
+|---|---|
+| A mouse user in a narrow window cannot drag a thumb. The tabs are reached by Shift + wheel, the arrow keys, a click on a tab that is partly in view, or a click on an edge arrow (it goes through to the tab below it). | The owner's decision. Each remaining way was measured. |
+| The classic set of strip values names only Chromium. Firefox and WebKit with classic scrollbars were measured only for the typical case with no Faith (224 / 386 px, the same). | No difference seen. |
+| The scrollbar bullet of the spec says "in compact and low mode". The rule also applies in a wide window from 481 px to 600 px high. | Seven tabs fit in one row above 768 px, so the bar does not scroll there. |
+| The items of rulings 40 and 41. | Refer to the rulings. |
+
+### Not checked
+
+A real Android phone and a real tablet after this change: the owner sees them on the live site. Touch in Firefox and WebKit. The wheel in Playwright WebKit moved the bar on neither `main` nor the branch (a limit of the harness).
+
+### Wave table
+
+| Task | Model | Dispatches | Send-backs | Gate |
+|---|---|---|---|---|
+| Task 1 Tab bar scrollbar | sonnet | 1 | 1 (fix round 1: spec text) | Review: compliant, 0 Critical, 1 Important, 2 Minor, all in the spec text; 4 of 4 closed |
+| Task 2 Identity centered | sonnet (the same agent) | 1 | 1 (fix round 2: one check, two spec corrections) | Review: compliant, 0 Critical, 0 Important, 2 Minor; corrected |
+| Task reviews | opus, xhigh | 2 | 0 | Review 1: Task 1. Review 2: fix round 1 (scoped) and Task 2 |
+| Final review | fable, xhigh | 1 | 0 | Ready to merge (0 Critical, 0 Important, 4 Minor: a comment and a tag corrected by the controller, the two limits of the new check kept by ruling 41) |

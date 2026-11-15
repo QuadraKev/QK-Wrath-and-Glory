@@ -948,6 +948,13 @@ function tabsSection() {
         [/min-width:\s*42%/, /border-right:\s*0/, /justify-content:\s*center/].map(re => has(wideHeader, re)).concat([!/text-align/.test(wideHeader)]), [true, true, true, true]);
     check('wide: the keyword rows are not left-aligned, and the base rules center the identity',
         [!/justify-content:\s*flex-start/.test(ruleOf(wide, '.sheet-strip .sheet-keywords')), has(ruleOf(allCss, '.sheet-header-section'), /text-align:\s*center/), has(ruleOf(allCss, '.sheet-keywords'), /justify-content:\s*center/)], [true, true, true]);
+    // No rule of the section, in any block, left-aligns the identity. The two base rules are outside the section, so they are scanned by name.
+    const identityRules = (css) => [...css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+        .filter(m => m[1].split(',').some(sel => /\.(sheet-header-section|sheet-character-name|sheet-subtitle|sheet-keywords)(?![\w-])/.test(sel)))
+        .map(m => m[2]);
+    const leftAligns = /text-align:\s*(left|start)\b|justify-content:\s*(flex-start|start|left)\b|align-items:\s*(flex-start|start)\b/;
+    const identityBodies = identityRules(sec).concat([ruleOf(allCss, '.sheet-header-section'), ruleOf(allCss, '.sheet-keywords')]);
+    check('no rule of the section left-aligns the identity', [identityBodies.length >= 4, identityBodies.filter(b => leftAligns.test(b)).length], [true, 0]);
     check('wide: the trackers are the right half, 50% to 58% of the card',
         [/min-width:\s*50%/, /max-width:\s*58%/, /border-left:\s*0/, /display:\s*grid/, /grid-template-columns:\s*auto minmax\(0, auto\);/, /justify-content:\s*center/, /align-content:\s*center/].map(re => has(wideTrackers, re)),
         [true, true, true, true, true, true, true]);

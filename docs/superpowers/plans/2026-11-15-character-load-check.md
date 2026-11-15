@@ -1,0 +1,627 @@
+# Type Check on a Loaded Character Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** `State.loadCharacter` gives each known field of a loaded character the type that the code expects, and each render site that prints a raw id or raw free text escapes it.
+
+**Architecture:** A new global object `CharacterCheck` (`creator/js/character-check.js`) repairs a merged character in place and returns the repaired paths. `State.loadCharacter` calls it directly after the merge, before the existing migrations and the custom wargear repair. A top level that is not a plain object throws, and the import path shows the existing error message. Nineteen render sites in nine files get an escape.
+
+**Tech Stack:** Vanilla JS, global-object modules, no build step. Tests are plain Node scripts that load the browser files into a `vm` context.
+
+**Spec:** `docs/superpowers/specs/2026-11-15-character-load-check-design.md`. Read it before each task. The field rules are in spec §4.1, §5 and §6. The sink list is in spec §8.4 and §8.5.
+
+## Global Constraints
+
+- Follow `CLAUDE.md` and `STYLE_GUIDE.md` of the repo: vanilla JS, one `const` global object per file, no ES modules, no classes, no IIFEs, no build step.
+- Write all prose (code comments, commit messages, docs) in ASD-STE100 Simplified Technical English: short sentences, active voice, no phrasal verbs.
+- Author each commit `--author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github.com>"`. No attribution line and no co-author line.
+- All 16 existing test scripts stay green. Run: `for f in scripts/test-*.js; do node "$f" > "/tmp/loadcheck-$(basename "$f").log" 2>&1 || echo "FAIL $f"; done; echo done`. Read only the `FAIL` lines and the last lines of a failing log.
+- No browser window on the owner's desktop. Each browser run is `headless: true`. A headed run is only `env -u WAYLAND_DISPLAY xvfb-run -a node <script>`.
+- R1 has the highest priority: the check never changes a value that some app version can have written. Do not add a constraint that spec §5 or §6 does not give. Do not add a range limit or an id pattern.
+- No change to a stored shape, no new migration, no cleanup of adjacent code (R8). Do not use, change or delete `CharacterIO.validateCharacterData`.
+- No new UI. A repair writes one `console.warn` (R7).
+- Cache busting: Task 1 bumps `?v=128` to `?v=129` on ALL script and link tags of `creator/index.html` together (35 tags, plus the new one = 36). The later tasks do not bump again: the branch ships as one deploy. The data `?v=47` in `creator/js/web-api.js` stays.
+- A number site uses `escapeHtml(String(v))`, because `escapeHtml(0)` returns `''`.
+
+## Review Focus
+
+1. **A real save that holds an unusual but legal value.** A follower `count` of `2.5` or `null`, a talent `choice` of the number `1`, a negative `rank`, a background entry with no `bonusType`, a language with spaces and quotes. Expected: no change, no warning. Task 1 pins these in the no-op corpus.
+2. **A wrong entry inside the index-referenced wargear list.** Expected: the entry is replaced in place, the list length and the order stay, and a talent choice that points at index 1 still points at the same item. Task 1 pins this.
+3. **A hostile file that also triggers the old migration** (`ascensions: null` with a non-array `ascensionPackages`). Expected: no throw. Task 1 pins this.
+4. **A file whose top level is `null`.** Expected: the import shows "Error loading character: The file does not contain a character." and the current character stays. Today it shows a success message. Task 1 pins this.
+5. **A quote in free text that goes into a double-quoted attribute** (`customArchetype.name`, a language, a keyword choice). Expected: no attribute breakout. Task 3 pins this with a `"` in the hostile value.
+
+---
+
+### Task 1: The `CharacterCheck` module and the load gate
+
+Suggested dispatch: `implementer` with `model: opus` (a design choice per field inside one new module).
+
+**Files:**
+- Create: `creator/js/character-check.js`
+- Modify: `creator/js/state.js:139-180` (`loadCharacter`)
+- Modify: `creator/js/character-io.js:55` (one condition)
+- Modify: `creator/js/app.js:485-487` (`checkAutoSave`)
+- Modify: `creator/index.html:523-557` (one new tag, 36 tags to `?v=129`)
+- Test: `scripts/test-load-check.js` (new)
+
+**Interfaces:**
+- Consumes: nothing from other tasks.
+- Produces:
+  - `CharacterCheck.isPlainObject(value: any) -> boolean`: `value !== null && typeof value === 'object' && !Array.isArray(value)`.
+  - `CharacterCheck.repair(character: object, defaults: object) -> string[]`: changes `character` in place by the rules of spec §4.1, §5 and §6. `defaults` is a fresh `State.createNewCharacter()`. Returns the repaired paths in visit order: the rows of spec §5 in table order, then the lists of spec §6.1 in table order; the keys of `attributes` and `skills` in `createNewCharacter()` order. Path format: keys joined with `.`, an array index as `[i]`. Examples: `tier`, `attributes.strength`, `ascensions[0]`, `ascensions[0].type`, `wargear[2].relic`, `archetypeKeywordChoices.[ORDO]`, `talents[1].choice`.
+  - `CharacterCheck.DISCIPLINE_CHOICE_TALENTS = ['warped_mind', 'tormented_manifestation_aoa']`.
+  - `State.loadCharacter(data)` throws `new Error('The file does not contain a character.')` when `!CharacterCheck.isPlainObject(data)`, and does not change `State.character`.
+  - Warning text: `'Character data was repaired on load: ' + paths.join(', ')`, one call per load, only when `paths.length > 0`.
+
+- [ ] **Step 1: Write the test harness and the no-op corpus in `scripts/test-load-check.js`**
+
+Reuse the harness pattern of `scripts/test-custom-wargear.js:1-50` (`check`, `canon`, `load`, `get`, `creatorSandbox`). The sandbox loads, in this order: `creator/js/data-loader.js` (cache: `glossary.json`, `weapons.json`, `armor.json`, `equipment.json`), `creator/js/custom-wargear.js`, `creator/js/character-check.js`, `creator/js/state.js`. Its `console` records each `warn` call in `warns` and passes other calls to the real console. It also gets `localStorage: {}`, `setTimeout`, `clearTimeout`.
+
+```js
+const EVIL = '<img src=x onerror=alert(1)>';
+const INF = { __inf: true };            // sentinel: serialized as the JSON text 1e999
+const rt = v => JSON.parse(JSON.stringify(v));
+
+// Serializes value (INF becomes 1e999), parses the text, and loads it.
+// Returns { character, warns, threw } where character is a JSON copy of State.character.
+function loadJson(value) { /* JSON.stringify with a replacer that writes '"__INF__"' for INF,
+   replace '"__INF__"' with '1e999', JSON.parse, State.loadCharacter in try/catch */ }
+
+// base(): the character below. setPath / getPath take a path array such as ['ascensions', 0, 'targetTier'].
+function setPath(obj, path, value) {}
+function getPath(obj, path) {}
+```
+
+The corpus (exact fixture; each value is a shape that some app version writes, spec §5-§6):
+
+```js
+function base() {
+    return {
+        name: 'Kaelen', tier: 2, rank: 2, additionalXp: 40, setting: 'Gilead', notes: 'line 1\nline 2',
+        species: { id: 'human', xpCost: 0, subOptions: [{ type: 'homeworld', optionId: 'death_world_aoa' }] },
+        archetype: { id: 'imperial_guardsman', xpCost: 0 },
+        customArchetype: { name: '', abilityArchetypeId: null, keywords: [], wargear: [] },
+        ascensions: [],
+        attributes: { strength: 3, toughness: 3, agility: 3, initiative: 3, willpower: 2, intellect: 1, fellowship: 1 },
+        skills: { athletics: 0, awareness: 1, ballisticSkill: 2, cunning: 0, deception: 0, insight: 0, intimidation: 0, investigation: 0, leadership: 0, medicae: 0, persuasion: 0, pilot: 0, psychicMastery: 0, scholar: 0, stealth: 0, survival: 0, tech: 0, weaponSkill: 3 },
+        talents: [], wargear: [], psychicPowers: [], freePowers: [], unlockedDisciplines: [],
+        background: { origin: null, accomplishment: null, goal: null, bonusUsed: null },
+        memorableInjuries: [], traumaticInjuries: [], mutations: [], followers: [],
+        languages: ['low_gothic'], freeLanguages: [], corruption: 0,
+        currentWounds: null, currentShock: null, currentWealth: null, currentWrath: null, currentFaith: null
+    };
+}
+const CORPUS = {
+    'new character': () => ({ ...base(), name: '', tier: 1, rank: 1, additionalXp: 0, setting: '', notes: '',
+        species: { id: null, xpCost: 0, subOptions: [] }, archetype: { id: null, xpCost: 0 },
+        attributes: { strength: 1, toughness: 1, agility: 1, initiative: 1, willpower: 1, intellect: 1, fellowship: 1 },
+        skills: Object.fromEntries(Object.keys(base().skills).map(k => [k, 0])) }),
+    'full character': () => ({ ...base(),
+        rank: -3, additionalXp: -10, corruption: 7,
+        species: { id: 'kroot', xpCost: 10, subOptions: [{ type: 'mutation', optionId: 'a' }, { type: 'mutation', optionId: 'b' }] },
+        archetype: { id: 'custom', xpCost: 0 },
+        customArchetype: { name: 'Gun for hire', abilityArchetypeId: 'sanctioned_psyker', keywords: ['IMPERIUM', 'SCUM'], wargear: ['knife'] },
+        archetypeKeywordChoices: { '[ORDO]': 'HERETICUS', '[FORGE WORLD]': '' },
+        ascensions: [
+            { targetTier: 2, type: 'package', packageId: 'demanding_patron', archetypeId: null, choices: { patronBenefit: 'wealth', '[ANY]': 'ADEPTUS MINISTORUM', '[ANY]2': '' } },
+            { targetTier: 3, type: 'archetype', packageId: null, archetypeId: 'tactical_space_marine' },
+            { targetTier: 4, type: 'package', packageId: null, archetypeId: null }
+        ],
+        talents: ['angel_of_death', { id: 'trademark_weapon', choice: '0' }, { id: 'armourmonger_aoa', choice: 1 },
+            { id: 'acute_sense', choice: 'Sight' }, { id: 'acute_sense', choice: 'Hearing' }, { id: 'warped_mind', choice: 'Biomancy' },
+            { id: 'trademark_weapon', choice: null }, { id: 'dauntless', ascensionGranted: true }],
+        wargear: [
+            { id: 'knife', isStarting: true },
+            { id: 'lasgun', isStarting: false, equipped: true, upgrades: ['bayonet_lug'] },
+            { id: 'chainsword', isStarting: false, equipped: false, upgrades: [] },
+            { id: 'flak_armour', isStarting: false, relic: { name: 'Saint Ophelia\'s Mail', form: 'armour', originalOwner: 'a', anointment: 'b', power: 'c', oddities: ['d', 'e'], powerChoice: 'ORK' } },
+            { id: 'laspistol', isStarting: false, relic: { name: 'Vow', form: 'weapon', originalOwner: 'a', anointment: 'b', power: 'c', oddities: [] } },
+            { id: 'improvised_melee_weapon', isStarting: false, improvised: { name: 'Table leg', details: '', halfTime: 3, damageRank: true, removeUnwieldy: false, doubleRange: false, traits: ['Brutal'] } },
+            { id: 'custom_ab12cd34', isStarting: false, equipped: true, upgrades: [], custom: { kind: 'weapon', name: 'Xenotech Blade', type: 'melee', description: '', damage: { base: 4, attribute: 'strength', bonus: 0 }, ed: 4, ap: -1, reach: 2, traits: ['Agonising', 'Rad (2)'], keywords: [], source: 'custom', id: 'custom_ab12cd34' } },
+            { id: 'custom_0011aabb', isStarting: false, custom: { kind: 'other', name: 'Lucky coin', description: 'Shiny', category: 'Other', effect: '', keywords: [], source: 'custom', id: 'custom_0011aabb' } }
+        ],
+        psychicPowers: ['smite', 'psyniscience'], freePowers: ['smite'], unlockedDisciplines: ['Biomancy'],
+        background: { origin: { id: 'o1', bonusType: 'wealth' }, accomplishment: { id: 'a1', bonusType: null }, goal: { id: 'g1' }, bonusUsed: 'origin' },
+        memorableInjuries: [{ id: 'battle_scar', escalated: false }, { id: 'battle_scar', escalated: true }],
+        traumaticInjuries: [{ id: 'hand', side: 'Left' }, { id: 'hand', side: null, reconstructed: true }, { id: 'head', side: 'Right', reconstructed: false }],
+        mutations: [{ id: 'extra_appendages', subChoice: 'head' }, { id: 'extra_appendages', subChoice: null }],
+        followers: [
+            { id: 'flw_m1x2y3abcde', threatId: 'cultist', name: '', kind: 'individual', count: 1, livingCount: 1, mobCount: null, mobLivingCount: null, useAlternativeStats: false, currentWounds: null, currentShock: null, notes: '' },
+            { id: 'flw_m1x2y3fghij', threatId: 'guardsman', name: 'Squad', kind: 'mob', count: 2.5, livingCount: 0, mobCount: 3, mobLivingCount: 2, useAlternativeStats: true, currentWounds: 2, currentShock: 1, notes: 'n' },
+            { id: 'flw_m1x2y3klmno', threatId: 'servitor', name: 'Old', kind: 'mob', count: null, livingCount: null, useAlternativeStats: false, currentWounds: null, currentShock: null, notes: '' }
+        ],
+        languages: ['low_gothic', 'High Gothic', 'Ork "Pidgin" <trade>'], freeLanguages: ['High Gothic'],
+        currentWounds: 3, currentShock: 2, currentWealth: 0, currentWrath: 5, currentFaith: 1 }),
+    'pre-web shapes': () => ({ ...base(), customKeywords: ['VETERAN'], talents: [{ id: 'trademark_weapon', choice: 2 }] })
+};
+// The web app wrote ascensionPackages from 2026-02-13 to 2026-02-16 (spec §7.1, finding F1).
+const LEGACY = () => { const c = base(); delete c.ascensions; c.ascensionPackages = ['back_from_the_brink']; return c; };
+```
+
+The design session ran this exact corpus through today's `State.loadCharacter`: each character comes back deep-equal with no warning. The test must stay so after the change.
+
+- [ ] **Step 2: Write the no-op checks**
+
+```js
+for (const [name, make] of Object.entries(CORPUS)) {
+    const r = loadJson(make());
+    check(`no-op: ${name} loads deep-equal`, canon(r.character), canon(rt(make())));
+    check(`no-op: ${name} writes no warning`, r.warns, []);
+}
+{
+    const r = loadJson(LEGACY());
+    const expected = LEGACY(); delete expected.ascensionPackages; expected.ascensions = [];
+    check('no-op: legacy ascensionPackages gets only the documented migration', canon(r.character), canon(rt(expected)));
+    check('no-op: legacy ascensionPackages writes no warning', r.warns, []);
+}
+```
+
+- [ ] **Step 3: Write the hostile checks**
+
+Bad-value sets (spec §4.1 rule 7; `null` is not in a set where `null` is legal):
+
+```js
+const INT_BAD = [EVIL, '3', {}, [], null, true, INF, 2.5];
+const NUM_NULL_BAD = [EVIL, '3', {}, [], true, INF];          // finite number or null
+const NUM_BAD = [EVIL, '3', {}, [], null, true, INF];         // finite number
+const STR_BAD = [{}, [], null, 5, true];
+const STR_NULL_BAD = [{}, [], 5, true];
+const OBJ_BAD = [EVIL, [], null, 5];
+const ARR_BAD = [EVIL, {}, null, 5];
+const BOOL_BAD = [EVIL, 1, null, {}];
+```
+
+One table, run on `CORPUS['full character']()`. For each row and each bad value: `setPath` the value, `loadJson`, then
+
+```js
+check(`hostile ${label}: no throw`, r.threw, false);
+check(`hostile ${label}: repaired`, canon(getPath(r.character, readPath)), canon(expected));
+check(`hostile ${label}: one warning`, r.warns.length, 1);
+```
+
+where `label` is the path plus `JSON.stringify` of the bad value, and `readPath` defaults to the row path. Rows (path, set, expected; spec row number):
+
+```js
+const HOSTILE = [
+    [['name'], STR_BAD, ''], [['setting'], STR_BAD, ''], [['notes'], STR_BAD, ''],             // 1-3
+    [['tier'], INT_BAD, 1], [['rank'], INT_BAD, 1], [['additionalXp'], INT_BAD, 0], [['corruption'], INT_BAD, 0], // 4-7
+    ...['currentWounds', 'currentShock', 'currentWealth', 'currentWrath', 'currentFaith'].map(k => [[k], NUM_NULL_BAD, null]), // 8-12
+    [['species'], OBJ_BAD, { id: null, xpCost: 0, subOptions: [] }], [['species', 'id'], STR_NULL_BAD, null], [['species', 'xpCost'], NUM_BAD, 0],
+    [['archetype'], OBJ_BAD, { id: null, xpCost: 0 }], [['archetype', 'id'], STR_NULL_BAD, null], [['archetype', 'xpCost'], NUM_BAD, 0],
+    [['customArchetype'], OBJ_BAD, { name: '', abilityArchetypeId: null, keywords: [], wargear: [] }],
+    [['customArchetype', 'name'], STR_BAD, ''], [['customArchetype', 'abilityArchetypeId'], STR_NULL_BAD, null],
+    [['archetypeKeywordChoices'], OBJ_BAD, {}], [['archetypeKeywordChoices', '[ORDO]'], STR_BAD, ''],
+    [['attributes'], OBJ_BAD, { strength: 1, toughness: 1, agility: 1, initiative: 1, willpower: 1, intellect: 1, fellowship: 1 }],
+    ...['strength', 'toughness', 'agility', 'initiative', 'willpower', 'intellect', 'fellowship'].map(k => [['attributes', k], INT_BAD, 1]),
+    ...Object.keys(base().skills).map(k => [['skills', k], INT_BAD, 0]),
+    [['background'], OBJ_BAD, { origin: null, accomplishment: null, goal: null, bonusUsed: null }],
+    [['background', 'origin'], [EVIL, [], 5, true], null], [['background', 'origin', 'id'], STR_BAD, null, ['background', 'origin']],
+    [['background', 'accomplishment', 'bonusType'], STR_NULL_BAD, null], [['background', 'bonusUsed'], STR_NULL_BAD, null],
+    // lists that are not arrays (spec §6.1)
+    ...['species.subOptions', 'customArchetype.keywords', 'customArchetype.wargear', 'ascensions', 'talents', 'wargear',
+        'psychicPowers', 'freePowers', 'unlockedDisciplines', 'memorableInjuries', 'traumaticInjuries', 'mutations',
+        'followers', 'freeLanguages', 'customKeywords'].map(p => [p.split('.'), ARR_BAD, []]),
+    [['languages'], ARR_BAD, ['low_gothic']],
+    // ascension entry (spec §6.2); a dropped entry is read through the list length
+    [['ascensions', 0, 'targetTier'], INT_BAD, 2, ['ascensions', 'length']],
+    [['ascensions', 0, 'type'], STR_BAD, ''], [['ascensions', 0, 'packageId'], STR_NULL_BAD, null],
+    [['ascensions', 0, 'choices'], [EVIL, [], 5, null], undefined], [['ascensions', 0, 'choices', '[ANY]'], STR_BAD, ''],
+    // talent entry (spec §6.3)
+    [['talents', 1, 'choice'], [{}, [], true, INF], null], [['talents', 5, 'choice'], [5, {}, true], null],
+    [['talents', 7, 'ascensionGranted'], BOOL_BAD, false], [['talents', 1, 'id'], STR_BAD, 7, ['talents', 'length']],
+    // wargear entry (spec §6.4): never dropped
+    [['wargear', 1, 'isStarting'], BOOL_BAD, false], [['wargear', 1, 'equipped'], BOOL_BAD, false],
+    [['wargear', 1, 'upgrades'], ARR_BAD, []], [['wargear', 1, 'id'], [5, {}, null], ''],
+    [['wargear', 3, 'relic'], [EVIL, [], 5, null], undefined], [['wargear', 3, 'relic', 'name'], STR_BAD, ''],
+    [['wargear', 3, 'relic', 'form'], STR_NULL_BAD, null], [['wargear', 3, 'relic', 'oddities'], ARR_BAD, []],
+    [['wargear', 3, 'relic', 'powerChoice'], [5, {}, null], undefined],
+    [['wargear', 5, 'improvised'], [EVIL, [], 5, null], undefined], [['wargear', 5, 'improvised', 'name'], STR_BAD, ''],
+    [['wargear', 5, 'improvised', 'halfTime'], INT_BAD, 0], [['wargear', 5, 'improvised', 'damageRank'], BOOL_BAD, false],
+    [['wargear', 5, 'improvised', 'traits'], ARR_BAD, []],
+    // injuries and mutations
+    [['memorableInjuries', 0, 'escalated'], BOOL_BAD, false], [['traumaticInjuries', 0, 'side'], STR_NULL_BAD, null],
+    [['traumaticInjuries', 1, 'reconstructed'], BOOL_BAD, false], [['mutations', 0, 'subChoice'], STR_NULL_BAD, null],
+    [['memorableInjuries', 0, 'id'], STR_BAD, 1, ['memorableInjuries', 'length']],
+    // follower entry (spec §6.5)
+    [['followers', 0, 'id'], STR_BAD, 2, ['followers', 'length']], [['followers', 0, 'threatId'], STR_BAD, ''],
+    [['followers', 0, 'kind'], STR_BAD, 'individual'], [['followers', 1, 'count'], NUM_NULL_BAD, 1],
+    [['followers', 1, 'livingCount'], NUM_NULL_BAD, 1], [['followers', 1, 'mobCount'], NUM_NULL_BAD, null],
+    [['followers', 1, 'useAlternativeStats'], BOOL_BAD, false], [['followers', 1, 'currentWounds'], NUM_NULL_BAD, null]
+];
+```
+
+A 4th row element is `readPath`. `getPath(x, [..., 'length'])` reads the array length. `undefined` means "the key is absent": check `!(key in parent)`. For the `customKeywords` row, the base is `CORPUS['pre-web shapes']()`.
+
+Then these named checks:
+
+```js
+// bad entries in lists that are not index-referenced are dropped; good entries stay in order
+check('hostile: bad entries of a string list are dropped', loadJson({ ...base(), psychicPowers: ['smite', 5, null, {}, 'psyniscience'] }).character.psychicPowers, ['smite', 'psyniscience']);
+check('hostile: a talent that is not a string or an object with a string id is dropped',
+    loadJson({ ...base(), talents: ['a', 5, null, [], { id: 5 }, { id: 'b', choice: 'x' }] }).character.talents, ['a', { id: 'b', choice: 'x' }]);
+check('hostile: a sub-option with a number optionId is dropped',
+    loadJson({ ...base(), species: { id: 'human', xpCost: 0, subOptions: [{ type: 'homeworld', optionId: 5 }, null] } }).character.species.subOptions, []);
+
+// wargear: replace in place, keep the length and the order (index-referenced)
+{
+    const c = CORPUS['full character'](); c.wargear[0] = 'lasgun'; c.wargear[2] = null;
+    const w = loadJson(c).character.wargear;
+    check('hostile: wargear keeps its length', w.length, 8);
+    check('hostile: a string wargear entry becomes an entry with that id', w[0], { id: 'lasgun', isStarting: false });
+    check('hostile: a null wargear entry becomes a placeholder', w[2], { id: '', isStarting: false });
+    check('hostile: wargear[1] is still the lasgun with its upgrade', [w[1].id, w[1].upgrades], ['lasgun', ['bayonet_lug']]);
+}
+{
+    const c = CORPUS['full character'](); c.wargear[6].id = 5;
+    const w = loadJson(c).character.wargear[6];
+    check('hostile: a custom entry with a number id gets a new custom_ id', [/^custom_[a-z0-9]+$/.test(w.id), w.custom.id === w.id], [true, true]);
+}
+
+// the warning names the paths
+{
+    const c = base(); c.tier = EVIL; c.attributes.strength = '3'; delete c.attributes.agility;
+    const r = loadJson(c);
+    check('warning: one call names each repaired path',
+        r.warns, ['Character data was repaired on load: tier, attributes.strength, attributes.agility']);
+    check('warning: a missing attribute key gets its default', r.character.attributes.agility, 1);
+}
+
+// unknown keys stay (R6)
+{
+    const c = base(); c.zzz = { a: EVIL }; c.attributes.luck = EVIL; c.wargear = [{ id: 'knife', isStarting: true, zzz: [1] }];
+    const r = loadJson(c);
+    check('unknown keys stay at the top level and inside entries', [r.character.zzz, r.character.attributes.luck, r.character.wargear[0].zzz], [{ a: EVIL }, EVIL, [1]]);
+    check('unknown keys write no warning', r.warns, []);
+}
+
+// order: the check runs before the old migration (spec §7.1)
+{
+    const r = loadJson({ ...base(), ascensions: null, ascensionPackages: 'x' });
+    check('order: a hostile ascensionPackages does not throw', r.threw, false);
+    check('order: ascensions is [] and ascensionPackages is gone', [r.character.ascensions, 'ascensionPackages' in r.character], [[], false]);
+}
+
+// save no longer throws on a hostile name
+check('a hostile name is a string after load, so name.trim() works', typeof loadJson({ ...base(), name: {} }).character.name, 'string');
+```
+
+- [ ] **Step 4: Write the gate checks**
+
+```js
+for (const top of [null, [], [1, 2], 'x', 5, true]) {
+    const before = State.character;            // read after a good load of base()
+    let message = null;
+    try { State.loadCharacter(top); } catch (e) { message = e.message; }
+    check(`gate: ${JSON.stringify(top)} throws`, message, 'The file does not contain a character.');
+    check(`gate: ${JSON.stringify(top)} keeps the current character`, State.character === before, true);
+}
+```
+
+Import path: load `creator/js/character-io.js` into the same context. Give the context `window.api = { showOpenDialog: async () => ({ canceled: false, filePaths: ['a.character'] }), importCharacter: async () => ({ success: true, character: null }) }`.
+
+```js
+check('import: a null file returns the error', await CharacterIO.load(), { success: false, error: 'The file does not contain a character.' });
+```
+
+Autosave path: load `creator/js/app.js` into a context with `document: { addEventListener() {} }`, `SettingTab: { refresh() {} }`, `SettingsTab: { refresh() {}, sourceButtons: [] }`, the real `State`, and `State.getAutoSave = () => ({ character: 'x' })`. Replace `App.switchTab` and `App.switchSection` with no-op functions.
+
+```js
+let threw = false; try { App.checkAutoSave(); } catch (e) { threw = true; }
+check('autosave: a bad character does not throw', threw, false);
+check('autosave: the warning names the reason', warns.includes('The auto-save was not loaded: The file does not contain a character.'), true);
+```
+
+End the file with the summary lines of `scripts/test-custom-wargear.js` (`All checks passed` and `process.exit(failures ? 1 : 0)`). Wrap the file body in an `async` main function for the `await`.
+
+- [ ] **Step 5: Run the test to see it fail**
+
+Run: `node scripts/test-load-check.js 2>&1 | tail -3`
+Expected: an error that `creator/js/character-check.js` does not exist, or FAIL lines.
+
+- [ ] **Step 6: Implement `CharacterCheck` in `creator/js/character-check.js`**
+
+One `const CharacterCheck = { … }` object with a header comment. `repair(character, defaults) -> string[]` applies spec §4.1, §5 and §6, row by row. It never reads data files. It does not touch `entry.custom` of a wargear entry (the existing repair owns it). It keeps the order of every list.
+
+- [ ] **Step 7: Wire the check into `State.loadCharacter` (`creator/js/state.js:139-180`)**
+
+Add step 1 (the gate) and step 3 (the call and the one warning) of spec §7.1. Do not change the existing steps or their order.
+
+- [ ] **Step 8: Change the two load paths**
+
+- `creator/js/character-io.js:55`: `if (result.success && result.character)` becomes `if (result.success)`.
+- `creator/js/app.js:485-487`: put `State.loadCharacter(saved.character)` in a `try`. The `catch (e)` writes `console.warn('The auto-save was not loaded: ' + e.message)`. The lines after it (`SettingTab.refresh()` and on) do not change.
+
+- [ ] **Step 9: Add the script tag and bump the cache keys in `creator/index.html`**
+
+Add `<script src="js/character-check.js?v=129"></script>` on the line before `js/state.js`. Change `?v=128` to `?v=129` on all 35 other tags.
+
+Run: `grep -c '?v=129' creator/index.html; grep -c '?v=128' creator/index.html`
+Expected: `36` and `0`.
+
+- [ ] **Step 10: Run the test to see it pass**
+
+Run: `node scripts/test-load-check.js 2>&1 | tail -3`
+Expected: `All checks passed`.
+
+- [ ] **Step 11: Prove that each group of checks is not empty (mutation proof)**
+
+Make each mutation, run the test, see the named group fail, then undo the mutation:
+
+| Group | Mutation of the product code | Expected |
+|---|---|---|
+| no-op | In `CharacterCheck`, change the follower `count` rule from "finite number or null" to "integer". | `no-op: full character loads deep-equal` FAILS |
+| hostile | In `CharacterCheck`, remove the `tier` rule. | each `hostile tier …: repaired` FAILS |
+| gate | In `State.loadCharacter`, remove the gate. | each `gate: …` FAILS |
+| order | In `State.loadCharacter`, move the `CharacterCheck.repair` call after the `ascensions` default. | `order: a hostile ascensionPackages does not throw` FAILS |
+
+Record the four results in the commit body as one line each.
+
+- [ ] **Step 12: Run all test scripts**
+
+Run the command of the Global Constraints. Expected: no `FAIL` line, then `done`.
+
+- [ ] **Step 13: Commit**
+
+```bash
+git add creator/js/character-check.js creator/js/state.js creator/js/character-io.js creator/js/app.js creator/index.html scripts/test-load-check.js
+git commit --author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github.com>" -m "Check the types of a loaded character
+
+The new CharacterCheck module repairs each known field of a loaded character to the type that the code expects. State.loadCharacter calls it after the merge and before the old steps. A file whose top level is not an object now shows an error. <four mutation-proof lines>"
+```
+
+---
+
+### Task 2: Escape the raw sites of the character sheet
+
+Suggested dispatch: `implementer` (Sonnet).
+
+**Files:**
+- Modify: `creator/tabs/character-sheet-tab.js:1356`, `:1820`, `:1957-1958`
+- Test: `scripts/test-sheet-tabs.js` (add one block before the summary lines)
+
+**Interfaces:**
+- Consumes: nothing from Task 1. These fields are legal strings, so the check does not change them.
+- Produces: nothing for later tasks.
+
+- [ ] **Step 1: Write the failing checks in `scripts/test-sheet-tabs.js`**
+
+Add one block that uses the file's `sheetSandbox`, `makeCharacter`, `EVIL`, `SAFE` and `RAW_TAG`. Add to `env.dataLoader` the methods that these renders call: `getWargearItem: () => null`, `getHolyRelics: () => null`, `getBackgrounds: () => ({ origins: [], accomplishments: [], goals: [] })`. `getInjuriesCorruptionData` (the real `INJURIES`) is there already. Then:
+
+```js
+// S1: a relic entry whose base id is not in the data
+{
+    const env = sheetSandbox();
+    const html = env.sheet.renderHolyRelics(makeCharacter({ wargear: [{ id: EVIL, isStarting: false, relic: { name: 'R', form: 'f', originalOwner: 'a', anointment: 'b', power: 'c', oddities: [] } }] }));
+    check('S1 relic base id is escaped', [RAW_TAG.test(html), html.includes(SAFE)], [false, true]);
+}
+// S2: the injury side
+{
+    const env = sheetSandbox();
+    const id = INJURIES.traumaticInjuries[0].id;
+    const html = env.sheet.renderInjuriesCorruption(makeCharacter({ traumaticInjuries: [{ id, side: EVIL }] }));
+    check('S2 injury side is escaped', [RAW_TAG.test(html), html.includes(SAFE)], [false, true]);
+}
+// S3: a language (free text)
+{
+    const env = sheetSandbox();
+    const html = env.sheet.renderBackground(makeCharacter({ languages: ['low_gothic', EVIL] }));
+    check('S3 language is escaped', RAW_TAG.test(html), false);
+    check('S3 low_gothic still shows as Low Gothic', html.includes('Low Gothic'), true);
+}
+```
+
+S3 title-cases before the escape, so its `SAFE` text is in upper case: assert only that no raw tag stays.
+
+- [ ] **Step 2: Run the test to see the three checks fail**
+
+Run: `node scripts/test-sheet-tabs.js 2>&1 | grep -E '^FAIL' ; node scripts/test-sheet-tabs.js 2>&1 | tail -1`
+Expected: FAIL for S1, S2 and S3 (escaped checks).
+
+- [ ] **Step 3: Escape the three sites**
+
+- `:1356`: print `${this.escapeHtml(baseName)}`.
+- `:1820`: `sideLabel` uses `this.escapeHtml(entry.side)`.
+- `:1957-1958`: escape each name after the title-case transform, so the transform still sees the raw `_`: `this.escapeHtml(l.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase()))`.
+
+- [ ] **Step 4: Run the test to see it pass**
+
+Run: `node scripts/test-sheet-tabs.js 2>&1 | tail -1`
+Expected: `All checks passed`.
+
+- [ ] **Step 5: Mutation proof**
+
+Undo the escape at `:1820` only, run the test, see `S2 injury side is escaped` FAIL, then restore it. Record the result in the commit body.
+
+- [ ] **Step 6: Run all test scripts**
+
+Run the command of the Global Constraints. Expected: no `FAIL` line.
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add creator/tabs/character-sheet-tab.js scripts/test-sheet-tabs.js
+git commit --author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github.com>" -m "Escape the relic base id, the injury side and the languages on the sheet
+
+These three values come from a loaded file. The sheet printed them with no escape. <mutation-proof line>"
+```
+
+---
+
+### Task 3: Escape the raw sites of the other tabs
+
+Suggested dispatch: `implementer` (Sonnet).
+
+**Files:**
+- Modify: `creator/tabs/followers-tab.js:67`, `:75`, `:76`
+- Modify: `creator/tabs/archetype-tab.js:306`, `:310`, `:356`, `:389`, `:412`; add `escapeAttr(text)` after `escapeHtml` (`:755`)
+- Modify: `creator/tabs/ascension-tab.js:225`, `:230`, `:238`; add `escapeHtml(text)` at the end of the object
+- Modify: `creator/tabs/background-tab.js:231`; add `escapeAttr(text)` after `escapeHtml` (`:278`)
+- Modify: `creator/tabs/injuries-tab.js:89`; add `escapeHtml(text)`
+- Modify: `creator/tabs/powers-tab.js:151`; add `escapeHtml(text)`
+- Modify: `creator/tabs/species-tab.js:91-93`, `:264`; add `escapeHtml(text)`
+- Test: `scripts/test-tab-escapes.js` (new)
+
+**Interfaces:**
+- Consumes: nothing from Task 1.
+- Produces: `escapeHtml(text: any) -> string` in `AscensionTab`, `InjuriesTab`, `PowersTab`, `SpeciesTab` (body as `character-sheet-tab.js:2787-2795`: `''` for a falsy value, else `String(text)` with `& < > " '` escaped). `escapeAttr(text: any) -> string` in `ArchetypeTab` and `BackgroundTab` (`this.escapeHtml(text).replace(/"/g, '&quot;')`, as `relic-wizard.js:825-827`).
+
+- [ ] **Step 1: Write the harness and the failing checks in `scripts/test-tab-escapes.js`**
+
+Harness: the pattern of `scripts/test-custom-wargear.js:1-50`, plus a recording DOM.
+
+```js
+// A DOM stub. Each element from getElementById / querySelector / createElement is a stub whose
+// innerHTML setter appends the string to `written`. querySelectorAll returns []. classList has
+// add/remove/toggle/contains. style is {}. appendChild returns its argument.
+function makeRecordingDocument() { /* returns { document, written: [] } */ }
+const EVIL = '<b>"x\'</b>&';
+const QUOTE_BREAK = '" autofocus onfocus="alert(1)';
+const RAW_TAG = /<\/?b>/i;
+```
+
+The context loads `creator/js/data-loader.js` (cache: `species.json`, `archetypes.json`, `ascension-packages.json`, `keyword-categories.json`, `injuries-corruption.json`, `psychic-powers.json`, `weapons.json`, `armor.json`, `equipment.json`), `creator/js/keyword-bonus.js`, `creator/js/followers.js` and the tab under test. `State` is a stub: `{ character, getCharacter: () => character, getPsykerConfig: () => ({ disciplineChoices: 1 }), getRemainingDisciplineChoices: () => 0, getUnlockedDisciplines: () => [], getSpeciesSubOptions: () => character.species.subOptions, getSpeciesSubOptionsByType: t => character.species.subOptions.filter(o => o.type === t), getWargearBudgetUsed: () => 0, getWargearBudget: () => ({ totalValue: 15 }) }`. Add a stub method only when a render calls it.
+
+Checks (one per site; S-numbers are spec §8.4):
+
+```js
+check('S4-S6 follower id is escaped in data-follower-id and name',
+    RAW_TAG.test(FollowersTab.renderRosterItem({ id: EVIL, threatId: 'x', name: '', kind: 'mob', count: 2, livingCount: 1, notes: '' }, character)), false);
+check('S7 [ORDO] custom keyword value cannot break the attribute',
+    ArchetypeTab.renderKeywordChoices(DataLoader.getArchetype('inquisitorial_acolyte'), { ...character, archetypeKeywordChoices: { '[ORDO]': QUOTE_BREAK } }).includes(QUOTE_BREAK), false);
+check('S8 [ANY] text keyword value cannot break the attribute',
+    ArchetypeTab.renderKeywordChoices(DataLoader.getArchetype('inquisitorial_acolyte'), { ...character, archetypeKeywordChoices: { '[ANY]': QUOTE_BREAK } }).includes(QUOTE_BREAK), false);
+// S9-S11: character.archetype.id = 'custom', customArchetype = { name: QUOTE_BREAK, abilityArchetypeId: null, keywords: [EVIL], wargear: [EVIL] }
+//   ArchetypeTab.renderCustomConfig(); joined = written.join('')
+check('S9-S10 custom keywords and unknown starting wargear are escaped', RAW_TAG.test(joined), false);
+check('S11 custom archetype name cannot break the value attribute', joined.includes(QUOTE_BREAK), false);
+// S12-S14: AscensionTab.renderKeywordChoiceUI(<demanding_patron package>, { targetTier: 2 },
+//   { targetTier: 2, type: 'package', packageId: 'demanding_patron', choices: { '[ANY]': QUOTE_BREAK, '[ANY]2': QUOTE_BREAK } })
+check('S12-S14 ascension keyword choices cannot break the value attribute', html.includes(QUOTE_BREAK), false);
+// S15: character.languages = ['low_gothic', QUOTE_BREAK]; BackgroundTab.renderLanguages()
+check('S15 language cannot break data-lang', written.join('').includes(QUOTE_BREAK), false);
+// S16: InjuriesTab.renderTraumaticInjuries({ traumaticInjuries: [{ id: <first data id>, side: EVIL }] }, <injuries data>)
+check('S16 injury side is escaped', RAW_TAG.test(html), false);
+// S17: character.unlockedDisciplines = [EVIL]; PowersTab.renderSetupSection()
+check('S17 discipline is escaped in the chip and in data-discipline', RAW_TAG.test(html), false);
+// S18: SpeciesTab.render() with character.species = { id: 'human', xpCost: 0, subOptions: [{ type: 'homeworld', optionId: EVIL }] }
+check('S18 unknown sub-option id is escaped on the species card', RAW_TAG.test(written.join('')), false);
+// S19: SpeciesTab.renderCurrentSubOption() with species 'kroot' and subOptions [{ type: 'mutation', optionId: EVIL }];
+//   set the tab's current sub-option state as SpeciesTab.renderCurrentSubOption reads it (species-tab.js:154-160)
+check('S19 unknown mutation id is escaped in the chip list', RAW_TAG.test(written.join('')), false);
+// The new helpers keep the two text rules
+check('helpers: escapeHtml escapes & < > " \'', AscensionTab.escapeHtml(EVIL), '&lt;b&gt;&quot;x&#39;&lt;/b&gt;&amp;');
+check('helpers: escapeAttr escapes a quote', ArchetypeTab.escapeAttr('a"b'), 'a&quot;b');
+```
+
+The comments give the input of each check. The implementer writes the call and reads the HTML as the comment says.
+
+- [ ] **Step 2: Run the test to see the site checks fail**
+
+Run: `node scripts/test-tab-escapes.js 2>&1 | grep -cE '^FAIL'`
+Expected: one FAIL for each site check (the helper checks fail with "not a function").
+
+- [ ] **Step 3: Add the helpers and escape the 16 sites (S4-S19 of spec §8.4)**
+
+Use `escapeAttr` for a value inside a double-quoted attribute in `archetype-tab.js` and `background-tab.js`. Use `escapeHtml` in the other files: it escapes `"` already. Do not change any other line.
+
+- [ ] **Step 4: Run the test to see it pass**
+
+Run: `node scripts/test-tab-escapes.js 2>&1 | tail -1`
+Expected: `All checks passed`.
+
+- [ ] **Step 5: Mutation proof**
+
+Undo `escapeAttr` at `background-tab.js:231` only (back to `${escaped}`), run the test, see `S15 language cannot break data-lang` FAIL, then restore it. Record the result in the commit body.
+
+- [ ] **Step 6: Run all test scripts**
+
+Run the command of the Global Constraints. Expected: no `FAIL` line.
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add creator/tabs/followers-tab.js creator/tabs/archetype-tab.js creator/tabs/ascension-tab.js creator/tabs/background-tab.js creator/tabs/injuries-tab.js creator/tabs/powers-tab.js creator/tabs/species-tab.js scripts/test-tab-escapes.js
+git commit --author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github.com>" -m "Escape the raw ids and the free text of a loaded file in seven tabs
+
+The follower id, the keyword choices, the custom archetype values, the languages, the injury side, the disciplines and the sub-option ids now get an escape. A value inside a double-quoted attribute also escapes the quote. <mutation-proof line>"
+```
+
+---
+
+### Task 4: Prove the number sinks through the real load
+
+Suggested dispatch: `implementer` (Sonnet).
+
+**Files:**
+- Test: `scripts/test-load-check-render.js` (new). No product file changes.
+
+**Interfaces:**
+- Consumes (from Task 1): `State.loadCharacter(data)` runs `CharacterCheck.repair`. `creator/js/character-check.js` exists.
+- Produces: nothing.
+
+- [ ] **Step 1: Write the harness**
+
+One `vm` context with the real files, in the `creator/index.html` order: `data-loader.js` (cache: all data files that `creator/js/data-loader.js` reads for these renders, read from `data/`), `xp-calculator.js`, `derived-stats.js`, `prerequisite.js`, `character-check.js`, `state.js`, `improvised-builder.js`, `custom-wargear.js`, `keyword-bonus.js`, `followers.js`, then the tabs below. Use the recording DOM of `scripts/test-tab-escapes.js` (copy the function; the test scripts share no module). Helper:
+
+```js
+const EVIL = '<img src=x onerror=alert(1)>';
+// Loads the hostile character through the real State.loadCharacter (JSON round trip first).
+function loadHostile(over) { /* State.loadCharacter(JSON.parse(JSON.stringify({ ...base, ...over }))) */ }
+const noRawTag = html => !html.includes('<img');
+```
+
+`base` is `{ name: 'H', species: { id: 'human', xpCost: 0, subOptions: [] }, archetype: { id: 'imperial_guardsman', xpCost: 0 } }`. `over` puts `EVIL` into the field of the row.
+
+- [ ] **Step 2: Write one check per (b) field and site of spec §8.5**
+
+```js
+// [label, over, render]  render returns the HTML string (or the joined recorded innerHTML)
+const B_SINKS = [
+    ['attributes on the sheet', { attributes: { strength: EVIL } }, () => CharacterSheetTab.renderAttributes(State.character)],
+    ['traits on the sheet', { attributes: { toughness: EVIL }, rank: EVIL }, () => CharacterSheetTab.renderTraits(DerivedStats.getAllDerivedStats(State.character))],
+    ['skills on the sheet', { skills: { weaponSkill: EVIL } }, () => CharacterSheetTab.renderSkills(State.character)],
+    ['weapon cells on the sheet', { rank: EVIL, attributes: { strength: EVIL }, wargear: [{ id: 'chainsword', isStarting: false, equipped: true }] }, () => CharacterSheetTab.renderWeapons(State.character)],
+    ['Ascension card targetTier', { ascensions: [{ targetTier: EVIL, type: 'package', packageId: 'back_from_the_brink', archetypeId: null }] }, () => CharacterSheetTab.renderAscensions(State.character)],
+    ['stats tab attributes', { attributes: { agility: EVIL } }, () => recorded(() => StatsTab.renderAttributes())],
+    ['stats tab derived stats', { corruption: EVIL, attributes: { willpower: EVIL } }, () => recorded(() => StatsTab.renderDerivedStats())],
+    ['stats tab skills', { skills: { awareness: EVIL } }, () => recorded(() => StatsTab.renderSkills())],
+    ['ascension tab tier', { tier: EVIL }, () => recorded(() => AscensionTab.render())],
+    ['ascension tab prerequisites', { attributes: { strength: EVIL }, skills: { athletics: EVIL } }, () => recorded(() => AscensionTab.render())],
+    ['archetype tab tier', { tier: EVIL, archetype: { id: 'custom', xpCost: 0 } }, () => recorded(() => ArchetypeTab.renderCustomConfig())],
+    ['injuries tab corruption', { corruption: EVIL }, () => InjuriesTab.renderCorruption(State.character, DataLoader.getInjuriesCorruptionData())],
+    ['followers tab counts', { followers: [{ id: 'flw_a', threatId: 'x', name: '', kind: 'mob', count: EVIL, livingCount: EVIL, notes: '' }] }, () => FollowersTab.renderRosterItem(State.character.followers[0], State.character)],
+    ['improvised form halfTime and rank', { rank: EVIL, wargear: [{ id: 'improvised_melee_weapon', isStarting: false, improvised: { name: 'L', details: '', halfTime: EVIL, damageRank: true, removeUnwieldy: false, doubleRange: false, traits: [] } }] }, () => recorded(() => { ImprovisedBuilder.open(0); })]
+];
+for (const [label, over, render] of B_SINKS) {
+    loadHostile(over);
+    let html = '', threw = false;
+    try { html = render(); } catch (e) { threw = e.message; }
+    check(`(b) ${label}: no throw`, threw, false);
+    check(`(b) ${label}: no raw tag`, noRawTag(html), true);
+}
+```
+
+`recorded(fn)` clears the recording DOM, runs `fn`, and returns the joined innerHTML strings. Where a data id in a row does not exist in `/data` (check `chainsword`, `improvised_melee`, `back_from_the_brink`), use an id that does, and keep the field under test. Where a render needs more `State` or DOM, add the minimum stub; do not change product code.
+
+- [ ] **Step 3: Run the test to see it pass**
+
+Run: `node scripts/test-load-check-render.js 2>&1 | tail -1`
+Expected: `All checks passed`.
+
+- [ ] **Step 4: Mutation proof**
+
+In `creator/js/state.js`, comment out the `CharacterCheck.repair` call (and its warning). Run the test. Expected: at least one `(b) … no raw tag` FAIL for each of `attributes on the sheet`, `skills on the sheet`, `Ascension card targetTier`, `stats tab attributes` and `injuries tab corruption`. Restore the line. Record the FAIL count in the commit body.
+
+- [ ] **Step 5: Run all test scripts**
+
+Run the command of the Global Constraints. Expected: no `FAIL` line.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add scripts/test-load-check-render.js
+git commit --author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github.com>" -m "Test the number sinks through the real character load
+
+Each test loads a hostile value through State.loadCharacter and renders the site. The HTML must not hold the raw tag. <mutation-proof line>"
+```

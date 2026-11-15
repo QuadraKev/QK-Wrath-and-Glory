@@ -77,13 +77,15 @@ const CharacterIO = get(ctx, 'CharacterIO');
 
 // Serializes value (INF becomes 1e999), parses the text, and loads it.
 // Returns { character, warns, threw } where character is a JSON copy of State.character.
+// The copy writes '__NONFINITE__' for a number that is not finite, so a kept Infinity cannot read as null.
 function loadJson(value) {
     const text = JSON.stringify(value, (key, v) => (v === INF ? '__INF__' : v)).split('"__INF__"').join('1e999');
     const data = JSON.parse(text);
     warns.length = 0;
     let threw = false;
     try { State.loadCharacter(data); } catch (e) { threw = true; }
-    return { character: rt(State.character), warns: warns.slice(), threw };
+    const copy = JSON.parse(JSON.stringify(State.character, (key, v) => (typeof v === 'number' && !Number.isFinite(v) ? '__NONFINITE__' : v)));
+    return { character: copy, warns: warns.slice(), threw };
 }
 
 // setPath / getPath take a path array such as ['ascensions', 0, 'targetTier'].
@@ -244,16 +246,27 @@ const HOSTILE = [
     [['followers', 0, 'id'], STR_BAD, 2, ['followers', 'length']], [['followers', 0, 'threatId'], STR_BAD, ''],
     [['followers', 0, 'kind'], STR_BAD, 'individual'], [['followers', 1, 'count'], NUM_NULL_BAD, 1],
     [['followers', 1, 'livingCount'], NUM_NULL_BAD, 1], [['followers', 1, 'mobCount'], NUM_NULL_BAD, null],
-    [['followers', 1, 'useAlternativeStats'], BOOL_BAD, false], [['followers', 1, 'currentWounds'], NUM_NULL_BAD, null]
+    [['followers', 1, 'useAlternativeStats'], BOOL_BAD, false], [['followers', 1, 'currentWounds'], NUM_NULL_BAD, null],
+    // fix round 1 (review finding F2): the rows that the first table did not have
+    [['ascensions', 0, 'archetypeId'], STR_NULL_BAD, null],                                                   // §6.2
+    [['wargear', 5, 'improvised', 'details'], STR_BAD, ''],                                                   // §6.4
+    ...['removeUnwieldy', 'doubleRange'].map(k => [['wargear', 5, 'improvised', k], BOOL_BAD, false]),        // §6.4
+    ...['originalOwner', 'anointment', 'power'].map(k => [['wargear', 3, 'relic', k], STR_NULL_BAD, null]),   // §6.4
+    [['followers', 0, 'name'], STR_BAD, ''], [['followers', 0, 'notes'], STR_BAD, ''],                        // §6.5
+    [['followers', 1, 'mobLivingCount'], NUM_NULL_BAD, null], [['followers', 1, 'currentShock'], NUM_NULL_BAD, null],
+    // §6.3: the choice of the second discipline talent is a string or null
+    [['talents', 5, 'choice'], [5, {}, true], null, undefined, ['tormented_manifestation_aoa', () => {
+        const c = CORPUS['full character'](); c.talents[5] = { id: 'tormented_manifestation_aoa', choice: 'Biomancy' }; return c;
+    }]]
 ];
 
-for (const [rowPath, bads, expected, readPathArg] of HOSTILE) {
+for (const [rowPath, bads, expected, readPathArg, override] of HOSTILE) {
     const readPath = readPathArg || rowPath;
     for (const bad of bads) {
-        const c = rowPath[0] === 'customKeywords' ? CORPUS['pre-web shapes']() : CORPUS['full character']();
+        const c = override ? override[1]() : rowPath[0] === 'customKeywords' ? CORPUS['pre-web shapes']() : CORPUS['full character']();
         setPath(c, rowPath, bad);
         const r = loadJson(c);
-        const label = `${rowPath} ${JSON.stringify(bad)}`;
+        const label = `${rowPath}${override ? ` (${override[0]})` : ''} ${JSON.stringify(bad)}`;
         check(`hostile ${label}: no throw`, r.threw, false);
         if (expected === undefined) {
             const parent = getPath(r.character, readPath.slice(0, -1));
@@ -275,6 +288,25 @@ check('hostile: a talent that is not a string or an object with a string id is d
     loadJson({ ...base(), talents: ['a', 5, null, [], { id: 5 }, { id: 'b', choice: 'x' }] }).character.talents, ['a', { id: 'b', choice: 'x' }]);
 check('hostile: a sub-option with a number optionId is dropped',
     loadJson({ ...base(), species: { id: 'human', xpCost: 0, subOptions: [{ type: 'homeworld', optionId: 5 }, null] } }).character.species.subOptions, []);
+
+// fix round 1 (review finding F2): one drop check for each list of spec §6.1 and §6.4 whose entry is a string,
+// and one for a sub-option type. A bad entry is dropped, and the good entries stay in order.
+check('hostile: a sub-option with a number type is dropped',
+    loadJson({ ...base(), species: { id: 'human', xpCost: 0, subOptions: [{ type: 5, optionId: 'x' }, { type: 'homeworld', optionId: 'y' }] } }).character.species.subOptions,
+    [{ type: 'homeworld', optionId: 'y' }]);
+{
+    const MIXED = () => ['a', 5, null, {}, [], true, 'b'];
+    const STRING_LISTS = [
+        ['customArchetype', 'keywords'], ['customArchetype', 'wargear'], ['freePowers'], ['unlockedDisciplines'],
+        ['languages'], ['freeLanguages'], ['customKeywords'],
+        ['wargear', 1, 'upgrades'], ['wargear', 3, 'relic', 'oddities'], ['wargear', 5, 'improvised', 'traits']
+    ];
+    for (const listPath of STRING_LISTS) {
+        const c = CORPUS['full character'](); setPath(c, listPath, MIXED());
+        const r = loadJson(c);
+        check(`hostile: bad entries of ${listPath.join('.')} are dropped`, [getPath(r.character, listPath), r.warns.length], [['a', 'b'], 1]);
+    }
+}
 
 // wargear: replace in place, keep the length and the order (index-referenced)
 {
@@ -359,7 +391,7 @@ for (const top of [null, [], [1, 2], 'x', 5, true]) {
 // import path: CharacterIO.load shows the error of the gate
 check('import: a null file returns the error', await CharacterIO.load(), { success: false, error: 'The file does not contain a character.' });
 
-// autosave path: App.checkAutoSave writes a warning and does not throw
+// autosave path: App.checkAutoSave writes a warning for a bad shape and does not throw
 {
     const actx = creatorSandbox({
         document: { addEventListener() {} },
@@ -375,7 +407,12 @@ check('import: a null file returns the error', await CharacterIO.load(), { succe
     warns.length = 0;
     let threw = false; try { App.checkAutoSave(); } catch (e) { threw = true; }
     check('autosave: a bad character does not throw', threw, false);
-    check('autosave: the warning names the reason', warns.includes('The auto-save was not loaded: The file does not contain a character.'), true);
+    check('autosave: the warning names the reason', warns.includes('The auto-save was not loaded: it does not contain a character.'), true);
+    // An error that is not the gate goes out of checkAutoSave (controller ruling T1-1)
+    AState.getAutoSave = () => ({ character: base() });
+    AState.addListener(changeType => { if (changeType === 'load') throw new Error('listener failed'); });
+    threw = false; try { App.checkAutoSave(); } catch (e) { threw = true; }
+    check('autosave: an error that is not the gate goes out of checkAutoSave', threw, true);
 }
 
 console.log(failures === 0 ? '\nAll checks passed' : `\n${failures} check(s) FAILED.`);

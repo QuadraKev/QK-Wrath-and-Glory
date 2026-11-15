@@ -320,7 +320,7 @@ S12 (`:225`) runs only for a keyword category that has options and `allowCustom`
 
 Helpers **[Design agent]**:
 
-- `ascension-tab.js`, `injuries-tab.js`, `powers-tab.js` and `species-tab.js` have no helper. Each gets an `escapeHtml(text)` method at the end of its object. The body is the same as `character-sheet-tab.js:2787-2795` (it escapes `& < > " '`). Cost if wrong: four copies of a 7-line helper. The codebase already has one copy per file.
+- `ascension-tab.js`, `injuries-tab.js`, `powers-tab.js` and `species-tab.js` have no helper. Each gets an `escapeHtml(text)` method at the end of its object. The body escapes the same five characters as `character-sheet-tab.js:2787-2795` (`& < > " '`), with one difference **[Controller ruling, 2026-11-15, Task 3]**: it returns `''` only for `null` and `undefined`, not for each falsy value, so that `0` prints as `0`. The S20 sites print numbers, and a helper that drops `0` shows nothing there. Cost if wrong: four copies of a 7-line helper. The codebase already has one copy per file.
 - `archetype-tab.js` and `background-tab.js` have a DOM helper that does not escape `"`. Each gets an `escapeAttr(text)` method, the same as `relic-wizard.js:824-827` (`this.escapeHtml(text).replace(/"/g, '&quot;')`). The existing `escapeHtml` does not change.
 - The relic display at S1 and the sheet sites use the existing `CharacterSheetTab.escapeHtml`.
 

@@ -6025,14 +6025,9 @@ textarea {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        text-align: left;
         border-right: 0;
         border-radius: var(--radius-md) 0 0 var(--radius-md);
         background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%) left top / 100cqi 100% no-repeat border-box;
-    }
-
-    .sheet-strip .sheet-keywords {
-        justify-content: flex-start;
     }
 
     /* Row 1 is Wrath | Wounds, and row 2 is Faith | Shock. Each label is above its controls. The box row has
@@ -6143,11 +6138,17 @@ textarea {
 
 /* The tab bar of compact mode, and of a window 600px high or less at any width */
 @media screen and (max-width: 768px), screen and (max-height: 600px) {
-    /* One row that scrolls sideways. The 4px padding keeps the focus ring inside the scroll box. */
+    /* One row that scrolls sideways. The 4px padding keeps the focus ring inside the scroll box.
+       The bar shows no scrollbar, because the edge cue shows that more tabs exist. */
     .sheet-tabbar {
         flex-wrap: nowrap;
         overflow-x: auto;
         padding: 4px;
+        scrollbar-width: none;
+    }
+
+    .sheet-tabbar::-webkit-scrollbar {
+        display: none;
     }
 
     /* The edge cue: a fade on each side of the bar that has more tabs (_updateTabBarCue sets the classes).

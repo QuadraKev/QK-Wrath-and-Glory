@@ -370,6 +370,16 @@ vm.runInContext('var navigator = { clipboard: { writeText(t) { globalThis.__copi
     // A character with no PSYKER keyword shows Smite in the section. The section has no mark.
     loadCharacter({ archetype: { id: 'ganger', xpCost: 0 }, psychicPowers: ['smite'] });
     check('mark: a known power row has no class', CharacterSheetTab.renderPsychicPowers(State.getCharacter()).includes('unknown-entry-text'), false);
+    // A psyker: the universal rows, a known power and an unknown power. Only the unknown power text has the mark.
+    loadCharacter({ archetype: { id: 'sanctioned_psyker', xpCost: 0 }, psychicPowers: ['smite', 'life_leech', 'zz_p'] });
+    check('mark: the psyker is a psyker', State.isPsyker(), true);
+    const psykerPowers = CharacterSheetTab.renderPsychicPowers(State.getCharacter());
+    check('mark: the section of a psyker shows the universal rows and the known powers by name',
+        ['Psyniscience', 'Deny the Witch', 'Smite', 'Life Leech'].filter(n => !psykerPowers.includes(n)), []);
+    check('mark: one mark only in the section of a psyker (the unknown power)', (psykerPowers.match(/unknown-entry-text/g) || []).length, 1);
+    check('mark: the unknown power of a psyker has the mark', markedText(psykerPowers, 'Unknown power (zz_p)'), true);
+    check('mark: the universal rows and the known powers of a psyker have no mark',
+        ['Psyniscience', 'Deny the Witch', 'Smite', 'Life Leech'].filter(n => markedText(psykerPowers, n)), []);
 
     // The stylesheet: each rule with overflow-wrap anywhere has the mark in its selector
     const css = readSource('creator/css/styles.css').replace(/\/\*[\s\S]*?\*\//g, '');

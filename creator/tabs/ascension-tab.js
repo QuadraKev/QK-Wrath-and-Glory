@@ -66,7 +66,8 @@ const AscensionTab = {
         const packages = DataLoader.getAscensionPackages();
         const names = list.map(id => {
             const pkg = packages.find(p => p.id === id);
-            return this.escapeHtml(pkg ? pkg.name : String(id));
+            // An id that the data does not have has the class that wraps a long id
+            return pkg ? this.escapeHtml(pkg.name) : `<span class="unknown-entry-text">${this.escapeHtml(String(id))}</span>`;
         });
         return `<div class="info-box" style="margin-bottom: 15px; padding: 10px; background: var(--bg-tertiary); border-radius: var(--radius-sm); font-size: 13px; color: var(--text-secondary);">
             <p>These ascension packages come from an older version of the app. Select them again in the slots below.</p>

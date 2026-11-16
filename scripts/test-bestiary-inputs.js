@@ -43,7 +43,9 @@ for (const rel of ['bestiary/js/data-loader.js', 'bestiary/js/bestiary-check.js'
 const tabStub = () => ({ init() {}, refresh() {} });
 const classList = () => ({ add() {}, remove() {}, toggle() {}, contains() { return false; } });
 
-// The min and max that the real inputs declare (bestiary/index.html). Other boxes get them from their markup.
+// The min and max that the real inputs declare. Two of the five come from bestiary/index.html
+// (the Players box and the inject count). The other three come from the markup that the tabs write
+// (the detail initiative, the add quantity, the modal count). Other boxes get them from their markup.
 const DECLARED = {
     'encounter-players': { min: '1', max: '10' },
     'player-detail-initiative': { min: '0', max: '99' },
@@ -88,15 +90,17 @@ function makeDocument() {
                 return bySel[sel];
             },
             querySelectorAll(sel) {
-                const m = /^\.([\w-]+)$/.exec(sel);
+                const m = /^(?:\.([\w-]+)|\[([\w-]+)\])$/.exec(sel);
                 if (!m) return [];
                 if (kids[sel]) return kids[sel];
                 const found = [];
-                for (const tag of html.match(/<(?:input|button|div)\b[^>]*>/g) || []) {
+                for (const tag of html.match(/<(?:input|button|div|select)\b[^>]*>/g) || []) {
                     const attrs = attrsOf(tag);
-                    if (!(attrs.class || '').split(/\s+/).includes(m[1])) continue;
+                    if (m[1] ? !(attrs.class || '').split(/\s+/).includes(m[1]) : !(m[2] in attrs)) continue;
                     const kid = makeElement();
-                    for (const k of Object.keys(attrs)) if (k.startsWith('data-')) kid.dataset[k.slice(5)] = attrs[k];
+                    for (const k of Object.keys(attrs)) if (k.startsWith('data-')) kid.dataset[k.slice(5).replace(/-(\w)/g, (x, c) => c.toUpperCase())] = attrs[k];
+                    kid.type = attrs.type || '';
+                    kid.defaultValue = attrs.value || '';
                     kid.value = attrs.value || '';
                     kid.min = attrs.min || '';
                     kid.max = attrs.max || '';
@@ -439,7 +443,14 @@ const rowsHtml = (app) => app.document.getElementById('player-character-inputs')
         check('player row initiative: 12 is stored', type(boxes[0], '12'), { stored: 12, box: '12', pcs: 1 });
         check('player row initiative: 150 keeps 12 and the box shows 12', type(boxes[0], '150'), { stored: 12, box: '12', pcs: 1 });
         check('player row initiative: abc keeps 12 and the box shows 12', type(boxes[0], 'abc'), { stored: 12, box: '12', pcs: 1 });
-        check('player row initiative: an empty value clears it', type(boxes[0], ''), { stored: null, box: '', pcs: 1 });
+        boxes[0].validity = { badInput: true };
+        check('player row initiative: a bad entry (value empty, badInput true) keeps 12 and the box shows 12', type(boxes[0], ''), { stored: 12, box: '12', pcs: 1 });
+        boxes[0].validity = { badInput: false };
+        check('player row initiative: an emptied box (badInput false) clears it', type(boxes[0], ''), { stored: null, box: '', pcs: 1 });
+        boxes[1].validity = { badInput: true };
+        const emptyBad = type(boxes[1], '');
+        check('player row initiative: a bad entry on an empty row creates no player and shows an empty box', { pcs: emptyBad.pcs, box: emptyBad.box }, { pcs: 1, box: '' });
+        boxes[1].validity = undefined;
         const empty = type(boxes[1], '150');
         check('player row initiative: 150 on an empty row creates no player and shows an empty box', { pcs: empty.pcs, box: empty.box }, { pcs: 1, box: '' });
         const none = type(boxes[1], '');
@@ -458,7 +469,41 @@ const rowsHtml = (app) => app.document.getElementById('player-character-inputs')
         check('player detail initiative: 12 is stored', type('12'), { stored: 12, box: '12' });
         check('player detail initiative: 150 keeps 12 and the box shows 12', type('150'), { stored: 12, box: '12' });
         check('player detail initiative: abc keeps 12 and the box shows 12', type('abc'), { stored: 12, box: '12' });
-        check('player detail initiative: an empty value clears it', type(''), { stored: null, box: '' });
+        box.validity = { badInput: true };
+        check('player detail initiative: a bad entry (value empty, badInput true) keeps 12 and the box shows 12', type(''), { stored: 12, box: '12' });
+        box.validity = { badInput: false };
+        check('player detail initiative: an emptied box (badInput false) clears it', type(''), { stored: null, box: '' });
+    });
+
+    await group('builder skill fields', () => {
+        const app = makeApp({}, true);
+        const T = app.ThreatBuilderState;
+        T.clear();
+        T.threat.parsedSkills.default = 3;
+        T.addSkillEntry(T.SKILL_NAMES[0], 3);
+        delete T.threat.defence;
+        app.ThreatBuilderTab.renderEditor();
+        const editor = app.document.getElementById('builder-editor-sections');
+        const fixed = editor.querySelectorAll('[data-skill]').find(b => b.dataset.skill === 'default');
+        const entryBox = editor.querySelectorAll('.builder-skill-value')[0];
+        const defBox = editor.querySelectorAll('[data-field]').find(b => b.dataset.field === 'defence');
+        const bad = (box, v) => { box.value = v; box._on.input({ target: box }); box._on.change({ target: box }); };
+        bad(fixed, '-2');
+        check('skill Default: a bad entry keeps 3 and the box shows 3', { stored: T.threat.parsedSkills.default, box: String(fixed.value) }, { stored: 3, box: '3' });
+        bad(fixed, '');
+        check('skill Default: an empty entry keeps 3 and the box shows 3', { stored: T.threat.parsedSkills.default, box: String(fixed.value) }, { stored: 3, box: '3' });
+        bad(entryBox, '-1');
+        check('skill entry: a bad entry keeps 3 and the box shows 3', { stored: T.threat.parsedSkills.entries[0].value, box: String(entryBox.value) }, { stored: 3, box: '3' });
+        bad(entryBox, 'abc');
+        check('skill entry: abc keeps 3 and the box shows 3', { stored: T.threat.parsedSkills.entries[0].value, box: String(entryBox.value) }, { stored: 3, box: '3' });
+        bad(defBox, '-5');
+        check('builder field with no stored number: a bad entry shows the rendered value', { stored: T.threat.defence, box: String(defBox.value) }, { stored: undefined, box: '1' });
+        // The dropdown change keeps the stored entry, also with a bad text in the value box
+        editor.querySelector('.builder-skill-value[data-skill-index="0"]').value = 'abc';
+        const select = editor.querySelectorAll('.builder-skill-select')[0];
+        select.value = T.SKILL_NAMES[1];
+        select._on.change({ target: select });
+        check('skill dropdown: a change keeps the stored value of the entry', T.threat.parsedSkills.entries[0], { name: T.SKILL_NAMES[1], value: 3 });
     });
 
     console.log(failures === 0 ? '\nAll checks passed' : `\n${failures} check(s) FAILED.`);

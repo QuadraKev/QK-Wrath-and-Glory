@@ -692,8 +692,9 @@ const ThreatBuilderTab = {
         editor.querySelectorAll('.builder-skill-select').forEach(el => {
             el.addEventListener('change', (e) => {
                 const index = parseInt(e.target.dataset.skillIndex);
-                const valueInput = editor.querySelector(`.builder-skill-value[data-skill-index="${index}"]`);
-                const value = valueInput ? parseInt(valueInput.value) || 0 : 0;
+                // The stored value stays: the value box can hold an entry that was refused
+                const entry = ThreatBuilderState.threat.parsedSkills.entries[index];
+                const value = entry ? entry.value : 0;
                 ThreatBuilderState.updateSkillEntry(index, e.target.value, value);
                 this.refresh();
             });

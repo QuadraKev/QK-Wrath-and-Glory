@@ -188,10 +188,12 @@ const EncounterTab = {
                 const existingId = e.target.dataset.id;
                 const index = parseInt(e.target.dataset.index);
 
-                // An empty box clears the initiative. A value outside 0-99 keeps the stored value and shows it.
+                // A box that the user emptied clears the initiative. A bad entry (the browser gives '' with
+                // badInput) and a value outside 0-99 keep the stored value and show it (spec §6.2).
+                const badInput = !!(e.target.validity && e.target.validity.badInput);
                 let value = '';
-                if (e.target.value.trim() !== '') {
-                    value = BestiaryCheck.readIntegerInput(e.target);
+                if (badInput || e.target.value.trim() !== '') {
+                    value = badInput ? null : BestiaryCheck.readIntegerInput(e.target);
                     if (value === null) {
                         const stored = existingId ? EncounterState.getPlayerCharacter(existingId) : null;
                         e.target.value = stored && stored.initiative != null ? String(stored.initiative) : '';
@@ -974,10 +976,12 @@ const EncounterTab = {
 
         // Bind events
         document.getElementById('player-detail-initiative')?.addEventListener('change', (e) => {
-            // An empty box clears the initiative. A value outside 0-99 keeps the stored value and shows it.
+            // A box that the user emptied clears the initiative. A bad entry (the browser gives '' with
+            // badInput) and a value outside 0-99 keep the stored value and show it (spec §6.2).
+            const badInput = !!(e.target.validity && e.target.validity.badInput);
             let value = '';
-            if (e.target.value.trim() !== '') {
-                value = BestiaryCheck.readIntegerInput(e.target);
+            if (badInput || e.target.value.trim() !== '') {
+                value = badInput ? null : BestiaryCheck.readIntegerInput(e.target);
                 if (value === null) {
                     const stored = EncounterState.getPlayerCharacter(this.selectedId);
                     e.target.value = stored && stored.initiative != null ? String(stored.initiative) : '';

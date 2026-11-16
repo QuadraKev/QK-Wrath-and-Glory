@@ -223,6 +223,20 @@ f5('an armour talent on a weapon', two(), { id: 'armourmonger_aoa', choice: '0' 
 f5('a real weapon', two(), { id: 'trademark_weapon', choice: '0' }, DL.getWeapon('knife').name);
 f5('a real armour', two(), { id: 'armourmonger_aoa', choice: 1 }, DL.getArmor('flak_armour').name);
 
+// A text choice on an owned-item talent (an old save) shows as the text, as before Task 7.
+human();
+State.character.wargear = [{ id: 'knife', isStarting: false }];
+State.character.talents = [{ id: 'trademark_weapon', choice: 'Chainsword' }];
+written.length = 0;
+TalentsTab.renderSelected();
+const textTab = written.join('');
+const textSheet = SheetTab.renderTalents(State.character);
+check('F5: a text choice: the talents tab shows the text', textTab.includes('<span class="selected-talent-name">Trademark Weapon (Chainsword) </span>'), true);
+check('F5: a text choice: the sheet shows the text in the name', textSheet.includes('<span class="sheet-talent-name">Trademark Weapon (Chainsword)</span>'), true);
+check('F5: a text choice: the sheet writes the Chosen note', textSheet.includes('<strong class="sheet-talent-choice">Chosen: Chainsword</strong>. '), true);
+check('F5: a text choice: no item selected is not shown', (textTab + textSheet).includes('(no item selected)'), false);
+f5('an empty text', two(), { id: 'trademark_weapon', choice: '' }, null);
+
 // --- A7: the confirm of a select of Custom Archetype ---
 ArchetypeTab.renderCustomConfig = () => {};
 const asked = [];

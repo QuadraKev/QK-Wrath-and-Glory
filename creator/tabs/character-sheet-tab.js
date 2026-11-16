@@ -1663,8 +1663,8 @@ const CharacterSheetTab = {
 
             // For weapon_owned/armor_owned choices, convert wargear index to item name
             let choiceDisplay = choice === null || choice === undefined ? '' : this.escapeHtml(String(choice));
-            if (choice !== null && choice !== undefined && (talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned')) {
-                // An index with no item of the kind of the talent gives no choice to show
+            if (this.isIndexChoice(choice) && (talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned')) {
+                // An index with no item of the kind of the talent gives no choice to show. A text choice shows as it is.
                 choiceDisplay = '';
                 const wargearIndex = parseInt(choice, 10);
                 if (!isNaN(wargearIndex) && character.wargear[wargearIndex]) {
@@ -2784,6 +2784,12 @@ const CharacterSheetTab = {
     getRarityClass(rarity) {
         if (!rarity) return 'rarity-common';
         return 'rarity-' + rarity.toLowerCase().replace(' ', '-');
+    },
+
+    // A wargear index is a whole number of 0 or more, or a string of digits only
+    isIndexChoice(choice) {
+        return (typeof choice === 'number' && Number.isInteger(choice) && choice >= 0)
+            || (typeof choice === 'string' && /^\d+$/.test(choice));
     },
 
     // Helper: Escape HTML

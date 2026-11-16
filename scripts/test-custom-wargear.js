@@ -1036,8 +1036,7 @@ for (const rel of ['character-sheet-tab.js', 'wargear-tab.js', 'talents-tab.js']
         sheetCharacter.talents = talents;
         try { return CS.renderTalents(sheetCharacter); } finally { sheetCharacter.talents = []; }
     };
-    // A choice that resolves to no item shows as a cleared choice (Task 7, TC7-1), so the text of the choice does not show at all.
-    check('the sheet shows no text of a talent choice that resolves to no item', bothSafe(p => sheetTalents([{ id: 'trademark_weapon', choice: p }])).map(([, raw, twice]) => [raw, twice]), [[false, false], [false, false]]);
+    check('the sheet escapes a talent choice that resolves to no item', bothSafe(p => sheetTalents([{ id: 'trademark_weapon', choice: p }])), SAFE_BOTH);
     check('the sheet shows a normal talent choice as before', (() => {
         const html = sheetTalents([{ id: 'acute_sense', choice: 'Sight' }]);
         return [html.includes('<span class="sheet-talent-name">Acute Sense (Sight)</span>'), html.includes('<strong class="sheet-talent-choice">Chosen: Sight</strong>. ')];
@@ -1059,7 +1058,7 @@ for (const rel of ['character-sheet-tab.js', 'wargear-tab.js', 'talents-tab.js']
         get(ctx, 'TalentsTab').renderSelected();
         return container.children.map(c => c.innerHTML).join('');
     };
-    check('the Talents tab shows no text of a talent choice that resolves to no item', bothSafe(p => talentsHtml([{ id: 'trademark_weapon', choice: p }])).map(([, raw, twice]) => [raw, twice]), [[false, false], [false, false]]);
+    check('the Talents tab escapes a talent choice that resolves to no item', bothSafe(p => talentsHtml([{ id: 'trademark_weapon', choice: p }])), SAFE_BOTH);
     check('the Talents tab shows a normal talent choice as before',
         talentsHtml([{ id: 'acute_sense', choice: 'Sight' }]).includes('<span class="selected-talent-name">Acute Sense (Sight) </span>'), true);
     check('the Talents tab shows a choice 0 that resolves to no item as a cleared choice',

@@ -314,8 +314,8 @@ const TalentsTab = {
             let choiceDisplay = talentChoice !== null && talentChoice !== undefined ? this.escapeHtml(String(talentChoice)) : null;
             if (choiceDisplay !== null) {
                 // For weapon_owned choices, convert wargear index to weapon name
-                if (isOwnedItemTalent) {
-                    // An index with no item of the kind of the talent gives no choice to show
+                if (isOwnedItemTalent && (this.isIndexChoice(talentChoice) || talentChoice === '')) {
+                    // An index with no item of the kind of the talent gives no choice to show. A text choice shows as it is.
                     choiceDisplay = null;
                     const wargearIndex = parseInt(talentChoice, 10);
                     if (!isNaN(wargearIndex) && character.wargear[wargearIndex]) {
@@ -596,6 +596,12 @@ const TalentsTab = {
 
     refresh() {
         this.render();
+    },
+
+    // A wargear index is a whole number of 0 or more, or a string of digits only
+    isIndexChoice(choice) {
+        return (typeof choice === 'number' && Number.isInteger(choice) && choice >= 0)
+            || (typeof choice === 'string' && /^\d+$/.test(choice));
     },
 
     escapeHtml(text) {

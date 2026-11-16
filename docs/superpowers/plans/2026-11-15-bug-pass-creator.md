@@ -717,3 +717,334 @@ Spec: §13. Suggested dispatch: `implementer` (Sonnet).
 | `scripts/test-sheet-bounds.js` | 15, 16 |
 
 `setCustomArchetype` gets its final statement order from three tasks (spec §5.2): Task 3 writes steps 1, 4 and 8; Task 5 adds steps 2, 5 and 7; Task 6 adds steps 3 and 6.
+
+---
+
+## Review record (2026-11-16)
+
+Branch `bug-pass-creator`, base `44084ae` (`main`), head `8dc7c7a`, 63 commits. The commits of each task are in the wave table. The other 13 commits are documents: `7e2f18d`, `44da12d` and `3887009` (the spec and the plan, with two fix rounds), `4b82488`, `d09f51b`, `d008810`, `d5d21d1`, `2d096a0`, `fdb2e99`, `6676218` and `0483276` (spec and plan sentences of the controller after task reviews), `9d145bf` (one CSS comment), `8f33306` (Task 20 in the plan). Then the controller's commit with this record.
+
+### The owner's words
+
+- 2026-11-15: "Let's do an overall pass for any bugs like those and clean them up in one go."
+- 2026-11-15: "To my knowledge, rank is only 1 to 3. If I'm incorrect, this is something we'll need to find proof for."
+- 2026-11-15: "Tier should be able to go up to 5. It's only up to 4 in the base book, but Vow of Absolution expands the tier to 5."
+
+The owner gave no other word for this branch. Each other decision below is a controller ruling.
+
+### How the wave ran
+
+Two read-only audits of the creator found A1-A24 (stored data, in a `vm` sandbox) and B1-B11 (a walk through the real page in headless Chromium). A third audit found C1-C11 in the bestiary, which has its own branch. One general-purpose author (opus) wrote the spec and the plan, and one reviewer (opus, xhigh) reviewed them: 20 findings, then a scoped re-review with 7 new findings, closed in two fix rounds. The author also did a read-only book search for a Rank above 3. Each of Tasks 2 to 20 had one implementer dispatch and one review by a different agent (opus, xhigh) in a second worktree, detached at the task commit, while the next task started. Each fix round went back to the same implementer through SendMessage, and an Important finding got a scoped re-review by the same reviewer. The controller did Task 1 (one `sed`) with no separate review. The controller added Task 20 after the 19 planned tasks, because the task reviews found older defects that a normal user can meet and that have a small correction (ruling TC20-0).
+
+### Rulings
+
+The controller's general rules G1-G11 are in a session file. Spec §2 states the two that decide the most: G1 (no harm to stored data, each exception is named) and G2 (no silent delete through the UI). The table holds each ruling of the ledger and of the review files. The rulings with no id come first, in ledger order.
+
+| Ruling | What was decided | Reason | Cost if wrong |
+|---|---|---|---|
+| (two plans) | The pass has two plans, one for each app, in two worktrees at the same time. | The apps share no file that the pass changes. | A merge conflict in a doc or a test, seen at the second merge. |
+| (no spec stop) | The wave goes from the owner's request to the plan with no approval stop for the spec. | The owner asked for the cleanup "in one go", and the practice of this repo is rulings in the record. | A correction that the owner did not want. Each one is a separate commit and can go back. |
+| (D1-D6 defaults) | The defaults of D1-D6 stay for the plan review, and each one goes to the owner in the report. The owner's words then withdrew the D1 default "keep 1 to 5" (CC11) and closed D2 (CC12). | None blocks the work, and each default is "no change". | One small follow-up change. |
+| (D1 closed) | Rank is 1 to 3: input `max="3"`, setter range 1 to 3, Core p.146 as the citation. A stored rank of 4 or 5 stays until the user edits it (G1), unless the owner says to change it at load. | The book search found no Rank above 3 in an official book. | (not stated) |
+| (no third plan review) | The plan gets no third review. | The task reviews check each correction. | A wrong plan line reaches an implementer. |
+| (Task 1) | The controller does Task 1, and it gets no separate review. | One `sed` on one file, with the counts of the brief as the check. The Task 17 review reads the same file, and the final review checks the tags. | A tag with the old number, seen at the final review. |
+| (wait rules) | Task 5 waits for the reviews of Tasks 2 and 3. Tasks 8, 12, 13, 15 and 18 each wait until one open review is in. Task 19 starts with three reviews open. | Three open reviews are the limit. The files of Task 19 are not in the scope of the open reviews. | Some minutes of wait. For Task 19: none. |
+| (Task 2 F3) | The report text item F3 is parked. | The report is a session file and does not go into the repo. | None. |
+| (Task 4 N4, Task 11 M1, Task 14 N1, Task 17 F5) | Each Minor test gap with the reviewer's own fixture goes to the same implementer, with no further re-review. | The final review has the commit in scope. | A weak check until the final review. |
+| (Task 7 N1) | A talent choice of `'1abc'`, `'1.5'` or `1.5` stays parked. | No writer of any version makes such a value, and a change of the two bonus readers has more risk than the defect. | A hand-edited file shows a text and still gets the bonus. |
+| CC1 | The alias step for `aeldari_psychosensitive` also adds the sub-option `{ type: 'psychosensitive', optionId: 'psyker' }` when it is absent. | The character keeps PSYKER. | (not stated) |
+| CC2 | On a change of species, an attribute or a skill above the maximum of the new species goes down to that maximum. No mark and no new control. | The maximum is a rule of the game (G4). The old code reset the full stat block in this case. | A user who selects a species by mistake buys the points above the other maximum again. The XP is free again. |
+| CC3 | An ascension entry records the ids that its grant step added (new optional field `ascensions[i].granted`). The remove releases only those. | A free pick of the user stays. | One more stored field with a check row. |
+| CC4 | A free pick that no current slot covers leaves `freePowers` and stays in `psychicPowers`. | The power stays visible and its XP is correct. | (not stated) |
+| CC5 | An alias does not map an entry onto an id that the same list already holds (talents, powers). That entry stays as an unknown row. Wargear can hold an item two times, so the alias maps it. | (not stated) | (not stated) |
+| CC6 | The Load confirm comes after the file pick and before `State.loadCharacter`. It names the file. TC18-3 later added a condition. | A confirm before the file dialog can use up the user activation in Chromium (5 s), and Load then does nothing. | The user picks a file and then cancels. |
+| CC7 | Custom Archetype selected again after a standard archetype keeps the stored custom record. A change of the base item in a relic or improvised edit clears `upgrades` (parked, spec §16). CC14 and CC16 added limits. | G2. | An old custom name shows again when the user selects Custom. |
+| CC8 | The discipline chips with a remove control stay for each character that holds stored disciplines. `hasStoredPowers` gets the `unlockedDisciplines` test. | G2. | (not stated) |
+| CC9 | Task 3 becomes 3a and 3b. Task 14 becomes 14a and 14b. | (not stated) | (not stated) |
+| CC10 | P3, P4, P5, P7, P9 and P13-P17 apply as the reviewer wrote them. | (not stated) | (not stated) |
+| CC11 | Rank 1 to 3 (D1 closed). | The owner's words of 2026-11-15 and Core p.146: "Your Rank can't decrease, and can't go above the maximum of 3." | (not stated) |
+| CC12 | Tier 1 to 5 (D2 closed). The spec and the plan assumed that the Tier select already had 5 options. TC17-1 corrected that. | The owner's words of 2026-11-15. Core p.19 and Vow of Absolution p.125. | (not stated) |
+| CC13 | D3 stays an owner decision with the default "no change". The spec lists what a species change loses after this pass. | (not stated) | (not stated) |
+| CC14 | `creator/js/prerequisite.js:225` adds the custom keywords only when the archetype is `custom`. Each other reader of the `customArchetype` record gets the same test. | Re-review finding Q1: the kept record still added its keywords after Custom was left. | (not stated) |
+| CC15 | The data gets the values of the Core p.25 table, after a compare of the full table. Task 8 corrects Ork Strength and Toughness 10 to 12 and Aeldari Strength 8 to 7. | The clamp and the increase limit read these values. | An erratum that the PDF does not hold. |
+| CC16 | The once-only count and `getOldStartingEntries` leave out the entries that the kept custom record lists, counted per id. CC7 was not narrowed. | The record and the wargear list must agree after each sequence. | (not stated) |
+| CC17 | The cancel path of the Load confirm puts back the file handle of before the pick (new `window.api.cancelOpen()`). | (not stated) | (not stated) |
+| CC18 | Q3, Q4 and Q7 apply as the reviewer wrote them. | (not stated) | (not stated) |
+| TC2-1, TC2-2 | Six test checks (F1, F2) and a report correction (F3). | F1 was a gap of the plan: each fixture was a Human. | (not stated) |
+| TC2-3 | Three "Before the task" items go into "Late findings". | (not stated) | (not stated) |
+| TC3-1 to TC3-3 | Four test checks, one comment in the past tense, report text. Named limit: a save made with the A4 defect keeps the old free values, and the rebase treats them as bought (G1: no change at load). | A gap of the plan's fixture list. | (not stated) |
+| TC4-1 | The setter keeps the value of a skill before an "any skill" key selected it, in memory only (`State._skillChoicePrior`, not stored), and gives it back when the choice moves in the same session. | An arrow-key walk through the Task 11 select fires one change for each option. The users with an Inquisitor save and bought skills use the new select. | After a reload the old rule still applies (spec §17). |
+| TC4-2 | F2, F3 and F4 apply as the reviewer wrote them. | (not stated) | (not stated) |
+| TC4-3 | A change of archetype, a clear of the archetype and Custom Archetype in the same session give each kept skill the larger of the kept value and its new free value, then empty the memory. | Re-review finding N1. | (not stated) |
+| TC4-4 | `resetStats` empties the memory. The restore gives `Math.max(Math.min(kept value, bonus), free value)`. | A value that the user decreased must not come back. | (not stated) |
+| TC4-5 | Two report sentences corrected. | (not stated) | (not stated) |
+| TC5-1 | No code change. A stale free power of an old archetype becomes paid at the next change of a source and stays stored and visible. No automatic remove. | The app cannot tell a stale grant from a free pick whose slot went (G2). | One click to remove it. The XP total can be under 0 until then. |
+| TC5-2 | `_grantedPowerIds` also counts the recorded ids of an entry whose package the data does not have. `_settleFreePicks` leaves an unknown power id in `freePowers`. | (not stated) | (not stated) |
+| TC5-3 | F1, F2, F5 and F6 apply as the reviewer wrote them. | (not stated) | (not stated) |
+| TC6-1 | F1 and F2 (test scripts only). | (not stated) | (not stated) |
+| TC6-2 | Five wargear record items go into "Late findings", with no change in this task. | (not stated) | (not stated) |
+| TC7-1 | Display only: an owned-item talent choice that is an index with no item of the talent's kind shows "(no item selected)" in both views. The stored value does not change. | A raw index tells the user nothing (G3). | The text hides the stored number. |
+| TC7-2 | F1-F4 apply as the reviewer wrote them. | (not stated) | (not stated) |
+| TC7-3 | The fix round went further than TC7-1. Only an index with no item shows "(no item selected)". A choice that is not an index (an old text such as `'Chainsword'`) shows as before. | The old text tells the user what the old save selected. | An old text stays visible with no bonus. |
+| TC8-1 | F1-F3 (test script and report). | (not stated) | (not stated) |
+| TC8-2 | The controller corrects one spec sentence: a disabled "+", not no "+". | (not stated) | (not stated) |
+| TC9-1 | Each alias table lookup tests an own key, with a check for each place. | A key that a plain object inherits (`constructor`) became a function, and the next autosave wrote `null`. | (not stated) |
+| TC10-1 | The two sentences of spec §8.1 and §8.2 go into the page. | The plan left them out of the brief. | (not stated) |
+| TC10-2 | F3, F4 and F5 apply. The B9 time limit is 100 ms. No separate re-review. | Minor items with the reviewer's own corrections. | (not stated) |
+| TC11-1 | After a redraw, the focus goes back to the select of the same key. TC11-6 later removed the redraw for an accepted change. | A keyboard walk stopped after one key. | (not stated) |
+| TC11-2 | The skill select gets the CSS of the sub-faction keyword select (look and 420 px limit). TC11-5 corrected the first rule. | The select was 978 px wide. | (not stated) |
+| TC11-3 | `aria-label="Skill of your choice (<value>)"` on each select, with "1 of 2" and "2 of 2" when two selects have the same value. | The select had no accessible name. | (not stated) |
+| TC11-4 | F4 and F5 apply as the reviewer wrote them. | (not stated) | (not stated) |
+| TC11-5 | The first CSS rule lists `.skill-choice-select` with the same weight as `.keyword-choice-select`. | The scoped rule hid the gold focus border of `select:focus`. | (not stated) |
+| TC11-6 | An accepted change does not draw the detail again. It updates the options of the other select in place. A refusal draws again. | The redraw cut the type-ahead of the browser. | (not stated) |
+| TC12-1 | F1-F3 (test script only), with a scoped re-review for F1. | (not stated) | (not stated) |
+| TC13-1 | F1-F3 (test checks and one report line). | (not stated) | (not stated) |
+| TC14-1 | The background bonus box always tells the user what the stats do. An empty selected slot gives the notice. A selected unknown entry with one of the seven bonus types still applies its stored bonus and shows "Unknown <kind> (<id>)". | A hidden box with a bonus that applies leaves a number that nothing on the page explains. | One more notice. |
+| TC14-2 | F2 and F3 apply as the reviewer wrote them. | (not stated) | (not stated) |
+| TC15-1 | `BOX_LIMIT` is 100, not 50. | A legal stacked build reaches 57 Wounds. | A later book with more than 100 Wounds shows "+N more". |
+| TC15-2 | F1 and F2 apply. | (not stated) | (not stated) |
+| TC15-3 | The CSS rule in `creator/css/styles.css` for the count text is confirmed. | Without it the text wraps onto two lines. | (not stated) |
+| TC16-1 | A long unknown id must wrap on the sheet and in the tabs of Tasks 10, 12 and 13. TC16-3 replaced the method (a rule on 19 shared classes) because it was wrong. | A real save can hold a 58-character id, and a Remove control must stay reachable on a phone. | A long id breaks in the middle of a word. |
+| TC16-2 | F2 and F3 apply. | (not stated) | (not stated) |
+| TC16-3 | The 19-class rule goes. The wrap applies only to the text of an "Unknown ..." row (one new class `unknown-entry-text`). | The shared name classes cannot tell a known row from an unknown one. The rule broke normal names (re-review N1). | Some test lines that pin the HTML of an unknown row change. |
+| TC17-1 | The Tier select gets a Tier 5 option with 500 XP. | The owner's decision on Tier 1 to 5. The select had only 1 to 4, so the 31 Tier 5 archetypes never showed. | One option line. |
+| TC17-2 | Each cell of the test tables gets an assertion with no condition. | Three mutations stayed green. | (not stated) |
+| TC17-3 | The three `badInput` branches go. One check keeps the behavior. | The branches had no effect. | (not stated) |
+| TC17-4 | The Rank hint becomes "Set your Character's Rank, between 1 and 3." | The range is a rule now (Core p.146). | (not stated) |
+| TC17-5 | The label `5 - Vow of Absolution (500 XP)` stays. | Vow of Absolution p.125 and p.126 give Tier 5 no name (the controller read the page images). | One text. |
+| TC18-1, TC18-2 | Test checks for the `cancelOpen` call and the start cases (F1, F2). | With the `cancelOpen` line removed, 47 of 47 checks passed. | (not stated) |
+| TC18-3 | The Load confirm asks only when the file holds a character. | The confirm warned of a loss that could not occur. | None seen. |
+| TC18-4 | A load that fails puts the file handle of before back. TC18-5 later limited it. | Else the next Save writes into a file that the user picked by mistake. | Save goes to the file of before. |
+| TC18-5 | The `catch` calls `cancelOpen` only when `State.character` is still the object of before the load. | TC18-4 did not name that limit: a throw after the new character was in sent the Save to the old file. | None seen. |
+| TC19-1 | F1-F4 (test script only). | (not stated) | (not stated) |
+| TC19-2 | `renderSummaryStep` of the relic wizard reads the form through `getForm`. The spec number of threats with a list goes from 8 to 11 with this record. | Each read of the form uses the same own-key lookup. | (not stated) |
+| TC20-0 | The late findings that a normal user can meet and that have a small correction go into one more task (Task 20) before the final review. The others go to the owner. | The owner asked for "an overall pass for any bugs like those" in one go. | One task and one review more before the merge. |
+| TC20-1 | The first rule of item 1: Confirm writes only the options that the window offers, and an unknown stored option stays in each case. TC20-1a corrected it. | G2. | (not stated) |
+| TC20-1a | A known pick replaces the stored option of its type through the State setter, as before the task. Only a Confirm with nothing picked keeps a stored unknown option. No tab writes into the character directly. | The readers use the first entry of a type, so a kept unknown entry hides a new pick. | A pick replaces an unknown option of the same type, as the code did before the pass. |
+| TC20-2 | The sheet shows a talent name as the Talents tab shows it. | (not stated) | (not stated) |
+| TC20-3 | The sub-faction keyword select keeps the focus, with the mechanism of Task 11 and an `aria-label`. | (not stated) | (not stated) |
+| TC20-4 | The Compendium prints "Skill of your choice +N" for a key `choice`, `choice1` or `choice2`. | (not stated) | (not stated) |
+| TC20-5 | Each HOSTILE row of `scripts/test-load-check.js` names the path of its warning, and the loop checks it. | A path mutant stayed green. | (not stated) |
+| TC20-6 | A range band that is `null` prints `-` at the four creator sites that printed "null". | A normal user sees "RANGE 6/null/null" for four weapons. The sheet already printed `-`. | None seen. |
+| TC20-7 | Confirm calls the setter for a type only when the type does not already store the picked id. | A button that the window showed as selected is not a pick. | None seen. |
+| TC20-8 | No change for a talent choice `''`. The sheet keeps "Hatred [Any]" and the Talents tab keeps "Hatred ()". | The UI never stores `''`, and the rule "byte-equal to the old sheet" wins. | (not stated) |
+
+### Plan text that no longer matches the code
+
+- Global constraints and Task 17: the plan says that Task 17 changes only line 185 of `creator/index.html`. The code also changes the hint at `:186` (TC17-4) and adds the option `5 - Vow of Absolution (500 XP)` at `:200` (TC17-1, TC17-5).
+- Task 4: the plan has no memory of the value before a choice. The code has `State._skillChoicePrior`, `_keptSkillChoices` and `_restoreKeptSkillChoices`, used in `setArchetype`, `clearArchetype` and `setCustomArchetype`, and `resetStats` empties it (TC4-1, TC4-3, TC4-4).
+- Task 7: the plan shows "(no item selected)" only for a `null` or absent choice. The code also shows it for an index with no item of the talent's kind, and shows a text choice as before, through `isIndexChoice` in each tab (TC7-1, TC7-3). Three expectations of `scripts/test-custom-wargear.js` changed.
+- Task 10: the B9 time limit is 100 ms, not 500 ms (TC10-2). The notice and the row texts are the spec §8.1 and §8.2 sentences (TC10-1). The notice shows only for a list that is not empty, and an orphan entry with nothing chosen shows "Ascension package (none chosen)" with Remove (accepted deviations).
+- Task 11: the plan draws the detail again after each change. The code updates the other select in place and draws again only on a refusal (TC11-6). It also has the focus rule (TC11-1), the CSS in `creator/css/styles.css` (TC11-2, TC11-5) and the `aria-label` (TC11-3).
+- Task 14: the plan has one function `getBackgroundBonus` that returns 0 for an unknown `bonusUsed`. The code has the helper `DerivedStats.getAppliedBackgroundBonus`. A selected unknown entry with one of the seven stored bonus types still applies and shows as "Unknown <kind> (<id>): +1 <Bonus name>" (TC14-1).
+- Task 15: the plan says `BOX_LIMIT = 50` and the check text `+29950 more`. The code has 100 (TC15-1). One CSS rule `.sheet-strip-trackers .tracking-boxes .sheet-empty` is in `creator/css/styles.css` (TC15-3).
+- Task 16: the plan changes only `creator/tabs/character-sheet-tab.js`. The code also puts the class `unknown-entry-text` on the unknown rows of seven tab files, with one CSS rule (TC16-1, TC16-3). The sheet also shows unknown background entries, sub-options, ascensions and upgrades (accepted deviation).
+- Task 17: the plan does not name the Tier option and the hint (refer to the first item). The handlers use the `change` event, and the `badInput` branches are gone (TC17-3).
+- Task 18: the plan asks the confirm for each file. The code asks only when the file holds a character (TC18-3). Each exit after a pick that does not load calls `cancelOpen`, and the `catch` does so only when the character did not change (TC18-4, TC18-5). The start guard of ruling TB3-2 (the bestiary ledger) is in `App.init`: with no `CharacterCheck`, the page shows "The app did not load completely. Reload the page." and stops. The start returns early only when both storage keys are empty (accepted deviation).
+- Task 19: the plan guards three lookups. The code has the helpers `getForm` and `getPowerTable`, four guarded sites and the summary step (TC19-2), and a local `escapeHtml` in `threat-card.js`.
+- Task 20: item 1 holds TC20-1a, but not TC20-7. Item 6 (TC20-6) is not in the plan text, and its four files (`creator/tabs/wargear-tab.js`, `creator/js/relic-wizard.js`, `creator/js/improvised-builder.js`, `creator/js/custom-wargear.js`) are not in its file list. Item 2 uses two helpers on the sheet object, and the Talents tab is not changed. The copy text of the sheet now holds the talent choice. Item 3 has no redraw and no `focus()` call.
+- Spec text (not plan): §13 B6 says that 8 threats hold a list, and the data has 11 (TC19-2). §17 says "The 50-box bound" (TC15-1 set 100).
+
+### Evidence
+
+| Task | Test script and checks at the end of the task | Mutation proof | Review in a real page |
+|---|---|---|---|
+| 1 | No script. `grep -c '?v=130'` gives 36, `?v=129` gives 0. | One tag back to `?v=129` gives 35 (plan step). | No separate review (ruling). |
+| 2 | `test-stat-baseline.js` 72 (15 failed before). | Each of the six reviewer mutations fails its new check. | 152,656 runs: the only XP differences are the named case (276) and values above the cost table (4). The limits agree in 595,584 checks. The Stats tab HTML is the same for 6,000 normal characters. |
+| 3 | `test-stat-baseline.js` 106 (17 failed before). | Two proofs. Each of the four reviewer mutations fails a new check. | A walk of 400 seeds with 80 steps against an independent model: no difference (the base differs in each class). Headless browser 44 of 44. |
+| 4 | `test-stat-baseline.js` 127. | 2 FAIL lines, then five, three and three mutants each fail a new check. | No control yet. The memory never reaches the stored character, the export or the autosave. The species clamp holds after the restore. |
+| 5 | `test-grants.js` 51, `test-load-check.js` 2092 (18 + 34 FAIL lines before). | Two proofs, then 11 mutants each fail. | 300 seeds of 40 steps with no difference (the base: 15472 "lost bought", 5423 "lost granted", 1767 "kept free with no source"). 400 old-shape characters load with no change. Re-review: 700 seeds plus 400 old saves. |
+| 6 | `test-wargear-refs.js` 81. | Three proofs, then three mutants each fail. | 2000 sequences of 40 steps with no difference (the base: 490 choices on a different item, 827 on a removed item). The real Remove button and Custom card. CC16 in 7 sequences. |
+| 7 | `test-wargear-refs.js` 75 (before the Task 6 fix round). | The confirm removed fails the two cancel checks. M1, M2, M5, M6, F5 and the TC7-3 mutation fail. | The confirm names exactly the 7 old starting entries. Cancel changes nothing. The pages of a normal character are the same bytes as at the base. |
+| 8 | `test-starting-wargear.js` 42. | Two proofs. M4, M5, M6 and M7 each fail. | Page images Core pp.25, 90, 117, 236, Vow of Absolution pp.39, 41, 73, Aeldari pp.28, 94. Each of the 35 values of Core p.25 equals the data. The data diff is exactly 6 values. |
+| 9 | `test-load-check.js` 2123 (17 failed before). | Two proofs, then three mutants fail. | 893 characters built through the real writers load with no change, also at a second load. Each of the 8 alias pairs has rename evidence. The real autosave and Load button paths. |
+| 10 | `test-ascension-tab.js` 39 (42 at the head, after `1332f95`). | The loop start at `startingTier + 1` fails the two B9 checks. The four reviewer mutations each fail. | A tier of -300000 renders in 1 ms (the base: 30 s). No XP, tier, wounds, shock or wealth change against the base. Screenshots at 1280 px and 390 px. |
+| 11 | `test-skill-choice-ui.js` 60. | The first mutation fails 4 checks. Then six mutations, two (5 and 4 checks) and one (2 checks). | The XP goes from 240 to 214 for two chosen skills and comes back. 233 of 235 archetype details are the same as at the base. 38 key presses give 36 changes with no loss of focus. The same gold focus border at 1280 px and 390 px. |
+| 12 | `test-unknown-ids.js` 87 (17 failed before). | Two proofs. M4, M6-M10 and the F3 mutation each fail. | Each unknown entry shows, and its Remove takes exactly that entry. The Ganger removes give the XP back (20, 12, 2). The HTML of the three tabs is the same as at the base for psykers. |
+| 13 | `test-unknown-ids.js` 107 (27 new checks failed before). | One proof. Seven mutations each fail. | XP, 13 derived values, keywords and the stored JSON are the same at the base and the task for 15 fixtures. The tabs of six normal characters are the same HTML. |
+| 14 | `test-background-bonus.js` 97 (17 failed before; 104 at the head, after `1332f95`). | The first mutation fails 5 checks. Then five mutations, and one for each of the seven types. | Page images Core pp.42-44, 67, 86. 14 tab renders, 12 section switches and the sheet leave the JSON the same. Re-review: 708 states, no render changes the JSON (the base changed it in 144). |
+| 15 | `test-sheet-bounds.js` 81 (16 failed before). | One proof. M4b, M8 and "the limit back at 50" each fail. | 24 runs leave the stored JSON and the autosave key as the file has them. Toughness 30000: 100 boxes and "+29902 more" in 15 to 21 ms (the base: 4025 ms). 57 Wounds give 57 boxes. |
+| 16 | `test-sheet-bounds.js` 112, `test-unknown-ids.js` 128. | The `unlockedDisciplines` test removed fails two checks. Then nine, three and one mutations fail. | 37 sheet panes byte-equal to the base and 20 screenshot pairs pixel-equal. Re-review 1: 30 of 800 view pairs differed (N1). Re-review 2: 1210 view pairs, no box or line break differs. A 60-character discipline id still overflows at 320 px and 390 px, as before the task. |
+| 17 | `test-number-inputs.js` 220. | The first mutation fails 14 checks. Then the three reviewer mutations, "option removed" and two more. | Each stored value outside the range stays through the load, each section, the sheet and the autosave. Tier 5 stores 5, and the header shows "0 / 500 XP". A Human at Tier 5 sees the six Tier 5 archetypes. Each of 20 bad entries is refused. |
+| 18 | `test-settings-persist.js` 64 (25 failed before). | Five proofs, then each fix mutation fails its check. | 21 start cases: the task never loses the stored character (the base loses it in three). Ten sequences with a save picker that throws: no Save writes into a refused or declined file. |
+| 19 | `test-render-guards.js` 58 (21 failed before). | The first mutation fails 6 checks. The F1-F4 and TC19-2 mutations each fail. | The 11 list threats show each entry (the base: "[object Object]"). The 37 text ranges show the data text (the base: "undefined/undefined/undefined"). A relic with the form `zz`, `''`, `constructor` or a number opens (the base throws at step 5). |
+| 20 | `test-creator-late.js` 108, `test-load-check.js` 2795. | Each mutation fails. 470 picks give the same lists as `b15679f`. | Item 1 in 278 scenarios. Item 2: the sheet name equals the tab name in 6994 of 7429 cases (the 435 others have the choice `''`). Item 3: 117 selects in 180 archetypes. Item 5: eight path-only mutants fail. Item 6: no site prints "null" for 782 weapons. |
+
+Gates of the branch at `8dc7c7a`:
+
+- All 32 `scripts/test-*.js` scripts pass (the controller ran them). The writer of this record also ran them at `8dc7c7a`. Each one printed its pass line, and the last line of `test-xp-tip.js` was "All passed".
+- `creator/index.html` has 36 tags at `?v=130` and 0 at `?v=129`.
+- The data version of `creator/js/web-api.js:22` is 48.
+
+### Visible changes for a user
+
+- One background bonus in place of three. A save with no "USE THIS BONUS" selection loses up to 3 points (for example max wounds 4 to 3, influence 1 to 0, wealth 2 to 1), and a notice shows, until the user selects a bonus (Task 14).
+- An old save with renamed talents or powers shows them under their new ids, and the spent XP can be higher after the alias (Task 9).
+- Species maximums from Core p.25: Ork Strength and Toughness 10 to 12, Aeldari Strength 8 to 7 (Task 8). A species change clamps attributes to the new maximum (ruling CC2, Task 3).
+- A change of species or archetype keeps the stats that the user bought. Before, it reset the full stat block (Task 3).
+- The skill XP no longer counts the stored keys `choice`, `choice1` and `choice2` that the old code wrote (Tasks 2 and 9).
+- A change of archetype, ascension or ability no longer removes a power that the user bought or picked. A Remove of an ascension releases only what it granted (Task 5).
+- A talent choice stays on its item when the wargear list changes (Task 6). Custom Archetype asks a confirm that names the starting wargear that it removes (Task 7). A choice with no item shows "(no item selected)" (Task 7).
+- Add Starting Wargear adds only known items, and only once (Task 8).
+- The Ascension tab shows the old package list with a Remove control, and each ascension with no slot. An empty slot no longer raises the tier (Task 10).
+- The Rank field accepts 1 to 3. A stored 4 or 5 stays until the user edits it. The hint reads "Set your Character's Rank, between 1 and 3." (Task 17).
+- The Tier list has a fifth option, "5 - Vow of Absolution (500 XP)", and the Tier 5 archetypes show for the first time (Task 17, ruling TC17-1).
+- A number field refuses a bad entry and shows the stored value again (Task 17).
+- A new select for the "any skill" bonus of the Inquisitor and the Inquisitorial Acolyte. It is the one new control of the pass (Tasks 4 and 11).
+- An entry whose id the data does not have shows as "Unknown ..." with a Remove control, in each tab and on the sheet (Tasks 10, 12, 13, 16). A long unknown id wraps inside its card (Task 16).
+- Kroot mutations above the tier show a mark and a Remove control in the Species tab (Task 13).
+- A non-psyker sees its stored powers on the sheet (Task 16).
+- The books turned off in Settings and Ignore Prerequisites stay through a reload and New Character (Task 18).
+- Load asks a confirm after the file pick, and only for a file that holds a character (Task 18).
+- The sheet draws at most 100 tracker boxes. A tracker above its maximum shows the maximum (Task 15).
+- A follower card shows each Mob Ability of a list (before: "[object Object]"). A text range shows its text (before: "undefined/undefined/undefined"). A relic with an unknown form opens (Task 19).
+- The sheet shows a talent name as the Talents tab shows it, and the copy text holds the talent choice (Task 20).
+- The sub-faction keyword select keeps the keyboard focus (Task 20).
+- The Compendium prints "Skill of your choice +4". A range band with no value prints "-" (Task 20).
+- A character that was a Custom Archetype with its own keywords and has a standard archetype now loses those keywords and each effect of them (for example the Psychic Powers rows of a custom `PSYKER` keyword). A kept custom record has no effect while the archetype is not `custom` (ruling CC14, Tasks 3 and 6). The record stays stored, the XP does not change, and the keywords come back when the user selects Custom Archetype again. The final review found that this change was in no list for the user (finding X1); 24 of 300 random characters built at the base differ in this way.
+- A save in which two ascension package choices are stored empty showed an effective Tier 3 at the base (Wounds boxes 8, Shock 4). It shows the stored Tier 1 now (Wounds boxes 4, Shock 2). This closes audit finding A13 (Task 10); the final review named it for the user list.
+- A range band with no value prints `-` ("6/-/-"; before, "6/null/null") in the Wargear tab, the relic wizard and two more places, for four weapons (Task 20, ruling TC20-6).
+
+
+### Open decisions of the owner
+
+| Item | Default in place |
+|---|---|
+| D3: a species change clears the archetype with no confirm. | No change in this pass. |
+| D4: `minor_invocation` and `warpspeed` get no alias. | They show as Unknown rows with Remove. |
+| D5: `company_standard` (Company Ancient) against `battle_standard`. | No change: it stays text. |
+| D6: `smoke_grenades` (Incursor, Bladeguard) against `smoke_grenades_aoa`. | No change. |
+| A stored Rank of 4 or 5 (D1 closed as Rank 1 to 3). | It stays until the user edits it, unless the owner says to change it at load. |
+| TC5-1: stale free powers of an old archetype. | They become paid at the next change of a source and stay visible with Remove. The XP total can be under 0 until the user removes them. |
+| The named limit of TC4-1: after a reload, a change of the "any skill" choice loses ranks that the user bought before the choice. | No stored record. The option of a stored record goes to the owner. |
+| TC17-5: the label of the Tier 5 option. | `5 - Vow of Absolution (500 XP)`. |
+| The source of the labels of Tier options 1 to 4 ("Defenders of Humanity", "Agents of Fate", "Elite Guardians", "Heroic Champions") is not known. Core p.19 gives no tier names. | No change. |
+| The Apocrypha starting wargear prose (548 entries, spec §16). | Parked as a curation job. The click skips them. |
+| The late findings below (TC20-0). | No change in this pass. |
+
+### Late findings that are not corrected
+
+Task 20 corrected five items of the list: the sub-option Confirm that deleted an unknown option, the talent name on the sheet, the focus and the label of the sub-faction select, the Compendium text, and the path check of the HOSTILE loop. Task 10 corrected no item of the list. The items below stay.
+
+Rules of the game and book data:
+
+- `getFreePowerChoiceStatus` (`state.js`, near `:1809`) counts a Lost Seer power as an archetype pick, so Wyrd with Psychic Revelations offers 2 Minor picks, not 3 (Task 5 review).
+- No creator file reads `species.baseSkills` (17 species have it) (Task 2 review).
+- Ghost Warrior and Custodian show an attribute maximum of 16 or 14, but "+" stops at 12 (Task 2 review).
+- 2 background bonuses of the type Corruption and 1 of the type "Any Keyword" (`chaos_born_evil`, `chaos_ascension`, `rt_strange_alliance`) have no effect. The book gives them (Core p.86, p.67) (Task 14 review).
+- Kroot mutations above the tier still give their bonuses, and the sheet lists them with no mark (Task 13 review).
+- `primaris_intercessor` has `page: 90`, and the profile is on Core p.117. Aeldari p.28 lists "Aspect Shrine" for the Striking Scorpion, and the data list does not hold it (Task 8 review).
+- The archetype `rogue_psyker_aoa` has the keyword text "PSYKER. You may not select the KHORNE keyword." (Task 12 review).
+
+Stored data:
+
+- `removeCustomStartingWargear` removes the first starting entry with that id, not the entry of the record (`state.js`, near `:543`) (Task 6 review).
+- A Remove in the Wargear tab of a custom starting entry leaves the id in `customArchetype.wargear` (Task 6 review).
+- Where two starting entries have the same id, `getOldStartingEntries` takes the first ones, also when one has an upgrade or a talent choice (Task 6 review).
+- Armour-Monger stays when a relic armour becomes a shield (`state.js`, near `:939`) (Task 6 review).
+- A stale index that is out of range points at the next bought item (Task 6 review).
+- If only `getItem` of the storage throws, the start is blank and the first edit writes over the stored character (the same at the base) (Task 18 review).
+- `state.js` (near `:1324`) rewrites a stored Members below 1 to 1 at any follower edit (a hand-edited file only) (Task 17 review).
+- Two ascension entries with the same `targetTier` (a hand-edited file): the second is hidden and costs XP, and Remove takes both but releases only the grants of the first (Task 10 review).
+- A known power id that is in `freePowers` only shows in no view, fills a free-pick slot and makes a later purchase free. No code writes that state (Task 12 review).
+- The relic wizard drops the `powerChoice` of a known form with an unknown power at Save (a hand-edited file) (Task 19 review).
+- A talent choice of `'1abc'` or `1.5` shows as text, but the bonus readers give the bonus to wargear[1] (a hand-edited file) (Task 7 re-review, parked N1).
+
+Display:
+
+- A talent choice `''` (a file only) shows "Hatred ()" in the Talents tab and "Hatred [Any]" on the sheet (Task 20 review, TC20-8).
+- After "Other" in the sub-faction keyword select, a later redraw shows "-- Select --" with no custom input. A typed custom keyword stays lowercase in the input until a redraw. Escape does not close the species sub-option window (Task 20 review).
+- A typed relic name of 40 characters with no space runs past the card at 320 px and 390 px. At 320 px the relic row buttons and the "Deny the Witch" DN text run past the card (Task 16 re-review).
+- A settings change marks the page dirty, so a reload of a blank character still warns. A throw in the start path shows nothing on the page (Task 18 review).
+- `setting-tab.js` (near `:42`) shows 1 for a stored Rank 0 or `null` and for a stored Tier 0 (Task 17 review).
+- A follower with stored Wounds 9 of 4: a click on the last box stores 4 and does not clear the box. A negative stored Faith shows "-3". A stored Wounds 2.5 fills 3 boxes (Task 15 review).
+- A species whose book is off in Settings is fully hidden for a character of that species. The species stays stored (Task 13 review).
+- A stored tier of -300000 shows "Tier -299999 Campaign" in the header (Task 10 review).
+- The relic wizard keeps an unknown oddity with no control to remove it. Steps 3 and 4 accept an unknown owner or anointment with no card selected. A relic on an unknown base item has no Edit button. A form `constructor` shows "Holy Relic (Object)" (Task 19 review).
+- A stored attribute of 13 shows the "-" tip "−NaN XP" (`stats-tab.js:96`) (Task 2 review).
+- A text choice that is the name of an item (`'Lasgun'`, the old format) shows "Trademark Weapon (Lasgun)" like a real choice, but no bonus applies (Task 7 re-review).
+
+Test and proof tooling: no item stays. Task 20 item 5 corrected the one item.
+
+**From the final review ("Before the branch")**
+
+- Two open tabs of the creator share one autosave key. The tab whose 2-second timer fires last writes its character over the character of the other tab. The base does the same.
+
+
+### Not checked
+
+- Firefox and WebKit (each review). Safari, Android and iOS (Task 18). A real phone and phone keypads. macOS select keys. Screen-reader output.
+- The Electron wrapper, and its async `showConfirm` (Tasks 7, 10, 18).
+- The real `showOpenFilePicker` path of Load. Headless Chromium gives no file-chooser event for it, so the reviews used the `<input type=file>` fallback or the autosave restore (Tasks 7, 8, 10, 15, 18).
+- Real user save files and how many exist (Tasks 2, 14). Saves built by the old web State (`3b17bac` to `9864ec6`) (Task 9). Files and data history of the older single-app repos (Tasks 14, 20).
+- A real HTTP-cached old page. The P6 claim that a confirm before the picker uses up the user activation was not measured again (Task 18).
+- The content of the file after Save. Task 17 checked only the stored state.
+- The species maximums of the books other than Core p.25, an erratum of Core p.25, and 13 unresolved ids against the books (Task 8, spec §17).
+- Some UI paths ran through the State setters, not through clicks: the Powers tab picks (Task 10), the relic wizard, the talent choice modal and the Upgrades modal (Task 6), the Ascension tab clicks (Task 16), the cards of Task 5.
+- The Improvised builder in the page, and the custom wargear form ranges (Task 19).
+- Keyboard access to the new buttons (Task 10) and to the × spans (Task 12). The style of the bonus notice (Task 14). The contrast of the "+N more" text and the low-height layout (Task 15).
+- An unknown species or archetype id (Tasks 13, 16). Names longer than the longest real name of each kind (Task 16).
+- A talent that grants a power (the data has none) and the Tormented Manifestation discount (Task 5). "Any skill" keys with different values (the data has none) (Task 11).
+- The box bound and its timing on a phone (spec §17).
+- The bestiary (out of scope of this branch).
+
+### Wave table
+
+| Task | Model | Dispatches | Send-backs | Gate | Commits |
+|---|---|---|---|---|---|
+| Audits (3) | opus (general-purpose) | 1 each | 0 | Read-only: A1-A24, B1-B11 (creator), C1-C11 (bestiary) | none |
+| Spec and plan | opus (general-purpose) | 1 | 2 (+1 read-only book search) | Approved after 2 send-backs. Review: 2 Critical, 6 Important, 12 Minor. Re-review: 2 Important, 5 Minor. All closed. | `7e2f18d`, `44da12d`, `3887009` |
+| Task 1 Cache bump | the controller (a trivial edit; no agent) | 0 | 0 | No separate review (ruling); the tag count was checked | `7d126c1` |
+| Task 2 Known stat names, one baseline | sonnet | 1 | 1 | APPROVED | `9b9f463`, `6513ace` |
+| Task 3 A parent change keeps bought values | opus | 1 | 1 | APPROVED | `762cae2`, `bc9e5c3` |
+| Task 4 The "any skill" field and setter | sonnet | 1 | 3 | APPROVED | `b406b56`, `e916e0c`, `9794096`, `06409af` |
+| Task 5 Reference-aware grants | opus | 1 | 1 | APPROVED | `a600b90`, `b00b793` |
+| Task 6 Wargear index references in State | opus | 1 | 1 | APPROVED | `cf75b6c`, `e976ca8` |
+| Task 7 Wargear references in the UI | sonnet | 1 | 2 | APPROVED | `efb3123`, `62dd58a`, `b99aac1` |
+| Task 8 Add Starting Wargear; data | sonnet | 1 | 1 | APPROVED | `ced7ac3`, `c5d5029` |
+| Task 9 The load steps | opus | 1 | 1 | APPROVED | `3d38086`, `48cb88d` |
+| Task 10 The Ascension tab | sonnet | 1 | 1 | APPROVED (spec F1 and F2 closed by the fix round, no separate re-review, TC10-2) | `1635129`, `99035be` |
+| Task 11 The "any skill" choice in the UI | sonnet | 1 | 3 | APPROVED | `2d182cd`, `a6c857d`, `5c79c87`, `1466624` |
+| Task 12 Unknown ids: Wargear, Talents, Powers | sonnet | 1 | 1 | APPROVED | `dc72669`, `d76e169` |
+| Task 13 Unknown ids: Injuries, Background, Species | sonnet | 1 | 1 | APPROVED | `6d44407`, `ccb163d` |
+| Task 14 One background bonus | sonnet | 1 | 2 | APPROVED | `c80e877`, `2e81b22`, `0c35bb3` |
+| Task 15 Tracker getters and the box bound | sonnet | 1 | 1 | APPROVED | `abc2f43`, `a4cf145` |
+| Task 16 The sheet: unknown rows and stored powers | sonnet | 1 | 3 | APPROVED | `e3eeadc`, `904e318`, `1332f95`, `f6ab494` |
+| Task 17 Number inputs; Rank 1 to 3 | sonnet | 1 | 2 | APPROVED | `b844c53`, `9d51628`, `8e93e39` |
+| Task 18 Settings storage and the Load confirm | opus | 1 | 2 | APPROVED | `eca067f`, `f590847`, `c07d0e9` |
+| Task 19 Render guards | sonnet | 1 | 1 | APPROVED | `bd5fe77`, `474f022` |
+| Task 20 Late findings | sonnet | 1 | 2 (fix round 1 was a controller correction, fix round 2 a review finding) | APPROVED | `bfb3e58`, `b15679f`, `8dc7c7a` |
+| Plan and task reviews | opus, xhigh | 20 (1 plan, 19 tasks) | 0 | 17 scoped re-reviews through the same reviewers: plan 1, Tasks 2, 3, 5, 6, 7, 12, 14 and 17 one each, Tasks 4, 11, 16 and 18 two each | none |
+| Wave record draft | opus (`ste-writer`) | 1 | 0 | The controller added the final review part and corrected two rows | none |
+| Final review of the branch | fable, effort xhigh (`general-purpose`) | 1 (resumed three times after HTTP 529) | 1 fix dispatch (X2, X3) to the Task 16 implementer | READY TO MERGE; X1 to X4 closed | `e04ba3c`, `e86dbf4` |
+
+### Final review
+
+The final review of the full branch ran on a `general-purpose` agent with the model `fable` at effort `xhigh`, on the range `44084ae..8dc7c7a`. The run stopped three times with a server error (HTTP 529). The controller resumed it each time, and the agent kept its context and its result files.
+
+**Result: ready to merge.** No Critical finding, and no code defect above Minor.
+
+| Finding | Severity | What | Correction |
+|---|---|---|---|
+| X1 | Important, doc | A character built at the base as Custom Archetype with keywords and then changed to a standard archetype loses those keywords at the head (ruling CC14). The change was in no list for the user. The same is true for audit finding A13 (two empty package radios: Tier 3 to Tier 1). | Spec section 5.3 (commit `e04ba3c`), the part "Visible changes for a user" of this record, and the report to the owner. No code change: the result is the rule of CC14. |
+| X2 | Minor, code | The old-package notice printed an id that the data does not have with no wrap class. At 390 px, a 66-character id was cut at the edge of the notice. | Commit `e86dbf4`: the id goes into a span with the class `unknown-entry-text`. |
+| X3 | Minor, test | No check rendered the sheet power pane of a psyker for the unknown mark. | Commit `e86dbf4`: one check with `sanctioned_psyker`. |
+| X4 | Minor, doc | Three stale spec texts (the 50-box bound, the typed `1e5`, the count of threats with a list). | Commit `e04ba3c`. |
+
+Controller ruling: commit `e86dbf4` had no separate re-review. The two findings are Minor, the correction is one product line, the implementer showed that each new check fails for its mutation, and the controller read the line and ran all 32 scripts.
+
+Evidence of the review (the files are in the session scratch folder and are not in the repo):
+
+- **Characters built at the base:** 281 characters built through the real page at `44084ae` and opened at the head through the autosave and through the Load button. The only differences are the named load step X1. No render writes.
+- **Old save shapes:** 400 characters built with the old State setters and old data (Electron 1.0.0 and the web commits `3b17bac`, `c744cd0`, `c29e9cd`, `f23afe8`). The differences are only the load steps X1 (205 characters) and X2 (68) and the kept `ascensionPackages` (160). A second load changes nothing.
+- **Walks at the head:** 551 walks with about 28,500 actions. Each action can change only the fields that it names. 0 violations. A mutated copy proved the model: 3 of 5 seeded defects were hit and reported.
+- **Numbers:** 300 characters built at the base, about 60 numbers each. With the named causes removed, the only differences are the X1 keywords.
+- **HTML:** 14 characters, 12 sections with the header, the sidebar and the sheet panes. 241 views are byte-equal. 64 differ, each by a named change.
+- **Mutations:** 55 product-line mutants. 53 fail a check, 1 is equivalent, 1 is X3.
+- **Audit findings:** A1 to A18, A20 and B1 to B11 are closed in a real page. A19 is parked (spec section 16).
+- **Old and new code in turn:** no character is lost. The base page keeps `archetypeSkillChoices` and `granted`, deletes `ascensionPackages` as before, and shows a blank Tier select for Tier 5.
+- **Deploy checks:** 36 tags at `?v=130`; the data version is 48; the data diff is six values; nothing changed under `bestiary/`, `shared/`, `feedback-worker/` or `.github/`. 32 of 32 scripts pass, and 38 of 38 pass in the merged tree of both branches. `git merge-tree` shows no conflict with `bug-pass-bestiary`.
+
+Not checked by the final review: the real file pickers of the operating system (the harness used the file input path); Firefox, WebKit and a real phone; the sourcebook pages; the Electron wrapper; hand-edited hostile files beyond `scripts/test-load-check.js`.
+
+Branch head after the final corrections: `e86dbf4` and this record. All 32 `scripts/test-*.js` pass there (the controller ran them).

@@ -225,6 +225,19 @@ check('Change to the first option: the skill goes back to 0', State.character.sk
 check('Change to the first option: the other select has 19 options again', optionValues(handlers[1].s.innerHTML).length, 19);
 check('Change to the first option: no redraw', renders, 0);
 
+// An accepted change keeps the stored skill of the other select marked as selected.
+handlers[1].s.value = 'awareness';
+handlers[1].fn({ target: handlers[1].s });
+check('Stored skill of choice2', State.character.archetypeSkillChoices.choice2, 'awareness');
+handlers[0].s.value = 'insight';
+handlers[0].fn({ target: handlers[0].s });
+{
+    const inner = fullHtml => fullHtml.replace(/^<select[^>]*>/, '').replace(/<\/select>$/, '');
+    const fresh = inner(selectHtml(ArchetypeTab.renderSkillChoices(inquisitor, State.character), 'choice2'));
+    checkTrue('Accepted change: the other select marks its stored skill as selected', /<option value="awareness" selected>/.test(handlers[1].s.innerHTML), handlers[1].s.innerHTML.slice(0, 200));
+    check('Accepted change: the other select is equal to a fresh draw, with the selected option', handlers[1].s.innerHTML, fresh);
+}
+
 // --- the prerequisite of an archetype ascension ---
 function prereq(skills, ignore) {
     const ch = freshCharacter('imperial_guardsman');

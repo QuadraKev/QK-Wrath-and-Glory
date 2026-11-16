@@ -233,6 +233,48 @@ check('BackgroundTab.repairMissingBonusTypes is gone', typeof BackgroundTab.repa
     }
 }
 
+// --- each of the seven types raises its own stat, and the box names it (fix round 2) ---
+// The calculator and the type string come from the source of derived-stats.js, not from a list of this test.
+// The words of the box come from the stat names of the sheet (character-sheet-tab.js).
+{
+    const el = rec.document.getElementById('background-bonus');
+    const source = readSource('creator/js/derived-stats.js');
+    const calculators = [...source.matchAll(/(calculate\w+)\(character\)\s*\{(?:(?!\n    \w+\(.*\{)[\s\S])*?getBackgroundBonus\(character, '(\w+)'\)/g)]
+        .map(m => ({ fn: m[1], type: m[2] }));
+    const WORDS = {
+        determination: 'Determination', conviction: 'Conviction', influence: 'Influence', resolve: 'Resolve',
+        maxShock: 'Max Shock', maxWounds: 'Max Wounds', wealth: 'Wealth'
+    };
+    const statKey = { calculateDetermination: 'determination', calculateMaxWounds: 'maxWounds', calculateMaxShock: 'maxShock',
+        calculateConviction: 'conviction', calculateResolve: 'resolve', calculateInfluence: 'influence', calculateWealth: 'wealth' };
+    check('derived-stats.js has seven calculators that read a background bonus', calculators.map(c => c.type).sort(), Object.keys(WORDS).sort());
+    for (const { fn, type } of calculators) {
+        const lists = [['origin', BG.origins], ['accomplishment', BG.accomplishments], ['goal', BG.goals]];
+        const [slot, list] = lists.find(([, l]) => l.some(r => r.bonusType === type)) || [];
+        check(`${type}: the data has a real entry with this bonusType`, !!list, true);
+        if (!list) continue;
+        const record = list.find(r => r.bonusType === type);
+        const c = human();
+        c.background = { origin: null, accomplishment: null, goal: null, bonusUsed: null };
+        c.background[slot] = { id: record.id, bonusType: record.bonusType };
+        const none = DerivedStats[fn](c);
+        const noneAll = DerivedStats.getAllDerivedStats(c);
+        c.background.bonusUsed = slot;
+        BackgroundTab.render();
+        check(`${type} (${slot} ${record.id}): ${fn} gives 1 more than with no selection`, DerivedStats[fn](c), none + 1);
+        const all = DerivedStats.getAllDerivedStats(c);
+        check(`${type}: only ${statKey[fn]} changes in getAllDerivedStats`,
+            Object.keys(all).filter(k => all[k] !== noneAll[k]), [statKey[fn]]);
+        check(`${type}: the box shows the entry of the data with its name`,
+            el.innerHTML.startsWith('<strong>Selected Bonus:</strong> ' + record.name.replace(/&/g, '&amp;')), true);
+        // The same entry as an unknown id: the box names the bonus that applies.
+        c.background[slot] = { id: 'zz_unknown', bonusType: record.bonusType };
+        BackgroundTab.render();
+        check(`${type}: an unknown selected entry shows +1 ${WORDS[type]}`,
+            el.innerHTML, `<strong>Selected Bonus:</strong> Unknown ${slot} (zz_unknown): +1 ${WORDS[type]}`);
+    }
+}
+
 // --- the escapes of the selected bonus (a data fixture with markup in the name and the text) ---
 {
     const el = rec.document.getElementById('background-bonus');

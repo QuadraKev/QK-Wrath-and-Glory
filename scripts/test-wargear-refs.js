@@ -48,22 +48,31 @@ const choices = () => State.character.talents.map(t => t.choice);
 const relic = form => ({ name: 'Vow', form, originalOwner: null, anointment: null, power: null, oddities: [] });
 
 // --- B1: a remove by index moves each choice with its item ---
+// Talents 3 and 4 must not change: an owned-item talent with a stored text, and a freeform talent
+// (forbidden_knowledge, which does not hold an item) with the choice '2'.
 function b1() {
     human();
     for (const id of ['knife', 'lasgun', 'laspistol', 'flak_armour', 'mesh_armour']) State.addWargear(id);
-    State.character.talents = [{ id: 'trademark_weapon', choice: '1' }, { id: 'armourmonger_aoa', choice: 4 }];
+    State.character.talents = [{ id: 'trademark_weapon', choice: '1' }, { id: 'armourmonger_aoa', choice: 4 },
+        { id: 'trademark_weapon', choice: 'Chainsword' }, { id: 'forbidden_knowledge', choice: '2' }];
 }
 b1();
 State.removeWargearByIndex(0);
-check('B1: remove index 0: the choices move to \'0\' and 3', choices(), ['0', 3]);
+check('B1: remove index 0: the choices move to \'0\' and 3', choices().slice(0, 2), ['0', 3]);
+check('B1: remove index 0: the text choice and the non-item choice stay', choices().slice(2), ['Chainsword', '2']);
 check('B1: remove index 0: wargear[0] is the lasgun', State.character.wargear[0].id, 'lasgun');
 State.removeWargearByIndex(0);
-check('B1: remove the lasgun: Trademark is null and Armour-Monger is 2', choices(), [null, 2]);
+check('B1: remove the lasgun: Trademark is null and Armour-Monger is 2', choices().slice(0, 2), [null, 2]);
 
 b1();
 State.removeWargear('knife');
 check('B1: removeWargear(knife) gives the same result as removeWargearByIndex(0)',
-    [choices(), State.character.wargear[0].id], [['0', 3], 'lasgun']);
+    [choices(), State.character.wargear[0].id], [['0', 3, 'Chainsword', '2'], 'lasgun']);
+
+b1();
+State.setCustomArchetype();
+check('B1: setCustomArchetype keeps each choice, the text choice and the non-item choice too',
+    choices(), ['1', 4, 'Chainsword', '2']);
 
 // --- Custom starting wargear: a remove moves the choice ---
 human();
@@ -124,6 +133,24 @@ State.setArchetype('death_cult_assassin');
 State.addWargear('death_cult_power_blade', true);
 State.addWargear('death_cult_power_blade', true);
 check('P5: getOldStartingEntries holds both power blades', State.getOldStartingEntries(), [0, 1]);
+
+// --- P5 with qty: tactical_space_marine lists frag_grenades and krak_grenades with qty 3 each ---
+State.newCharacter();
+State.setSpecies('astartes');
+State.setArchetype('tactical_space_marine');
+State.addWargear('chainsword');
+for (const entry of DL.getArchetype('tactical_space_marine').startingWargear) {
+    const id = typeof entry === 'string' ? entry : entry.id;
+    const qty = typeof entry === 'string' ? 1 : (entry.qty || 1);
+    for (let i = 0; i < qty; i++) State.addWargear(id, true);
+}
+const grenades = () => ids().filter(id => id === 'frag_grenades' || id === 'krak_grenades').length;
+check('P5 qty: the marine has six grenade entries', grenades(), 6);
+check('P5 qty: getOldStartingEntries holds each starting index, the six grenades too',
+    State.getOldStartingEntries(), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+State.setCustomArchetype();
+check('P5 qty: after Custom, no grenade entry stays', grenades(), 0);
+check('P5 qty: after Custom, the bought chainsword stays', ids(), ['chainsword']);
 
 // --- CC16, sequence 1: Custom, a standard archetype, Custom ---
 human();

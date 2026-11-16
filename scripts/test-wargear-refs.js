@@ -88,24 +88,28 @@ State.updateRelicWargear(0, 'lasgun', relic('las_weapon'));
 check('relic: weapon to weapon keeps Trademark', choices(), ['0']);
 
 // --- A7: Custom Archetype keeps relics, improvised items, bought items and custom items ---
-human();
-State.setArchetype('imperial_guardsman');
-const starting = [];
-for (const entry of DL.getArchetype('imperial_guardsman').startingWargear) {
-    const id = typeof entry === 'string' ? entry : entry.id;
-    const qty = typeof entry === 'string' ? 1 : (entry.qty || 1);
-    if (!DL.getWargearItem(id)) continue;
-    for (let i = 0; i < qty; i++) {
-        starting.push(State.character.wargear.length);
-        State.addWargear(id, true);
+function a7Fixture() {
+    human();
+    State.setArchetype('imperial_guardsman');
+    const starting = [];
+    for (const entry of DL.getArchetype('imperial_guardsman').startingWargear) {
+        const id = typeof entry === 'string' ? entry : entry.id;
+        const qty = typeof entry === 'string' ? 1 : (entry.qty || 1);
+        if (!DL.getWargearItem(id)) continue;
+        for (let i = 0; i < qty; i++) {
+            starting.push(State.character.wargear.length);
+            State.addWargear(id, true);
+        }
     }
+    State.addRelicWargear('laspistol', relic('weapon'));
+    State.addImprovisedWargear({ id: IB.BASE_IDS[0], improvised: { name: 'Leg', details: '', halfTime: 0, damageRank: false, removeUnwieldy: false, doubleRange: false, traits: [] } });
+    State.addWargear('chainsword');
+    const chainswordIndex = State.character.wargear.length - 1;
+    State.addCustomItem(CW.buildRecord({ ...CW.emptyForm(), name: 'Custom A' }));
+    State.character.talents = [{ id: 'trademark_weapon', choice: String(chainswordIndex) }];
+    return { starting, chainswordIndex };
 }
-State.addRelicWargear('laspistol', relic('weapon'));
-State.addImprovisedWargear({ id: IB.BASE_IDS[0], improvised: { name: 'Leg', details: '', halfTime: 0, damageRank: false, removeUnwieldy: false, doubleRange: false, traits: [] } });
-State.addWargear('chainsword');
-const chainswordIndex = State.character.wargear.length - 1;
-State.addCustomItem(CW.buildRecord({ ...CW.emptyForm(), name: 'Custom A' }));
-State.character.talents = [{ id: 'trademark_weapon', choice: String(chainswordIndex) }];
+const { starting, chainswordIndex } = a7Fixture();
 check('A7: the guardsman has some resolved starting items', starting.length > 0, true);
 check('A7: getOldStartingEntries gives the starting indices', State.getOldStartingEntries(), starting);
 State.setCustomArchetype();
@@ -174,35 +178,86 @@ check('A9: the sheet shows an absent choice', sheetAbsent.includes('(no item sel
 const sheetZero = SheetTab.renderTalents({ talents: [{ id: 'hatred', choice: 0 }], wargear: [] });
 check('B10: the sheet shows the number choice 0', sheetZero.includes('Chosen: 0'), true);
 
-// --- A7: the confirm of a select of Custom Archetype ---
-function guardsman() {
+// F4: a text choice and a talent with no choice keep their display
+const plain = [{ id: 'angel_of_death' }, { id: 'hatred', choice: null }];
+human();
+State.character.talents = plain;
+written.length = 0;
+TalentsTab.renderSelected();
+check('F4: the talents tab adds no item text to a text choice or to no choice', written.join('').includes('(no item selected)'), false);
+check('F4: the sheet adds no item text to a text choice or to no choice', SheetTab.renderTalents(State.character).includes('(no item selected)'), false);
+human();
+State.character.talents = [{ id: 'hatred', choice: 'ORKS' }];
+written.length = 0;
+TalentsTab.renderSelected();
+check('F4: the talents tab shows a text choice', written.join('').includes('Hatred (ORKS)'), true);
+check('F4: the sheet shows a text choice', SheetTab.renderTalents(State.character).includes('Chosen: ORKS'), true);
+
+// F5: an index with no item of the kind of the talent shows as a cleared choice, and the stored value stays
+function f5(name, wargear, talent, shown) {
     human();
-    State.setArchetype('imperial_guardsman');
-    for (const entry of DL.getArchetype('imperial_guardsman').startingWargear) {
-        const id = typeof entry === 'string' ? entry : entry.id;
-        const qty = typeof entry === 'string' ? 1 : (entry.qty || 1);
-        if (!DL.getWargearItem(id)) continue;
-        for (let i = 0; i < qty; i++) State.addWargear(id, true);
+    State.character.wargear = wargear;
+    State.character.talents = [talent];
+    const stored = JSON.stringify(State.character.talents);
+    written.length = 0;
+    TalentsTab.renderSelected();
+    const tabHtml = written.join('');
+    const sheetHtml = SheetTab.renderTalents(State.character);
+    if (shown === null) {
+        check(`F5: ${name}: the talents tab shows no item selected`, tabHtml.includes('(no item selected)'), true);
+        check(`F5: ${name}: the sheet shows no item selected`, sheetHtml.includes('(no item selected)'), true);
+        check(`F5: ${name}: the sheet has no Chosen note`, sheetHtml.includes('Chosen:'), false);
+    } else {
+        check(`F5: ${name}: the talents tab shows the item name`, tabHtml.includes(`(${shown})`), true);
+        check(`F5: ${name}: the sheet shows the item name`, sheetHtml.includes(`(${shown})`), true);
+        check(`F5: ${name}: the tab and the sheet show no item selected`, tabHtml.includes('(no item selected)') || sheetHtml.includes('(no item selected)'), false);
     }
+    check(`F5: ${name}: the render does not change the stored choice`, JSON.stringify(State.character.talents), stored);
 }
+const two = () => [{ id: 'knife', isStarting: false }, { id: 'flak_armour', isStarting: false }];
+f5('a stale index', two(), { id: 'trademark_weapon', choice: '7' }, null);
+f5('an item of the wrong kind', two(), { id: 'trademark_weapon', choice: '1' }, null);
+f5('the string 0 with no wargear', [], { id: 'trademark_weapon', choice: '0' }, null);
+f5('the number 0 with no wargear', [], { id: 'trademark_weapon', choice: 0 }, null);
+f5('an armour talent on a weapon', two(), { id: 'armourmonger_aoa', choice: '0' }, null);
+f5('a real weapon', two(), { id: 'trademark_weapon', choice: '0' }, DL.getWeapon('knife').name);
+f5('a real armour', two(), { id: 'armourmonger_aoa', choice: 1 }, DL.getArmor('flak_armour').name);
+
+// --- A7: the confirm of a select of Custom Archetype ---
 ArchetypeTab.renderCustomConfig = () => {};
 const asked = [];
-guardsman();
+a7Fixture();
 const before = JSON.stringify(State.character.wargear);
+const beforeChoices = choices();
+const expectedNames = State.getOldStartingEntries().map(index => DL.getWargearItem(State.character.wargear[index].id).name);
 ctx.window.api.showConfirm = async message => { asked.push(message); return false; };
 (async () => {
     await ArchetypeTab.selectCustomArchetype();
     check('A7: a cancel keeps the archetype', State.character.archetype.id, 'imperial_guardsman');
     check('A7: a cancel keeps the wargear', JSON.stringify(State.character.wargear), before);
-    check('A7: the confirm names the old archetype', (asked[0] || '').includes('Imperial Guardsman'), true);
-    check('A7: the confirm names a removed item', (asked[0] || '').includes(DL.getWargearItem(State.character.wargear[0].id).name), true);
+    check('A7: a cancel keeps the talent choice', choices(), beforeChoices);
+    check('A7: the confirm lists the names of the starting entries, in order', asked,
+        [`Custom Archetype removes the starting wargear of Imperial Guardsman: ${expectedNames.join(', ')}. Continue?`]);
     ctx.window.api.showConfirm = async () => true;
     await ArchetypeTab.selectCustomArchetype();
     check('A7: an accept sets Custom Archetype', State.character.archetype.id, 'custom');
+    check('A7: an accept keeps the relic, the improvised item, the chainsword and the custom item',
+        State.character.wargear.map(label), ['relic', 'improvised', 'chainsword', 'custom']);
+
+    // A standard archetype with bought items only: no confirm
     human();
+    State.setArchetype('imperial_guardsman');
     State.addWargear('knife');
     asked.length = 0;
     ctx.window.api.showConfirm = async message => { asked.push(message); return true; };
+    await ArchetypeTab.selectCustomArchetype();
+    check('A7: a standard archetype with bought items only, no confirm', asked.length, 0);
+    check('A7: a standard archetype with bought items only, the archetype is custom', State.character.archetype.id, 'custom');
+
+    // No archetype and no starting entries: no confirm
+    human();
+    State.addWargear('knife');
+    asked.length = 0;
     await ArchetypeTab.selectCustomArchetype();
     check('A7: no starting entries, no confirm', asked.length, 0);
     check('A7: no starting entries, the archetype is custom', State.character.archetype.id, 'custom');

@@ -310,10 +310,13 @@ const TalentsTab = {
 
             // Build display name with choice if applicable
             let displayName = talent.name;
-            if (talentChoice !== null && talentChoice !== undefined) {
+            const isOwnedItemTalent = talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned';
+            let choiceDisplay = talentChoice !== null && talentChoice !== undefined ? this.escapeHtml(String(talentChoice)) : null;
+            if (choiceDisplay !== null) {
                 // For weapon_owned choices, convert wargear index to weapon name
-                let choiceDisplay = this.escapeHtml(String(talentChoice));
-                if (talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned') {
+                if (isOwnedItemTalent) {
+                    // An index with no item of the kind of the talent gives no choice to show
+                    choiceDisplay = null;
                     const wargearIndex = parseInt(talentChoice, 10);
                     if (!isNaN(wargearIndex) && character.wargear[wargearIndex]) {
                         const item = talent.choiceType === 'weapon_owned'
@@ -324,14 +327,16 @@ const TalentsTab = {
                         }
                     }
                 }
+            }
 
+            if (choiceDisplay !== null) {
                 // Replace [Any], [Skill], [Trait], etc. with the actual choice
                 displayName = displayName.replace(/\[.*?\]/, () => `(${choiceDisplay})`);
                 if (displayName === talent.name) {
                     // If no placeholder found, append the choice
                     displayName = `${talent.name} (${choiceDisplay})`;
                 }
-            } else if (talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned') {
+            } else if (isOwnedItemTalent) {
                 // The item of the choice is gone, so the player must pick again
                 displayName = `${talent.name} (no item selected)`;
             }

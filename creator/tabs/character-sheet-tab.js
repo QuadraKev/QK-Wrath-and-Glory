@@ -1664,6 +1664,8 @@ const CharacterSheetTab = {
             // For weapon_owned/armor_owned choices, convert wargear index to item name
             let choiceDisplay = choice === null || choice === undefined ? '' : this.escapeHtml(String(choice));
             if (choice !== null && choice !== undefined && (talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned')) {
+                // An index with no item of the kind of the talent gives no choice to show
+                choiceDisplay = '';
                 const wargearIndex = parseInt(choice, 10);
                 if (!isNaN(wargearIndex) && character.wargear[wargearIndex]) {
                     const item = talent.choiceType === 'weapon_owned'

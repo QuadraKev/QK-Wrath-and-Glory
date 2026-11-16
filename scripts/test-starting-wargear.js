@@ -60,6 +60,29 @@ DL.cache = DATA;
 State.init({});
 State.setIgnorePrerequisites(true);
 
+// The real click handlers: renderWargearBrowser stores them on the stub. render is counted and does not draw.
+let renders = 0;
+WT.render = () => { renders++; };
+const ascensionButtons = [];
+function bindButtons() {
+    delete els['btn-add-starting'];
+    els['additional-wargear'] = makeElement();
+    els['additional-wargear'].querySelectorAll = sel => (sel === '.btn-add-ascension-wargear' ? ascensionButtons : []);
+    WT.renderWargearBrowser();
+}
+function clickStarting() {
+    bindButtons();
+    els['btn-add-starting'].handlers.click();
+}
+function clickAscension(archetypeId) {
+    ascensionButtons.length = 0;
+    const btn = makeElement();
+    btn.dataset.archetypeId = archetypeId;
+    ascensionButtons.push(btn);
+    bindButtons();
+    btn.handlers.click();
+}
+
 const archetype = id => DATA['archetypes.json'].find(a => a.id === id);
 const count = id => State.character.wargear.filter(w => w.id === id).length;
 function build(archetypeId) {
@@ -142,10 +165,55 @@ function build(archetypeId) {
     check('CC16: no knife entry after the record removal', count('knife'), 0);
 }
 
-// --- the add buttons call the method, then render ---
+// --- the two buttons, through the real handlers ---
 {
-    const src = readSource('creator/tabs/wargear-tab.js');
-    check('both buttons call addStartingWargear', (src.match(/this\.addStartingWargear\(/g) || []).length, 2);
+    build('rogue_trader');
+    renders = 0;
+    clickStarting();
+    check('archetype button: 4 entries after one click', State.character.wargear.length, 4);
+    check('archetype button: render runs once', renders, 1);
+    clickStarting();
+    check('archetype button: still 4 entries after a second click', State.character.wargear.length, 4);
+
+    build('imperial_guardsman');
+    State.character.ascensions.push({ type: 'archetype', archetypeId: 'death_cult_assassin' });
+    renders = 0;
+    clickAscension('death_cult_assassin');
+    check('ascension button: adds the list of the ascension archetype', count('death_cult_power_blade'), 2);
+    check('ascension button: does not add the list of the main archetype', count('lasgun'), 0);
+    check('ascension button: render runs once', renders, 1);
+    clickAscension('death_cult_assassin');
+    check('ascension button: still 2 blades after a second click', count('death_cult_power_blade'), 2);
+}
+
+// --- a bought item does not count against the starting list ---
+{
+    build('death_cult_assassin');
+    State.addWargear('laspistol');
+    WT.addStartingWargear(archetype('death_cult_assassin').startingWargear);
+    check('a bought laspistol stays and a starting laspistol is added', count('laspistol'), 2);
+    check('one laspistol entry is a starting entry', State.character.wargear.filter(w => w.id === 'laspistol' && w.isStarting).length, 1);
+}
+
+// --- the record of a kept custom archetype never makes the count negative ---
+{
+    build(null);
+    State.setCustomArchetype();
+    State.addCustomStartingWargear('knife');
+    State.setArchetype('imperial_guardsman');
+    State.removeWargearByIndex(State.character.wargear.findIndex(w => w.id === 'knife'));
+    check('the record lists knife and no entry is left', [State.character.customArchetype.wargear, count('knife')], [['knife'], 0]);
+    WT.addStartingWargear(archetype('imperial_guardsman').startingWargear);
+    check('Add after the removal of the knife entry gives 1 knife', count('knife'), 1);
+}
+
+// --- an entry with an overlay is not a starting entry ---
+{
+    build('imperial_guardsman');
+    State.character.wargear.push({ id: 'knife', isStarting: true, relic: { name: 'Relic knife' } });
+    WT.addStartingWargear(archetype('imperial_guardsman').startingWargear);
+    check('a relic knife does not count as a starting knife', State.character.wargear.filter(w => w.id === 'knife' && !w.relic).length, 1);
+    check('the relic knife stays', State.character.wargear.filter(w => w.id === 'knife' && w.relic).length, 1);
 }
 
 // --- CC15: species maximums ---

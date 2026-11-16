@@ -237,6 +237,8 @@ const ArchetypeTab = {
 
             ${this.renderKeywordChoices(archetype, character)}
 
+            ${this.renderSkillChoices(archetype, character)}
+
             ${archetype.abilities && archetype.abilities.length > 0 ? `
                 <div class="detail-section">
                     ${archetype.abilities.map(a => `
@@ -270,6 +272,7 @@ const ArchetypeTab = {
         });
 
         this.bindKeywordChoiceEvents(detail);
+        this.bindSkillChoiceEvents(detail);
 
         // Enhance ability descriptions with glossary terms
         detail.querySelectorAll('.ability-desc').forEach(el => {
@@ -352,6 +355,43 @@ const ArchetypeTab = {
             input.addEventListener('input', (e) => {
                 const div = e.target.closest('.archetype-keyword-choice');
                 State.setArchetypeKeywordChoice(div.dataset.placeholder, e.target.value.toUpperCase());
+            });
+        });
+    },
+
+    // One skill select for each "any skill" bonus key of the archetype (for example choice1 and choice2 of the Inquisitor).
+    // A select does not offer a skill that another key holds (Core p.116: any two skills).
+    renderSkillChoices(archetype, character) {
+        const skillBonus = archetype.skillBonus || {};
+        const keys = Object.keys(skillBonus).filter(k => !XPCalculator.SKILL_KEYS.includes(k));
+        if (keys.length === 0) return '';
+
+        const choices = character.archetypeSkillChoices || {};
+        let html = '';
+        for (const key of keys) {
+            const currentValue = XPCalculator.SKILL_KEYS.includes(choices[key]) ? choices[key] : '';
+            html += `<div class="archetype-keyword-choice">`;
+            html += `<div class="ascension-choice-label">Skill of your choice (${this.escapeHtml(String(skillBonus[key]))}):</div>`;
+            html += `<select class="skill-choice-select" data-choice-key="${this.escapeAttr(key)}">`;
+            html += `<option value="">-- Select a skill --</option>`;
+            for (const skill of XPCalculator.SKILL_KEYS) {
+                const heldByOther = keys.some(k => k !== key && choices[k] === skill);
+                if (heldByOther) continue;
+                html += `<option value="${this.escapeAttr(skill)}"${currentValue === skill ? ' selected' : ''}>${this.escapeHtml(DerivedStats.formatSkillName(skill))}</option>`;
+            }
+            html += `</select>`;
+            html += `</div>`;
+        }
+
+        return `<div class="detail-section"><div class="detail-section-title">Skill of your choice</div>${html}</div>`;
+    },
+
+    // The setter refuses a skill that the other key holds. The redraw then shows the stored value again.
+    bindSkillChoiceEvents(detail) {
+        detail.querySelectorAll('.archetype-keyword-choice .skill-choice-select').forEach(select => {
+            select.addEventListener('change', (e) => {
+                State.setArchetypeSkillChoice(e.target.dataset.choiceKey, e.target.value);
+                this.renderDetail();
             });
         });
     },
@@ -700,6 +740,11 @@ const ArchetypeTab = {
 
         const parts = [];
         for (const [key, value] of Object.entries(bonuses)) {
+            // A skill key that is not a skill name is an "any skill" bonus
+            if (!isAttribute && !XPCalculator.SKILL_KEYS.includes(key)) {
+                parts.push(`Skill of your choice ${value}`);
+                continue;
+            }
             const name = isAttribute
                 ? DerivedStats.formatAttributeName(key)
                 : DerivedStats.formatSkillName(key);

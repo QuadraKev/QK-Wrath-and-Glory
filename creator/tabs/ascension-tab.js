@@ -539,12 +539,27 @@ const AscensionTab = {
 
         // Skill prerequisites from archetype's skillBonus
         if (archetype.skillBonus) {
+            const anySkillValues = [];
             for (const [skill, val] of Object.entries(archetype.skillBonus)) {
+                // A key that is not a skill name is an "any skill" bonus. It is counted below.
+                if (!XPCalculator.SKILL_KEYS.includes(skill)) {
+                    anySkillValues.push(val);
+                    continue;
+                }
                 const current = character.skills?.[skill] || 0;
                 const met = current >= val;
                 if (!met) allMet = false;
                 const skillName = DerivedStats.formatSkillName(skill);
                 parts.push(`<span class="${met ? '' : 'ascension-stat-unmet'}">${skillName} ${val}${met ? '' : ` (have ${this.escapeHtml(String(current))})`}</span>`);
+            }
+
+            // An "any skill" key is met when enough different skills are at the value or more (spec 4.4)
+            for (const val of [...new Set(anySkillValues)]) {
+                const needed = anySkillValues.filter(v => v === val).length;
+                const have = XPCalculator.SKILL_KEYS.filter(s => character.skills?.[s] >= val).length;
+                const met = have >= needed;
+                if (!met) allMet = false;
+                parts.push(`<span class="${met ? '' : 'ascension-stat-unmet'}">Skills of your choice: ${needed} at ${val}${met ? '' : ` (have ${have})`}</span>`);
             }
         }
 

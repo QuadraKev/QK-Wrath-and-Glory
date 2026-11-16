@@ -499,7 +499,7 @@ const spineRecordWithId = { ...spineRecord, id: 'custom_p7d2m0zt' };
         check('a duplicate id logs one warning', count, 1);
     }
 
-    // setCustomArchetype keeps the custom items and remaps the owned-item talent choices
+    // setCustomArchetype keeps each entry of a character with no archetype, and each owned-item talent choice stays
     State._withRebase = change => change();
     const resetWith = talents => {
         State.character = State.createNewCharacter();
@@ -511,15 +511,16 @@ const spineRecordWithId = { ...spineRecord, id: 'custom_p7d2m0zt' };
         State.setCustomArchetype();
     };
     resetWith([{ id: 'trademark_weapon', choice: '3' }, { id: 'armourmonger_aoa', choice: 2 }, { id: 'uncanny', choice: 'Defence' }, 'some_plain_id']);
-    check('reset keeps the custom items in order', State.character.wargear.map(w => w.custom.name), ['Custom A', 'Custom B']);
-    check('Trademark Weapon on custom B moves to index 1', State.character.talents[0].choice, '1');
-    check('Armour-Monger on a book item is cleared', State.character.talents[1].choice, null);
+    check('reset keeps all four entries in order', State.character.wargear.map(w => w.custom ? w.custom.name : w.id),
+        ['chainsword', 'Custom A', 'flak_armour', 'Custom B']);
+    check('Trademark Weapon on custom B stays \'3\'', State.character.talents[0].choice, '3');
+    check('Armour-Monger on a book item stays 2', State.character.talents[1].choice, 2);
     check('a non-index choice is kept', State.character.talents[2].choice, 'Defence');
     check('a plain talent id is kept', State.character.talents[3], 'some_plain_id');
     check('reset still sets the custom archetype', State.character.archetype, { id: 'custom', xpCost: 0 });
     resetWith([{ id: 'trademark_weapon', choice: 3 }, { id: 'trademark_weapon', choice: '1' }, { id: 'trademark_weapon', choice: null }]);
-    check('a numeric choice 3 becomes 1', State.character.talents[0].choice, 1);
-    check('a choice on custom A moves to index 0', State.character.talents[1].choice, '0');
+    check('a numeric choice 3 stays 3', State.character.talents[0].choice, 3);
+    check('a choice on custom A stays \'1\'', State.character.talents[1].choice, '1');
     check('an empty choice stays empty', State.character.talents[2].choice, null);
 }
 

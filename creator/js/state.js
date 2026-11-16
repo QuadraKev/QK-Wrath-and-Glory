@@ -420,6 +420,8 @@ const State = {
         // Custom is already the archetype: no change
         if (this.character.archetype?.id === 'custom') return;
         const oldGrants = this._archetypeGrantIds();
+        // Read the starting wargear of the old archetype before the write
+        const drop = this.getOldStartingEntries();
         const keptChoices = this._keptSkillChoices();
 
         // The stored custom archetype record stays (CC7)
@@ -432,30 +434,12 @@ const State = {
         this._releasePowerGrants(oldGrants);
         this._applyPowerGrants(this._archetypeGrantIds());
 
-        // Keep the custom items in order, and move the owned-item talent choices to their new indices.
+        // Remove only the starting wargear of the old archetype, and move the owned-item talent choices to their new indices.
         // A choice on a removed entry becomes null, so the player picks again.
+        const dropped = new Set(drop);
         const oldWargear = Array.isArray(this.character.wargear) ? this.character.wargear : [];
-        const newIndex = new Map();
-        const kept = [];
-        oldWargear.forEach((w, index) => {
-            if (w && w.custom) {
-                newIndex.set(index, kept.length);
-                kept.push(w);
-            }
-        });
-        this.character.wargear = kept;
-        for (const talent of Array.isArray(this.character.talents) ? this.character.talents : []) {
-            if (!talent || typeof talent !== 'object') continue;
-            const choiceType = DataLoader.getTalent(talent.id)?.choiceType;
-            if (choiceType !== 'weapon_owned' && choiceType !== 'armor_owned') continue;
-            if (talent.choice === null || talent.choice === undefined) continue;
-            const old = /^\d+$/.test(String(talent.choice)) ? parseInt(talent.choice, 10) : -1;
-            if (!newIndex.has(old)) {
-                talent.choice = null;
-            } else {
-                talent.choice = typeof talent.choice === 'string' ? String(newIndex.get(old)) : newIndex.get(old);
-            }
-        }
+        this.character.wargear = oldWargear.filter((w, index) => !dropped.has(index));
+        this._remapWargearRefs(old => dropped.has(old) ? -1 : old - drop.filter(index => index < old).length);
 
         this._settleFreePicks();
         this.notifyListeners('archetype');
@@ -559,6 +543,7 @@ const State = {
             const wargearIndex = this.character.wargear.findIndex(w => w.id === itemId && w.isStarting);
             if (wargearIndex !== -1) {
                 this.character.wargear.splice(wargearIndex, 1);
+                this._remapWargearRefs(old => old === wargearIndex ? -1 : (old > wargearIndex ? old - 1 : old));
             }
             this.notifyListeners('customArchetype');
             this.notifyListeners('wargear', itemId);
@@ -864,6 +849,7 @@ const State = {
         const index = this.character.wargear.findIndex(w => w.id === itemId);
         if (index !== -1) {
             this.character.wargear.splice(index, 1);
+            this._remapWargearRefs(old => old === index ? -1 : (old > index ? old - 1 : old));
             this.notifyListeners('wargear', itemId);
             return true;
         }
@@ -875,10 +861,65 @@ const State = {
         if (wargearIndex >= 0 && wargearIndex < this.character.wargear.length) {
             const item = this.character.wargear[wargearIndex];
             this.character.wargear.splice(wargearIndex, 1);
+            this._remapWargearRefs(old => old === wargearIndex ? -1 : (old > wargearIndex ? old - 1 : old));
             this.notifyListeners('wargear', item.id);
             return true;
         }
         return false;
+    },
+
+    // Move each owned-item talent choice (Trademark Weapon, Armour-Monger) to the new index of its entry.
+    // newIndexOf(oldIndex, choiceType) gives the new index, or -1 when the entry is gone; the choice then becomes null.
+    // A choice that is not an index stays. A choice keeps its type (string or number).
+    _remapWargearRefs(newIndexOf) {
+        for (const talent of Array.isArray(this.character.talents) ? this.character.talents : []) {
+            if (!talent || typeof talent !== 'object') continue;
+            const choiceType = DataLoader.getTalent(talent.id)?.choiceType;
+            if (choiceType !== 'weapon_owned' && choiceType !== 'armor_owned') continue;
+            if (talent.choice === null || talent.choice === undefined) continue;
+            if (!/^\d+$/.test(String(talent.choice))) continue;
+            const index = newIndexOf(parseInt(talent.choice, 10), choiceType);
+            if (index === -1) {
+                talent.choice = null;
+            } else {
+                talent.choice = typeof talent.choice === 'string' ? String(index) : index;
+            }
+        }
+    },
+
+    // The indices of the starting wargear of the current standard archetype, as Custom Archetype removes it.
+    // For each id: the quantity over the whole starting list, then the first entries with that id that are
+    // starting entries with no relic, improvised or custom overlay. The first entries that the kept custom
+    // archetype record lists are left out (CC16). A custom archetype or an archetype that the data does not have gives [].
+    getOldStartingEntries() {
+        const archetypeId = this.character.archetype?.id;
+        const archetype = archetypeId && archetypeId !== 'custom' ? DataLoader.getArchetype(archetypeId) : null;
+        if (!archetype || !Array.isArray(archetype.startingWargear)) return [];
+        const remaining = new Map();
+        for (const entry of archetype.startingWargear) {
+            if (typeof entry === 'string') {
+                remaining.set(entry, (remaining.get(entry) || 0) + 1);
+            } else if (entry && typeof entry === 'object' && entry.id) {
+                remaining.set(entry.id, (remaining.get(entry.id) || 0) + (entry.qty || 1));
+            }
+        }
+        const recordCount = new Map();
+        const record = this.character.customArchetype?.wargear;
+        for (const id of Array.isArray(record) ? record : []) {
+            recordCount.set(id, (recordCount.get(id) || 0) + 1);
+        }
+        const indices = [];
+        (Array.isArray(this.character.wargear) ? this.character.wargear : []).forEach((w, index) => {
+            if (!w || typeof w !== 'object' || !remaining.get(w.id)) return;
+            if (w.isStarting !== true || w.relic || w.improvised || w.custom) return;
+            if (recordCount.get(w.id)) {
+                recordCount.set(w.id, recordCount.get(w.id) - 1);
+                return;
+            }
+            remaining.set(w.id, remaining.get(w.id) - 1);
+            indices.push(index);
+        });
+        return indices;
     },
 
     // Add a Holy Relic wargear entry (base item id + relic overlay)
@@ -894,6 +935,9 @@ const State = {
         if (entry.id !== itemId) {
             entry.id = itemId;
             entry.upgrades = [];
+            // An owned-item choice on this entry becomes null when the new item is not of the talent's kind
+            const kindMatches = { weapon_owned: !!DataLoader.getWeapon(itemId), armor_owned: !!DataLoader.getArmor(itemId) };
+            this._remapWargearRefs((old, choiceType) => old === wargearIndex && !kindMatches[choiceType] ? -1 : old);
         }
         entry.relic = relic;
         this.notifyListeners('wargear', itemId);

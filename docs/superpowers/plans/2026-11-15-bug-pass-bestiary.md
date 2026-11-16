@@ -824,6 +824,48 @@ mob ability list. <mutation-proof line>"
 
 ---
 
+### Task 10: Late findings (the drag place, the picker index, a number guard, the Compendium text, the proof script)
+
+**Added by the controller on 2026-11-16, after the nine planned tasks.** The task reviews found older defects that were in `main` before the pass. The owner asked for "an overall pass for any bugs like those" in one go, so the ones that a normal user can meet and that have a small correction are in this task **[Controller ruling TB10-0]**. Each item is independent. The other late findings go to the owner in the report.
+
+**Files:**
+- Modify: `bestiary/js/encounter-state.js`, `bestiary/tabs/encounter-tab.js` (item 1 only: the drag functions), `bestiary/js/threat-builder-state.js` (item 2), `bestiary/js/bestiary-check.js` (item 3), `bestiary/tabs/references-tab.js` (item 4), `scripts/browser-bestiary.js` (item 5)
+- Test: `scripts/test-bestiary-late.js` (new), `scripts/browser-bestiary.js` (one new scenario `drag`)
+- No `?v=` change (`bestiary/index.html` is at `?v=97` for this branch). Nothing under `creator/`, `shared/` or `data/`.
+
+**Item 1: a dragged entry lands at the place that the placeholder shows [TB10-1].**
+- Defect (seen by the re-review of Task 5a, the same before the pass): a drag downward in the encounter list lands one place early, and a drop below the last entry lands before it. So a user cannot drag an entry to the end of the list.
+- Sites: `EncounterTab.handleDragMove` and `handleDragEnd` (`bestiary/tabs/encounter-tab.js`; `handleDragEnd` reads `placeholderIndex` from the children of the container, and the hidden original element is still one of those children) and `EncounterState.moveItemInOrder(itemType, itemId, newIndex)` (`bestiary/js/encounter-state.js`).
+- Rule: after the drop, the entry is at the place in the VISIBLE list where the placeholder was at the release. A release with the placeholder after the last entry puts the entry at the end. A release at the start place changes nothing in the order. The entries of players above the player count are not visible; they keep their places relative to each other and to the visible entry that follows them (ruling TB5a-6 of Task 5a stays: read the comment of `moveItemInOrder`).
+- Find the root cause first, in a real page (three entries A, B, C: drag each one to each place, and below the last). Write the table "start order, drag, order at the base, order with the correction" into the report. Correct the index at ONE place (the caller or `moveItemInOrder`), not at both.
+- Checks (unit, `moveItemInOrder` through the same index that the caller gives): for a list of 4 visible entries, each of the 16 moves (from i to place j) gives the expected order; the same with two hidden player entries between the visible ones: the visible order is the expected one and the hidden entries keep their relative order; a move to its own place leaves `encounterOrder` deep-equal.
+- Check (browser scenario `drag` in `scripts/browser-bestiary.js`, real mouse moves at 1400 px): A, B, C: A to the end gives B, C, A; C to the start gives C, A, B; A below B gives B, A, C; B above A gives B, A, C; the order stays after a reload.
+- Touch uses the same two functions; say in the report that you did not test touch if you did not.
+
+**Item 2: the builder pickers show a custom threat that loads after the first Browse [TB10-2].**
+- Defect: the picker index of the builder is built one time (`bestiary/js/threat-builder-state.js`, near lines 41 to 42). A custom threat that the user loads, saves or deletes after the first Browse does not change the picker lists until a reload.
+- Rule: the index is built again when the set of threats that it reads changes (a threat file load, a custom threat save or delete; find each writer of that set). Clear the cached index at those writers, so that the next Browse builds it; do not build it at each render.
+- Checks: Browse abilities one time; load a threat file whose threat has an ability with a new name; Browse again: the picker lists that ability. The same for a bonus. After a delete of that custom threat, the ability is not in the list. The index object is the same object across two Browse calls with no change between them.
+
+**Item 3: `readIntegerInput` refuses a number that is not a safe integer [TB10-3].**
+- Defect: `BestiaryCheck.readIntegerInput` (`bestiary/js/bestiary-check.js`, near line 190) has no safe-integer test. 22 digits in a skill Default box store 1, because the skill writers parse `1e21` again.
+- Rule: a value for which `Number.isSafeInteger` is false gets the result that a bad entry gets now (the stored value stays, and the input shows it again). No new limit for a legal value.
+- Checks: 22 digits, `9007199254740993` and `1e21` are refused in each mode of the function; `9007199254740991` inside a range that holds it is accepted; each check of `scripts/test-bestiary-check.js` and of the Task 5a and 5b scripts still passes.
+
+**Item 4: the Compendium prints "Skill of your choice +4" [TB10-4].**
+- Defect: the Compendium entry of an archetype with an "any skill" bonus prints the data key: "Choice1 +4, Choice2 +4" (Inquisitor) and "Choice +2" (`bestiary/tabs/references-tab.js`, near line 778, the `Skill Bonuses` line).
+- Rule: a skill bonus key that matches `/^choice\d*$/` prints `Skill of your choice +N` (the words that the Archetype tab of the creator uses). Each other key prints as before. The creator copy of this tab gets the same line in the creator branch, so write exactly this: a key that matches `/^choice\d*$/` gives `` `Skill of your choice +${val}` ``, each other key gives the old expression.
+- Checks: the entry of `inquisitor` (read the real id in `data/archetypes.json`) holds "Skill of your choice +4, Skill of your choice +4" and no "Choice1"; an entry with normal skills is byte-equal to the old output.
+
+**Item 5: the proof script reports the script hits of each step [TB10-5].**
+- Defect: a hostile step of `scripts/browser-bestiary.js` reports only the hit labels that no earlier step reported (`js: [...new Set(window.__hits || [])]`, near line 93, and the code that reads it). So `js: []` on a later line does not prove that the step ran no script.
+- Rule: each hostile step clears the hit list after it reads it (and waits until late `onerror` handlers of the step ran, so that no hit moves to the next step), and each step fails on a hit of its own.
+- Checks: the full run prints `All checks passed` three times in sequence with the same count; with ONE escape removed in a scratch copy of the product at a site that an early step and a late step both draw (the threat name in the Threats tab card and in the encounter list), both lines fail (before the change, only the first one fails): put both runs into the report.
+
+**Proof (report `task-10-report.md`):** for each item: the failing-first run of its checks at the base of the task, then the passing run; one mutation of each corrected line, copy and restore by `cp`, with the FAIL line. All `scripts/test-*.js` pass (25 with the new script). `--compare` against the baseline passes with the 22 known keys. The full run of `scripts/browser-bestiary.js` prints `All checks passed` (163 checks and the new `drag` scenario). `git diff --stat` holds only the files of this task.
+
+**Commit:** one commit, `--author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github.com>"`, no attribution line.
+
 ## Wave gate
 
 After Task 9, the controller runs, on the branch head:

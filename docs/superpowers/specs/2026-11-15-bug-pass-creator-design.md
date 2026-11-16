@@ -359,7 +359,8 @@ X2 only (eight aliases). The rows read the data and write nothing.
 
 ### 10.3 Correction: render bounds and tracker getters
 
-- **[Design agent]** `renderTrackingBoxes` and `renderFollowerBoxes` draw at most 50 boxes. When the max is larger, a text "+<n> more" follows in a `span.sheet-empty`. The `--n` style of `:394` and `:398` uses the drawn count. The game has no box limit; G4 permits a render bound. Cost if wrong: a character with more than 50 wounds sees a count text for the rest. The book maximum for a real character is far below 50.
+- **The box limit is 100 (controller ruling TC15-1, after the review of Task 15; the first design had 50).** The reviewer measured the highest legal maximums with the real code and data: Wounds 40 for a Custodian at tier 5 and Rank 3 with each bonus, 57 for the same build with nine positive mutations, and Shock 39. A limit of 50 would stop that character from marking Wounds 51 to 57. A limit of 100 is above each legal maximum, and 100 boxes render fast.
+- **[Design agent]** `renderTrackingBoxes` and `renderFollowerBoxes` draw at most `BOX_LIMIT` boxes (100; the sentences below say 50, which was the first value). When the max is larger, a text "+<n> more" follows in a `span.sheet-empty`. The `--n` style of `:394` and `:398` uses the drawn count. The game has no box limit; G4 permits a render bound. Cost if wrong: a character with more than 50 wounds sees a count text for the rest. The book maximum for a real character is far below 50.
 - `getCurrentWounds` and `getCurrentShock` return `min(stored, current max)`. `getCurrentFaith` returns `min(stored, max)`, and `max` when the stored value is `null`. The stored value stays (G1): the first step from the sheet writes a value inside the max through the existing setters. When the max rises again, the old stored damage shows again. That is the stored value of the user; this pass does not change it at a derived change.
 
 ### 10.4 Risk to stored data

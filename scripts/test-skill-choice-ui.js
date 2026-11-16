@@ -43,8 +43,9 @@ function makeElement() {
         }
     };
 }
+const byId = {};
 const document = {
-    getElementById() { return makeElement(); },
+    getElementById(id) { return byId[id] || (byId[id] = makeElement()); },
     querySelector() { return makeElement(); }, querySelectorAll() { return []; }, createElement() { return makeElement(); },
     addEventListener() {}, removeEventListener() {}, body: { appendChild(c) { return c; } }
 };
@@ -107,6 +108,8 @@ check('First option is the empty value', optionValues(sel1)[0], '');
 checkTrue('First option text', sel1.includes('-- Select a skill --'), sel1.slice(0, 200));
 checkTrue('Section title', html.includes('Skill of your choice</div>') && html.includes('detail-section'), html.slice(0, 300));
 checkTrue('Label with the value', html.includes('Skill of your choice (4)'), html.slice(0, 600));
+checkTrue('Two selects: aria-label with the position', /<select[^>]*data-choice-key="choice1"[^>]*aria-label="Skill of your choice \(4\), 1 of 2"/.test(html)
+    && /<select[^>]*data-choice-key="choice2"[^>]*aria-label="Skill of your choice \(4\), 2 of 2"/.test(html), html.slice(0, 700));
 check('Two keyword-choice divs', (html.match(/class="archetype-keyword-choice"/g) || []).length, 2);
 
 c = freshCharacter('inquisitor', { archetypeSkillChoices: { choice1: 'insight' } });
@@ -122,6 +125,7 @@ check('Ganger: no select', ArchetypeTab.renderSkillChoices(ganger, c), '');
 c = freshCharacter('inquisitorial_acolyte');
 html = ArchetypeTab.renderSkillChoices(acolyte, c);
 check('Acolyte: one select', (html.match(/<select/g) || []).length, 1);
+checkTrue('Acolyte: aria-label has no position', selectHtml(html, 'choice').includes('aria-label="Skill of your choice (2)"'), selectHtml(html, 'choice'));
 checkTrue('Acolyte: key is choice', selectHtml(html, 'choice') !== '', html.slice(0, 300));
 
 // A stored value from a file: markup, or a skill name that is not real.
@@ -138,35 +142,61 @@ check('formatBonuses keeps a real skill', ArchetypeTab.formatBonuses({ cunning: 
 check('formatBonuses keeps an attribute', ArchetypeTab.formatBonuses({ intellect: 4, willpower: 4 }, true), 'Intellect 4, Willpower 4');
 
 // --- the change handler ---
-function bindWith(values) {
-    const handlers = [];
-    const selects = Object.keys(values).map(key => {
+// The stub returns the selects only for the exact selector that the product uses.
+const SELECT_SELECTOR = '.archetype-keyword-choice .skill-choice-select';
+function makeSelects(values, bound, focused) {
+    return Object.keys(values).map(key => {
         const s = makeElement();
         s.dataset.choiceKey = key;
         s.value = values[key];
-        s.addEventListener = (ev, fn) => { if (ev === 'change') handlers.push({ key, fn, s }); };
+        s.addEventListener = (ev, fn) => { if (ev === 'change') bound.push({ key, fn, s }); };
+        s.focus = () => focused.push(key);
         return s;
     });
+}
+function makeDetail(selects) {
     const detail = makeElement();
-    detail.querySelectorAll = sel => (sel.includes('skill-choice-select') ? selects : []);
+    detail.querySelectorAll = sel => (sel === SELECT_SELECTOR ? selects : []);
+    return detail;
+}
+
+// renderDetail puts the selects in the HTML and binds them.
+c = freshCharacter('inquisitor');
+{
+    const detail = document.getElementById('archetype-detail');
+    const bound = [];
+    const selects = makeSelects({ choice1: 'insight', choice2: 'insight' }, bound, []);
+    detail.querySelectorAll = sel => (sel === SELECT_SELECTOR ? selects : []);
+    ArchetypeTab.renderDetail();
+    checkTrue('renderDetail: the HTML holds data-choice-key', detail.innerHTML.includes('data-choice-key="choice1"') && detail.innerHTML.includes('data-choice-key="choice2"'),
+        detail.innerHTML.slice(0, 300));
+    check('renderDetail: the change handlers are bound', bound.length, 2);
+}
+
+function bindWith(values, focused) {
+    const bound = [];
+    const detail = makeDetail(makeSelects(values, bound, focused));
     ArchetypeTab.bindSkillChoiceEvents(detail);
-    return handlers;
+    return bound;
 }
 let renders = 0;
 ArchetypeTab.renderDetail = () => { renders++; };
 
 c = freshCharacter('inquisitor');
-let handlers = bindWith({ choice1: 'insight', choice2: 'insight' });
+let focused = [];
+let handlers = bindWith({ choice1: 'insight', choice2: 'insight' }, focused);
 check('Two change handlers bound', handlers.length, 2);
 renders = 0;
 handlers[0].fn({ target: handlers[0].s });
 check('Change: the choice is stored', State.character.archetypeSkillChoices, { choice1: 'insight' });
 check('Change: the skill rises to the bonus', State.character.skills.insight, 4);
 check('Change: one redraw', renders, 1);
+check('Change: the focus goes back to the select of choice1', focused, ['choice1']);
 renders = 0;
 handlers[1].fn({ target: handlers[1].s });
 check('Refused change (skill held by the other key): the store stays', State.character.archetypeSkillChoices, { choice1: 'insight' });
 check('Refused change: the select is drawn again', renders, 1);
+check('Refused change: the focus goes back to the select of choice2', focused, ['choice1', 'choice2']);
 handlers[0].s.value = '';
 renders = 0;
 handlers[0].fn({ target: handlers[0].s });
@@ -197,6 +227,20 @@ r = prereq({ insight: 4 }, true);
 check('Inquisitor, one skill, prerequisites ignored: met', r.met, true);
 r = prereq({ insight: 4, scholar: 4, intimidation: 4 });
 check('Three skills at 4: met', r.met, true);
+
+// A real skill key keeps its own text and count.
+{
+    const ch = freshCharacter('imperial_guardsman');
+    ch.skills.ballisticSkill = 1;
+    const target = { skillBonus: { ballisticSkill: 2 } };
+    let res = AscensionTab.checkArchetypeAscensionPrereqs(target, ch);
+    check('Real skill key, one rank short: not met', res.met, false);
+    checkTrue('Real skill key text', res.text.includes('Ballistic Skill 2 (have 1)'), res.text);
+    checkTrue('Real skill key: no any-skill text', !res.text.includes('Skills of your choice'), res.text);
+    ch.skills.ballisticSkill = 2;
+    res = AscensionTab.checkArchetypeAscensionPrereqs(target, ch);
+    check('Real skill key at the value: met', res.met, true);
+}
 
 console.log(failures === 0 ? '\nAll checks passed' : `\n${failures} check(s) failed`);
 process.exit(failures === 0 ? 0 : 1);

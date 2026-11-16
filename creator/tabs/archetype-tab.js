@@ -372,7 +372,9 @@ const ArchetypeTab = {
             const currentValue = XPCalculator.SKILL_KEYS.includes(choices[key]) ? choices[key] : '';
             html += `<div class="archetype-keyword-choice">`;
             html += `<div class="ascension-choice-label">Skill of your choice (${this.escapeHtml(String(skillBonus[key]))}):</div>`;
-            html += `<select class="skill-choice-select" data-choice-key="${this.escapeAttr(key)}">`;
+            const position = keys.length > 1 ? `, ${keys.indexOf(key) + 1} of ${keys.length}` : '';
+            const ariaLabel = `Skill of your choice (${skillBonus[key]})${position}`;
+            html += `<select class="skill-choice-select" data-choice-key="${this.escapeAttr(key)}" aria-label="${this.escapeAttr(ariaLabel)}">`;
             html += `<option value="">-- Select a skill --</option>`;
             for (const skill of XPCalculator.SKILL_KEYS) {
                 const heldByOther = keys.some(k => k !== key && choices[k] === skill);
@@ -387,11 +389,20 @@ const ArchetypeTab = {
     },
 
     // The setter refuses a skill that the other key holds. The redraw then shows the stored value again.
+    // The redraw replaces the select, so the focus goes back to the select of the same key.
+    // A keyboard user can then go on with the arrow keys.
     bindSkillChoiceEvents(detail) {
         detail.querySelectorAll('.archetype-keyword-choice .skill-choice-select').forEach(select => {
             select.addEventListener('change', (e) => {
-                State.setArchetypeSkillChoice(e.target.dataset.choiceKey, e.target.value);
+                const key = e.target.dataset.choiceKey;
+                State.setArchetypeSkillChoice(key, e.target.value);
                 this.renderDetail();
+                for (const redrawn of detail.querySelectorAll('.archetype-keyword-choice .skill-choice-select')) {
+                    if (redrawn.dataset.choiceKey === key) {
+                        redrawn.focus();
+                        break;
+                    }
+                }
             });
         });
     },

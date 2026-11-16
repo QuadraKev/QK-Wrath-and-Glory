@@ -2750,6 +2750,7 @@ textarea {
     margin: 8px 0;
 }
 .keyword-choice-select,
+.archetype-keyword-choice .skill-choice-select,
 .keyword-choice-text,
 .keyword-choice-custom,
 .keyword-extra-input {
@@ -2823,6 +2824,7 @@ textarea {
     white-space: pre-line;
 }
 .archetype-keyword-choice .keyword-choice-select,
+.archetype-keyword-choice .skill-choice-select,
 .archetype-keyword-choice .keyword-choice-custom,
 .archetype-keyword-choice .keyword-choice-text {
     max-width: 420px;

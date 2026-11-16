@@ -228,7 +228,7 @@ const BackgroundTab = {
                 const escaped = this.escapeHtml(language);
                 chip.innerHTML = `
                     ${escaped} <span class="language-xp-cost">${costLabel}</span>
-                    <span class="language-remove" data-lang="${escaped}" style="cursor: pointer; margin-left: 5px;">&times;</span>
+                    <span class="language-remove" data-lang="${this.escapeAttr(language)}" style="cursor: pointer; margin-left: 5px;">&times;</span>
                 `;
 
                 const removeBtn = chip.querySelector('.language-remove');
@@ -279,5 +279,10 @@ const BackgroundTab = {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    },
+
+    // Escape for a value inside a double-quoted attribute. The DOM helper above leaves the quote raw.
+    escapeAttr(text) {
+        return this.escapeHtml(text).replace(/"/g, '&quot;');
     }
 };

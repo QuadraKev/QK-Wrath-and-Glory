@@ -86,7 +86,7 @@ const InjuriesTab = {
         const list = injuries.map((entry, index) => {
             const inj = data.traumaticInjuries.find(i => i.id === entry.id);
             if (!inj) return '';
-            const sideLabel = entry.side ? ` (${entry.side})` : '';
+            const sideLabel = entry.side ? ` (${this.escapeHtml(entry.side)})` : '';
             return `
                 <div class="injury-item">
                     <div class="injury-item-header">
@@ -376,5 +376,16 @@ const InjuriesTab = {
                 this.render();
             });
         });
+    },
+
+    // Escape text for HTML. The number 0 stays "0".
+    escapeHtml(text) {
+        if (text === null || text === undefined) return '';
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     }
 };

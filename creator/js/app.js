@@ -482,8 +482,11 @@ const App = {
         if (saved.ignorePrerequisites) {
             State.setIgnorePrerequisites(true);
         }
-        if (saved.character) {
+        // Test the shape here, so the gate of loadCharacter cannot throw. Each other error stops the start.
+        if (CharacterCheck.isPlainObject(saved.character)) {
             State.loadCharacter(saved.character);
+        } else {
+            console.warn('The auto-save was not loaded: it does not contain a character.');
         }
 
         SettingTab.refresh();

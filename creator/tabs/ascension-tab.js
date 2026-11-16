@@ -222,12 +222,12 @@ const AscensionTab = {
                 // Custom text input (shown when "Other" is selected)
                 if (category.allowCustom) {
                     const customDisplay = isCustom ? 'block' : 'none';
-                    html += `<input type="text" class="keyword-choice-custom" placeholder="Enter keyword (e.g., ORDO SICARIUS)" value="${isCustom ? currentValue : ''}" style="display: ${customDisplay}; margin-top: 8px;">`;
+                    html += `<input type="text" class="keyword-choice-custom" placeholder="Enter keyword (e.g., ORDO SICARIUS)" value="${isCustom ? this.escapeHtml(currentValue) : ''}" style="display: ${customDisplay}; margin-top: 8px;">`;
                 }
                 html += KeywordBonus.renderPanel(currentValue);
             } else {
                 // Pure text input (for [ANY])
-                html += `<input type="text" class="keyword-choice-text" placeholder="Enter keyword (e.g., DEATH GUARD)" value="${currentValue}">`;
+                html += `<input type="text" class="keyword-choice-text" placeholder="Enter keyword (e.g., DEATH GUARD)" value="${this.escapeHtml(currentValue)}">`;
             }
 
             // Extra keywords (e.g., Demanding Patron: GM may assign more than one)
@@ -235,7 +235,7 @@ const AscensionTab = {
                 for (const key of this.getExtraKeywordKeys(choices, kc.placeholder)) {
                     html += `
                         <div class="ascension-keyword-extra" data-key="${key}">
-                            <input type="text" class="keyword-extra-input" placeholder="Enter keyword (e.g., ROGUE TRADER)" value="${choices[key] || ''}">
+                            <input type="text" class="keyword-extra-input" placeholder="Enter keyword (e.g., ROGUE TRADER)" value="${this.escapeHtml(choices[key] || '')}">
                             <button class="btn-remove ascension-keyword-remove">Remove</button>
                         </div>
                     `;
@@ -371,7 +371,7 @@ const AscensionTab = {
                 const met = current >= val;
                 if (!met) allMet = false;
                 const attrName = DerivedStats.formatAttributeName(attr);
-                parts.push(`${attrName} ${val}${met ? '' : ` (have ${current})`}`);
+                parts.push(`${attrName} ${val}${met ? '' : ` (have ${this.escapeHtml(String(current))})`}`);
             }
         }
 
@@ -400,7 +400,7 @@ const AscensionTab = {
                     const met = current >= val;
                     if (!met) allMet = false;
                     const skillName = this.formatSkillKey(skill);
-                    parts.push(`${skillName} ${val}${met ? '' : ` (have ${current})`}`);
+                    parts.push(`${skillName} ${val}${met ? '' : ` (have ${this.escapeHtml(String(current))})`}`);
                 }
             }
         }
@@ -469,7 +469,7 @@ const AscensionTab = {
                 const met = current >= val;
                 if (!met) allMet = false;
                 const attrName = DerivedStats.formatAttributeName(attr);
-                parts.push(`<span class="${met ? '' : 'ascension-stat-unmet'}">${attrName} ${val}${met ? '' : ` (have ${current})`}</span>`);
+                parts.push(`<span class="${met ? '' : 'ascension-stat-unmet'}">${attrName} ${val}${met ? '' : ` (have ${this.escapeHtml(String(current))})`}</span>`);
             }
         }
 
@@ -480,7 +480,7 @@ const AscensionTab = {
                 const met = current >= val;
                 if (!met) allMet = false;
                 const skillName = DerivedStats.formatSkillName(skill);
-                parts.push(`<span class="${met ? '' : 'ascension-stat-unmet'}">${skillName} ${val}${met ? '' : ` (have ${current})`}</span>`);
+                parts.push(`<span class="${met ? '' : 'ascension-stat-unmet'}">${skillName} ${val}${met ? '' : ` (have ${this.escapeHtml(String(current))})`}</span>`);
             }
         }
 
@@ -641,5 +641,16 @@ const AscensionTab = {
 
     refresh() {
         this.render();
+    },
+
+    // Escape text for HTML. The number 0 stays "0".
+    escapeHtml(text) {
+        if (text === null || text === undefined) return '';
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     }
 };

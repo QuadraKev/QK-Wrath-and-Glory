@@ -88,7 +88,7 @@ const SpeciesTab = {
                         hasSubOptionsToShow = true;
                         const names = selected.map(sel => {
                             const option = config.options?.find(o => o.id === sel.optionId);
-                            return option?.name || sel.optionId;
+                            return this.escapeHtml(option?.name || sel.optionId);
                         });
                         subOptionDisplay += `<div class="card-suboption"><strong>${config.label}:</strong> ${names.join(', ')}</div>`;
                     } else if (config.required === false) {
@@ -261,7 +261,7 @@ const SpeciesTab = {
                 selectedListContainer.classList.remove('hidden');
                 selectedItemsContainer.innerHTML = selected.map(sel => {
                     const opt = config.options?.find(o => o.id === sel.optionId);
-                    return `<span class="selected-chip">${opt?.name || sel.optionId}</span>`;
+                    return `<span class="selected-chip">${this.escapeHtml(opt?.name || sel.optionId)}</span>`;
                 }).join('');
             } else {
                 selectedListContainer.classList.add('hidden');
@@ -349,5 +349,16 @@ const SpeciesTab = {
 
     refresh() {
         this.render();
+    },
+
+    // Escape text for HTML. The number 0 stays "0".
+    escapeHtml(text) {
+        if (text === null || text === undefined) return '';
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     }
 };

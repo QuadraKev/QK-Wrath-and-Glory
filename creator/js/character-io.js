@@ -52,7 +52,7 @@ const CharacterIO = {
             if (!dialogResult.canceled && dialogResult.filePaths && dialogResult.filePaths.length > 0) {
                 const result = await window.api.importCharacter(dialogResult.filePaths[0]);
 
-                if (result.success && result.character) {
+                if (result.success) {
                     State.loadCharacter(result.character);
                     this.lastSavedPath = dialogResult.filePaths[0];
                     console.log(`Character loaded from: ${dialogResult.filePaths[0]}`);

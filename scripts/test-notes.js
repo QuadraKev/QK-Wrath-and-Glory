@@ -32,6 +32,7 @@ const sandbox = {
 };
 vm.createContext(sandbox);
 vm.runInContext(fs.readFileSync(path.join(ROOT, 'creator/js/followers.js'), 'utf8'), sandbox);
+vm.runInContext(fs.readFileSync(path.join(ROOT, 'creator/js/character-check.js'), 'utf8'), sandbox);
 // state.js declares `const State`, which does not attach to the sandbox global,
 // so evaluate the identifier as a trailing expression to get the object out.
 const stateSource = fs.readFileSync(path.join(ROOT, 'creator/js/state.js'), 'utf8');

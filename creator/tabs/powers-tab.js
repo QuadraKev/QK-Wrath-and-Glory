@@ -148,7 +148,7 @@ const PowersTab = {
 
             // Show chosen disciplines as removable chips
             const chosenHtml = chosenDisciplines.map(d =>
-                `<span class="discipline-chosen-chip">${d} <span class="discipline-chosen-remove" data-discipline="${d}">&times;</span></span>`
+                `<span class="discipline-chosen-chip">${this.escapeHtml(d)} <span class="discipline-chosen-remove" data-discipline="${this.escapeHtml(d)}">&times;</span></span>`
             ).join(' ');
 
             // Show unlock buttons for remaining choices
@@ -410,5 +410,16 @@ const PowersTab = {
 
     refresh() {
         this.render();
+    },
+
+    // Escape text for HTML. The number 0 stays "0".
+    escapeHtml(text) {
+        if (text === null || text === undefined) return '';
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     }
 };

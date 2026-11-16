@@ -312,6 +312,14 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
     State.character.mutations = [{ id: 'zz<b>"', subChoice: null }];
     html = recorded(() => InjuriesTab.render());
     check('injuries: the id is escaped', html.includes('Unknown mutation (zz&lt;b&gt;&quot;)') && !html.includes('zz<b>'), true);
+    // The memorable and the traumatic text hold the id escaped one time, and the id does not break the page.
+    human();
+    State.character.memorableInjuries = [{ id: 'zz<b>"m', escalated: false }];
+    State.character.traumaticInjuries = [{ id: 'zz<b>"t', side: null }];
+    html = recorded(() => InjuriesTab.render());
+    check('injuries: the memorable text shows the id escaped one time', html.includes('Unknown injury (zz&lt;b&gt;&quot;m)'), true);
+    check('injuries: the traumatic text shows the id escaped one time', html.includes('Unknown injury (zz&lt;b&gt;&quot;t)'), true);
+    check('injuries: no raw tag and no double escape from the injury ids', [html.includes('<b>'), html.includes('&amp;')], [false, false]);
 
     // --- Background ---
     human();
@@ -329,6 +337,23 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
         rec.document.getElementById('goal-select').innerHTML.includes('Unknown goal (zz_goal)'), true);
     check('background: a known stored id does not show as unknown', rec.document.getElementById('accomplishment-select').innerHTML.includes('Unknown'), false);
     check('background: a populate does not write into the character', JSON.stringify(State.character), snapshot);
+    {
+        // The DOM escape helper needs a stub that escapes as a browser does: & < > escaped, the quote raw.
+        const stubCreate = rec.document.createElement;
+        rec.document.createElement = () => {
+            let text = '';
+            return { set textContent(v) { text = String(v); }, get innerHTML() { return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); } };
+        };
+        State.character.background.origin = { id: 'zz<b>"o', bonusType: null };
+        recorded(() => BackgroundTab.populateSelects());
+        rec.document.createElement = stubCreate;
+        const optHtml = rec.document.getElementById('origin-select').innerHTML;
+        const valueAttr = /<option value="([^"]*)" selected disabled>/.exec(optHtml);
+        const decoded = valueAttr && valueAttr[1].replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+        check('background: the value attribute of the unknown option reads back as the id', decoded, 'zz<b>"o');
+        check('background: the option text shows the id escaped one time', optHtml.includes('>Unknown origin (zz&lt;b&gt;"o)</option>'), true);
+        check('background: no raw tag and no double escape from the origin id', [optHtml.includes('<b>'), optHtml.includes('&amp;')], [false, false]);
+    }
     {
         const known = get('DataLoader').getBackgrounds().origins[0];
         State.character.background.origin = { id: known.id, bonusType: known.bonusType };
@@ -363,6 +388,71 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
         const card = rec.created.find(e => e.innerHTML.includes('card-suboption'));
         check('species: an unknown option of a known type shows', !!card && card.innerHTML.includes('Unknown sub-option (zz_world)'), true);
         check('species: a known option does not show as unknown', !!card && card.innerHTML.includes('Unknown sub-option (hive_world_aoa)'), false);
+    }
+
+    // The type and the id of an unknown sub-option are escaped in the text and in the attributes.
+    human();
+    State.character.species.subOptions = [{ type: 'zz<b>"t', optionId: 'zz<b>"o' }];
+    recorded(() => SpeciesTab.render());
+    {
+        const card = rec.created.find(e => e.innerHTML.includes('Unknown sub-option'));
+        const cardHtml = card ? card.innerHTML : '';
+        const btn = rec.found.find(([sel]) => sel === '.btn-remove-suboption');
+        check('species: the data-type attribute reads back as the type', btn && btn[1].dataset.type, 'zz<b>"t');
+        check('species: the data-option-id attribute reads back as the id', btn && btn[1].dataset.optionId, 'zz<b>"o');
+        check('species: the text shows the id escaped one time', cardHtml.includes('Unknown sub-option (zz&lt;b&gt;&quot;o)'), true);
+        check('species: no raw tag and no double escape from the type and the id', [cardHtml.includes('<b>'), cardHtml.includes('&amp;')], [false, false]);
+    }
+
+    // A Human with only an unknown homeworld: the optional line says None and the unknown row shows.
+    human();
+    State.character.species.subOptions = [{ type: 'homeworld', optionId: 'zz_world' }];
+    recorded(() => SpeciesTab.render());
+    {
+        const card = rec.created.find(e => e.innerHTML.includes('card-suboption'));
+        const cardHtml = card ? card.innerHTML : '';
+        check('species: only an unknown homeworld gives the None line', /<\/strong> None<\/div>/.test(cardHtml), true);
+        check('species: only an unknown homeworld gives the unknown row', cardHtml.includes('Unknown sub-option (zz_world)'), true);
+    }
+
+    // An Ogryn has no sub-option config: the stored sub-option shows as unknown, with no change line.
+    State.newCharacter();
+    State.setSpecies('ogryn');
+    State.character.species.subOptions = [{ type: 'homeworld', optionId: 'zz_world' }];
+    snapshot = JSON.stringify(State.character);
+    recorded(() => SpeciesTab.render());
+    {
+        const card = rec.created.find(e => e.innerHTML.includes('card-suboption'));
+        const cardHtml = card ? card.innerHTML : '';
+        check('species: an Ogryn shows the stored sub-option as unknown', cardHtml.includes('Unknown sub-option (zz_world)'), true);
+        check('species: an Ogryn card has no change line', cardHtml.includes('card-suboption-change'), false);
+        check('species: an Ogryn render does not write into the character', JSON.stringify(State.character), snapshot);
+    }
+
+    // A stored unknown mutation counts toward the Tier limit. At Tier 1 the real code adds no Maneater.
+    State.newCharacter();
+    State.setSpecies('kroot');
+    State.character.tier = 1;
+    State.character.species.subOptions = [{ type: 'mutation', optionId: 'zz_mu' }];
+    check('kroot: one unknown mutation at Tier 1 leaves no room for another', State.canAddMoreKrootMutations(), false);
+    SpeciesTab.pendingSubOptions = null;
+    SpeciesTab.showSubOptionModal(get('DataLoader').getSpecies('kroot'));
+    {
+        const maneater = rec.created.find(e => e.dataset.optionId === 'maneater');
+        check('kroot: the Maneater button is in the modal', !!maneater, true);
+        if (maneater) maneater.listeners.click[0]();
+        check('kroot: the attempt to add Maneater adds nothing', State.character.species.subOptions, [{ type: 'mutation', optionId: 'zz_mu' }]);
+        SpeciesTab.pendingSubOptions = null;
+    }
+    // The unknown mutation takes the first place. The two known ones are above the limit and both carry the mark.
+    State.character.species.subOptions = [{ type: 'mutation', optionId: 'zz_mu' }, { type: 'mutation', optionId: 'maneater' }, { type: 'mutation', optionId: 'astartes_eater' }];
+    recorded(() => SpeciesTab.render());
+    {
+        const card = rec.created.find(e => e.innerHTML.includes('card-suboption'));
+        const cardHtml = card ? card.innerHTML : '';
+        check('kroot: an unknown mutation counts toward the tier, so two known rows are above the limit',
+            (cardHtml.match(/\(above the limit of Tier 1\)/g) || []).length, 2);
+        check('kroot: the unknown mutation shows as unknown', cardHtml.includes('Unknown sub-option (zz_mu)'), true);
     }
 
     // Kroot, tier 1, three mutations: two are above the limit.

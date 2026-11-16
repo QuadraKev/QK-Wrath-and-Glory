@@ -40,7 +40,7 @@ const InjuriesTab = {
 
         const list = injuries.map((entry, index) => {
             const inj = data.memorableInjuries.find(i => i.id === entry.id);
-            if (!inj) return '';
+            if (!inj) return this.renderUnknownInjury('Unknown injury', entry.id, 'memorable-remove', index);
             const escalatedLabel = entry.escalated
                 ? `<span class="injury-escalation-label">${inj.escalation}</span>`
                 : '';
@@ -85,7 +85,7 @@ const InjuriesTab = {
 
         const list = injuries.map((entry, index) => {
             const inj = data.traumaticInjuries.find(i => i.id === entry.id);
-            if (!inj) return '';
+            if (!inj) return this.renderUnknownInjury('Unknown injury', entry.id, 'traumatic-remove', index);
             const sideLabel = entry.side ? ` (${this.escapeHtml(entry.side)})` : '';
             return `
                 <div class="injury-item">
@@ -187,7 +187,7 @@ const InjuriesTab = {
 
         const list = mutations.map((entry, index) => {
             const mutation = allMutations.find(m => m.id === entry.id);
-            if (!mutation) return '';
+            if (!mutation) return this.renderUnknownMutation(entry.id, index);
 
             const severityClass = `mutation-severity-${mutation.severity}`;
             let subChoiceLabel = '';
@@ -255,6 +255,31 @@ const InjuriesTab = {
                 ${list || '<p class="injuries-empty">No mutations</p>'}
             </div>
         `;
+    },
+
+    // A stored id that the data does not have. The row shows the id and keeps the Remove control.
+    renderUnknownInjury(label, id, removeClass, index) {
+        return `
+                <div class="injury-item">
+                    <div class="injury-item-header">
+                        <span class="injury-item-name">${label} (${this.escapeHtml(String(id))})</span>
+                        <div class="injury-item-actions">
+                            <button class="btn-remove ${removeClass}" data-index="${index}">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+    },
+
+    renderUnknownMutation(id, index) {
+        return `
+                <div class="mutation-item">
+                    <div class="mutation-item-header">
+                        <span class="mutation-item-name">Unknown mutation (${this.escapeHtml(String(id))})</span>
+                        <button class="btn-remove mutation-remove" data-index="${index}">Remove</button>
+                    </div>
+                </div>
+            `;
     },
 
     formatBonusKey(key) {

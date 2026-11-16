@@ -1,4 +1,5 @@
 // Tests for the unknown ids in the Wargear, Talents and Powers tabs (spec 9.3, 9.4; bug pass task 12).
+// Task 13 adds the Injuries, Background and Species tabs, and the Kroot mutations above the tier (spec 9.3, 9.6).
 // A wargear entry, an upgrade, a talent or a power that the data does not have shows as a row "Unknown <kind> (<id>)"
 // with a Remove control. A character with no PSYKER keyword sees its stored powers and disciplines.
 // The Remove control goes through the real State path. A render never writes into the character.
@@ -108,8 +109,9 @@ for (const f of ['data-loader', 'xp-calculator', 'derived-stats', 'prerequisite'
     'relic-wizard', 'improvised-builder', 'custom-wargear', 'keyword-bonus', 'followers'])
     load(`creator/js/${f}.js`);
 get('DataLoader').cache = CACHE;
-for (const f of ['talents', 'wargear', 'powers']) load(`creator/tabs/${f}-tab.js`);
+for (const f of ['talents', 'wargear', 'powers', 'injuries', 'background', 'species']) load(`creator/tabs/${f}-tab.js`);
 const State = get('State'), WargearTab = get('WargearTab'), TalentsTab = get('TalentsTab'), PowersTab = get('PowersTab');
+const InjuriesTab = get('InjuriesTab'), BackgroundTab = get('BackgroundTab'), SpeciesTab = get('SpeciesTab');
 State.init({});
 
 function human(archetypeId) {
@@ -253,6 +255,110 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
     html = recorded(() => PowersTab.render());
     check('CC8: the chosen discipline shows with a remove control',
         html.includes('class="discipline-chosen-remove" data-discipline="Biomancy"'), true);
+
+    // --- Injuries ---
+    human();
+    State.character.memorableInjuries = [{ id: 'zz_m', escalated: false }];
+    State.character.traumaticInjuries = [{ id: 'zz_t', side: null }];
+    State.character.mutations = [{ id: 'zz_mu', subChoice: null }];
+    snapshot = JSON.stringify(State.character);
+    html = recorded(() => InjuriesTab.render());
+    check('injuries: Unknown injury (zz_m) shows', html.includes('Unknown injury (zz_m)'), true);
+    check('injuries: Unknown injury (zz_t) shows', html.includes('Unknown injury (zz_t)'), true);
+    check('injuries: Unknown mutation (zz_mu) shows', html.includes('Unknown mutation (zz_mu)'), true);
+    for (const cls of ['memorable-remove', 'traumatic-remove', 'mutation-remove'])
+        check(`injuries: ${cls} has data-index 0`, new RegExp(`class="[^"]*${cls}[^"]*"[^>]*data-index="0"`).test(html), true);
+    check('injuries: a render does not write into the character', JSON.stringify(State.character), snapshot);
+    for (const [cls, key] of [['.memorable-remove', 'memorableInjuries'], ['.traumatic-remove', 'traumaticInjuries'], ['.mutation-remove', 'mutations']]) {
+        const btn = rec.found.find(([sel]) => sel === cls);
+        check(`injuries: ${cls} is bound`, !!btn, true);
+        if (btn) btn[1].listeners.click[0]();
+        check(`injuries: ${cls} removes the unknown entry`, State.character[key], []);
+    }
+    // The id is escaped.
+    human();
+    State.character.mutations = [{ id: 'zz<b>"', subChoice: null }];
+    html = recorded(() => InjuriesTab.render());
+    check('injuries: the id is escaped', html.includes('Unknown mutation (zz&lt;b&gt;&quot;)') && !html.includes('zz<b>'), true);
+
+    // --- Background ---
+    human();
+    State.character.background.origin = { id: 'aeldari_craftworld', bonusType: 'wealth' };
+    State.character.background.goal = { id: 'zz_goal', bonusType: null };
+    snapshot = JSON.stringify(State.character);
+    recorded(() => BackgroundTab.populateSelects());
+    html = rec.document.getElementById('origin-select').innerHTML;
+    check('background: the origin select has the disabled selected unknown option',
+        html.includes('value="aeldari_craftworld" selected disabled'), true);
+    check('background: the unknown origin shows its id', html.includes('Unknown origin (aeldari_craftworld)'), true);
+    check('background: the unknown option comes after the first option',
+        html.indexOf('Select an Origin...') < html.indexOf('Unknown origin'), true);
+    check('background: the goal select shows Unknown goal (zz_goal)',
+        rec.document.getElementById('goal-select').innerHTML.includes('Unknown goal (zz_goal)'), true);
+    check('background: a known stored id does not show as unknown', rec.document.getElementById('accomplishment-select').innerHTML.includes('Unknown'), false);
+    check('background: a populate does not write into the character', JSON.stringify(State.character), snapshot);
+    {
+        const known = get('DataLoader').getBackgrounds().origins[0];
+        State.character.background.origin = { id: known.id, bonusType: known.bonusType };
+        recorded(() => BackgroundTab.populateSelects());
+        check('background: a known origin does not show as unknown',
+            rec.document.getElementById('origin-select').innerHTML.includes('Unknown origin'), false);
+    }
+
+    // --- Species ---
+    human();
+    State.character.species.subOptions = [{ type: 'discipline', optionId: 'runes_of_fate' }];
+    snapshot = JSON.stringify(State.character);
+    recorded(() => SpeciesTab.render());
+    {
+        const btns = rec.found.filter(([sel]) => sel === '.btn-remove-suboption').map(([, b]) => b);
+        const card = rec.created.find(e => e.innerHTML.includes('Unknown sub-option'));
+        check('species: the Human card shows Unknown sub-option (runes_of_fate)', !!card && card.innerHTML.includes('Unknown sub-option (runes_of_fate)'), true);
+        check('species: the card has data-option-id runes_of_fate', !!card && card.innerHTML.includes('data-option-id="runes_of_fate"'), true);
+        check('species: a render does not write into the character', JSON.stringify(State.character), snapshot);
+        check('species: the remove control has data-type discipline', btns.map(b => b.dataset.type), ['discipline']);
+        let stopped = false;
+        if (btns[0]) btns[0].listeners.click[0]({ stopPropagation() { stopped = true; } });
+        check('species: the remove control stops the card click', stopped, true);
+        check('species: the remove control clears the stored sub-option', State.character.species.subOptions, []);
+    }
+
+    // A known option of a known type does not show as unknown, and an unknown option of a known type does.
+    human();
+    State.character.species.subOptions = [{ type: 'homeworld', optionId: 'hive_world_aoa' }, { type: 'homeworld', optionId: 'zz_world' }];
+    recorded(() => SpeciesTab.render());
+    {
+        const card = rec.created.find(e => e.innerHTML.includes('card-suboption'));
+        check('species: an unknown option of a known type shows', !!card && card.innerHTML.includes('Unknown sub-option (zz_world)'), true);
+        check('species: a known option does not show as unknown', !!card && card.innerHTML.includes('Unknown sub-option (hive_world_aoa)'), false);
+    }
+
+    // Kroot, tier 1, three mutations: two are above the limit.
+    State.newCharacter();
+    State.setSpecies('kroot');
+    {
+        const krootConfig = [].concat(get('DataLoader').getSpecies('kroot').subOptions).find(c => c.type === 'mutation');
+        const ids = krootConfig.options.slice(0, 3).map(o => o.id);
+        State.character.tier = 1;
+        State.character.species.subOptions = ids.map(optionId => ({ type: 'mutation', optionId }));
+        snapshot = JSON.stringify(State.character);
+        recorded(() => SpeciesTab.render());
+        const btns = rec.found.filter(([sel]) => sel === '.btn-remove-suboption').map(([, b]) => b);
+        const card = rec.created.find(e => e.innerHTML.includes('card-suboption'));
+        const cardHtml = card ? card.innerHTML : '';
+        check('kroot: two rows are above the limit of Tier 1', (cardHtml.match(/\(above the limit of Tier 1\)/g) || []).length, 2);
+        check('kroot: the first mutation has no mark', cardHtml.includes(`${krootConfig.options[0].name} (above`), false);
+        check('kroot: the second mutation has the mark with its name', cardHtml.includes(`${krootConfig.options[1].name} (above the limit of Tier 1)`), true);
+        check('kroot: no row shows as unknown', cardHtml.includes('Unknown sub-option'), false);
+        check('kroot: a render does not write into the character', JSON.stringify(State.character), snapshot);
+        check('kroot: each row above the limit has a remove control', btns.map(b => b.dataset.optionId), ids.slice(1));
+        if (btns[0]) btns[0].listeners.click[0]({ stopPropagation() {} });
+        check('kroot: the remove control removes the mutation', State.character.species.subOptions.map(o => o.optionId), [ids[0], ids[2]]);
+        State.character.tier = 3;
+        recorded(() => SpeciesTab.render());
+        const card3 = rec.created.find(e => e.innerHTML.includes('card-suboption'));
+        check('kroot: at Tier 3 no row is above the limit', card3.innerHTML.includes('above the limit'), false);
+    }
 
     console.log(failures ? `\n${failures} check(s) FAILED` : '\nAll checks passed');
     process.exit(failures ? 1 : 0);

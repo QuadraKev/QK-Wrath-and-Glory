@@ -66,6 +66,7 @@ const BackgroundTab = {
         const originSelect = document.getElementById('origin-select');
         const origins = backgrounds.origins || [];
         originSelect.innerHTML = '<option value="">Select an Origin...</option>';
+        this.addUnknownOption(originSelect, 'origin', character.background.origin?.id, origins);
         for (const origin of origins) {
             const selected = character.background.origin?.id === origin.id ? 'selected' : '';
             originSelect.innerHTML += `<option value="${origin.id}" ${selected}>${origin.name} - ${origin.bonus || ''}</option>`;
@@ -75,6 +76,7 @@ const BackgroundTab = {
         const accomplishmentSelect = document.getElementById('accomplishment-select');
         const accomplishments = backgrounds.accomplishments || [];
         accomplishmentSelect.innerHTML = '<option value="">Select an Accomplishment...</option>';
+        this.addUnknownOption(accomplishmentSelect, 'accomplishment', character.background.accomplishment?.id, accomplishments);
         for (const acc of accomplishments) {
             const selected = character.background.accomplishment?.id === acc.id ? 'selected' : '';
             accomplishmentSelect.innerHTML += `<option value="${acc.id}" ${selected}>${acc.name} - ${acc.bonus || ''}</option>`;
@@ -84,10 +86,18 @@ const BackgroundTab = {
         const goalSelect = document.getElementById('goal-select');
         const goals = backgrounds.goals || [];
         goalSelect.innerHTML = '<option value="">Select a Goal...</option>';
+        this.addUnknownOption(goalSelect, 'goal', character.background.goal?.id, goals);
         for (const goal of goals) {
             const selected = character.background.goal?.id === goal.id ? 'selected' : '';
             goalSelect.innerHTML += `<option value="${goal.id}" ${selected}>${goal.name} - ${goal.bonus || ''}</option>`;
         }
+    },
+
+    // A stored id that the data does not have shows as a disabled, selected option. The player can pick another entry.
+    addUnknownOption(select, kind, id, list) {
+        if (!id || list.some(entry => entry.id === id)) return;
+        const text = this.escapeHtml(`Unknown ${kind} (${id})`);
+        select.innerHTML += `<option value="${this.escapeAttr(String(id))}" selected disabled>${text}</option>`;
     },
 
     renderDetails() {

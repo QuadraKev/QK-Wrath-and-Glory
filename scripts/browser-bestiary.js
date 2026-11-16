@@ -1277,7 +1277,7 @@ scenario('drag', async () => {
     async function drag(from, before) {
         const pos = await page.evaluate((i) => {
             const h = document.querySelectorAll('#encounter-list .encounter-item')[i].querySelector('.drag-handle').getBoundingClientRect();
-            return { x: h.x + h.width / 2, y: h.y + h.height / 2 };
+            return { x: h.x + h.width / 2, y: h.y + h.height / 2, dragged: document.querySelectorAll('#encounter-list .encounter-item')[i].dataset.id };
         }, from);
         await page.mouse.move(pos.x, pos.y);
         await page.mouse.down();
@@ -1288,10 +1288,14 @@ scenario('drag', async () => {
             const y = before === 'end' ? rows[rows.length - 1].bottom + 15 : rows[before].top + 2;
             await page.mouse.move(pos.x, y, { steps: 3 });
         }
+        // The children before the release: P is the placeholder, the hidden original keeps its id.
+        const view = await page.evaluate(() => [...document.getElementById('encounter-list').children]
+            .map(e => e.classList.contains('drag-placeholder') ? 'P' : e.dataset.id));
         await page.mouse.up();
         await wait(page, 100);
+        return { view, dragged: pos.dragged };
     }
-    const letters = (ids, now) => now.map(id => 'ABC'[ids.indexOf(id)]).join('');
+    const letters = (ids, now) => now.map(id => 'ABCDE'[ids.indexOf(id)]).join('');
 
     let ids = await setup();
     await drag(0, 'end');
@@ -1319,6 +1323,27 @@ scenario('drag', async () => {
     await reload(page);
     await goTab(page, 'encounter');
     check('drag: the order B, C, A stays after a reload', letters(ids, await rowIds()), 'BCA');
+
+    // TB10-8: threats added after the first drag have no stored entry. A drop below the last row must land last.
+    ids = await setup();
+    await drag(1, 0);
+    const more = await page.evaluate(() => {
+        const added = ['sly_marbo_aaa', 'tactical_space_marine'].map(t => EncounterState.addIndividual(t, 1)[0]);
+        EncounterTab.renderEncounterList();
+        return added;
+    });
+    ids = ids.concat(more);
+    check('drag: after the first drag and two new threats the list is B, A, C, D, E', letters(ids, await rowIds()), 'BACDE');
+    const end = await drag(0, 'end');
+    const rest = end.view.filter(id => id !== end.dragged);
+    rest.splice(rest.indexOf('P'), 1, end.dragged);
+    const nowIds = await rowIds();
+    check('drag: the top row dropped below the last row lands last (A, C, D, E, B)', letters(ids, nowIds), 'ACDEB');
+    check('drag: the order after the release equals the place of the placeholder', nowIds, rest);
+    await wait(page, 2500);
+    await reload(page);
+    await goTab(page, 'encounter');
+    check('drag: the order A, C, D, E, B stays after a reload', letters(ids, await rowIds()), 'ACDEB');
     check('drag: no page error', s.errors, []);
 });
 

@@ -134,6 +134,65 @@ group('move: a move to the own place changes nothing', () => {
     check('move: from i to place i or i+1 leaves encounterOrder equal', diffs, []);
 });
 
+group('move: shown entries that are not stored (TB10-8)', () => {
+    // Seven players, count 5: p5 and p6 are hidden. The stored order holds p0 p1 p2 and the hidden ones.
+    // p3 and p4 are shown after the stored entries and have no stored entry.
+    const stored = ['p0', 'p5', 'p1', 'p2', 'p6'];
+    const visible = ['p0', 'p1', 'p2', 'p3', 'p4'];
+    const setup = (withHidden) => {
+        EncounterState.loadFromData(mkEnc({ settings: { tier: 1, playerCount: 5, name: 'x', round: 1 }, playerCharacters: players(withHidden ? 7 : 5) }));
+        EncounterState.encounterOrder = (withHidden ? stored : ['p0', 'p1', 'p2']).map(id => ({ type: 'player', id }));
+    };
+    for (const withHidden of [false, true]) {
+        const tag = withHidden ? 'with hidden players' : 'no hidden player';
+        setup(withHidden);
+        check(`unstored: ${tag}, the list shows p0 p1 p2 p3 p4 before the move`, shown(), visible);
+        const diffs = [];
+        for (let from = 0; from < 5; from++) {
+            for (let place = 0; place <= 5; place++) {
+                setup(withHidden);
+                EncounterState.moveItemInOrder('player', visible[from], place);
+                const want = visible.filter((_, k) => k !== from);
+                want.splice(place <= from ? place : place - 1, 0, visible[from]);
+                const order = EncounterState.encounterOrder.map(e => e.id);
+                const own = place === from || place === from + 1;
+                // An own-place drop changes nothing. Any other move stores each shown entry one time, in the shown order.
+                const storedShown = order.filter(id => visible.includes(id));
+                const ok = JSON.stringify(shown()) === JSON.stringify(want)
+                    && (own ? order.length === (withHidden ? 5 : 3) : JSON.stringify(storedShown) === JSON.stringify(want) && order.length === (withHidden ? 7 : 5))
+                    && (!withHidden || JSON.stringify(order.filter(id => id === 'p5' || id === 'p6')) === JSON.stringify(['p5', 'p6']));
+                if (!ok) diffs.push({ from, place, got: shown(), order, want });
+            }
+        }
+        check(`unstored: ${tag}, each of the 30 moves lands at the place and stores each shown entry once, in the shown order`, diffs, []);
+        setup(withHidden);
+        EncounterState.moveItemInOrder('player', 'p0', 5);
+        check(`unstored: ${tag}, a stored entry dropped at the end lands last`, shown(), ['p1', 'p2', 'p3', 'p4', 'p0']);
+        setup(withHidden);
+        EncounterState.moveItemInOrder('player', 'p0', 4);
+        check(`unstored: ${tag}, a stored entry dropped between the two unstored entries lands between them`, shown(), ['p1', 'p2', 'p3', 'p0', 'p4']);
+        setup(withHidden);
+        EncounterState.moveItemInOrder('player', 'p4', 0);
+        check(`unstored: ${tag}, an unstored entry dragged to the top lands first`, shown(), ['p4', 'p0', 'p1', 'p2', 'p3']);
+        setup(withHidden);
+        const before = JSON.stringify(EncounterState.encounterOrder);
+        EncounterState.moveItemInOrder('player', 'p2', 2);
+        EncounterState.moveItemInOrder('player', 'p2', 3);
+        check(`unstored: ${tag}, an own-place drop leaves encounterOrder equal and adds no entry`, JSON.stringify(EncounterState.encounterOrder), before);
+    }
+});
+
+group('move: the own-place drop marks the state dirty', () => {
+    EncounterState.loadFromData(mkEnc({ playerCharacters: players(3) }));
+    EncounterState.encounterOrder = ['p0', 'p1', 'p2'].map(id => ({ type: 'player', id }));
+    const original = EncounterState.markDirty;
+    let calls = 0;
+    EncounterState.markDirty = function () { calls++; return original.apply(this, arguments); };
+    EncounterState.moveItemInOrder('player', 'p1', 1);
+    EncounterState.markDirty = original;
+    check('move: an own-place drop calls markDirty one time', calls, 1);
+});
+
 // ----- Item 2 (TB10-2): the picker index follows a change of the threat set -----
 group('picker index', () => {
     const late = {
@@ -157,6 +216,14 @@ group('picker index', () => {
     const indexTwo = ThreatBuilderState._abilityIndex;
     hasAbility();
     check('picker: after the rebuild, the index stays the same until the next change', ThreatBuilderState._abilityIndex === indexTwo, true);
+    const changed = JSON.parse(JSON.stringify(late));
+    changed.abilities[0].description = 'Second text of the ability.';
+    changed.bonuses[0].description = 'Second text of the bonus.';
+    DataLoader.injectThreat(changed);
+    check('picker: after a second load with the same id and other data, the lists show the new texts', {
+        ability: ThreatBuilderState.getAbilitiesByType('ACTION').filter(e => e.ability.name === 'Zzz Late Ability').map(e => e.ability.description),
+        bonus: ThreatBuilderState.getAllBonuses().filter(e => e.bonus.name === 'Zzz Late Bonus').map(e => e.bonus.description)
+    }, { ability: ['Second text of the ability.'], bonus: ['Second text of the bonus.'] });
     DataLoader.removeThreat('custom_late_probe');
     check('picker: after the delete of the threat, the lists do not hold them', { ability: hasAbility(), bonus: hasBonus() }, { ability: false, bonus: false });
 });
@@ -232,30 +299,27 @@ group('range bands', () => {
     check('range: the four real weapons with a null band print no "null"',
         real.map(w => DataLoader.normalizeWargearWeapon(w).range).some(t => t.includes('null')), false);
 
-    // Site 2: the launcher with ammo
-    const launched = (range) => DataLoader.normalizeLauncherWithAmmo(gun(range), { damage: { base: 5, bonus: 0 }, ed: 2, ap: -1, traits: [] }).range;
-    check('range: normalizeLauncherWithAmmo with two null bands gives 6/-/-', launched(nullBand), '6/-/-');
-    check('range: normalizeLauncherWithAmmo with three numbers gives the old text', launched({ short: 6, medium: 12, long: 24 }), '6/12/24');
-
-    // Site 3: the weapon picker card of the encounter tab
-    const card = (range) => EncounterTab.renderWeaponPickerCard(gun(range));
-    check('range: the weapon picker card with two null bands shows "Range 6/-/-" and no "null"',
-        { has: card(nullBand).includes('Range 6/-/-'), null: card(nullBand).includes('null') }, { has: true, null: false });
-    check('range: the weapon picker card with three numbers shows the old text', card({ short: 6, medium: 12, long: 24 }).includes('Range 6/12/24'), true);
-
-    // Site 4: formatRange of the vehicles tab
-    check('range: formatRange with two null bands gives 6/-/-', VehiclesTab.formatRange(nullBand), '6/-/-');
-    check('range: formatRange with three numbers gives the old text', VehiclesTab.formatRange({ short: 6, medium: 12, long: 24 }), '6/12/24');
-    check('range: formatRange keeps a text range and a missing range', [VehiclesTab.formatRange('Melee'), VehiclesTab.formatRange(undefined)], ['Melee', null]);
-
-    // Site 5: the talent profile table of the Compendium
+    // Each site runs over the four real null-band weapons, over a band of 0 and over three numbers.
+    const fmt = (r) => [r.short, r.medium, r.long].map(b => (b == null ? '-' : b)).join('/');
+    const ranges = [...real.map(w => w.range), { short: 0, medium: 0, long: 0 }, { short: 0, medium: null, long: 5 }, { short: 6, medium: 12, long: 24 }];
     const saved = DataLoader.cache['weapons.json'];
-    DataLoader.cache['weapons.json'] = [gun(nullBand), Object.assign(gun({ short: 6, medium: 12, long: 24 }), { id: 'late_gun_2', name: 'Late Gun 2' })];
-    const table = ReferencesTab.renderTalentProfiles({ profiles: ['late_gun', 'late_gun_2'] });
+    const sites = {
+        wargear: (r) => DataLoader.normalizeWargearWeapon(gun(r)).range,
+        launcher: (r) => DataLoader.normalizeLauncherWithAmmo(gun(r), { damage: { base: 5, bonus: 0 }, ed: 2, ap: -1, traits: [] }).range,
+        formatRange: (r) => VehiclesTab.formatRange(r),
+        card: (r) => (EncounterTab.renderWeaponPickerCard(gun(r)).match(/Range ([^<"]*)/) || [])[1],
+        table: (r) => {
+            DataLoader.cache['weapons.json'] = [gun(r)];
+            const cell = ReferencesTab.renderTalentProfiles({ profiles: ['late_gun'] }).match(/<td>Late Gun<\/td><td>4<\/td><td>1<\/td><td>-<\/td><td>([^<]*)<\/td>/);
+            return cell ? cell[1] : null;
+        }
+    };
+    for (const [name, site] of Object.entries(sites)) {
+        const diffs = ranges.map(r => ({ r, want: fmt(r), got: site(r) })).filter(x => x.got !== x.want);
+        check(`range: the ${name} site prints "-" for a null band, 0 for a band of 0 and the old text for three numbers (${ranges.length} ranges)`, diffs, []);
+    }
     DataLoader.cache['weapons.json'] = saved;
-    check('range: the profile table shows 6/-/-, the old text for three numbers, and no "null"',
-        { nullBand: table.includes('<td>6/-/-</td>'), numbers: table.includes('<td>6/12/24</td>'), null: table.includes('null') },
-        { nullBand: true, numbers: true, null: false });
+    check('range: formatRange keeps a text range and a missing range', [VehiclesTab.formatRange('Melee'), VehiclesTab.formatRange(undefined)], ['Melee', null]);
 });
 
 // ----- Item 7 (TB10-7): the empty state of the Compendium escapes the search text -----

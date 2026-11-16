@@ -682,6 +682,14 @@ const EncounterState = {
             return;
         }
 
+        // The list shows the entries with no stored entry after the stored ones. Store them, in the shown
+        // order, so that the index of the caller is a place in the stored order (TB10-8).
+        for (const visible of visibleItems) {
+            if (!this.encounterOrder.some(entry => entry.type === visible.type && entry.id === visible.id)) {
+                this.encounterOrder.push({ type: visible.type, id: visible.id });
+            }
+        }
+
         // Find and remove the item from its current position
         const currentIndex = this.encounterOrder.findIndex(
             item => item.type === itemType && item.id === itemId

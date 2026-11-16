@@ -77,6 +77,7 @@ No other load step changes a stored value. The old `ascensionPackages` key now s
 - New optional top-level field `archetypeSkillChoices: { <skillBonus key>: <skill name> }`. Example for the Inquisitor: `{ choice1: 'insight', choice2: 'scholar' }`.
 - `setArchetype` sets it to `{}` together with `archetypeKeywordChoices` (`state.js:353`). It is absent in `createNewCharacter()`, so an old save loads with no change.
 - New setter `State.setArchetypeSkillChoice(key, skill)`. It accepts `key` only when the current archetype has that `skillBonus` key and the key is not a skill name. It accepts `skill` only when it is a skill name that no other key of the same archetype holds (Core p.116: "any two Skills"), or `''` to clear. It stores the choice inside `_withRebase` (§5.2). Thus the chosen skill rises to the bonus value, and a skill that loses the choice goes back to its free value when the user did not raise it.
+- **The value before the choice (ruling TC4-1, after the review of Task 4).** When a key selects a skill, the setter keeps the value that the skill had before, in memory only (`State._skillChoicePrior`, keyed by the `skillBonus` key; it is not stored). When the key moves to a different skill or is cleared in the same session, and the old skill is at the bonus value or under it, the old skill goes back to the kept value. A value above the bonus stays, as in §5.2. The memory is empty after a load, after a new character and after `setArchetype`. With no kept value, the rule of §5.4 applies: a value at the bonus or under it counts as free and goes to the free value. Why: a walk with the arrow keys through the select fires one change for each option. Without the kept value, each skill that the walk passes loses the ranks that the user bought.
 - `CharacterCheck` row (G7): optional; a value that is not a plain object becomes `{}`; each value that is not a string becomes `''`. This is the rule of `archetypeKeywordChoices` (row 22).
 - The chosen skill is the free baseline for the XP cost and for the decrease limit (§4.2). With no choice, the character pays nothing extra and gets no free rank.
 - UI (G5): the archetype detail gets one select per "any skill" key, in the pattern of the sub-faction keyword select (`archetype-tab.js:273-341`). Label: "Skill of your choice (<value>)". The first option is "-- Select a skill --". `formatBonuses` writes a `choice*` key as "Skill of your choice <value>" instead of "Choice1 4".
@@ -84,7 +85,7 @@ No other load step changes a stored value. The old `ascensionPackages` key now s
 
 ### 4.5 Risk to stored data
 
-None at load except X1. A character with a raised skill and an Inquisitor archetype keeps the raised value. When the user selects that skill as the choice, the XP cost of the free ranks goes away.
+None at load except X1. A character with a raised skill and an Inquisitor archetype keeps the raised value. When the user selects that skill as the choice, the XP cost of the free ranks goes away. A change of the choice in the same session gives each skill back the value that it had before the choice. After a reload, a change of the choice treats a value at the bonus or under it as free (§17).
 
 ## 5. Group 2: a change of a parent (A4, A5, A6, A7b)
 
@@ -453,3 +454,4 @@ Unrelated dead code seen and not removed: `State.removeWargear` has no caller (i
 - The 50-box bound and the timing were not measured on a phone.
 - The book checks cover Core pp.19, 25, 29, 43, 94, 109, 116, 117, 146 and Vow of Absolution pp.39, 41, 42, 125, 126. For the Rank search, the contents pages of each official sourcebook and the sections they point to were read; the adventure modules and the Apocrypha body were not read.
 - The audit evidence was re-read in the code at `44084ae`. The audit scripts were not run again; the line numbers in this spec match the code.
+- After a reload, the app does not know the value that a chosen "any skill" skill had before the choice (ruling TC4-1). A later change of the choice then puts a value at the bonus or under it to the free value. Ranks that the user bought before the choice are then gone, and the XP for them is free again.

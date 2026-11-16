@@ -38,8 +38,12 @@ function fail(message) {
     console.log(`FAIL  ${message}`);
 }
 
-if (PORT === '8137') {
+if (Number(PORT) === 8137) {
     console.log('FAIL  port 8137 is the port of the owner. Use another port.');
+    process.exit(1);
+}
+if (!Number.isInteger(Number(PORT)) || Number(PORT) < 1 || Number(PORT) > 65535) {
+    console.log(`FAIL  PORT is not a port number: ${PORT}`);
     process.exit(1);
 }
 if (!process.env.PROOF_TMP) {
@@ -115,9 +119,9 @@ function hostileThreat(prefix, id) {
         keywords: [p('kw'), 'ORK'],
         attributes: { S: p('attrS'), T: 3, A: 3, I: 3, Wil: 3, Int: 3, Fel: 3 },
         resilience: { value: p('resval'), note: p('resnote') },
-        defence: p('defence'), wounds: 5, shock: 4, conviction: p('conviction'), resolve: p('resolve'), speed: p('speed'),
+        defence: p('defence'), wounds: 5, shock: p('shock'), conviction: p('conviction'), resolve: p('resolve'), speed: p('speed'),
         abilities: [
-            { type: 'ACTION', name: p('abname'), description: p('abdesc'), stats: p('abstats') },
+            { type: 'ACTION', name: p('abname'), description: 'Shock ' + p('abdesc'), stats: p('abstats') },
             { type: p('abtype'), name: 'X', description: 'y' }
         ],
         bonuses: [{ name: p('boname'), description: p('bodesc') }],
@@ -180,12 +184,12 @@ async function newSession(opts = {}) {
     const context = opts.context || await browser.newContext({ viewport: mobile ? { width: 390, height: 844 } : { width: 1400, height: 900 } });
     context.setDefaultTimeout(8000);
     const page = await context.newPage();
-    page.on('dialog', d => d.accept());
-    const errors = [];
-    const warns = [];
+    const session = { context, page, errors: [], warns: [], dialogs: 0, close: () => context.close() };
+    page.on('dialog', d => { session.dialogs++; d.accept(); });
+    const errors = session.errors;
+    const warns = session.warns;
     page.on('pageerror', e => errors.push(String(e.message).slice(0, 200)));
     page.on('console', m => { if (m.type() === 'warning') warns.push(m.text()); });
-    const session = { context, page, errors, warns, close: () => context.close() };
     if (!opts.context) sessions.push(session);
     return session;
 }
@@ -306,6 +310,27 @@ async function runSnapshot(file) {
     console.log(`Snapshot written: ${Object.keys(entries).length} entries`);
 }
 
+// A B6 key may change at each list. The markup outside the lists must stay, in order.
+// The block that holds a list (the section of the card, the section of the mini card) may change its own wrapper.
+function keepsOutside(base, now) {
+    // A list of two entries prints as "[object Object],[object Object]".
+    const parts = base.replace(/\[object Object\](?:,\[object Object\])*/g, '[object Object]').split('[object Object]');
+    let pos = 0;
+    for (let i = 0; i < parts.length; i++) {
+        let part = parts[i];
+        if (i > 0) part = part.replace(/^(?:<\/span>|<\/div>)<\/div>/, '');
+        if (i < parts.length - 1) {
+            const open = Math.max(part.lastIndexOf('<div class="bonuses-section">'), part.lastIndexOf('<div class="mini-section">'));
+            if (open >= 0) part = part.slice(0, open);
+        }
+        if (part === '') continue;
+        const at = now.indexOf(part, pos);
+        if (at < 0) return part;
+        pos = at + part.length;
+    }
+    return null;
+}
+
 function around(a, b) {
     let i = 0;
     while (i < a.length && i < b.length && a[i] === b[i]) i++;
@@ -325,6 +350,12 @@ async function runCompare(file) {
     const extra = Object.keys(now).filter(k => !(k in base.entries));
     const unexpected = differ.filter(k => !allowed.has(k)).concat(extra);
     check('dom: no unexpected difference', unexpected.length, 0);
+    const lost = {};
+    differ.filter(k => allowed.has(k) && k in now).forEach(k => {
+        const part = keepsOutside(base.entries[k], now[k]);
+        if (part !== null) lost[k] = part.slice(0, 160);
+    });
+    check('dom: a B6 key keeps the baseline markup outside each list', Object.keys(lost).slice(0, 10).map(k => `${k}: ${lost[k]}`), []);
     unexpected.slice(0, 10).forEach(k => {
         console.log(`        ${k}: ${k in base.entries ? around(base.entries[k], now[k]) : 'a key that the baseline does not have'}`);
     });
@@ -346,6 +377,18 @@ async function hostileStep(page, label, kind, seen) {
 }
 
 const ROW_TYPES = ['individual', 'mob', 'player', 'vehicle'];
+
+// Hover a glossary term and click it. A missing term is a failure: the custom text must reach the glossary popup.
+async function hoverTerm(page, sel, label) {
+    const term = page.locator(sel).first();
+    const found = await term.count() > 0;
+    check(`hostile desktop: a glossary term is in ${label}`, found, true);
+    if (found) {
+        await term.hover();
+        await wait(page, 400);
+        await term.click({ timeout: 3000 }).catch(() => {});
+    }
+}
 
 async function rowTypeCounts(page) {
     return page.evaluate(() => {
@@ -379,6 +422,21 @@ scenario('hostile-desktop', async () => {
         await step(`select ${type}`);
     }
 
+    await clickSel(page, '#encounter-list .encounter-item[data-type="individual"]');
+    await wait(page, 200);
+    await hoverTerm(page, '#encounter-detail .ability-desc-mini .glossary-term', 'the encounter detail');
+    await step('glossary hover and click in the encounter detail');
+
+    // The detail of a mob member shows the line "Part of: <mob name>".
+    const mobName = hostile.encounter.mobs[0].name;
+    await page.evaluate((id) => EncounterTab.selectItem(id, 'individual'), hostile.encounter.individuals[1].id);
+    await wait(page, 200);
+    await step('detail of a mob member');
+    check('hostile desktop: the detail of a mob member shows the mob name', await page.evaluate(() => {
+        const el = document.querySelector('#encounter-detail .mob-membership span');
+        return el ? el.textContent : null;
+    }), 'Part of: ' + mobName);
+
     await goTab(page, 'threats');
     await step('threats tab');
     const rowFound = await clickThreatRowByName(page, 'E_name');
@@ -386,16 +444,7 @@ scenario('hostile-desktop', async () => {
     await step('threat card');
     check('hostile desktop: the hostile threat card is drawn', { rowFound, cards: await page.locator('#threat-detail .threat-card').count() }, { rowFound: true, cards: 1 });
 
-    // The description is the first place for a glossary term. The rest of the card is the second place.
-    let term = page.locator('.threat-card-description .glossary-term').first();
-    if (await term.count() === 0) term = page.locator('#threat-detail .glossary-term').first();
-    if (await term.count() > 0) {
-        await term.hover();
-        await wait(page, 400);
-        await term.click({ timeout: 3000 }).catch(() => {});
-    } else {
-        console.log('NOTE  hostile desktop: the card has no glossary term, so the hover and click step did nothing');
-    }
+    await hoverTerm(page, '#threat-detail .ability-description .glossary-term', 'the threat card');
     await step('glossary hover and click');
 
     await page.evaluate((id) => { ThreatsTab.buildThreatCopyText(DataLoader.getThreat(id)); }, hostile.hostileId);
@@ -404,21 +453,36 @@ scenario('hostile-desktop', async () => {
     await clickSel(page, '#btn-customize-threat');
     await wait(page, 500);
     await step('customize');
+    check('hostile desktop customize: the builder holds the hostile threat', await page.evaluate(() => {
+        const el = document.querySelector('#builder-editor-sections [data-field="name"]');
+        return el ? el.value.startsWith('E_name') : null;
+    }), true);
 
+    // A picker row shows the hostile threat when its threat column starts with the hostile name.
+    const pickerRows = () => page.evaluate(() => [...document.querySelectorAll('.ability-picker-item-threat')].filter(e => e.textContent.startsWith('E_name')).length > 0);
     await clickSel(page, '#btn-browse-abilities');
     await wait(page, 300);
     await step('browse abilities');
+    check('hostile desktop browse abilities: the hostile threat is in the picker', await pickerRows(), true);
     await clickSel(page, '.ability-picker-close');
     await clickSel(page, '#btn-browse-bonuses');
     await wait(page, 300);
     await step('browse bonuses');
+    check('hostile desktop browse bonuses: the hostile threat is in the picker', await pickerRows(), true);
     await clickSel(page, '.ability-picker-close');
 
     await page.evaluate(() => ThreatBuilderTab.renderTemplateDropdown('E_', 'sidebar'));
     await step('template search');
+    check('hostile desktop template search: the hostile threat is in the list', await page.evaluate(() =>
+        [...document.querySelectorAll('#builder-template-dropdown-sidebar .builder-dropdown-item')].some(e => e.textContent.startsWith('E_name'))), true);
 
     await page.evaluate(() => ThreatBuilderTab.showInjectModal(ThreatBuilderState.threat.name, 2));
     await step('rename modal');
+    check('hostile desktop rename modal: the modal holds the hostile name', await page.evaluate(() => {
+        const input = document.getElementById('inject-modal-name');
+        const warning = document.querySelector('.inject-modal-warning');
+        return { input: input ? input.value.startsWith('E_name') : null, warning: warning ? warning.textContent.includes('E_name') : null };
+    }), { input: true, warning: true });
     await clickSel(page, '.inject-modal-close');
 
     await goTab(page, 'builder');
@@ -478,7 +542,9 @@ scenario('hostile-mobile', async () => {
         await step(`select ${type}`);
     }
 
+    // switchTab closes the sheet and empties it 320 ms later. The row click must come after that.
     await page.evaluate(() => App.switchTab('threats'));
+    await wait(page, 450);
     const rowFound = await clickThreatRowByName(page, 'E_name');
     await wait(page, 400);
     await step('threat card');
@@ -487,11 +553,15 @@ scenario('hostile-mobile', async () => {
     await clickSel(page, '#bottom-sheet-content #btn-customize-threat');
     await wait(page, 500);
     await step('customize');
+    check('hostile mobile customize: the builder holds the hostile threat', await page.evaluate(() => (ThreatBuilderState.threat.name || '').startsWith('E_name')), true);
 
     await clickSel(page, '#btn-builder-preview');
     await wait(page, 400);
     await step('preview');
-    check('hostile mobile: the preview opens in the sheet', await page.locator('#bottom-sheet-content .threat-card').count(), 1);
+    check('hostile mobile: the preview opens in the sheet with the hostile threat', await page.evaluate(() => {
+        const title = document.querySelector('#bottom-sheet-content .threat-card-title');
+        return { cards: document.querySelectorAll('#bottom-sheet-content .threat-card').length, hostile: title ? title.textContent.startsWith('E_name') : null };
+    }), { cards: 1, hostile: true });
 
     check('hostile mobile: no page error', s.errors, []);
 });
@@ -506,7 +576,11 @@ scenario('c2', async () => {
     await fillTab(page, box, 'Bob "Big" Smith');
     await page.evaluate(() => EncounterTab.render());
     check('c2: the name survives a redraw', await page.locator(box).inputValue(), 'Bob "Big" Smith');
-    await fillTab(page, box, 'Bob "Big" Smith Jr');
+    // A user appends text to the redrawn box. A cut box value then cuts the stored name.
+    await page.locator(box).focus();
+    await page.keyboard.press('End');
+    await page.keyboard.type(' Jr');
+    await page.keyboard.press('Tab');
     check('c2: an edit stores the full name', await page.evaluate(() => EncounterState.playerCharacters[0] && EncounterState.playerCharacters[0].name), 'Bob "Big" Smith Jr');
     await wait(page, 2500);
     await reload(page);
@@ -637,8 +711,9 @@ scenario('twotabs', async () => {
     await wait(pb, 2500);
     const nowEnc = await ls(pb, KEY_ENC);
     const nowBld = await ls(pb, KEY_BLD);
-    check('twotabs: the encounter key of tab A stays', { present: nowEnc !== null, same: nowEnc === keptEnc, aWrote: keptEnc !== null }, { present: true, same: true, aWrote: true });
-    check('twotabs: the builder key of tab A stays', { present: nowBld !== null, same: nowBld === keptBld, aWrote: keptBld !== null }, { present: true, same: true, aWrote: true });
+    // Tab B accepts two dialogs: the two Clear buttons. A page that never bound its Clear button accepts fewer.
+    check('twotabs: the encounter key of tab A stays', { present: nowEnc !== null, same: nowEnc === keptEnc, aWrote: keptEnc !== null, dialogsOfB: b.dialogs }, { present: true, same: true, aWrote: true, dialogsOfB: 2 });
+    check('twotabs: the builder key of tab A stays', { present: nowBld !== null, same: nowBld === keptBld, aWrote: keptBld !== null, dialogsOfB: b.dialogs }, { present: true, same: true, aWrote: true, dialogsOfB: 2 });
 });
 
 // CB3: a file of the wrong kind in each load button.
@@ -652,6 +727,8 @@ scenario('gates', async () => {
     };
     await open(page);
     await addThreat(page, 'sly_marbo_aaa');
+    // One player, so that a lost player shows in the Load Players gate.
+    await page.evaluate(() => { EncounterState.addPlayerCharacter('Gus'); EncounterTab.renderPlayerCharacterInputs(); });
     await goTab(page, 'builder');
     await page.fill('[data-field="name"]', 'G');
     await wait(page, 2500);
@@ -776,8 +853,9 @@ scenario('c7', async () => {
     await goTab(page, 'encounter');
     await fillTab(page, '#encounter-players', '20000');
     check('c7: Players 20000 is refused', await page.evaluate(() => ({
-        count: EncounterState.settings.playerCount, rows: document.querySelectorAll('#player-character-inputs .player-character-row').length
-    })), { count: 4, rows: 4 });
+        count: EncounterState.settings.playerCount, rows: document.querySelectorAll('#player-character-inputs .player-character-row').length,
+        box: document.getElementById('encounter-players').value
+    })), { count: 4, rows: 4, box: '4' });
 
     await goTab(page, 'threats');
     const rowFound = await clickThreatRowById(page, 'sly_marbo_aaa');
@@ -1053,10 +1131,35 @@ scenario('inputs', async () => {
 
 async function main() {
     const args = process.argv.slice(2);
-    const arg = (name) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : null; };
-    const snapshotFile = arg('--snapshot');
-    const compareFile = arg('--compare');
-    const only = arg('--only');
+    // A flag with no value, an empty value or a value that is another flag stops the run. An unset variable must not skip a mode.
+    const FLAGS = ['--snapshot', '--compare', '--only'];
+    const values = {};
+    for (let i = 0; i < args.length; i++) {
+        if (!FLAGS.includes(args[i])) { console.log(`FAIL  unknown argument: ${args[i]}`); process.exitCode = 1; return; }
+        const value = args[i + 1];
+        if (value === undefined || value === '' || value.startsWith('--')) { console.log(`FAIL  ${args[i]} needs a value`); process.exitCode = 1; return; }
+        if (args[i] in values) { console.log(`FAIL  ${args[i]} is given two times`); process.exitCode = 1; return; }
+        values[args[i]] = value;
+        i++;
+    }
+    const snapshotFile = values['--snapshot'] || null;
+    const compareFile = values['--compare'] || null;
+    const only = values['--only'] || null;
+    if ((snapshotFile || compareFile) && (snapshotFile && compareFile || only)) {
+        console.log('FAIL  --snapshot, --compare and --only exclude each other');
+        process.exitCode = 1;
+        return;
+    }
+    if (only && !scenarios.some(sc => sc.name.startsWith(only))) {
+        console.log(`FAIL  --only ${only} matches no scenario. The scenarios are: ${scenarios.map(sc => sc.name).join(', ')}`);
+        process.exitCode = 1;
+        return;
+    }
+    if (compareFile && !fs.existsSync(compareFile)) {
+        console.log(`FAIL  the baseline file does not exist: ${compareFile}`);
+        process.exitCode = 1;
+        return;
+    }
 
     fs.mkdirSync(process.env.PROOF_TMP, { recursive: true });
     let server = null;
@@ -1078,6 +1181,8 @@ async function main() {
     try {
         tmpDir = fs.mkdtempSync(path.join(process.env.PROOF_TMP, 'bestiary-proof-'));
         server = await startServer();
+        // Playwright writes its profile and its files to the temporary folder. Point that folder to the fixture folder.
+        process.env.TMPDIR = tmpDir;
         browser = await chromium.launch({ headless: true });
         if (snapshotFile) {
             await runSnapshot(snapshotFile);

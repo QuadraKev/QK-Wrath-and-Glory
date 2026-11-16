@@ -45,11 +45,13 @@ function makeContext() {
     vm.createContext(sandbox);
     const load = (rel) => vm.runInContext(readSource(rel), sandbox, { filename: rel });
     for (const rel of ['bestiary/js/data-loader.js', 'bestiary/js/bestiary-check.js', 'bestiary/js/encounter-state.js',
-        'bestiary/js/threat-builder-state.js', 'bestiary/tabs/references-tab.js']) load(rel);
+        'bestiary/js/threat-builder-state.js', 'bestiary/tabs/references-tab.js', 'bestiary/tabs/vehicles-tab.js',
+        'bestiary/tabs/encounter-tab.js']) load(rel);
     const get = (name) => vm.runInContext(name, sandbox);
     const ctx = {
         DataLoader: get('DataLoader'), BestiaryCheck: get('BestiaryCheck'), EncounterState: get('EncounterState'),
-        ThreatBuilderState: get('ThreatBuilderState'), ReferencesTab: get('ReferencesTab')
+        ThreatBuilderState: get('ThreatBuilderState'), ReferencesTab: get('ReferencesTab'),
+        VehiclesTab: get('VehiclesTab'), EncounterTab: get('EncounterTab'), sandbox
     };
     ctx.DataLoader.cache['threats.json'] = readJson('data/threats.json');
     ctx.DataLoader.cache['vehicles.json'] = readJson('data/vehicles.json');
@@ -57,7 +59,7 @@ function makeContext() {
     return ctx;
 }
 
-const { DataLoader, BestiaryCheck, EncounterState, ThreatBuilderState, ReferencesTab } = makeContext();
+const { DataLoader, BestiaryCheck, EncounterState, ThreatBuilderState, ReferencesTab, VehiclesTab, EncounterTab, sandbox } = makeContext();
 
 // ----- Item 1 (TB10-1): the index that the drag gives is the number of list entries before the placeholder -----
 // The caller counts the hidden original of the dragged entry too, so the index runs from 0 to the list length.
@@ -203,6 +205,73 @@ group('compendium skill bonus', () => {
         if (bonusLine(ReferencesTab.renderArchetypeBody(a)) !== oldParts(a.skillBonus)) diffs.push(a.id);
     }
     check('compendium: each entry with normal skills prints the old text', { diffs, some: count > 0 }, { diffs: [], some: true });
+});
+
+// ----- Item 6 (TB10-6): a range band that is null prints "-" -----
+group('range bands', () => {
+    const WEAPONS = readJson('data/weapons.json');
+    const oldText = (r) => `${r.short}/${r.medium}/${r.long}`;
+    const gun = (range) => ({ id: 'late_gun', name: 'Late Gun', type: 'ranged', category: 'Pistols', damage: { base: 4, bonus: 0 }, ed: 1, ap: 0, range, traits: [] });
+    const nullBand = { short: 6, medium: null, long: null };
+
+    // Site 1: the wargear weapon of the data loader
+    const wargear = (range) => DataLoader.normalizeWargearWeapon(gun(range)).range;
+    check('range: normalizeWargearWeapon with two null bands gives 6/-/-', wargear(nullBand), '6/-/-');
+    check('range: normalizeWargearWeapon with three numbers gives the old text', wargear({ short: 6, medium: 12, long: 24 }), '6/12/24');
+    check('range: normalizeWargearWeapon prints 0 as 0', wargear({ short: 0, medium: null, long: 5 }), '0/-/5');
+    const diffs = [];
+    let numbered = 0;
+    for (const w of WEAPONS) {
+        if (!w.range || typeof w.range !== 'object') continue;
+        if (w.range.short == null || w.range.medium == null || w.range.long == null) continue;
+        numbered++;
+        if (DataLoader.normalizeWargearWeapon(w).range !== oldText(w.range)) diffs.push(w.id);
+    }
+    check('range: for each weapon of the data with three numbers, the text is the old text', { diffs, some: numbered > 400 }, { diffs: [], some: true });
+    const real = WEAPONS.filter(w => w.range && typeof w.range === 'object' && (w.range.short == null || w.range.medium == null || w.range.long == null));
+    check('range: the four real weapons with a null band print no "null"',
+        real.map(w => DataLoader.normalizeWargearWeapon(w).range).some(t => t.includes('null')), false);
+
+    // Site 2: the launcher with ammo
+    const launched = (range) => DataLoader.normalizeLauncherWithAmmo(gun(range), { damage: { base: 5, bonus: 0 }, ed: 2, ap: -1, traits: [] }).range;
+    check('range: normalizeLauncherWithAmmo with two null bands gives 6/-/-', launched(nullBand), '6/-/-');
+    check('range: normalizeLauncherWithAmmo with three numbers gives the old text', launched({ short: 6, medium: 12, long: 24 }), '6/12/24');
+
+    // Site 3: the weapon picker card of the encounter tab
+    const card = (range) => EncounterTab.renderWeaponPickerCard(gun(range));
+    check('range: the weapon picker card with two null bands shows "Range 6/-/-" and no "null"',
+        { has: card(nullBand).includes('Range 6/-/-'), null: card(nullBand).includes('null') }, { has: true, null: false });
+    check('range: the weapon picker card with three numbers shows the old text', card({ short: 6, medium: 12, long: 24 }).includes('Range 6/12/24'), true);
+
+    // Site 4: formatRange of the vehicles tab
+    check('range: formatRange with two null bands gives 6/-/-', VehiclesTab.formatRange(nullBand), '6/-/-');
+    check('range: formatRange with three numbers gives the old text', VehiclesTab.formatRange({ short: 6, medium: 12, long: 24 }), '6/12/24');
+    check('range: formatRange keeps a text range and a missing range', [VehiclesTab.formatRange('Melee'), VehiclesTab.formatRange(undefined)], ['Melee', null]);
+
+    // Site 5: the talent profile table of the Compendium
+    const saved = DataLoader.cache['weapons.json'];
+    DataLoader.cache['weapons.json'] = [gun(nullBand), Object.assign(gun({ short: 6, medium: 12, long: 24 }), { id: 'late_gun_2', name: 'Late Gun 2' })];
+    const table = ReferencesTab.renderTalentProfiles({ profiles: ['late_gun', 'late_gun_2'] });
+    DataLoader.cache['weapons.json'] = saved;
+    check('range: the profile table shows 6/-/-, the old text for three numbers, and no "null"',
+        { nullBand: table.includes('<td>6/-/-</td>'), numbers: table.includes('<td>6/12/24</td>'), null: table.includes('null') },
+        { nullBand: true, numbers: true, null: false });
+});
+
+// ----- Item 7 (TB10-7): the empty state of the Compendium escapes the search text -----
+group('compendium empty state', () => {
+    const el = { innerHTML: '' };
+    sandbox.document = { getElementById: () => el };
+    ReferencesTab.allEntries = [];
+    ReferencesTab._scrollHandler = null;
+    const render = (query) => { ReferencesTab.searchQuery = query; ReferencesTab.renderEntries(); return el.innerHTML; };
+    const hostile = render('<img src=x onerror=1>&"');
+    check('compendium: a hostile search text gives no <img element and shows the text as typed',
+        { img: /<img/i.test(hostile), text: hostile.includes('&lt;img src=x onerror=1&gt;&amp;"') }, { img: false, text: true });
+    check('compendium: a plain search text gives the old output',
+        render('bolter'), '<div class="glossary-empty"><p>No entries found for "bolter".</p></div>');
+    check('compendium: an empty search text gives the old output', render(''), '<div class="glossary-empty"><p>No entries found.</p></div>');
+    ReferencesTab.searchQuery = '';
 });
 
 console.log(failures === 0 ? '\nAll checks passed' : `\n${failures} check(s) FAILED`);

@@ -164,7 +164,7 @@ const DataLoader = {
 
         let rangeStr = '';
         if (weapon.range && typeof weapon.range === 'object') {
-            rangeStr = `${weapon.range.short}/${weapon.range.medium}/${weapon.range.long}`;
+            rangeStr = `${weapon.range.short ?? '-'}/${weapon.range.medium ?? '-'}/${weapon.range.long ?? '-'}`;
         } else if (weapon.range) {
             rangeStr = String(weapon.range);
         }
@@ -262,7 +262,7 @@ const DataLoader = {
         // Use launcher's range, ammo's damage/ED/AP
         let rangeStr = '';
         if (launcher.range && typeof launcher.range === 'object') {
-            rangeStr = `${launcher.range.short}/${launcher.range.medium}/${launcher.range.long}`;
+            rangeStr = `${launcher.range.short ?? '-'}/${launcher.range.medium ?? '-'}/${launcher.range.long ?? '-'}`;
         } else if (launcher.range) {
             rangeStr = String(launcher.range);
         }

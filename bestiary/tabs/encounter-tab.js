@@ -1750,7 +1750,7 @@ const EncounterTab = {
         statParts.push(damagePart);
         if (weapon.ap && weapon.ap !== 0) statParts.push(`AP ${weapon.ap}`);
         if (weapon.range && typeof weapon.range === 'object') {
-            statParts.push(`Range ${weapon.range.short}/${weapon.range.medium}/${weapon.range.long}`);
+            statParts.push(`Range ${weapon.range.short ?? '-'}/${weapon.range.medium ?? '-'}/${weapon.range.long ?? '-'}`);
         } else if (weapon.range) {
             statParts.push(`Range ${weapon.range}`);
         }

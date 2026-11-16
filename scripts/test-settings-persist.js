@@ -248,13 +248,15 @@ for (const value of [{}, 5, true, 'core']) {
     const NO_CHARACTER = 'The file does not contain a character.';
     // Runs one load with the import result that the caller gives. Returns the confirm calls, the cancelOpen calls,
     // the result and the name of the character after the load.
-    async function loadWith(importResult, { canceledPick = false } = {}) {
+    async function loadWith(importResult, { canceledPick = false, throwingListener = false } = {}) {
         const { State, CharacterIO, api } = appSandbox(storageOn(new Map()));
         let cancels = 0, confirms = 0;
         api.cancelOpen = () => { cancels++; };
         if (canceledPick) api.showOpenDialog = async () => ({ canceled: true });
         api.importCharacter = async () => importResult();
         State.loadCharacter(character('Kaelen'));
+        // A 'load' listener that throws: State.loadCharacter has put the new character in before the throw.
+        if (throwingListener) State.addListener(type => { if (type === 'load') throw new Error('render failed'); });
         const result = await CharacterIO.load(async () => { confirms++; return true; });
         return { confirms, cancels, result, name: State.character.name };
     }
@@ -271,6 +273,9 @@ for (const value of [{}, 5, true, 'core']) {
     const loaded = await loadWith(() => ({ success: true, character: character('Vex') }));
     check('TC18-3: a file with a character gets one confirm', loaded.confirms, 1);
     check('TC18-4: a load that succeeds does not call cancelOpen', [loaded.cancels, loaded.name], [0, 'Vex']);
+    const late = await loadWith(() => ({ success: true, character: character('Vex') }), { throwingListener: true });
+    check('TC18-5: a throw after the new character is in gives the error result', late.result, { success: false, error: 'render failed' });
+    check('TC18-5: a throw after the new character is in does not call cancelOpen', [late.cancels, late.name], [0, 'Vex']);
 }
 
 // CC17: a cancel puts back the file handle that was there before the pick

@@ -49,7 +49,10 @@ const CharacterIO = {
     // (TC18-3). On false the load stops with no change (CC6).
     // Each exit after a pick that does not load puts back the file handle of the last Save, so a Save does not
     // write to the declined or refused file (CC17, TC18-4).
+    // Limit: a throw after loadCharacter put the new character in keeps the handle of the picked file,
+    // because the page then holds the character of that file (TC18-5).
     async load(confirmLoad = null) {
+        const prior = State.character;
         let picked = false;
         try {
             const dialogResult = await window.api.showOpenDialog();
@@ -77,7 +80,7 @@ const CharacterIO = {
             return { success: false, error: 'Load cancelled.' };
         } catch (error) {
             console.error('Load error:', error);
-            if (picked) window.api.cancelOpen?.();
+            if (picked && State.character === prior) window.api.cancelOpen?.();
             return { success: false, error: error.message };
         }
     },

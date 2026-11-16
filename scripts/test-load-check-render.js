@@ -1,8 +1,8 @@
 // Tests that a hostile number value cannot reach the page after the real character load (class (b) sites, spec section 8.5).
-// Each row puts a hostile value into one field, loads the character through the real State.loadCharacter, renders the site
+// Each row puts a hostile value into one or more fields, loads the character through the real State.loadCharacter, renders the site
 // and looks for the raw tag. The load check (CharacterCheck.repair) must keep the raw value out of the render.
 // For a number field, it turns the value into a number. For a bad targetTier, it drops the ascension entry.
-// The sheet reads rank only through a talent, so the rank rows of the sheet also load a talent.
+// The base character has no rank bonus, so each rank row of the sheet also loads a talent.
 // Run: node scripts/test-load-check-render.js
 
 const fs = require('fs');

@@ -264,6 +264,91 @@ check('A2: an empty string clears the choice', State.setArchetypeSkillChoice('ch
 check('A2: medicae goes back to 0', State.character.skills.medicae, 0);
 human('ganger');
 check('A2: Ganger has no choice key', State.setArchetypeSkillChoice('choice1', 'insight'), false);
+check('A2: Ganger: a skill name is no choice key', State.setArchetypeSkillChoice('cunning', 'insight'), false);
+
+// A2 (F3): a clear of each key returns true, also the second clear
+human('inquisitor');
+State.setArchetypeSkillChoice('choice1', 'insight');
+State.setArchetypeSkillChoice('choice2', 'scholar');
+check('A2: the clear of choice1 returns true', State.setArchetypeSkillChoice('choice1', ''), true);
+check('A2: the clear of choice2 returns true', State.setArchetypeSkillChoice('choice2', ''), true);
+check('A2: scholar goes back to 0', State.character.skills.scholar, 0);
+
+// A2 (F2): a stored key that is not a key of the archetype does not hold a skill
+human('inquisitor');
+State.character.archetypeSkillChoices = { weaponSkill: 'insight', foo: 'scholar' };
+check('A2: a stored key of no bonus does not block insight', State.setArchetypeSkillChoice('choice2', 'insight'), true);
+check('A2: a stored key of no bonus does not block scholar', State.setArchetypeSkillChoice('choice2', 'scholar'), true);
+
+// TC4-1: the value before the choice comes back when the choice moves away
+function buyAwareness3() {
+    human('inquisitor');
+    State.setAdditionalXP('5000');
+    State.increaseSkill('awareness'); State.increaseSkill('awareness'); State.increaseSkill('awareness');
+}
+buyAwareness3();
+check('TC4-1: awareness is 3 before the walk', State.character.skills.awareness, 3);
+const walkStart = XP.calculateSkillXP(State.character);
+check('TC4-1: the walk start costs skill XP', walkStart > 0, true);
+for (const s of ['athletics', 'awareness', 'ballisticSkill', 'cunning']) State.setArchetypeSkillChoice('choice1', s);
+check('TC4-1: walk: awareness is 3', State.character.skills.awareness, 3);
+check('TC4-1: walk: athletics is 0', State.character.skills.athletics, 0);
+check('TC4-1: walk: ballisticSkill is 0', State.character.skills.ballisticSkill, 0);
+check('TC4-1: walk: cunning is 4', State.character.skills.cunning, 4);
+check('TC4-1: walk: the skill XP is the total before the walk', XP.calculateSkillXP(State.character), walkStart);
+
+// A value above the bonus stays when the choice moves away
+human('inquisitor');
+State.setAdditionalXP('5000');
+State.setArchetypeSkillChoice('choice1', 'insight');
+State.increaseSkill('insight');
+check('TC4-1: insight is 5 while chosen', State.character.skills.insight, 5);
+State.setArchetypeSkillChoice('choice1', 'medicae');
+check('TC4-1: a value above the bonus stays', State.character.skills.insight, 5);
+
+// A clear gives the kept value back
+buyAwareness3();
+State.setArchetypeSkillChoice('choice1', 'awareness');
+check('TC4-1: awareness is 4 while chosen', State.character.skills.awareness, 4);
+State.setArchetypeSkillChoice('choice1', '');
+check('TC4-1: the clear gives awareness 3 back', State.character.skills.awareness, 3);
+
+// A selection of the chosen skill again keeps the kept value
+buyAwareness3();
+State.setArchetypeSkillChoice('choice1', 'awareness');
+State.setArchetypeSkillChoice('choice1', 'awareness');
+State.setArchetypeSkillChoice('choice1', '');
+check('TC4-1: the same skill twice keeps the kept value', State.character.skills.awareness, 3);
+
+// After a load the memory is empty, and the old rule applies
+buyAwareness3();
+State.setArchetypeSkillChoice('choice1', 'awareness');
+State.loadCharacter(JSON.parse(JSON.stringify(State.character)));
+check('TC4-1: the memory is empty after a load', State._skillChoicePrior, {});
+State.setArchetypeSkillChoice('choice1', 'ballisticSkill');
+check('TC4-1: after a load the old skill at the bonus goes to its free value', State.character.skills.awareness, 0);
+
+// The memory is not part of the stored character
+buyAwareness3();
+State.setArchetypeSkillChoice('choice1', 'awareness');
+check('TC4-1: the memory is in no stored field', JSON.stringify(State.character).includes('_skillChoicePrior'), false);
+
+// A new character and a new archetype clear the memory
+State.newCharacter();
+check('TC4-1: the memory is empty after a new character', State._skillChoicePrior, {});
+buyAwareness3();
+State.setArchetypeSkillChoice('choice1', 'awareness');
+State.setArchetype('inquisitorial_acolyte');
+check('TC4-1: the memory is empty after a new archetype', State._skillChoicePrior, {});
+
+// Two keys: a walk on choice2 does not touch the kept value of choice1
+buyAwareness3();
+State.setArchetypeSkillChoice('choice1', 'awareness');
+for (const s of ['athletics', 'cunning', 'medicae']) State.setArchetypeSkillChoice('choice2', s);
+check('TC4-1: two keys: awareness stays 4 under choice1', State.character.skills.awareness, 4);
+State.setArchetypeSkillChoice('choice1', '');
+check('TC4-1: two keys: choice1 still gives awareness 3 back', State.character.skills.awareness, 3);
+check('TC4-1: two keys: the walk on choice2 leaves athletics at 0', State.character.skills.athletics, 0);
 
 console.log(failures ? `\n${failures} FAILED` : '\nAll passed');
 process.exit(failures ? 1 : 0);

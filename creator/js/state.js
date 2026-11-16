@@ -23,10 +23,15 @@ const State = {
     _autoSaveTimer: null,
     _AUTO_SAVE_KEY: 'wng-creator-autosave',
 
+    // The value that a skill had before a key of archetypeSkillChoices selected it: { key: { skill, value } }.
+    // This is in memory only. It is not a field of the character and is never stored.
+    _skillChoicePrior: {},
+
     // Initialize state with default character
     init(gameData) {
         this.gameData = gameData;
         this.character = this.createNewCharacter();
+        this._skillChoicePrior = {};
     },
 
     // Create a new blank character
@@ -130,6 +135,7 @@ const State = {
     // Reset character to new
     newCharacter() {
         this.character = this.createNewCharacter();
+        this._skillChoicePrior = {};
         this.notifyListeners('reset');
         this.isDirty = false;
         this.clearAutoSave();
@@ -143,6 +149,7 @@ const State = {
         }
         const newChar = this.createNewCharacter();
         this.character = { ...newChar, ...data };
+        this._skillChoicePrior = {};
 
         // Repair the type of each known field before the migrations below read them
         const repaired = CharacterCheck.repair(this.character, this.createNewCharacter());
@@ -357,6 +364,7 @@ const State = {
                 // Reset sub-faction keyword picks and skill picks from any previous archetype
                 this.character.archetypeKeywordChoices = {};
                 this.character.archetypeSkillChoices = {};
+                this._skillChoicePrior = {};
             });
 
             // Wargear is managed via the Wargear tab "Add Starting Wargear" button.
@@ -392,6 +400,7 @@ const State = {
         this._withRebase(() => {
             this.character.archetype = { id: null, xpCost: 0 };
         });
+        this._skillChoicePrior = {};
         this.character.freePowers = [];
         this.character.unlockedDisciplines = [];
         this.character.psychicPowers = [];
@@ -422,6 +431,7 @@ const State = {
         this._withRebase(() => {
             this.character.archetype = { id: 'custom', xpCost: 0 };
         });
+        this._skillChoicePrior = {};
 
         // Keep the custom items in order, and move the owned-item talent choices to their new indices.
         // A choice on a removed entry becomes null, so the player picks again.
@@ -611,6 +621,8 @@ const State = {
 
     // Store the skill of an "any skill" bonus key of the archetype (for example choice1 of the Inquisitor).
     // A skill name that is empty clears the choice. A skill that another key holds is refused (Core p.116).
+    // The setter keeps the value that the new skill had before the choice. When the key leaves a skill
+    // at the bonus value or under it, the skill goes back to that kept value (ruling TC4-1).
     // Return true when the choice is stored.
     setArchetypeSkillChoice(key, skill) {
         const archetype = DataLoader.getArchetype(this.character.archetype?.id);
@@ -622,14 +634,33 @@ const State = {
         const choices = this.character.archetypeSkillChoices || {};
         if (skill !== '') {
             for (const [otherKey, chosen] of Object.entries(choices)) {
-                if (otherKey !== key && chosen === skill) return false;
+                if (otherKey === key || !Object.prototype.hasOwnProperty.call(skillBonus, otherKey)) continue;
+                if (chosen === skill) return false;
             }
         }
 
+        const oldSkill = choices[key];
+        const prior = this._skillChoicePrior[key];
+        const oldValue = this.character.skills[oldSkill];
+        const valueBefore = this.character.skills[skill];
+
+        // The rebase runs first: the new skill rises to the bonus value and the old skill goes to its free value.
         this._withRebase(() => {
             if (!this.character.archetypeSkillChoices) this.character.archetypeSkillChoices = {};
             this.character.archetypeSkillChoices[key] = skill;
         });
+
+        // Then the old skill goes back to the kept value, when it was at the bonus value or under it
+        // before the change. The restore runs after the rebase, because the rebase would set the old
+        // skill to its free value and so would overwrite the restore.
+        if (oldSkill !== skill) {
+            if (prior && prior.skill === oldSkill && oldValue <= skillBonus[key]) {
+                const free = XPCalculator.getBaseline(this.character).skills[oldSkill];
+                this.character.skills[oldSkill] = Math.max(prior.value, free);
+            }
+            if (skill === '') delete this._skillChoicePrior[key];
+            else this._skillChoicePrior[key] = { skill, value: valueBefore };
+        }
         this.notifyListeners('stats');
         return true;
     },

@@ -34,6 +34,8 @@ const EncounterState = {
     // True when this page wrote the key or restored its state from it (spec §5.2, CB1).
     // Only an owner removes the key, so a second tab cannot delete the work of the first tab.
     _ownsAutoSave: false,
+    // The text that this page last wrote to the key or restored from it (TB3-3)
+    _autoSaveText: null,
 
     // Initialize the state
     init() {
@@ -1010,6 +1012,8 @@ const EncounterState = {
     // Load encounter from data object (used by the encounter file load and the auto-save restore).
     // The caller has tested that data is a plain object. priorPaths are the paths that the caller repaired.
     loadFromData(data, priorPaths = []) {
+        // The index of each individual in the loaded data, for the E2 paths (the repair can drop entries)
+        const loadedIndex = new Map(Array.isArray(data.individuals) ? data.individuals.map((entry, i) => [entry, i]) : []);
         const paths = priorPaths.concat(BestiaryCheck.repairEncounter(data));
         // Re-inject custom threats before resolving encounter entries
         if (data.customThreats) {
@@ -1024,9 +1028,10 @@ const EncounterState = {
         this.encounterOrder = data.encounterOrder || null;
         // Recompute a null max value from the threat and the loaded settings (E2).
         // The value stays null when the threat does not resolve.
-        this.individuals.forEach((individual, i) => {
+        this.individuals.forEach(individual => {
             const threat = DataLoader.getThreat(individual.threatId);
             if (!threat) return;
+            const i = loadedIndex.get(individual);
             if (individual.maxWounds === null) {
                 individual.maxWounds = this.calculateMaxWounds(threat, individual.bonus);
                 paths.push(`individuals[${i}].maxWounds`);
@@ -1071,8 +1076,10 @@ const EncounterState = {
                 customThreats: this._collectCustomThreats(),
                 timestamp: Date.now()
             };
-            localStorage.setItem(this._AUTO_SAVE_KEY, JSON.stringify(data));
+            const text = JSON.stringify(data);
+            localStorage.setItem(this._AUTO_SAVE_KEY, text);
             this._ownsAutoSave = true;
+            this._autoSaveText = text;
         } catch (e) {
             console.warn('Auto-save failed:', e);
         }
@@ -1094,11 +1101,13 @@ const EncounterState = {
         }
     },
 
-    // Clear the auto-save. Only an owner removes the key (CB1).
+    // Clear the auto-save. Only an owner removes the key (CB1), and only when the key still holds
+    // the text of this page. A newer text is the work of another tab (TB3-3).
     clearAutoSave() {
-        if (this._ownsAutoSave) {
+        if (this._ownsAutoSave && localStorage.getItem(this._AUTO_SAVE_KEY) === this._autoSaveText) {
             localStorage.removeItem(this._AUTO_SAVE_KEY);
         }
         this._ownsAutoSave = false;
+        this._autoSaveText = null;
     }
 };

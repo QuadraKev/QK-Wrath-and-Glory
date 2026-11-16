@@ -80,6 +80,13 @@ const App = {
 
     // Initialize the application
     async init() {
+        // A browser can hold an old page with a new script. Without the check module the restore fails
+        // and the next add writes over the stored work, so the app does not start (TB3-2).
+        if (typeof BestiaryCheck === 'undefined') {
+            document.body.textContent = 'The app did not load completely. Reload the page.';
+            return;
+        }
+
         console.log('Initializing Wrath & Glory Bestiary...');
 
         // Load game data
@@ -246,8 +253,13 @@ const App = {
                     saved.customThreats.forEach(t => DataLoader.injectThreat(t));
                 }
                 EncounterState.loadFromData(saved.encounter, paths);
-                // The page restored its state from the key, so it owns the key (CB1)
-                EncounterState._ownsAutoSave = true;
+                // The page restored its state from the key, so it owns the key (CB1).
+                // A restored state that is empty does not own it (TB3-4).
+                // The page keeps the restored text for the stored text test of clearAutoSave (TB3-3).
+                if (!EncounterState.isEmpty()) {
+                    EncounterState._ownsAutoSave = true;
+                    EncounterState._autoSaveText = localStorage.getItem(EncounterState._AUTO_SAVE_KEY);
+                }
                 this.updateThreatCount();
                 this.switchTab('encounter');
                 EncounterTab.refresh();

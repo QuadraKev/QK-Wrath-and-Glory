@@ -43,7 +43,8 @@ const SOURCES = {};
 for (const rel of ['bestiary/js/data-loader.js', 'bestiary/js/bestiary-check.js', 'bestiary/js/encounter-state.js',
     'bestiary/js/threat-builder-state.js', 'bestiary/js/app.js', 'bestiary/tabs/encounter-tab.js']) SOURCES[rel] = readText(rel);
 
-const tabStub = () => ({ init() {}, refresh() {} });
+// A tab stub records each init() in inits
+const tabStub = (name, inits) => ({ init() { inits.push(name); }, refresh() {} });
 const classList = () => ({ add() {}, remove() {}, toggle() {}, contains() { return false; } });
 
 // The document of makeApp: a stable stub element for each id
@@ -51,8 +52,9 @@ function makeStubDocument() {
     const byId = {};
     return {
         addEventListener() {},
-        getElementById(id) { return byId[id] || (byId[id] = { classList: classList(), textContent: '', value: '' }); },
-        querySelectorAll: () => []
+        getElementById(id) { return byId[id] || (byId[id] = { classList: classList(), textContent: '', value: '', addEventListener() {} }); },
+        querySelectorAll: () => [],
+        body: { classList: classList(), textContent: '' }
     };
 }
 
@@ -98,9 +100,11 @@ function makeRecordingDocument(notes) {
 }
 
 // One page of the app. Two apps on one store are two tabs of one origin.
-function makeApp(store, withTab = false) {
+// With noCheck, the page has no bestiary-check.js (a page that did not load completely).
+function makeApp(store, withTab = false, noCheck = false) {
     const warns = [];
     const notes = [];
+    const inits = [];
     const timers = new Map();
     let nextTimer = 1;
     const sandbox = {
@@ -117,13 +121,16 @@ function makeApp(store, withTab = false) {
         history: { replaceState() {}, pushState() {} },
         location: { hash: '' },
         confirm: () => true,
-        ThreatsTab: tabStub(), VehiclesTab: tabStub(), GlossaryTab: tabStub(), ReferencesTab: tabStub(),
-        ThreatBuilderTab: tabStub(), SettingsTab: tabStub()
+        Glossary: { init: async () => {} },
+        ThreatsTab: tabStub('ThreatsTab', inits), VehiclesTab: tabStub('VehiclesTab', inits),
+        GlossaryTab: tabStub('GlossaryTab', inits), ReferencesTab: tabStub('ReferencesTab', inits),
+        ThreatBuilderTab: tabStub('ThreatBuilderTab', inits), SettingsTab: tabStub('SettingsTab', inits)
     };
-    if (!withTab) sandbox.EncounterTab = tabStub();
+    if (!withTab) sandbox.EncounterTab = tabStub('EncounterTab', inits);
     vm.createContext(sandbox);
     const files = ['bestiary/js/data-loader.js', 'bestiary/js/bestiary-check.js', 'bestiary/js/encounter-state.js',
         'bestiary/js/threat-builder-state.js', 'bestiary/js/app.js'];
+    if (noCheck) files.splice(1, 1);
     if (withTab) files.push('bestiary/tabs/encounter-tab.js');
     for (const rel of files) vm.runInContext(SOURCES[rel], sandbox, { filename: rel });
     const get = (name) => vm.runInContext(name, sandbox);
@@ -139,7 +146,7 @@ function makeApp(store, withTab = false) {
     };
     const app = {
         EncounterState: get('EncounterState'), ThreatBuilderState: get('ThreatBuilderState'), DataLoader, App: get('App'),
-        window: sandbox.window, warns, notes, flush
+        window: sandbox.window, document: sandbox.document, warns, notes, inits, flush
     };
     if (withTab) app.EncounterTab = get('EncounterTab');
     return app;
@@ -249,6 +256,12 @@ const repairedPaths = (warns) => warns.filter(w => w.startsWith(ENC_REPAIR)).map
         try { app.App.checkAutoSave(); } catch (e) { threw = e.message; }
         check('restore: top-level customThreats {} does not stop the builder restore',
             { threw, name: app.ThreatBuilderState.threat && app.ThreatBuilderState.threat.name }, { threw: null, name: 'Kept' });
+
+        // Fix round 1 (F5): the paths of the top-level list go into the one warning
+        const store2 = { [KEY_ENC]: JSON.stringify({ encounter: valid, customThreats: [5], timestamp: 1 }) };
+        const app2 = makeApp(store2);
+        app2.App.checkAutoSave();
+        check('restore: a bad top-level custom threat is named autosave.customThreats[0]', repairedPaths(app2.warns), [['autosave.customThreats[0]']]);
     });
 
     // 4
@@ -317,6 +330,25 @@ const repairedPaths = (warns) => warns.filter(w => w.startsWith(ENC_REPAIR)).map
         const app2 = makeApp(store2);
         app2.App.checkAutoSave();
         check('E2: a null maxWounds of an unknown threat stays null', app2.EncounterState.individuals[0].maxWounds, null);
+
+        // Fix round 1 (F5): a null maxShock
+        const store3 = { [KEY_ENC]: autosave(mkEnc({
+            individuals: [mkInd('e2i3', 'sly_marbo_aaa', { bonus: 'adversary', maxWounds: 19, maxShock: null })]
+        })) };
+        const app3 = makeApp(store3);
+        app3.App.checkAutoSave();
+        const shock = app3.DataLoader.getThreat('sly_marbo_aaa').shock;
+        check('E2: a null maxShock is recomputed',
+            { max: app3.EncounterState.individuals[0].maxShock, paths: repairedPaths(app3.warns) },
+            { max: shock + 4 + 1, paths: [['individuals[0].maxShock']] });
+
+        // Fix round 1 (F6): the path uses the index of the loaded data, also after a dropped entry
+        const store4 = { [KEY_ENC]: autosave(mkEnc({
+            individuals: [5, mkInd('e2i4', 'sly_marbo_aaa', { maxWounds: null })]
+        })) };
+        const app4 = makeApp(store4);
+        app4.App.checkAutoSave();
+        check('E2: the path uses the index of the loaded data', repairedPaths(app4.warns), [['individuals[0]', 'individuals[1].maxWounds']]);
     });
 
     // 9
@@ -444,6 +476,59 @@ const repairedPaths = (warns) => warns.filter(w => w.startsWith(ENC_REPAIR)).map
         const restored = c.EncounterState.individuals.map(i => i.id);
         c.EncounterState.removeIndividual(id);
         check('CB1: a restore makes the page the owner', { restored, key: store[KEY_ENC] }, { restored: [id], key: undefined });
+    });
+
+    // Fix round 1 (TB3-3): a newer text of another tab stays
+    await group('TB3-3', () => {
+        const store = {};
+        const a = makeApp(store);
+        a.App.checkAutoSave();
+        a.EncounterState.addIndividual('sly_marbo_aaa', 1);
+        a.flush();
+        const b = makeApp(store);
+        b.App.checkAutoSave();
+        const [bId] = b.EncounterState.individuals.map(i => i.id);
+        a.EncounterState.incrementRound();
+        a.flush();
+        const newer = store[KEY_ENC];
+        b.EncounterState.removeIndividual(bId);
+        check('TB3-3: a remove in a tab that restored keeps the newer text of the other tab',
+            { bRestored: bId !== undefined, newerRound: newer ? JSON.parse(newer).encounter.settings.round : null, same: store[KEY_ENC] === newer },
+            { bRestored: true, newerRound: 2, same: true });
+    });
+
+    // Fix round 1 (TB3-4): a restore that gives an empty state does not own the key
+    await group('TB3-4', () => {
+        const stored = JSON.stringify({ encounter: { individuals: {} }, timestamp: 1 });
+        const store = { [KEY_ENC]: stored };
+        const app = makeApp(store);
+        app.App.checkAutoSave();
+        app.EncounterState.updateSettings({ tier: 2 });
+        app.flush();
+        check('TB3-4: an empty restore does not own the key', { owns: app.EncounterState._ownsAutoSave, same: store[KEY_ENC] === stored }, { owns: false, same: true });
+    });
+
+    // Fix round 1 (TB3-2): a page with no BestiaryCheck does not start
+    await group('TB3-2', async () => {
+        const run = async (noCheck) => {
+            const stored = autosave(mkEnc({ individuals: [mkInd('t2i1', 'sly_marbo_aaa', { maxWounds: 14, maxShock: 10 })] }));
+            const store = { [KEY_ENC]: stored };
+            const app = makeApp(store, false, noCheck);
+            app.window.api.onCheckUnsavedChanges = () => {};
+            app.window.addEventListener = () => {};
+            app.DataLoader.loadAll = async () => ({});
+            let threw = null;
+            try { await app.App.init(); } catch (e) { threw = e.message; }
+            app.flush();
+            return {
+                threw, message: app.document.body.textContent, inits: app.inits.length > 0,
+                restored: app.EncounterState.individuals.length, same: store[KEY_ENC] === stored
+            };
+        };
+        check('TB3-2: with BestiaryCheck the app starts and restores',
+            await run(false), { threw: null, message: '', inits: true, restored: 1, same: true });
+        check('TB3-2: with no BestiaryCheck the app shows the message and does not start',
+            await run(true), { threw: null, message: 'The app did not load completely. Reload the page.', inits: false, restored: 0, same: true });
     });
 
     // 17

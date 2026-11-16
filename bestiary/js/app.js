@@ -80,6 +80,13 @@ const App = {
 
     // Initialize the application
     async init() {
+        // A browser can hold an old page with a new script. Without the check module the restore fails
+        // and the next add writes over the stored work, so the app does not start (TB3-2).
+        if (typeof BestiaryCheck === 'undefined') {
+            document.body.textContent = 'The app did not load completely. Reload the page.';
+            return;
+        }
+
         console.log('Initializing Wrath & Glory Bestiary...');
 
         // Load game data
@@ -236,22 +243,40 @@ const App = {
     // Check for auto-saved state on startup and auto-load it
     checkAutoSave() {
         // Restore encounter auto-save (including any custom threats)
+        // A stored value of the wrong shape is not loaded and stays stored (spec §4.2)
         const saved = EncounterState.getAutoSave();
-        if (saved && saved.encounter) {
-            // Inject top-level custom threats first (belt-and-suspenders with loadFromData)
-            if (saved.customThreats) {
-                saved.customThreats.forEach(t => DataLoader.injectThreat(t));
+        if (saved !== null) {
+            if (BestiaryCheck.isPlainObject(saved) && BestiaryCheck.isPlainObject(saved.encounter)) {
+                const paths = BestiaryCheck.repairCustomThreatList(saved, 'customThreats', 'autosave.customThreats');
+                // Inject top-level custom threats first (belt-and-suspenders with loadFromData)
+                if (saved.customThreats) {
+                    saved.customThreats.forEach(t => DataLoader.injectThreat(t));
+                }
+                EncounterState.loadFromData(saved.encounter, paths);
+                // The page restored its state from the key, so it owns the key (CB1).
+                // A restored state that is empty does not own it (TB3-4).
+                // The page keeps the restored text for the stored text test of clearAutoSave (TB3-3).
+                if (!EncounterState.isEmpty()) {
+                    EncounterState._ownsAutoSave = true;
+                    EncounterState._autoSaveText = localStorage.getItem(EncounterState._AUTO_SAVE_KEY);
+                }
+                this.updateThreatCount();
+                this.switchTab('encounter');
+                EncounterTab.refresh();
+            } else {
+                console.warn('The auto-save was not loaded: it does not contain an encounter.');
             }
-            EncounterState.loadFromData(saved.encounter);
-            this.updateThreatCount();
-            this.switchTab('encounter');
-            EncounterTab.refresh();
         }
 
         // Restore threat builder auto-save
         const builderSave = ThreatBuilderState.getAutoSave();
-        if (builderSave && builderSave.threat) {
-            ThreatBuilderState.loadFromAutoSave(builderSave.threat);
+        if (builderSave !== null) {
+            if (BestiaryCheck.isPlainObject(builderSave) && BestiaryCheck.isPlainObject(builderSave.threat)) {
+                ThreatBuilderState.loadFromAutoSave(builderSave.threat);
+                ThreatBuilderState._ownsAutoSave = true;
+            } else {
+                console.warn('The auto-save was not loaded: it does not contain a threat.');
+            }
         }
     }
 };

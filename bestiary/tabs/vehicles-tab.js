@@ -429,7 +429,7 @@ const VehiclesTab = {
     },
 
     formatRange(range) {
-        if (range && typeof range === 'object') return `${range.short}/${range.medium}/${range.long}`;
+        if (range && typeof range === 'object') return `${range.short ?? '-'}/${range.medium ?? '-'}/${range.long ?? '-'}`;
         return range ?? null;
     },
 

@@ -4,6 +4,9 @@ const DataLoader = {
     // Cache for loaded data
     cache: {},
 
+    // Counts each change of the threat set that injectThreat and removeThreat make (TB10-2)
+    threatsVersion: 0,
+
     // Faction definitions - maps faction names to keywords that indicate membership
     factionKeywordMap: {
         'Adeptus Astartes': ['ADEPTUS ASTARTES', '[CHAPTER]'],
@@ -161,7 +164,7 @@ const DataLoader = {
 
         let rangeStr = '';
         if (weapon.range && typeof weapon.range === 'object') {
-            rangeStr = `${weapon.range.short}/${weapon.range.medium}/${weapon.range.long}`;
+            rangeStr = `${weapon.range.short ?? '-'}/${weapon.range.medium ?? '-'}/${weapon.range.long ?? '-'}`;
         } else if (weapon.range) {
             rangeStr = String(weapon.range);
         }
@@ -259,7 +262,7 @@ const DataLoader = {
         // Use launcher's range, ammo's damage/ED/AP
         let rangeStr = '';
         if (launcher.range && typeof launcher.range === 'object') {
-            rangeStr = `${launcher.range.short}/${launcher.range.medium}/${launcher.range.long}`;
+            rangeStr = `${launcher.range.short ?? '-'}/${launcher.range.medium ?? '-'}/${launcher.range.long ?? '-'}`;
         } else if (launcher.range) {
             rangeStr = String(launcher.range);
         }
@@ -556,12 +559,14 @@ const DataLoader = {
         if (idx !== -1) threats.splice(idx, 1);
         threats.push(threat);
         this.cache['threats.json'] = threats;
+        this.threatsVersion++;
     },
 
     // Remove a threat from the cache by ID
     removeThreat(threatId) {
         const threats = this.cache['threats.json'] || [];
         this.cache['threats.json'] = threats.filter(t => t.id !== threatId);
+        this.threatsVersion++;
     },
 
     // Filter threats by criteria

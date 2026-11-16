@@ -31,6 +31,11 @@ const EncounterState = {
     // Auto-save support
     _autoSaveTimer: null,
     _AUTO_SAVE_KEY: 'wng-bestiary-autosave',
+    // True when this page wrote the key or restored its state from it (spec §5.2, CB1).
+    // Only an owner removes the key, so a second tab cannot delete the work of the first tab.
+    _ownsAutoSave: false,
+    // The text that this page last wrote to the key or restored from it (TB3-3)
+    _autoSaveText: null,
 
     // Initialize the state
     init() {
@@ -41,6 +46,12 @@ const EncounterState = {
     // Mark encounter as having unsaved changes
     markDirty() {
         this._isDirty = true;
+        // An empty state is not stored: an owner removes the key at once (CB2)
+        if (this.isEmpty()) {
+            clearTimeout(this._autoSaveTimer);
+            this.clearAutoSave();
+            return;
+        }
         this._scheduleAutoSave();
     },
 
@@ -68,6 +79,9 @@ const EncounterState = {
 
     // Add threat(s) as individuals
     addIndividual(threatId, quantity = 1, asMob = false) {
+        // A quantity that is not an integer in 1-20 adds nothing (spec §6.3)
+        if (!Number.isInteger(quantity) || quantity < 1 || quantity > BestiaryCheck.ADD_COUNT_MAX) return [];
+
         const threat = DataLoader.getThreat(threatId);
         if (!threat) return [];
 
@@ -131,11 +145,21 @@ const EncounterState = {
         }
     },
 
+    // Reads the value of an initiative box (spec §6.3). '' or null gives null, an integer
+    // in 0-99 gives that integer, and any other value gives undefined (the writers change nothing).
+    _readInitiative(value) {
+        if (value === '' || value === null) return null;
+        const number = parseInt(value, 10);
+        if (Number.isInteger(number) && number >= 0 && number <= BestiaryCheck.INITIATIVE_MAX) return number;
+        return undefined;
+    },
+
     // Set initiative for an individual
     setInitiative(id, value) {
         const individual = this.individuals.find(i => i.id === id);
-        if (individual) {
-            individual.initiative = value === '' || value === null ? null : parseInt(value);
+        const next = this._readInitiative(value);
+        if (individual && next !== undefined) {
+            individual.initiative = next;
             this.markDirty();
         }
     },
@@ -143,8 +167,9 @@ const EncounterState = {
     // Set initiative for a mob
     setMobInitiative(mobId, value) {
         const mob = this.mobs.find(m => m.id === mobId);
-        if (mob) {
-            mob.initiative = value === '' || value === null ? null : parseInt(value);
+        const next = this._readInitiative(value);
+        if (mob && next !== undefined) {
+            mob.initiative = next;
             this.markDirty();
         }
     },
@@ -537,8 +562,9 @@ const EncounterState = {
     // Set initiative for a player character
     setPlayerCharacterInitiative(id, value) {
         const pc = this.playerCharacters.find(p => p.id === id);
-        if (pc) {
-            pc.initiative = value === '' || value === null ? null : parseInt(value);
+        const next = this._readInitiative(value);
+        if (pc && next !== undefined) {
+            pc.initiative = next;
             this.markDirty();
         }
     },
@@ -595,8 +621,9 @@ const EncounterState = {
     // Set initiative for a vehicle
     setVehicleInitiative(id, value) {
         const entry = this.vehicles.find(v => v.id === id);
-        if (entry) {
-            entry.initiative = value === '' || value === null ? null : parseInt(value);
+        const next = this._readInitiative(value);
+        if (entry && next !== undefined) {
+            entry.initiative = next;
             this.markDirty();
         }
     },
@@ -632,7 +659,9 @@ const EncounterState = {
         this.markDirty();
     },
 
-    // Move an item to a new position in the order
+    // Move an item to a new position in the order.
+    // newIndex is a place in the visible list. The stored order also holds the entries of players
+    // above the player count, so the item goes directly before the visible item at that place (TB5a-6).
     moveItemInOrder(itemType, itemId, newIndex) {
         // First, ensure we have a current order to work with
         if (!this.encounterOrder) {
@@ -642,6 +671,25 @@ const EncounterState = {
                 type: item.type,
                 id: item.id
             }));
+        }
+
+        const visibleItems = this.getEncounterListItems();
+
+        // A place next to the own place (the own index or the next one) changes nothing (TB10-1).
+        const ownIndex = visibleItems.findIndex(item => item.type === itemType && item.id === itemId);
+        if (ownIndex !== -1 && (newIndex === ownIndex || newIndex === ownIndex + 1)) {
+            this.markDirty();
+            return;
+        }
+
+        // The list shows the entries with no stored entry after the stored ones. Store them, in the order
+        // that the list shows when each player counts, so that the index of the caller is a place in the
+        // stored order (TB10-8). The players above the player count are stored too, so they keep their
+        // place when the count goes up (TB10-10).
+        for (const entry of this.getEncounterListItems(true)) {
+            if (!this.encounterOrder.some(stored => stored.type === entry.type && stored.id === entry.id)) {
+                this.encounterOrder.push({ type: entry.type, id: entry.id });
+            }
         }
 
         // Find and remove the item from its current position
@@ -659,9 +707,18 @@ const EncounterState = {
             [movedItem] = this.encounterOrder.splice(currentIndex, 1);
         }
 
-        // Insert at new position
-        const adjustedIndex = currentIndex !== -1 && newIndex > currentIndex ? newIndex - 1 : newIndex;
-        this.encounterOrder.splice(Math.max(0, Math.min(adjustedIndex, this.encounterOrder.length)), 0, movedItem);
+        // Insert before the first visible item from that place on that has an entry. With none, insert at the end.
+        let insertAt = this.encounterOrder.length;
+        for (let i = Math.max(0, newIndex); i < visibleItems.length; i++) {
+            const visible = visibleItems[i];
+            if (visible.type === itemType && visible.id === itemId) continue;
+            const at = this.encounterOrder.findIndex(entry => entry.type === visible.type && entry.id === visible.id);
+            if (at !== -1) {
+                insertAt = at;
+                break;
+            }
+        }
+        this.encounterOrder.splice(insertAt, 0, movedItem);
 
         this.markDirty();
     },
@@ -733,6 +790,16 @@ const EncounterState = {
 
     // Update settings
     updateSettings(newSettings) {
+        // A player count outside 1-10 and a tier outside 1-5 are ignored. The other keys apply (spec §6.3).
+        newSettings = { ...newSettings };
+        const inRange = (v, min, max) => Number.isInteger(v) && v >= min && v <= max;
+        if ('playerCount' in newSettings && !inRange(newSettings.playerCount, BestiaryCheck.PLAYER_COUNT_MIN, BestiaryCheck.PLAYER_COUNT_MAX)) {
+            delete newSettings.playerCount;
+        }
+        if ('tier' in newSettings && !inRange(newSettings.tier, BestiaryCheck.TIER_MIN, BestiaryCheck.TIER_MAX)) {
+            delete newSettings.tier;
+        }
+
         const tierChanged = newSettings.tier !== undefined && newSettings.tier !== this.settings.tier;
         const playerCountChanged = newSettings.playerCount !== undefined && newSettings.playerCount !== this.settings.playerCount;
 
@@ -801,8 +868,9 @@ const EncounterState = {
         return this.individuals.filter(i => !i.mobId);
     },
 
-    // Get encounter list items sorted by initiative or manual order
-    getEncounterListItems() {
+    // Get encounter list items sorted by initiative or manual order.
+    // With includeHiddenPlayers, the players above the player count are in the list too (TB10-10).
+    getEncounterListItems(includeHiddenPlayers = false) {
         const items = [];
 
         // Build a set of threat names that appear under multiple distinct threat IDs,
@@ -819,7 +887,7 @@ const EncounterState = {
         // Add standalone individuals
         this.getStandaloneIndividuals().forEach(individual => {
             const threat = DataLoader.getThreat(individual.threatId);
-            let name = threat ? threat.name : 'Unknown';
+            let name = threat ? threat.name : `Unknown threat (${individual.threatId})`;
             // Show source only when the same name maps to different threat IDs
             if (threat && nameToIds.get(threat.name)?.size > 1 && threat.source) {
                 name += ` (${threat.source})`;
@@ -843,7 +911,7 @@ const EncounterState = {
             items.push({
                 type: 'mob',
                 id: mob.id,
-                name: mob.name,
+                name: threat ? mob.name : `${mob.name} — Unknown threat (${mob.threatId})`,
                 bonus: 'none', // Mobs don't have bonus
                 initiative: mob.initiative,
                 isDead: livingCount === 0,
@@ -867,8 +935,8 @@ const EncounterState = {
             });
         });
 
-        // Add player characters
-        this.playerCharacters.forEach(pc => {
+        // Add player characters. A player above the player count stays stored but takes no part (spec §6.4).
+        this.playerCharacters.slice(0, includeHiddenPlayers ? undefined : this.settings.playerCount).forEach(pc => {
             items.push({
                 type: 'player',
                 id: pc.id,
@@ -975,28 +1043,35 @@ const EncounterState = {
     async loadEncounterFromFile() {
         const result = await window.api.loadEncounterFile();
 
-        if (result.success && result.data) {
-            const parsed = result.data;
-            // Re-inject custom threats before resolving encounter entries
-            if (parsed.customThreats) {
-                parsed.customThreats.forEach(t => DataLoader.injectThreat(t));
+        if (result.success) {
+            // The file must be a plain object with one key of an encounter (spec §4.2, CB3).
+            // A file that fails this test changes nothing.
+            const data = result.data;
+            const encounterKeys = ['settings', 'individuals', 'mobs', 'playerCharacters', 'vehicles'];
+            if (!BestiaryCheck.isPlainObject(data) || !encounterKeys.some(key => Object.prototype.hasOwnProperty.call(data, key))) {
+                return { success: false, error: 'Invalid encounter file' };
             }
-            this.settings = parsed.settings || { tier: 1, playerCount: 4, name: result.fileName, round: 1 };
+            this.loadFromData(data);
             this.settings.name = result.fileName; // Use filename as encounter name
-            if (this.settings.round === undefined) this.settings.round = 1;
-            this.individuals = parsed.individuals || [];
-            this.mobs = parsed.mobs || [];
-            this.playerCharacters = parsed.playerCharacters || [];
-            this.vehicles = parsed.vehicles || [];
-            this.encounterOrder = parsed.encounterOrder || null;
             this.markClean(); // Just loaded, so no unsaved changes
+            // Write the loaded encounter to the auto-save at once (C4)
+            clearTimeout(this._autoSaveTimer);
+            if (this.isEmpty()) {
+                this.clearAutoSave();
+            } else {
+                this._performAutoSave();
+            }
         }
 
         return result;
     },
 
-    // Load encounter from data object (used by close dialog save and auto-save restore)
-    loadFromData(data) {
+    // Load encounter from data object (used by the encounter file load and the auto-save restore).
+    // The caller has tested that data is a plain object. priorPaths are the paths that the caller repaired.
+    loadFromData(data, priorPaths = []) {
+        // The index of each individual in the loaded data, for the E2 paths (the repair can drop entries)
+        const loadedIndex = new Map(Array.isArray(data.individuals) ? data.individuals.map((entry, i) => [entry, i]) : []);
+        const paths = priorPaths.concat(BestiaryCheck.repairEncounter(data));
         // Re-inject custom threats before resolving encounter entries
         if (data.customThreats) {
             data.customThreats.forEach(t => DataLoader.injectThreat(t));
@@ -1008,6 +1083,24 @@ const EncounterState = {
         this.playerCharacters = data.playerCharacters || [];
         this.vehicles = data.vehicles || [];
         this.encounterOrder = data.encounterOrder || null;
+        // Recompute a null max value from the threat and the loaded settings (E2).
+        // The value stays null when the threat does not resolve.
+        this.individuals.forEach(individual => {
+            const threat = DataLoader.getThreat(individual.threatId);
+            if (!threat) return;
+            const i = loadedIndex.get(individual);
+            if (individual.maxWounds === null) {
+                individual.maxWounds = this.calculateMaxWounds(threat, individual.bonus);
+                paths.push(`individuals[${i}].maxWounds`);
+            }
+            if (individual.maxShock === null) {
+                individual.maxShock = this.calculateMaxShock(threat, individual.bonus);
+                paths.push(`individuals[${i}].maxShock`);
+            }
+        });
+        if (paths.length > 0) {
+            console.warn('Encounter data was repaired on load: ' + paths.join(', '));
+        }
     },
 
     // Clear the current encounter
@@ -1019,6 +1112,7 @@ const EncounterState = {
         this.vehicles = [];
         this.encounterOrder = null;
         this.markClean(); // Fresh encounter has no unsaved changes
+        clearTimeout(this._autoSaveTimer);
         this.clearAutoSave();
     },
 
@@ -1030,7 +1124,7 @@ const EncounterState = {
         this._autoSaveTimer = setTimeout(() => this._performAutoSave(), 2000);
     },
 
-    // Perform the auto-save to localStorage
+    // Perform the auto-save to localStorage. An empty state writes nothing and removes nothing.
     _performAutoSave() {
         if (this.isEmpty()) return;
         try {
@@ -1039,7 +1133,10 @@ const EncounterState = {
                 customThreats: this._collectCustomThreats(),
                 timestamp: Date.now()
             };
-            localStorage.setItem(this._AUTO_SAVE_KEY, JSON.stringify(data));
+            const text = JSON.stringify(data);
+            localStorage.setItem(this._AUTO_SAVE_KEY, text);
+            this._ownsAutoSave = true;
+            this._autoSaveText = text;
         } catch (e) {
             console.warn('Auto-save failed:', e);
         }
@@ -1061,8 +1158,13 @@ const EncounterState = {
         }
     },
 
-    // Clear the auto-save
+    // Clear the auto-save. Only an owner removes the key (CB1), and only when the key still holds
+    // the text of this page. A newer text is the work of another tab (TB3-3).
     clearAutoSave() {
-        localStorage.removeItem(this._AUTO_SAVE_KEY);
+        if (this._ownsAutoSave && localStorage.getItem(this._AUTO_SAVE_KEY) === this._autoSaveText) {
+            localStorage.removeItem(this._AUTO_SAVE_KEY);
+        }
+        this._ownsAutoSave = false;
+        this._autoSaveText = null;
     }
 };

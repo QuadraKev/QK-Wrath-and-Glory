@@ -27,7 +27,13 @@ const EncounterTab = {
         });
 
         document.getElementById('encounter-players').addEventListener('change', (e) => {
-            EncounterState.updateSettings({ playerCount: parseInt(e.target.value) });
+            const playerCount = BestiaryCheck.readIntegerInput(e.target);
+            if (playerCount === null) {
+                // Not a valid count: keep the stored count and show it
+                e.target.value = String(EncounterState.settings.playerCount);
+                return;
+            }
+            EncounterState.updateSettings({ playerCount });
             this.renderPlayerCharacterInputs();
             this.renderEncounterList();
         });
@@ -119,18 +125,23 @@ const EncounterTab = {
         const container = document.getElementById('player-character-inputs');
         const playerCount = EncounterState.settings.playerCount;
 
-        // Build input rows - show existing PCs first, then empty slots for remaining
+        // Build input rows - show existing PCs first, then empty slots for remaining.
+        // A player above the count keeps a row with a mark (spec §6.4).
         let html = '';
-        for (let i = 0; i < playerCount; i++) {
+        const rowCount = Math.max(playerCount, EncounterState.playerCharacters.length);
+        for (let i = 0; i < rowCount; i++) {
             const pc = EncounterState.playerCharacters[i];
             if (pc) {
+                const pcId = this.escapeHtml(String(pc.id));
+                const extra = i >= playerCount;
                 html += `
-                    <div class="player-character-row" data-index="${i}" data-id="${pc.id}">
+                    <div class="player-character-row${extra ? ' player-character-row--extra' : ''}" data-index="${i}" data-id="${pcId}">
                         <input type="text" class="pc-name-input" value="${this.escapeHtml(pc.name)}"
-                               data-index="${i}" data-id="${pc.id}" placeholder="Player ${i + 1}">
-                        <input type="number" class="pc-initiative-input" value="${pc.initiative ?? ''}"
-                               data-index="${i}" data-id="${pc.id}" placeholder="Init" min="0" max="99">
-                        <button class="pc-remove-btn" data-id="${pc.id}" title="Remove">&times;</button>
+                               data-index="${i}" data-id="${pcId}" placeholder="Player ${i + 1}">
+                        <input type="number" class="pc-initiative-input" value="${this.escapeHtml(String(pc.initiative ?? ''))}"
+                               data-index="${i}" data-id="${pcId}" placeholder="Init" min="0" max="99">
+                        ${extra ? '<span class="pc-extra-mark">Above player count</span>' : ''}
+                        <button class="pc-remove-btn" data-index="${i}" data-id="${pcId}" title="Remove">&times;</button>
                     </div>
                 `;
             } else {
@@ -146,12 +157,6 @@ const EncounterTab = {
             }
         }
         container.innerHTML = html;
-
-        // Remove excess player characters if player count was reduced
-        while (EncounterState.playerCharacters.length > playerCount) {
-            const lastPc = EncounterState.playerCharacters[EncounterState.playerCharacters.length - 1];
-            EncounterState.removePlayerCharacter(lastPc.id);
-        }
 
         // Bind events
         container.querySelectorAll('.pc-name-input').forEach(input => {
@@ -183,14 +188,27 @@ const EncounterTab = {
                 const existingId = e.target.dataset.id;
                 const index = parseInt(e.target.dataset.index);
 
+                // A box that the user emptied clears the initiative. A bad entry (the browser gives '' with
+                // badInput) and a value outside 0-99 keep the stored value and show it (spec §6.2).
+                const badInput = !!(e.target.validity && e.target.validity.badInput);
+                let value = '';
+                if (badInput || e.target.value.trim() !== '') {
+                    value = badInput ? null : BestiaryCheck.readIntegerInput(e.target);
+                    if (value === null) {
+                        const stored = existingId ? EncounterState.getPlayerCharacter(existingId) : null;
+                        e.target.value = stored && stored.initiative != null ? String(stored.initiative) : '';
+                        return;
+                    }
+                }
+
                 if (existingId) {
-                    EncounterState.setPlayerCharacterInitiative(existingId, e.target.value);
-                } else if (e.target.value !== '') {
+                    EncounterState.setPlayerCharacterInitiative(existingId, value);
+                } else if (value !== '') {
                     // Create player character if setting initiative on empty slot
                     const nameInput = container.querySelector(`.pc-name-input[data-index="${index}"]`);
                     const name = nameInput?.value.trim() || `Player ${index + 1}`;
                     const newId = EncounterState.addPlayerCharacter(name);
-                    EncounterState.setPlayerCharacterInitiative(newId, e.target.value);
+                    EncounterState.setPlayerCharacterInitiative(newId, value);
                     this.renderPlayerCharacterInputs();
                 }
                 this.renderEncounterList();
@@ -200,11 +218,15 @@ const EncounterTab = {
         container.querySelectorAll('.pc-remove-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const id = e.target.dataset.id;
+                const index = parseInt(e.target.dataset.index);
                 if (id) {
                     EncounterState.removePlayerCharacter(id);
                 }
-                const newCount = EncounterState.settings.playerCount - 1;
-                EncounterState.updateSettings({ playerCount: Math.max(1, newCount) });
+                // The × of a row above the count removes that player and keeps the count
+                if (index < EncounterState.settings.playerCount) {
+                    const newCount = EncounterState.settings.playerCount - 1;
+                    EncounterState.updateSettings({ playerCount: Math.max(1, newCount) });
+                }
                 document.getElementById('encounter-players').value = EncounterState.settings.playerCount;
                 this.renderPlayerCharacterInputs();
                 this.renderEncounterList();
@@ -212,10 +234,15 @@ const EncounterTab = {
         });
     },
 
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+    // Escapes text for an element and for a quoted attribute. null and undefined give ''. 0 stays 0.
+    escapeHtml(value) {
+        if (value === null || value === undefined) return '';
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     },
 
     // ===== Encounter List =====
@@ -278,16 +305,30 @@ const EncounterTab = {
             input.addEventListener('change', (e) => {
                 const id = e.target.dataset.id;
                 const type = e.target.dataset.type;
+                // A box that the user emptied clears the initiative. A bad entry (the browser gives '' with
+                // badInput) and a value outside 0-99 keep the stored value and show it (spec §6.2).
+                const badInput = !!(e.target.validity && e.target.validity.badInput);
+                let value = '';
+                if (badInput || e.target.value.trim() !== '') {
+                    value = badInput ? null : BestiaryCheck.readIntegerInput(e.target);
+                    if (value === null) {
+                        const items = { individual: EncounterState.individuals, mob: EncounterState.mobs,
+                            player: EncounterState.playerCharacters, vehicle: EncounterState.vehicles }[type] || [];
+                        const item = items.find(x => x.id === id);
+                        e.target.value = item && item.initiative != null ? String(item.initiative) : '';
+                        return;
+                    }
+                }
                 if (type === 'individual') {
-                    EncounterState.setInitiative(id, e.target.value);
+                    EncounterState.setInitiative(id, value);
                 } else if (type === 'mob') {
-                    EncounterState.setMobInitiative(id, e.target.value);
+                    EncounterState.setMobInitiative(id, value);
                 } else if (type === 'player') {
-                    EncounterState.setPlayerCharacterInitiative(id, e.target.value);
+                    EncounterState.setPlayerCharacterInitiative(id, value);
                     // Also update the sidebar input
                     this.renderPlayerCharacterInputs();
                 } else if (type === 'vehicle') {
-                    EncounterState.setVehicleInitiative(id, e.target.value);
+                    EncounterState.setVehicleInitiative(id, value);
                 }
                 this.renderEncounterList();
             });
@@ -475,8 +516,9 @@ const EncounterTab = {
         // Get all non-hidden items
         const items = Array.from(container.querySelectorAll('.encounter-item:not(.drag-original-hidden)'));
 
-        // Find where to insert placeholder based on pointer position
-        let newIndex = items.length;
+        // Find where to insert placeholder based on pointer position.
+        // newIndex is an index of the children. With no entry below the pointer, it is the end (TB10-1).
+        let newIndex = container.children.length;
         for (let i = 0; i < items.length; i++) {
             const itemRect = items[i].getBoundingClientRect();
             const itemMiddle = itemRect.top + itemRect.height / 2;
@@ -544,14 +586,15 @@ const EncounterTab = {
     renderPlayerItem(item) {
         const pc = item.data;
         const isSelected = this.selectedId === item.id && this.selectionType === 'player';
+        const id = this.escapeHtml(item.id);
 
         return `
             <div class="encounter-item player-item ${isSelected ? 'selected' : ''}"
-                 data-id="${item.id}" data-type="player" draggable="true">
+                 data-id="${id}" data-type="player" draggable="true">
                 <div class="encounter-item-header">
                     <span class="drag-handle" title="Drag to reorder">&#x2630;</span>
-                    <input type="number" class="initiative-input" value="${item.initiative ?? ''}"
-                           data-id="${item.id}" data-type="player" placeholder="Init"
+                    <input type="number" class="initiative-input" value="${this.escapeHtml(item.initiative)}"
+                           data-id="${id}" data-type="player" placeholder="Init"
                            min="0" max="99">
                     <span class="encounter-item-name">${this.escapeHtml(pc.name)}</span>
                     <span class="player-badge">PC</span>
@@ -573,22 +616,23 @@ const EncounterTab = {
         // Show checkbox for individuals not in a mob
         const showCheckbox = !individual.mobId;
         const bonus = individual.bonus || 'none';
+        const id = this.escapeHtml(item.id);
 
         return `
             <div class="encounter-item ${isSelected ? 'selected' : ''} ${isMultiSelected ? 'multi-selected' : ''} ${deadClass}"
-                 data-id="${item.id}" data-type="individual" data-threat-id="${individual.threatId}" draggable="true">
+                 data-id="${id}" data-type="individual" data-threat-id="${this.escapeHtml(individual.threatId)}" draggable="true">
                 <div class="encounter-item-header">
                     <span class="drag-handle" title="Drag to reorder">&#x2630;</span>
                     ${showCheckbox ? `
                         <input type="checkbox" class="multi-select-checkbox"
-                               data-id="${item.id}" data-type="individual"
+                               data-id="${id}" data-type="individual"
                                ${isMultiSelected ? 'checked' : ''}>
                     ` : ''}
-                    <input type="number" class="initiative-input" value="${item.initiative ?? ''}"
-                           data-id="${item.id}" data-type="individual" placeholder="Init"
+                    <input type="number" class="initiative-input" value="${this.escapeHtml(item.initiative)}"
+                           data-id="${id}" data-type="individual" placeholder="Init"
                            min="0" max="99">
                     <span class="encounter-item-name">${this.escapeHtml(item.name)}</span>
-                    <select class="bonus-select bonus-${bonus}" data-id="${item.id}">
+                    <select class="bonus-select bonus-${this.escapeHtml(bonus)}" data-id="${id}">
                         <option value="none" ${bonus === 'none' ? 'selected' : ''}>No Bonus</option>
                         <option value="elite" ${bonus === 'elite' ? 'selected' : ''}>Elite</option>
                         <option value="adversary" ${bonus === 'adversary' ? 'selected' : ''}>Adversary</option>
@@ -597,18 +641,18 @@ const EncounterTab = {
                 <div class="encounter-item-stats">
                     <div class="stat-tracker wounds-tracker">
                         <span class="stat-label">W:</span>
-                        <button class="wound-btn" data-id="${item.id}" data-delta="-1">-</button>
-                        <span class="stat-value">${individual.currentWounds}/${individual.maxWounds}</span>
-                        <button class="wound-btn" data-id="${item.id}" data-delta="1">+</button>
+                        <button class="wound-btn" data-id="${id}" data-delta="-1">-</button>
+                        <span class="stat-value">${this.escapeHtml(individual.currentWounds)}/${this.escapeHtml(individual.maxWounds)}</span>
+                        <button class="wound-btn" data-id="${id}" data-delta="1">+</button>
                         <div class="stat-bar">
                             <div class="stat-bar-fill wounds-bar" style="width: ${woundPercent}%"></div>
                         </div>
                     </div>
                     <div class="stat-tracker shock-tracker">
                         <span class="stat-label">S:</span>
-                        <button class="shock-btn" data-id="${item.id}" data-delta="-1">-</button>
-                        <span class="stat-value">${individual.maxShock > 0 ? `${individual.currentShock}/${individual.maxShock}` : '-'}</span>
-                        <button class="shock-btn" data-id="${item.id}" data-delta="1">+</button>
+                        <button class="shock-btn" data-id="${id}" data-delta="-1">-</button>
+                        <span class="stat-value">${individual.maxShock > 0 ? `${this.escapeHtml(individual.currentShock)}/${this.escapeHtml(individual.maxShock)}` : '-'}</span>
+                        <button class="shock-btn" data-id="${id}" data-delta="1">+</button>
                         <div class="stat-bar">
                             <div class="stat-bar-fill shock-bar" style="width: ${shockPercent}%"></div>
                         </div>
@@ -616,17 +660,17 @@ const EncounterTab = {
                     ${EncounterState.threatHasChampion(threat) ? `
                     <div class="stat-tracker ruin-tracker">
                         <span class="stat-label ruin-label">R:</span>
-                        <button class="ruin-btn" data-id="${item.id}" data-delta="-1">-</button>
-                        <span class="stat-value">${individual.personalRuin || 0}</span>
-                        <button class="ruin-btn" data-id="${item.id}" data-delta="1">+</button>
+                        <button class="ruin-btn" data-id="${id}" data-delta="-1">-</button>
+                        <span class="stat-value">${this.escapeHtml(individual.personalRuin || 0)}</span>
+                        <button class="ruin-btn" data-id="${id}" data-delta="1">+</button>
                     </div>
                     ` : ''}
                 </div>
                 <div class="encounter-item-actions">
-                    <button class="duplicate-btn" data-id="${item.id}" data-type="individual" title="Duplicate">
+                    <button class="duplicate-btn" data-id="${id}" data-type="individual" title="Duplicate">
                         <span>+</span>
                     </button>
-                    <button class="delete-btn" data-id="${item.id}" data-type="individual" title="Remove">
+                    <button class="delete-btn" data-id="${id}" data-type="individual" title="Remove">
                         <span>&times;</span>
                     </button>
                 </div>
@@ -639,16 +683,17 @@ const EncounterTab = {
         const bonus = EncounterState.getMobAttackBonus(item.id);
         const isSelected = this.selectedId === item.id && this.selectionType === 'mob';
         const deadClass = item.isDead ? 'dead' : '';
+        const id = this.escapeHtml(item.id);
 
         return `
             <div class="encounter-item mob-item ${isSelected ? 'selected' : ''} ${deadClass}"
-                 data-id="${item.id}" data-type="mob" draggable="true">
+                 data-id="${id}" data-type="mob" draggable="true">
                 <div class="encounter-item-header">
                     <span class="drag-handle" title="Drag to reorder">&#x2630;</span>
-                    <input type="number" class="initiative-input" value="${item.initiative ?? ''}"
-                           data-id="${item.id}" data-type="mob" placeholder="Init"
+                    <input type="number" class="initiative-input" value="${this.escapeHtml(item.initiative)}"
+                           data-id="${id}" data-type="mob" placeholder="Init"
                            min="0" max="99">
-                    <span class="encounter-item-name">${this.escapeHtml(mob.name)}</span>
+                    <span class="encounter-item-name">${this.escapeHtml(item.name)}</span>
                     <span class="mob-badge">MOB</span>
                 </div>
                 <div class="mob-info">
@@ -656,10 +701,10 @@ const EncounterTab = {
                     <span class="mob-bonus">+${bonus.bonus} dice (max ${bonus.max})</span>
                 </div>
                 <div class="encounter-item-actions">
-                    <button class="duplicate-btn" data-id="${item.id}" data-type="mob" title="Duplicate Mob">
+                    <button class="duplicate-btn" data-id="${id}" data-type="mob" title="Duplicate Mob">
                         <span>+</span>
                     </button>
-                    <button class="delete-btn" data-id="${item.id}" data-type="mob" title="Remove Mob">
+                    <button class="delete-btn" data-id="${id}" data-type="mob" title="Remove Mob">
                         <span>&times;</span>
                     </button>
                 </div>
@@ -671,15 +716,16 @@ const EncounterTab = {
         const entry = item.data;
         const isSelected = this.selectedId === item.id && this.selectionType === 'vehicle';
         const deadClass = item.isDead ? 'dead' : '';
+        const id = this.escapeHtml(item.id);
         const woundPercent = item.maxWounds ? Math.min(100, (entry.wounds / item.maxWounds) * 100) : 0;
 
         return `
             <div class="encounter-item vehicle-item ${isSelected ? 'selected' : ''} ${deadClass}"
-                 data-id="${item.id}" data-type="vehicle" draggable="true">
+                 data-id="${id}" data-type="vehicle" draggable="true">
                 <div class="encounter-item-header">
                     <span class="drag-handle" title="Drag to reorder">&#x2630;</span>
-                    <input type="number" class="initiative-input" value="${item.initiative ?? ''}"
-                           data-id="${item.id}" data-type="vehicle" placeholder="Init"
+                    <input type="number" class="initiative-input" value="${this.escapeHtml(item.initiative)}"
+                           data-id="${id}" data-type="vehicle" placeholder="Init"
                            min="0" max="99">
                     <span class="encounter-item-name">${this.escapeHtml(item.name)}</span>
                     <span class="vehicle-badge">VEHICLE</span>
@@ -687,16 +733,16 @@ const EncounterTab = {
                 <div class="encounter-item-stats">
                     <div class="stat-tracker wounds-tracker">
                         <span class="stat-label">W:</span>
-                        <button class="vehicle-wound-btn" data-id="${item.id}" data-delta="-1">-</button>
-                        <span class="stat-value">${entry.wounds}/${item.maxWounds ?? '-'}</span>
-                        <button class="vehicle-wound-btn" data-id="${item.id}" data-delta="1">+</button>
+                        <button class="vehicle-wound-btn" data-id="${id}" data-delta="-1">-</button>
+                        <span class="stat-value">${this.escapeHtml(entry.wounds)}/${item.maxWounds ?? '-'}</span>
+                        <button class="vehicle-wound-btn" data-id="${id}" data-delta="1">+</button>
                         <div class="stat-bar">
                             <div class="stat-bar-fill wounds-bar" style="width: ${woundPercent}%"></div>
                         </div>
                     </div>
                 </div>
                 <div class="encounter-item-actions">
-                    <button class="delete-btn" data-id="${item.id}" data-type="vehicle" title="Remove">
+                    <button class="delete-btn" data-id="${id}" data-type="vehicle" title="Remove">
                         <span>&times;</span>
                     </button>
                 </div>
@@ -928,19 +974,31 @@ const EncounterTab = {
                 <div class="player-detail-initiative">
                     <label class="filter-label">Initiative</label>
                     <input type="number" id="player-detail-initiative" class="search-input"
-                           value="${pc.initiative ?? ''}" placeholder="Initiative" min="0" max="99">
+                           value="${this.escapeHtml(pc.initiative)}" placeholder="Initiative" min="0" max="99">
                 </div>
 
                 <div class="notes-section">
                     <label class="notes-label">Notes</label>
-                    <textarea id="player-notes" class="notes-textarea" placeholder="Add notes...">${pc.notes || ''}</textarea>
+                    <textarea id="player-notes" class="notes-textarea" placeholder="Add notes...">\n${this.escapeHtml(pc.notes)}</textarea>
                 </div>
             </div>
         `;
 
         // Bind events
         document.getElementById('player-detail-initiative')?.addEventListener('change', (e) => {
-            EncounterState.setPlayerCharacterInitiative(this.selectedId, e.target.value);
+            // A box that the user emptied clears the initiative. A bad entry (the browser gives '' with
+            // badInput) and a value outside 0-99 keep the stored value and show it (spec §6.2).
+            const badInput = !!(e.target.validity && e.target.validity.badInput);
+            let value = '';
+            if (badInput || e.target.value.trim() !== '') {
+                value = badInput ? null : BestiaryCheck.readIntegerInput(e.target);
+                if (value === null) {
+                    const stored = EncounterState.getPlayerCharacter(this.selectedId);
+                    e.target.value = stored && stored.initiative != null ? String(stored.initiative) : '';
+                    return;
+                }
+            }
+            EncounterState.setPlayerCharacterInitiative(this.selectedId, value);
             this.renderPlayerCharacterInputs();
             this.renderEncounterList();
         });
@@ -968,8 +1026,8 @@ const EncounterTab = {
         container.innerHTML = `
             <div class="encounter-detail-content">
                 <div class="detail-header">
-                    <h3>${threat.name}</h3>
-                    ${individual.bonus !== 'none' ? `<span class="bonus-badge bonus-${individual.bonus}">${individual.bonus === 'elite' ? 'ELITE' : 'ADVERSARY'}</span>` : ''}
+                    <h3>${this.escapeHtml(threat.name)}</h3>
+                    ${individual.bonus !== 'none' ? `<span class="bonus-badge bonus-${this.escapeHtml(individual.bonus)}">${individual.bonus === 'elite' ? 'ELITE' : 'ADVERSARY'}</span>` : ''}
                     ${isDead ? '<span class="status-badge dead-badge">DEAD</span>' : ''}
                 </div>
 
@@ -978,7 +1036,7 @@ const EncounterTab = {
                         <div class="tracker-label">Wounds</div>
                         <div class="tracker-controls">
                             <button class="tracker-btn" id="detail-wound-minus">-</button>
-                            <span class="tracker-value">${individual.currentWounds} / ${individual.maxWounds}</span>
+                            <span class="tracker-value">${this.escapeHtml(individual.currentWounds)} / ${this.escapeHtml(individual.maxWounds)}</span>
                             <button class="tracker-btn" id="detail-wound-plus">+</button>
                         </div>
                         <div class="tracker-bar">
@@ -989,7 +1047,7 @@ const EncounterTab = {
                         <div class="tracker-label">Shock</div>
                         <div class="tracker-controls">
                             <button class="tracker-btn" id="detail-shock-minus">-</button>
-                            <span class="tracker-value">${individual.maxShock > 0 ? `${individual.currentShock} / ${individual.maxShock}` : '-'}</span>
+                            <span class="tracker-value">${individual.maxShock > 0 ? `${this.escapeHtml(individual.currentShock)} / ${this.escapeHtml(individual.maxShock)}` : '-'}</span>
                             <button class="tracker-btn" id="detail-shock-plus">+</button>
                         </div>
                         <div class="tracker-bar">
@@ -1001,7 +1059,7 @@ const EncounterTab = {
                         <div class="tracker-label ruin-label">Personal Ruin</div>
                         <div class="tracker-controls">
                             <button class="tracker-btn" id="detail-ruin-minus">-</button>
-                            <span class="tracker-value">${individual.personalRuin || 0}</span>
+                            <span class="tracker-value">${this.escapeHtml(individual.personalRuin || 0)}</span>
                             <button class="tracker-btn" id="detail-ruin-plus">+</button>
                         </div>
                     </div>
@@ -1010,14 +1068,14 @@ const EncounterTab = {
 
                 ${individual.mobId ? `
                     <div class="mob-membership">
-                        <span>Part of: ${EncounterState.getMob(individual.mobId)?.name || 'Unknown Mob'}</span>
+                        <span>Part of: ${this.escapeHtml(EncounterState.getMob(individual.mobId)?.name || 'Unknown Mob')}</span>
                         <button class="btn-secondary" id="btn-remove-from-mob">Remove from Mob</button>
                     </div>
                 ` : ''}
 
                 <div class="notes-section">
                     <label class="notes-label">Notes</label>
-                    <textarea id="individual-notes" class="notes-textarea" placeholder="Add notes...">${individual.notes || ''}</textarea>
+                    <textarea id="individual-notes" class="notes-textarea" placeholder="Add notes...">\n${this.escapeHtml(individual.notes)}</textarea>
                 </div>
 
                 <div class="detail-actions">
@@ -1045,6 +1103,8 @@ const EncounterTab = {
         }
 
         const threat = DataLoader.getThreat(mob.threatId);
+        // A threat that the data does not have gets a mark, so the page still renders
+        const threatName = threat ? threat.name : `Unknown threat (${mob.threatId})`;
         const members = EncounterState.getMobMembers(this.selectedId);
         const bonus = EncounterState.getMobAttackBonus(this.selectedId);
         const compatible = EncounterState.getCompatibleIndividualsForMob(mob.threatId);
@@ -1052,7 +1112,7 @@ const EncounterTab = {
         container.innerHTML = `
             <div class="encounter-detail-content">
                 <div class="detail-header">
-                    <h3>${mob.name}</h3>
+                    <h3>${this.escapeHtml(mob.name)}</h3>
                     <span class="mob-badge">MOB</span>
                 </div>
 
@@ -1082,8 +1142,8 @@ const EncounterTab = {
                         <div class="compatible-list">
                             ${compatible.map(c => `
                                 <label class="compatible-item">
-                                    <input type="checkbox" class="compatible-checkbox" data-id="${c.id}">
-                                    <span>${threat.name} (W: ${c.currentWounds}/${c.maxWounds})</span>
+                                    <input type="checkbox" class="compatible-checkbox" data-id="${this.escapeHtml(c.id)}">
+                                    <span>${this.escapeHtml(threatName)} (W: ${this.escapeHtml(c.currentWounds)}/${this.escapeHtml(c.maxWounds)})</span>
                                 </label>
                             `).join('')}
                         </div>
@@ -1102,7 +1162,7 @@ const EncounterTab = {
 
                 <div class="notes-section">
                     <label class="notes-label">Notes</label>
-                    <textarea id="mob-notes" class="notes-textarea" placeholder="Add notes...">${mob.notes || ''}</textarea>
+                    <textarea id="mob-notes" class="notes-textarea" placeholder="Add notes...">\n${this.escapeHtml(mob.notes)}</textarea>
                 </div>
 
                 <div class="detail-actions">
@@ -1152,7 +1212,7 @@ const EncounterTab = {
                         <div class="tracker-label">Wounds</div>
                         <div class="tracker-controls">
                             <button class="tracker-btn vehicle-detail-wound-btn" data-delta="-1">-</button>
-                            <span class="tracker-value">${entry.wounds} / ${vehicle.wounds}</span>
+                            <span class="tracker-value">${this.escapeHtml(entry.wounds)} / ${vehicle.wounds}</span>
                             <button class="tracker-btn vehicle-detail-wound-btn" data-delta="1">+</button>
                         </div>
                         <div class="tracker-bar">
@@ -1200,30 +1260,32 @@ const EncounterTab = {
         const isDead = EncounterState.isIndividualDead(individual.id);
         const isDeadFromWounds = individual.currentWounds >= individual.maxWounds;
         const isDeadFromShock = individual.currentShock >= individual.maxShock;
+        const id = this.escapeHtml(individual.id);
+        const name = threat ? (threat.name || 'Unknown') : `Unknown threat (${individual.threatId})`;
 
         return `
-            <div class="mob-member ${isDead ? 'dead' : ''}" data-id="${individual.id}">
+            <div class="mob-member ${isDead ? 'dead' : ''}" data-id="${id}">
                 <div class="member-top-row">
-                    <span class="member-name">${threat?.name || 'Unknown'}</span>
+                    <span class="member-name">${this.escapeHtml(name)}</span>
                     ${isDead ? `
-                        <button class="member-revive-btn" data-id="${individual.id}" title="Revive">Revive</button>
+                        <button class="member-revive-btn" data-id="${id}" title="Revive">Revive</button>
                     ` : `
-                        <button class="member-kill-btn" data-id="${individual.id}" title="Mark as Dead">Kill</button>
+                        <button class="member-kill-btn" data-id="${id}" title="Mark as Dead">Kill</button>
                     `}
-                    <button class="member-remove-btn" data-id="${individual.id}" title="Remove from mob">×</button>
+                    <button class="member-remove-btn" data-id="${id}" title="Remove from mob">×</button>
                 </div>
                 <div class="member-trackers">
                     <div class="member-tracker ${isDeadFromWounds ? 'tracker-death' : ''}">
                         <span class="tracker-label-mini">W</span>
-                        <button class="member-stat-btn" data-id="${individual.id}" data-stat="wounds" data-delta="-1" ${isDead ? 'disabled' : ''}>-</button>
-                        <span class="tracker-value-mini">${individual.currentWounds}/${individual.maxWounds}</span>
-                        <button class="member-stat-btn" data-id="${individual.id}" data-stat="wounds" data-delta="1" ${isDead ? 'disabled' : ''}>+</button>
+                        <button class="member-stat-btn" data-id="${id}" data-stat="wounds" data-delta="-1" ${isDead ? 'disabled' : ''}>-</button>
+                        <span class="tracker-value-mini">${this.escapeHtml(individual.currentWounds)}/${this.escapeHtml(individual.maxWounds)}</span>
+                        <button class="member-stat-btn" data-id="${id}" data-stat="wounds" data-delta="1" ${isDead ? 'disabled' : ''}>+</button>
                     </div>
                     <div class="member-tracker ${isDeadFromShock ? 'tracker-death' : ''}">
                         <span class="tracker-label-mini">S</span>
-                        <button class="member-stat-btn" data-id="${individual.id}" data-stat="shock" data-delta="-1" ${isDead ? 'disabled' : ''}>-</button>
-                        <span class="tracker-value-mini">${individual.currentShock}/${individual.maxShock}</span>
-                        <button class="member-stat-btn" data-id="${individual.id}" data-stat="shock" data-delta="1" ${isDead ? 'disabled' : ''}>+</button>
+                        <button class="member-stat-btn" data-id="${id}" data-stat="shock" data-delta="-1" ${isDead ? 'disabled' : ''}>-</button>
+                        <span class="tracker-value-mini">${this.escapeHtml(individual.currentShock)}/${this.escapeHtml(individual.maxShock)}</span>
+                        <button class="member-stat-btn" data-id="${id}" data-stat="shock" data-delta="1" ${isDead ? 'disabled' : ''}>+</button>
                     </div>
                 </div>
             </div>
@@ -1233,15 +1295,15 @@ const EncounterTab = {
     renderThreatCardMini(threat, additionalWeaponId = null, showAdditionalWeapon = false) {
         // Full threat card for the detail panel
         const keywordsHtml = (threat.keywords || []).map(kw =>
-            `<span class="threat-keyword-mini">${kw}</span>`
+            `<span class="threat-keyword-mini">${this.escapeHtml(kw)}</span>`
         ).join('');
 
         // Render bonuses
         const bonusesHtml = (threat.bonuses || []).map(bonus => `
             <div class="ability-mini">
                 <span class="ability-type-mini">BONUS:</span>
-                <span class="ability-name-mini" data-glossary-enhance>${bonus.name}</span>
-                ${bonus.description ? `<div class="ability-desc-mini" data-glossary-enhance>${bonus.description}</div>` : ''}
+                <span class="ability-name-mini" data-glossary-enhance>${this.escapeHtml(bonus.name)}</span>
+                ${bonus.description ? `<div class="ability-desc-mini" data-glossary-enhance>${this.escapeHtml(bonus.description)}</div>` : ''}
             </div>
         `).join('');
 
@@ -1262,10 +1324,10 @@ const EncounterTab = {
 
             return `
                 <div class="ability-mini">
-                    <span class="ability-type-mini">${ability.type}:</span>
-                    <span class="ability-name-mini" data-glossary-enhance>${ability.name}</span>
-                    ${statsHtml ? `<span class="ability-stats-mini" data-glossary-enhance>${statsHtml}</span>` : ''}
-                    ${ability.description ? `<div class="ability-desc-mini" data-glossary-enhance>${ability.description}</div>` : ''}
+                    <span class="ability-type-mini">${this.escapeHtml(ability.type)}:</span>
+                    <span class="ability-name-mini" data-glossary-enhance>${this.escapeHtml(ability.name)}</span>
+                    ${statsHtml ? `<span class="ability-stats-mini" data-glossary-enhance>${this.escapeHtml(statsHtml)}</span>` : ''}
+                    ${ability.description ? `<div class="ability-desc-mini" data-glossary-enhance>${this.escapeHtml(ability.description)}</div>` : ''}
                 </div>
             `;
         }).join('');
@@ -1274,13 +1336,13 @@ const EncounterTab = {
         const attrs = threat.attributes || {};
         const attributesHtml = `
             <div class="mini-attributes">
-                <span class="mini-attr"><b>Str:</b> ${attrs.S ?? '-'}</span>
-                <span class="mini-attr"><b>Tou:</b> ${attrs.T ?? '-'}</span>
-                <span class="mini-attr"><b>Agi:</b> ${attrs.A ?? '-'}</span>
-                <span class="mini-attr"><b>Ini:</b> ${attrs.I ?? '-'}</span>
-                <span class="mini-attr"><b>Wil:</b> ${attrs.Wil ?? '-'}</span>
-                <span class="mini-attr"><b>Int:</b> ${attrs.Int ?? '-'}</span>
-                <span class="mini-attr"><b>Fel:</b> ${attrs.Fel ?? '-'}</span>
+                <span class="mini-attr"><b>Str:</b> ${this.escapeHtml(attrs.S ?? '-')}</span>
+                <span class="mini-attr"><b>Tou:</b> ${this.escapeHtml(attrs.T ?? '-')}</span>
+                <span class="mini-attr"><b>Agi:</b> ${this.escapeHtml(attrs.A ?? '-')}</span>
+                <span class="mini-attr"><b>Ini:</b> ${this.escapeHtml(attrs.I ?? '-')}</span>
+                <span class="mini-attr"><b>Wil:</b> ${this.escapeHtml(attrs.Wil ?? '-')}</span>
+                <span class="mini-attr"><b>Int:</b> ${this.escapeHtml(attrs.Int ?? '-')}</span>
+                <span class="mini-attr"><b>Fel:</b> ${this.escapeHtml(attrs.Fel ?? '-')}</span>
             </div>
         `;
 
@@ -1309,42 +1371,42 @@ const EncounterTab = {
                     <div class="mini-stats-grid">
                         <div class="mini-stat-box">
                             <span class="stat-box-label">Defence</span>
-                            <span class="stat-box-value">${defenceText}${defenceNote}</span>
+                            <span class="stat-box-value">${this.escapeHtml(defenceText + defenceNote)}</span>
                         </div>
                         <div class="mini-stat-box">
                             <span class="stat-box-label">Resilience</span>
-                            <span class="stat-box-value">${resilienceText}${resilienceNote}</span>
+                            <span class="stat-box-value">${this.escapeHtml(resilienceText + resilienceNote)}</span>
                         </div>
                         <div class="mini-stat-box">
                             <span class="stat-box-label">Wounds</span>
-                            <span class="stat-box-value">${threat.wounds || '-'}</span>
+                            <span class="stat-box-value">${this.escapeHtml(threat.wounds || '-')}</span>
                         </div>
                         <div class="mini-stat-box">
                             <span class="stat-box-label">Shock</span>
-                            <span class="stat-box-value">${threat.shock || '-'}</span>
+                            <span class="stat-box-value">${this.escapeHtml(threat.shock || '-')}</span>
                         </div>
                         <div class="mini-stat-box">
                             <span class="stat-box-label">Speed</span>
-                            <span class="stat-box-value">${speedText}${speedNote}</span>
+                            <span class="stat-box-value">${this.escapeHtml(speedText + speedNote)}</span>
                         </div>
                         <div class="mini-stat-box">
                             <span class="stat-box-label">Size</span>
-                            <span class="stat-box-value">${threat.size || '-'}</span>
+                            <span class="stat-box-value">${this.escapeHtml(threat.size || '-')}</span>
                         </div>
                         <div class="mini-stat-box">
                             <span class="stat-box-label">Conviction</span>
-                            <span class="stat-box-value">${threat.conviction ?? '-'}</span>
+                            <span class="stat-box-value">${this.escapeHtml(threat.conviction ?? '-')}</span>
                         </div>
                         <div class="mini-stat-box">
                             <span class="stat-box-label">Resolve</span>
-                            <span class="stat-box-value">${threat.resolve ?? '-'}</span>
+                            <span class="stat-box-value">${this.escapeHtml(threat.resolve ?? '-')}</span>
                         </div>
                     </div>
 
                     ${threat.skills ? `
                         <div class="mini-section">
                             <span class="mini-section-label">Skills:</span>
-                            <span class="mini-section-value" data-glossary-enhance>${threat.skills}</span>
+                            <span class="mini-section-value" data-glossary-enhance>${this.escapeHtml(threat.skills)}</span>
                         </div>
                     ` : ''}
 
@@ -1365,40 +1427,56 @@ const EncounterTab = {
                     ${threat.determination ? `
                         <div class="mini-section">
                             <span class="mini-section-label">Determination:</span>
-                            <span class="mini-section-value" data-glossary-enhance>${threat.determination}</span>
+                            <span class="mini-section-value" data-glossary-enhance>${this.escapeHtml(threat.determination)}</span>
                         </div>
                     ` : ''}
 
-                    ${threat.mobOptions ? `
-                        <div class="mini-section">
-                            <span class="mini-section-label">Mob Options:</span>
-                            <span class="mini-section-value" data-glossary-enhance>${threat.mobOptions}</span>
-                        </div>
-                    ` : ''}
+                    ${this.renderMiniTextSection('Mob Options', threat.mobOptions)}
 
-                    ${threat.mobAbilities ? `
-                        <div class="mini-section">
-                            <span class="mini-section-label">Mob Abilities:</span>
-                            <span class="mini-section-value" data-glossary-enhance>${threat.mobAbilities}</span>
-                        </div>
-                    ` : ''}
+                    ${this.renderMiniTextSection('Mob Abilities', threat.mobAbilities)}
 
                     ${threat.threatOptions ? `
                         <div class="mini-section">
                             <span class="mini-section-label">Threat Options:</span>
-                            <span class="mini-section-value" data-glossary-enhance>${threat.threatOptions}</span>
+                            <span class="mini-section-value" data-glossary-enhance>${this.escapeHtml(threat.threatOptions)}</span>
                         </div>
                     ` : ''}
 
                     ${threat.biomorphs ? `
                         <div class="mini-section">
                             <span class="mini-section-label">Biomorphs:</span>
-                            <span class="mini-section-value" data-glossary-enhance>${threat.biomorphs}</span>
+                            <span class="mini-section-value" data-glossary-enhance>${this.escapeHtml(threat.biomorphs)}</span>
                         </div>
                     ` : ''}
                 </div>
             </div>
         `;
+    },
+
+    // A string prints as one line. A list prints one ability-mini for each entry, as the mini card prints the bonuses.
+    renderMiniTextSection(label, value) {
+        if (!value || (Array.isArray(value) && value.length === 0)) return '';
+
+        if (Array.isArray(value)) {
+            return `
+                        <div class="mini-section">
+                            <div class="mini-section-label">${label}</div>
+                            <div class="mini-abilities">${value.map(entry => `
+                                <div class="ability-mini">
+                                    <span class="ability-name-mini" data-glossary-enhance>${this.escapeHtml(entry.name)}</span>
+                                    <div class="ability-desc-mini" data-glossary-enhance>${this.escapeHtml(entry.description)}</div>
+                                </div>
+                            `).join('')}</div>
+                        </div>
+                    `;
+        }
+
+        return `
+                        <div class="mini-section">
+                            <span class="mini-section-label">${label}:</span>
+                            <span class="mini-section-value" data-glossary-enhance>${this.escapeHtml(value)}</span>
+                        </div>
+                    `;
     },
 
     formatWeaponStats(weapon) {
@@ -1672,7 +1750,7 @@ const EncounterTab = {
         statParts.push(damagePart);
         if (weapon.ap && weapon.ap !== 0) statParts.push(`AP ${weapon.ap}`);
         if (weapon.range && typeof weapon.range === 'object') {
-            statParts.push(`Range ${weapon.range.short}/${weapon.range.medium}/${weapon.range.long}`);
+            statParts.push(`Range ${weapon.range.short ?? '-'}/${weapon.range.medium ?? '-'}/${weapon.range.long ?? '-'}`);
         } else if (weapon.range) {
             statParts.push(`Range ${weapon.range}`);
         }
@@ -2098,14 +2176,23 @@ const EncounterTab = {
             return;
         }
 
+        // The file must be a plain object with one key of a threat (spec §4.2, CB3)
         const threat = result.data;
-        if (!threat) {
+        const threatKeys = ['name', 'abilities', 'attributes'];
+        if (!BestiaryCheck.isPlainObject(threat) || !threatKeys.some(key => Object.prototype.hasOwnProperty.call(threat, key))) {
             this.showNotification('Error: Invalid threat file');
             return;
         }
+        const paths = BestiaryCheck.repairThreat(threat, '');
+        if (paths.length > 0) {
+            console.warn('Threat data was repaired on load: ' + paths.join(', '));
+        }
 
-        // Ensure valid custom ID
-        if (!threat.id || !threat.id.startsWith('custom_')) {
+        // Ensure valid custom ID. If the cache holds other data with this id,
+        // the threat also gets a new ID, so the entries of the old data keep it (spec §7.2, C8).
+        const validId = typeof threat.id === 'string' && threat.id.startsWith('custom_');
+        const held = validId ? DataLoader.getThreat(threat.id) : null;
+        if (!validId || (held && !BestiaryCheck.sameThreatData(held, threat))) {
             threat.id = 'custom_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
         }
 
@@ -2140,8 +2227,17 @@ const EncounterTab = {
     async handleLoadPlayers() {
         const result = await window.api.loadPlayersFile();
 
-        if (result.success && result.data) {
+        if (result.success) {
             const data = result.data;
+            // The file must be a plain object with the key players (spec §4.2)
+            if (!BestiaryCheck.isPlainObject(data) || !Object.prototype.hasOwnProperty.call(data, 'players')) {
+                this.showNotification('Error loading: Invalid player file');
+                return;
+            }
+            const paths = BestiaryCheck.repairPlayers(data);
+            if (paths.length > 0) {
+                console.warn('Player data was repaired on load: ' + paths.join(', '));
+            }
 
             // Update player count
             if (data.playerCount) {
@@ -2161,6 +2257,8 @@ const EncounterTab = {
                     }
                 });
             }
+            // A file with no players adds nobody, so mark the change here (Q5)
+            EncounterState.markDirty();
 
             this.renderPlayerCharacterInputs();
             this.renderEncounterList();

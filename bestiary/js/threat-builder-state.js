@@ -21,6 +21,7 @@ const ThreatBuilderState = {
     // Indexes built lazily from all threats
     _abilityIndex: null, // Map<type, Array<{ability, threatName, threatId}>>
     _bonusIndex: null,   // Array<{bonus, threatName, threatId}>
+    _indexVersion: null, // DataLoader.threatsVersion when the indexes were built
 
     // Track unsaved state
     _isDirty: false,
@@ -28,19 +29,22 @@ const ThreatBuilderState = {
     // Auto-save support
     _autoSaveTimer: null,
     _AUTO_SAVE_KEY: 'wng-bestiary-builder-autosave',
-
-    // Snapshot of the last-injected threat data (without id) for change detection
-    _lastInjectedSnapshot: null,
+    // True when this page wrote the key or restored its threat from it (spec §5.2, CB1).
+    // Only an owner removes the key, so a second tab cannot delete the work of the first tab.
+    _ownsAutoSave: false,
+    // The text that this page last wrote to the key or restored from it (TB3-3)
+    _autoSaveText: null,
 
     // Initialize with an empty threat
     init() {
         this.clear();
     },
 
-    // Build indexes from all threats (lazy, called once on first use)
+    // Build indexes from all threats (lazy). They are built again after a change of the threat set (TB10-2).
     buildIndex() {
-        if (this._abilityIndex) return;
+        if (this._abilityIndex && this._indexVersion === DataLoader.threatsVersion) return;
 
+        this._indexVersion = DataLoader.threatsVersion;
         this._abilityIndex = new Map();
         this._bonusIndex = [];
 
@@ -166,7 +170,6 @@ const ThreatBuilderState = {
         this._resolveWeaponIds();
         this._parseSkillsString(this.threat.skills);
         this._markDirty();
-        this._lastInjectedSnapshot = null;
     },
 
     // Update a field by dot-path (e.g., 'attributes.S', 'name')
@@ -277,7 +280,14 @@ const ThreatBuilderState = {
 
     // Reset to empty threat
     clear() {
-        this.threat = {
+        this.threat = this._newThreat();
+        this._isDirty = false;
+        clearTimeout(this._autoSaveTimer);
+    },
+
+    // A new empty threat with a new id
+    _newThreat() {
+        return {
             id: this._generateId(),
             name: '',
             source: 'Custom',
@@ -305,8 +315,19 @@ const ThreatBuilderState = {
             mobOptions: '',
             mobAbilities: ''
         };
-        this._isDirty = false;
-        this._lastInjectedSnapshot = null;
+    },
+
+    // A new empty threat in the getThreatData() form (spec §5.2, P2)
+    _newThreatData() {
+        const data = this._newThreat();
+        data.skills = 'Default 0';
+        delete data.parsedSkills;
+        return data;
+    },
+
+    // True when the threat holds the data of a new empty threat (spec §5.2)
+    _isPristine() {
+        return BestiaryCheck.sameThreatData(this.getThreatData(), this._newThreatData());
     },
 
     // Save the current threat to a .threat file
@@ -323,10 +344,21 @@ const ThreatBuilderState = {
     // Load a .threat file into the builder
     async loadThreatFromFile() {
         const result = await window.api.loadThreatFile();
-        if (result.success && result.data) {
-            this.threat = result.data;
+        if (result.success) {
+            // The file must be a plain object with one key of a threat (spec §4.2, CB3).
+            // A file that fails this test changes nothing.
+            const data = result.data;
+            const threatKeys = ['name', 'abilities', 'attributes'];
+            if (!BestiaryCheck.isPlainObject(data) || !threatKeys.some(key => Object.prototype.hasOwnProperty.call(data, key))) {
+                return { success: false, error: 'Invalid threat file' };
+            }
+            const paths = BestiaryCheck.repairThreat(data, '');
+            if (paths.length > 0) {
+                console.warn('Threat data was repaired on load: ' + paths.join(', '));
+            }
+            this.threat = data;
             // Ensure it has a valid ID
-            if (!this.threat.id || !this.threat.id.startsWith('custom_')) {
+            if (typeof this.threat.id !== 'string' || !this.threat.id.startsWith('custom_')) {
                 this.threat.id = this._generateId();
             }
             this._resolveWeaponIds();
@@ -342,9 +374,9 @@ const ThreatBuilderState = {
         const data = this.getThreatData();
         if (!data.name) return false;
 
-        const snapshot = JSON.stringify({ ...data, id: null });
-        // No collision if nothing was injected before, or data hasn't changed
-        if (!this._lastInjectedSnapshot || snapshot === this._lastInjectedSnapshot) {
+        // No collision if the cache holds no record with this id, or the same data (spec §7.2)
+        const held = DataLoader.getThreat(data.id);
+        if (!held || BestiaryCheck.sameThreatData(held, data)) {
             return false;
         }
 
@@ -371,15 +403,20 @@ const ThreatBuilderState = {
             this.threat.name = newName;
         }
 
-        // Compare current data (minus id) against the last-injected snapshot.
-        // If the threat has changed, assign a new ID so previous copies keep their stats.
-        const snapshot = JSON.stringify({ ...data, id: null });
-        if (this._lastInjectedSnapshot && snapshot !== this._lastInjectedSnapshot) {
+        // If the cache holds other data with this id, assign a new ID so previous copies keep their stats.
+        // The test uses the cache, so it also works after a reload (spec §7.2, C8).
+        const held = DataLoader.getThreat(data.id);
+        const split = held && !BestiaryCheck.sameThreatData(held, data);
+        if (split) {
             const newId = this._generateId();
             this.threat.id = newId;
             data.id = newId;
         }
-        this._lastInjectedSnapshot = snapshot;
+        // A rename or a new id changes the builder threat.
+        // Write the key at once, so that a reload keeps the change (TB4-1, TB4-3).
+        if (newName || split) {
+            this._performAutoSave();
+        }
 
         DataLoader.injectThreat(data);
         App.updateThreatCount();
@@ -499,6 +536,12 @@ const ThreatBuilderState = {
     // Mark as dirty and schedule auto-save
     _markDirty() {
         this._isDirty = true;
+        // A pristine threat is not stored: an owner removes the key at once (CB2)
+        if (this._isPristine()) {
+            clearTimeout(this._autoSaveTimer);
+            this.clearAutoSave();
+            return;
+        }
         this._scheduleAutoSave();
     },
 
@@ -510,15 +553,18 @@ const ThreatBuilderState = {
         this._autoSaveTimer = setTimeout(() => this._performAutoSave(), 2000);
     },
 
-    // Perform the auto-save to localStorage
+    // Perform the auto-save to localStorage. A pristine threat writes nothing and removes nothing.
     _performAutoSave() {
-        if (this.isEmpty()) return;
+        if (this._isPristine()) return;
         try {
             const data = {
                 threat: this.getThreatData(),
                 timestamp: Date.now()
             };
-            localStorage.setItem(this._AUTO_SAVE_KEY, JSON.stringify(data));
+            const text = JSON.stringify(data);
+            localStorage.setItem(this._AUTO_SAVE_KEY, text);
+            this._ownsAutoSave = true;
+            this._autoSaveText = text;
         } catch (e) {
             console.warn('Builder auto-save failed:', e);
         }
@@ -535,22 +581,33 @@ const ThreatBuilderState = {
         }
     },
 
-    // Clear the auto-save
+    // Clear the auto-save. Only an owner removes the key (CB1), and only when the key still holds
+    // the text of this page. A newer text is the work of another tab (TB3-3).
     clearAutoSave() {
-        localStorage.removeItem(this._AUTO_SAVE_KEY);
+        if (this._ownsAutoSave && localStorage.getItem(this._AUTO_SAVE_KEY) === this._autoSaveText) {
+            localStorage.removeItem(this._AUTO_SAVE_KEY);
+        }
+        this._ownsAutoSave = false;
+        this._autoSaveText = null;
     },
 
-    // Load threat data from auto-save
+    // Load threat data from auto-save. The caller has tested that threatData is a plain object.
     loadFromAutoSave(threatData) {
+        const paths = BestiaryCheck.repairThreat(threatData, '');
+        if (paths.length > 0) {
+            console.warn('Threat data was repaired on load: ' + paths.join(', '));
+        }
         this.threat = threatData;
         // Ensure it has a valid custom ID
-        if (!this.threat.id || !this.threat.id.startsWith('custom_')) {
+        if (typeof this.threat.id !== 'string' || !this.threat.id.startsWith('custom_')) {
             this.threat.id = this._generateId();
         }
         this._resolveWeaponIds();
         this._parseSkillsString(this.threat.skills);
         this._isDirty = true;
-        this._lastInjectedSnapshot = null;
+        // The page keeps the restored text for the stored text test of clearAutoSave (TB3-3).
+        // A pristine restore keeps no text, so the page cannot remove the key (TB3-4).
+        this._autoSaveText = this._isPristine() ? null : localStorage.getItem(this._AUTO_SAVE_KEY);
     },
 
     // Remove weaponId references from abilities (stats text is already populated)

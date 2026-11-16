@@ -160,13 +160,13 @@ const ThreatsTab = {
 
             return `
                 <div class="threat-list-item ${this.selectedThreatId === threat.id ? 'selected' : ''}"
-                     data-threat-id="${threat.id}">
+                     data-threat-id="${this.escapeHtml(threat.id)}">
                     <div class="threat-list-header">
-                        <span class="threat-list-name">${threat.name}</span>
+                        <span class="threat-list-name">${this.escapeHtml(threat.name)}</span>
                         <div class="threat-list-level">${tierBadges}</div>
                     </div>
                     <div class="threat-list-keywords">
-                        ${keywords.map(kw => `<span class="threat-list-keyword">${kw}</span>`).join('')}
+                        ${keywords.map(kw => `<span class="threat-list-keyword">${this.escapeHtml(kw)}</span>`).join('')}
                     </div>
                 </div>
             `;
@@ -187,7 +187,7 @@ const ThreatsTab = {
             // Show only the selected tier's threat level
             const level = tierThreat[selectedTier];
             if (level) {
-                return `<span class="threat-tier-badge">${level}</span>`;
+                return `<span class="threat-tier-badge">${this.escapeHtml(level)}</span>`;
             }
             return '';
         }
@@ -195,7 +195,7 @@ const ThreatsTab = {
         // Show unique threat levels across all tiers
         const levels = new Set(Object.values(tierThreat));
         return Array.from(levels).map(level =>
-            `<span class="threat-tier-badge">${level}</span>`
+            `<span class="threat-tier-badge">${this.escapeHtml(level)}</span>`
         ).join('');
     },
 
@@ -311,7 +311,13 @@ const ThreatsTab = {
 
         // Add to encounter button
         addBtn.addEventListener('click', () => {
-            const quantity = parseInt(quantityInput.value) || 1;
+            const quantity = BestiaryCheck.readIntegerInput(quantityInput);
+            if (quantity === null) {
+                // Not a valid count: add nothing and show 1
+                quantityInput.value = '1';
+                updateMobVisibility();
+                return;
+            }
             const asMob = mobCheckbox.checked && canEverBeMob && quantity > 1;
 
             const ids = EncounterState.addIndividual(threatId, quantity, asMob);
@@ -351,7 +357,7 @@ const ThreatsTab = {
     },
 
     customizeThreat(threatId) {
-        if (!ThreatBuilderState.isEmpty()) {
+        if (!ThreatBuilderState._isPristine()) {
             if (!confirm('The Threat Builder already has content. Sending this threat to the builder will replace it. Continue?')) {
                 return;
             }
@@ -369,8 +375,8 @@ const ThreatsTab = {
         const keywordsHtml = (threat.keywords || []).map(kw => {
             const key = this.findKeywordKey(kw);
             return key
-                ? `<span class="threat-keyword" data-popup-type="keyword" data-popup-key="${key}" tabindex="0" role="button">${kw}</span>`
-                : `<span class="threat-keyword">${kw}</span>`;
+                ? `<span class="threat-keyword" data-popup-type="keyword" data-popup-key="${key}" tabindex="0" role="button">${this.escapeHtml(kw)}</span>`
+                : `<span class="threat-keyword">${this.escapeHtml(kw)}</span>`;
         }).join('');
 
         // Build attributes table
@@ -410,7 +416,7 @@ const ThreatsTab = {
             <div class="threat-card">
                 <div class="threat-card-header">
                     <div class="threat-card-header-top">
-                        <h2 class="threat-card-title">${threat.name}</h2>
+                        <h2 class="threat-card-title">${this.escapeHtml(threat.name)}</h2>
                         <div class="threat-card-header-actions">
                             <button class="btn-copy" id="btn-copy-threat">Copy</button>
                             <button class="btn-copy" id="btn-customize-threat">Customize</button>
@@ -418,15 +424,15 @@ const ThreatsTab = {
                         </div>
                     </div>
                     ${threat.quote ? `
-                        <p class="threat-card-quote">${threat.quote}</p>
-                        ${threat.attribution ? `<p class="threat-card-attribution">—${threat.attribution}</p>` : ''}
+                        <p class="threat-card-quote">${this.escapeHtml(threat.quote)}</p>
+                        ${threat.attribution ? `<p class="threat-card-attribution">—${this.escapeHtml(threat.attribution)}</p>` : ''}
                     ` : ''}
-                    ${threat.source ? `<span class="threat-card-source">${DataLoader.formatSourcePage(threat)}</span>` : ''}
+                    ${threat.source ? `<span class="threat-card-source">${this.escapeHtml(DataLoader.formatSourcePage(threat))}</span>` : ''}
                 </div>
                 <div class="threat-card-body">
                     ${threat.description ? `
                         <div class="threat-card-description">
-                            ${threat.description}
+                            ${this.escapeHtml(threat.description)}
                         </div>
                     ` : ''}
 
@@ -475,7 +481,7 @@ const ThreatsTab = {
             <div class="add-to-encounter-header-controls">
                 <div class="add-to-encounter-row">
                     <input type="number" id="threat-add-quantity" class="header-quantity" value="1" min="1" max="20" title="Quantity">
-                    <button id="threat-add-to-encounter-btn" class="header-add-btn" data-threat-id="${threat.id}">
+                    <button id="threat-add-to-encounter-btn" class="header-add-btn" data-threat-id="${this.escapeHtml(threat.id)}">
                         + Add
                     </button>
                 </div>
@@ -497,13 +503,13 @@ const ThreatsTab = {
                 <thead>
                     <tr>
                         <th>Tier</th>
-                        ${tiers.map(t => `<th>${t}</th>`).join('')}
+                        ${tiers.map(t => `<th>${this.escapeHtml(t)}</th>`).join('')}
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>Threat</td>
-                        ${tiers.map(t => `<td class="stat-value">${tierThreat[t]}</td>`).join('')}
+                        ${tiers.map(t => `<td class="stat-value">${this.escapeHtml(tierThreat[t])}</td>`).join('')}
                     </tr>
                 </tbody>
             </table>
@@ -528,7 +534,7 @@ const ThreatsTab = {
                 </thead>
                 <tbody>
                     <tr>
-                        ${attrOrder.map(attr => `<td class="stat-value">${attributes[attr] || '-'}</td>`).join('')}
+                        ${attrOrder.map(attr => `<td class="stat-value">${this.escapeHtml(attributes[attr] || '-')}</td>`).join('')}
                     </tr>
                 </tbody>
             </table>
@@ -543,8 +549,8 @@ const ThreatsTab = {
         return `
             <div class="resilience-row">
                 <span class="resilience-label">Resilience</span><br>
-                <span class="resilience-value">${value}</span>
-                ${note ? `<span class="resilience-note" data-glossary-enhance> (${note})</span>` : ''}
+                <span class="resilience-value">${this.escapeHtml(value)}</span>
+                ${note ? `<span class="resilience-note" data-glossary-enhance> (${this.escapeHtml(note)})</span>` : ''}
             </div>
         `;
     },
@@ -561,9 +567,9 @@ const ThreatsTab = {
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="stat-value">${threat.defence || '-'}</td>
-                        <td class="stat-value">${threat.wounds || '-'}</td>
-                        <td class="stat-value">${threat.shock || '-'}</td>
+                        <td class="stat-value">${this.escapeHtml(threat.defence || '-')}</td>
+                        <td class="stat-value">${this.escapeHtml(threat.wounds || '-')}</td>
+                        <td class="stat-value">${this.escapeHtml(threat.shock || '-')}</td>
                     </tr>
                 </tbody>
             </table>
@@ -576,7 +582,7 @@ const ThreatsTab = {
         return `
             <div class="skills-row">
                 <span class="skills-label">SKILLS:</span>
-                <span class="skills-value" data-glossary-enhance>${skills}</span>
+                <span class="skills-value" data-glossary-enhance>${this.escapeHtml(skills)}</span>
             </div>
         `;
     },
@@ -593,21 +599,21 @@ const ThreatsTab = {
                 if (weapon) {
                     statsHtml = this.formatWeaponStats(weapon);
                 } else if (ability.stats) {
-                    statsHtml = ` | ${ability.stats}`;
+                    statsHtml = ` | ${this.escapeHtml(ability.stats)}`;
                 }
             } else if (ability.stats) {
-                statsHtml = ` | ${ability.stats}`;
+                statsHtml = ` | ${this.escapeHtml(ability.stats)}`;
             }
 
             if (ability.description) {
-                descHtml = `<div class="ability-description" data-glossary-enhance>${ability.description}</div>`;
+                descHtml = `<div class="ability-description" data-glossary-enhance>${this.escapeHtml(ability.description)}</div>`;
             }
 
             return `
                 <div class="ability-item">
                     <div>
-                        <span class="ability-type">${ability.type}:</span>
-                        <span class="ability-name" data-glossary-enhance>${ability.name}</span>
+                        <span class="ability-type">${this.escapeHtml(ability.type)}:</span>
+                        <span class="ability-name" data-glossary-enhance>${this.escapeHtml(ability.name)}</span>
                         ${statsHtml ? `<span class="ability-stats" data-glossary-enhance>${statsHtml}</span>` : ''}
                     </div>
                     ${descHtml}
@@ -636,8 +642,8 @@ const ThreatsTab = {
 
         const bonusItems = bonuses.map(bonus => `
             <div class="bonus-item">
-                <span class="bonus-name" data-glossary-enhance>${bonus.name}:</span>
-                <span class="bonus-description" data-glossary-enhance>${bonus.description}</span>
+                <span class="bonus-name" data-glossary-enhance>${this.escapeHtml(bonus.name)}:</span>
+                <span class="bonus-description" data-glossary-enhance>${this.escapeHtml(bonus.description)}</span>
             </div>
         `).join('');
 
@@ -655,19 +661,29 @@ const ThreatsTab = {
         return `
             <div class="determination-row">
                 <span class="determination-label">DETERMINATION:</span>
-                <span class="determination-value" data-glossary-enhance>${determination}</span>
+                <span class="determination-value" data-glossary-enhance>${this.escapeHtml(determination)}</span>
             </div>
         `;
     },
 
     // Optional multi-line text sections (Threat Options, Mob Options, Mob Abilities, Biomorphs)
-    renderTextSection(label, text) {
-        if (!text) return '';
+    // A mob list can be a string or a list of { name, description } entries
+    renderTextSection(label, value) {
+        if (!value || (Array.isArray(value) && value.length === 0)) return '';
+
+        if (Array.isArray(value)) {
+            return `
+            <div class="bonuses-section">
+                <div class="bonuses-header">${label}</div>
+                ${this.renderMobEntries(value)}
+            </div>
+        `;
+        }
 
         return `
             <div class="bonuses-section">
                 <div class="bonuses-header">${label}</div>
-                <div class="threat-text-section" data-glossary-enhance>${text}</div>
+                <div class="threat-text-section" data-glossary-enhance>${this.escapeHtml(value)}</div>
             </div>
         `;
     },
@@ -685,10 +701,10 @@ const ThreatsTab = {
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="stat-value">${threat.conviction ?? '-'}</td>
-                        <td class="stat-value">${threat.resolve ?? '-'}</td>
-                        <td class="stat-value">${threat.speed || '-'}</td>
-                        <td class="stat-value">${threat.size || '-'}</td>
+                        <td class="stat-value">${this.escapeHtml(threat.conviction ?? '-')}</td>
+                        <td class="stat-value">${this.escapeHtml(threat.resolve ?? '-')}</td>
+                        <td class="stat-value">${this.escapeHtml(threat.speed || '-')}</td>
+                        <td class="stat-value">${this.escapeHtml(threat.size || '-')}</td>
                     </tr>
                 </tbody>
             </table>
@@ -773,10 +789,7 @@ const ThreatsTab = {
                 }
                 lines.push(line);
                 if (ability.description) {
-                    const div = document.createElement('div');
-                    div.innerHTML = ability.description;
-                    const plainDesc = div.textContent || div.innerText || '';
-                    lines.push(`  ${plainDesc}`);
+                    lines.push(`  ${ability.description}`);
                 }
             });
         }
@@ -786,10 +799,7 @@ const ThreatsTab = {
             lines.push('');
             lines.push('BONUSES');
             threat.bonuses.forEach(bonus => {
-                const div = document.createElement('div');
-                div.innerHTML = bonus.description;
-                const plainDesc = div.textContent || div.innerText || '';
-                lines.push(`${bonus.name}: ${plainDesc}`);
+                lines.push(`${bonus.name}: ${bonus.description}`);
             });
         }
 
@@ -808,5 +818,26 @@ const ThreatsTab = {
         const target = keyword.toLowerCase();
         const hit = Object.entries(keywords).find(([, entry]) => entry.name.toLowerCase() === target);
         return hit ? hit[0] : null;
+    },
+
+    // One bonus-item for each entry of a mob ability or mob option list, with each value escaped
+    renderMobEntries(list) {
+        return list.map(entry => `
+            <div class="bonus-item">
+                <span class="bonus-name" data-glossary-enhance>${this.escapeHtml(entry.name)}:</span>
+                <span class="bonus-description" data-glossary-enhance>${this.escapeHtml(entry.description)}</span>
+            </div>
+        `).join('');
+    },
+
+    // Escape a value for text and for a double-quoted attribute. null and undefined give ''.
+    escapeHtml(value) {
+        if (value === null || value === undefined) return '';
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     }
 };

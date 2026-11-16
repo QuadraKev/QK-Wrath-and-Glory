@@ -321,7 +321,7 @@ const ReferencesTab = {
         const entries = this.getFilteredEntries();
 
         if (entries.length === 0) {
-            container.innerHTML = `<div class="glossary-empty"><p>No entries found${this.searchQuery ? ` for "${this.searchQuery}"` : ''}.</p></div>`;
+            container.innerHTML = `<div class="glossary-empty"><p>No entries found${this.searchQuery ? ` for "${this.escapeHtml(this.searchQuery)}"` : ''}.</p></div>`;
             this._cleanupScroll();
             return;
         }
@@ -582,7 +582,7 @@ const ReferencesTab = {
         const rows = weapons.map(w => {
             const total = (w.damage?.base || 0) + (w.damage?.bonus || 0);
             const damage = w.damage?.attribute === 'strength' ? `(S) +${total}` : `${total}`;
-            const range = w.range && typeof w.range === 'object' ? `${w.range.short}/${w.range.medium}/${w.range.long}` : '-';
+            const range = w.range && typeof w.range === 'object' ? `${w.range.short ?? '-'}/${w.range.medium ?? '-'}/${w.range.long ?? '-'}` : '-';
             return `<tr><td>${w.name}</td><td>${damage}</td><td>${w.ed}</td><td>${w.ap || '-'}</td><td>${range}</td><td>${w.salvo ?? '-'}</td><td>${(w.traits || []).join(', ') || '-'}</td></tr>`;
         }).join('');
         return `<div class="glossary-table-scroll"><table class="glossary-table">
@@ -775,7 +775,7 @@ const ReferencesTab = {
             html += `<div class="ref-stat"><span class="ref-label">Attribute Bonuses:</span> ${parts.join(', ')}</div>`;
         }
         if (entry.skillBonus && Object.keys(entry.skillBonus).length > 0) {
-            const parts = Object.entries(entry.skillBonus).map(([skill, val]) => `${skill.charAt(0).toUpperCase() + skill.slice(1)} +${val}`);
+            const parts = Object.entries(entry.skillBonus).map(([skill, val]) => /^choice\d*$/.test(skill) ? `Skill of your choice +${val}` : `${skill.charAt(0).toUpperCase() + skill.slice(1)} +${val}`);
             html += `<div class="ref-stat"><span class="ref-label">Skill Bonuses:</span> ${parts.join(', ')}</div>`;
         }
         if (entry.startingWargear && entry.startingWargear.length > 0) {

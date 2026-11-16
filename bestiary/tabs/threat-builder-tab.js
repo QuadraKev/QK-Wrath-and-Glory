@@ -120,7 +120,13 @@ const ThreatBuilderTab = {
         });
 
         document.getElementById('btn-builder-inject').addEventListener('click', () => {
-            const count = parseInt(document.getElementById('builder-inject-count').value) || 1;
+            const countBox = document.getElementById('builder-inject-count');
+            const count = BestiaryCheck.readIntegerInput(countBox);
+            if (count === null) {
+                // Not a valid count: add nothing and show 1
+                countBox.value = '1';
+                return;
+            }
 
             if (ThreatBuilderState.wouldCauseNameCollision()) {
                 // Show rename modal for name collision
@@ -155,7 +161,7 @@ const ThreatBuilderTab = {
             dropdown.innerHTML = '<div class="builder-dropdown-empty">No matching threats</div>';
         } else {
             dropdown.innerHTML = filtered.map(t =>
-                `<div class="builder-dropdown-item" data-id="${t.id}">${t.name} <span class="text-muted">(${DataLoader.normalizeSource(t.source)})</span></div>`
+                `<div class="builder-dropdown-item" data-id="${this.escapeAttr(t.id)}">${this.escapeHtml(t.name)} <span class="text-muted">(${this.escapeHtml(DataLoader.normalizeSource(t.source))})</span></div>`
             ).join('');
         }
 
@@ -223,7 +229,7 @@ const ThreatBuilderTab = {
                 </div>
                 <div class="builder-field-row builder-field-row-full">
                     <label>Description</label>
-                    <textarea class="builder-textarea" data-field="description" rows="3">${this.escapeHtml(t.description || '')}</textarea>
+                    <textarea class="builder-textarea" data-field="description" rows="3">\n${this.escapeHtml(t.description || '')}</textarea>
                 </div>
             </div>
         `;
@@ -284,7 +290,7 @@ const ThreatBuilderTab = {
                     ${attrOrder.map(attr => `
                         <div class="builder-attr">
                             <label>${attrNames[attr]}</label>
-                            <input type="number" class="builder-input builder-attr-input" data-field="attributes.${attr}" value="${attrs[attr] ?? 1}" min="0">
+                            <input type="number" class="builder-input builder-attr-input" data-field="attributes.${attr}" value="${this.escapeAttr(attrs[attr] ?? 1)}" min="0">
                         </div>
                     `).join('')}
                 </div>
@@ -300,7 +306,7 @@ const ThreatBuilderTab = {
                 <div class="builder-stats-row">
                     <div class="builder-stat-field">
                         <label>Defence</label>
-                        <input type="number" class="builder-input" data-field="defence" value="${t.defence ?? 1}" min="0">
+                        <input type="number" class="builder-input" data-field="defence" value="${this.escapeAttr(t.defence ?? 1)}" min="0">
                     </div>
                     <div class="builder-stat-field">
                         <label>Defence Note</label>
@@ -308,7 +314,7 @@ const ThreatBuilderTab = {
                     </div>
                     <div class="builder-stat-field">
                         <label>Resilience</label>
-                        <input type="number" class="builder-input" data-field="resilience.value" value="${res.value ?? 1}" min="0">
+                        <input type="number" class="builder-input" data-field="resilience.value" value="${this.escapeAttr(res.value ?? 1)}" min="0">
                     </div>
                     <div class="builder-stat-field">
                         <label>Resilience Note</label>
@@ -327,11 +333,11 @@ const ThreatBuilderTab = {
                 <div class="builder-stats-row">
                     <div class="builder-stat-field">
                         <label>Wounds</label>
-                        <input type="number" class="builder-input" data-field="wounds" value="${t.wounds ?? 1}" min="1">
+                        <input type="number" class="builder-input" data-field="wounds" value="${this.escapeAttr(t.wounds ?? 1)}" min="1">
                     </div>
                     <div class="builder-stat-field">
                         <label>Shock (use - for none)</label>
-                        <input type="text" class="builder-input" data-field="shock" value="${shockValue}">
+                        <input type="text" class="builder-input" data-field="shock" value="${this.escapeAttr(shockValue)}">
                     </div>
                 </div>
             </div>
@@ -355,7 +361,7 @@ const ThreatBuilderTab = {
             return `
                 <div class="builder-skill-entry" data-skill-index="${index}">
                     <select class="builder-select builder-skill-select" data-skill-index="${index}">${options}</select>
-                    <input type="number" class="builder-input builder-skill-value" data-skill-index="${index}" value="${entry.value}" min="0">
+                    <input type="number" class="builder-input builder-skill-value" data-skill-index="${index}" value="${this.escapeAttr(entry.value)}" min="0">
                     <button class="btn-builder-mini builder-skill-remove" data-skill-index="${index}" title="Remove">&times;</button>
                 </div>
             `;
@@ -367,15 +373,15 @@ const ThreatBuilderTab = {
                 <div class="builder-skills-fixed-row">
                     <div class="builder-stat-field">
                         <label>Default</label>
-                        <input type="number" class="builder-input" data-skill="default" value="${ps.default}" min="0">
+                        <input type="number" class="builder-input" data-skill="default" value="${this.escapeAttr(ps.default)}" min="0">
                     </div>
                     <div class="builder-stat-field">
                         <label>Awareness</label>
-                        <input type="number" class="builder-input" data-skill="awareness" value="${ps.awareness}" min="0">
+                        <input type="number" class="builder-input" data-skill="awareness" value="${this.escapeAttr(ps.awareness)}" min="0">
                     </div>
                     <div class="builder-stat-field">
                         <label>Passive Awareness</label>
-                        <input type="number" class="builder-input" data-skill="passiveAwareness" value="${ps.passiveAwareness}" min="0">
+                        <input type="number" class="builder-input" data-skill="passiveAwareness" value="${this.escapeAttr(ps.passiveAwareness)}" min="0">
                     </div>
                 </div>
                 <div class="builder-skills-entries">
@@ -428,7 +434,7 @@ const ThreatBuilderTab = {
                 </div>
                 <div class="builder-field-row builder-field-row-full">
                     <label>Description</label>
-                    <textarea class="builder-textarea builder-ability-field" data-index="${index}" data-afield="description" rows="2">${this.escapeHtml(ability.description || '')}</textarea>
+                    <textarea class="builder-textarea builder-ability-field" data-index="${index}" data-afield="description" rows="2">\n${this.escapeHtml(ability.description || '')}</textarea>
                 </div>
                 <div class="builder-field-row">
                     <label>Stats</label>
@@ -467,7 +473,7 @@ const ThreatBuilderTab = {
                 </div>
                 <div class="builder-field-row builder-field-row-full">
                     <label>Description</label>
-                    <textarea class="builder-textarea builder-bonus-field" data-index="${index}" data-bfield="description" rows="2">${this.escapeHtml(bonus.description || '')}</textarea>
+                    <textarea class="builder-textarea builder-bonus-field" data-index="${index}" data-bfield="description" rows="2">\n${this.escapeHtml(bonus.description || '')}</textarea>
                 </div>
             </div>
         `;
@@ -492,15 +498,15 @@ const ThreatBuilderTab = {
                 <div class="builder-stats-row">
                     <div class="builder-stat-field">
                         <label>Conviction</label>
-                        <input type="number" class="builder-input" data-field="conviction" value="${t.conviction ?? 0}" min="0">
+                        <input type="number" class="builder-input" data-field="conviction" value="${this.escapeAttr(t.conviction ?? 0)}" min="0">
                     </div>
                     <div class="builder-stat-field">
                         <label>Resolve</label>
-                        <input type="number" class="builder-input" data-field="resolve" value="${t.resolve ?? 0}" min="0">
+                        <input type="number" class="builder-input" data-field="resolve" value="${this.escapeAttr(t.resolve ?? 0)}" min="0">
                     </div>
                     <div class="builder-stat-field">
                         <label>Speed</label>
-                        <input type="number" class="builder-input" data-field="speed" value="${t.speed ?? 6}" min="0">
+                        <input type="number" class="builder-input" data-field="speed" value="${this.escapeAttr(t.speed ?? 6)}" min="0">
                     </div>
                     <div class="builder-stat-field">
                         <label>Speed Note</label>
@@ -529,9 +535,10 @@ const ThreatBuilderTab = {
                 const field = e.target.dataset.field;
                 let value = e.target.value;
 
-                // Handle numeric fields
+                // Handle numeric fields: a value outside the declared range changes nothing
                 if (e.target.type === 'number') {
-                    value = parseInt(value) || 0;
+                    value = BestiaryCheck.readIntegerInput(e.target);
+                    if (value === null) return;
                 }
 
                 // Handle shock special case
@@ -542,6 +549,13 @@ const ThreatBuilderTab = {
                 ThreatBuilderState.updateField(field, value);
                 this._debouncePreview();
             });
+            // After the entry, the box shows the stored value
+            if (el.type === 'number') {
+                el.addEventListener('change', (e) => {
+                    const stored = e.target.dataset.field.split('.').reduce((obj, key) => (obj == null ? undefined : obj[key]), ThreatBuilderState.threat);
+                    e.target.value = typeof stored === 'number' ? String(stored) : e.target.defaultValue;
+                });
+            }
         });
 
         // Keyword add
@@ -657,7 +671,8 @@ const ThreatBuilderTab = {
         editor.querySelectorAll('[data-skill]').forEach(el => {
             el.addEventListener('input', (e) => {
                 const skill = e.target.dataset.skill;
-                const value = parseInt(e.target.value) || 0;
+                const value = BestiaryCheck.readIntegerInput(e.target);
+                if (value === null) return;
                 if (skill === 'default') {
                     ThreatBuilderState.updateDefaultSkill(value);
                 } else if (skill === 'awareness') {
@@ -667,14 +682,19 @@ const ThreatBuilderTab = {
                 }
                 this._debouncePreview();
             });
+            // After the entry, the box shows the stored value
+            el.addEventListener('change', (e) => {
+                e.target.value = String(ThreatBuilderState.threat.parsedSkills[e.target.dataset.skill]);
+            });
         });
 
         // Skill entry dropdown changes
         editor.querySelectorAll('.builder-skill-select').forEach(el => {
             el.addEventListener('change', (e) => {
                 const index = parseInt(e.target.dataset.skillIndex);
-                const valueInput = editor.querySelector(`.builder-skill-value[data-skill-index="${index}"]`);
-                const value = valueInput ? parseInt(valueInput.value) || 0 : 0;
+                // The stored value stays: the value box can hold an entry that was refused
+                const entry = ThreatBuilderState.threat.parsedSkills.entries[index];
+                const value = entry ? entry.value : 0;
                 ThreatBuilderState.updateSkillEntry(index, e.target.value, value);
                 this.refresh();
             });
@@ -686,8 +706,15 @@ const ThreatBuilderTab = {
                 const index = parseInt(e.target.dataset.skillIndex);
                 const selectEl = editor.querySelector(`.builder-skill-select[data-skill-index="${index}"]`);
                 const name = selectEl ? selectEl.value : '';
-                ThreatBuilderState.updateSkillEntry(index, name, parseInt(e.target.value) || 0);
+                const value = BestiaryCheck.readIntegerInput(e.target);
+                if (value === null) return;
+                ThreatBuilderState.updateSkillEntry(index, name, value);
                 this._debouncePreview();
+            });
+            // After the entry, the box shows the stored value
+            el.addEventListener('change', (e) => {
+                const entry = ThreatBuilderState.threat.parsedSkills.entries[parseInt(e.target.dataset.skillIndex)];
+                e.target.value = String(entry ? entry.value : 0);
             });
         });
 
@@ -744,7 +771,7 @@ const ThreatBuilderTab = {
         // Simplified version of ThreatsTab.renderThreatCard without encounter buttons
         const tierThreatTable = ThreatsTab.renderTierThreatTable(threat.tierThreat);
         const keywordsHtml = (threat.keywords || []).map(kw =>
-            `<span class="threat-keyword">${kw}</span>`
+            `<span class="threat-keyword">${this.escapeHtml(kw)}</span>`
         ).join('');
         const attributesTable = ThreatsTab.renderAttributesTable(threat.attributes);
         const resilienceHtml = ThreatsTab.renderResilienceRow(threat);
@@ -758,16 +785,16 @@ const ThreatBuilderTab = {
         return `
             <div class="threat-card">
                 <div class="threat-card-header">
-                    <h2 class="threat-card-title">${threat.name || '(Unnamed Threat)'}</h2>
-                    ${threat.source ? `<span class="threat-card-source">${DataLoader.formatSourcePage(threat)}</span>` : ''}
+                    <h2 class="threat-card-title">${threat.name ? this.escapeHtml(threat.name) : '(Unnamed Threat)'}</h2>
+                    ${threat.source ? `<span class="threat-card-source">${this.escapeHtml(DataLoader.formatSourcePage(threat))}</span>` : ''}
                     ${threat.quote ? `
-                        <p class="threat-card-quote">${threat.quote}</p>
-                        ${threat.attribution ? `<p class="threat-card-attribution">&mdash;${threat.attribution}</p>` : ''}
+                        <p class="threat-card-quote">${this.escapeHtml(threat.quote)}</p>
+                        ${threat.attribution ? `<p class="threat-card-attribution">&mdash;${this.escapeHtml(threat.attribution)}</p>` : ''}
                     ` : ''}
                 </div>
                 <div class="threat-card-body">
                     ${threat.description ? `
-                        <div class="threat-card-description">${threat.description}</div>
+                        <div class="threat-card-description">${this.escapeHtml(threat.description)}</div>
                     ` : ''}
                     <div class="threat-stats-section">
                         ${tierThreatTable}
@@ -926,34 +953,34 @@ const ThreatBuilderTab = {
                 if (weapon) {
                     descText = this.formatWeaponStats(weapon);
                     if (item.ability.description) {
-                        descText += ' — ' + this.stripHtml(item.ability.description);
+                        descText += ' — ' + item.ability.description;
                     }
                 } else if (item.ability.stats) {
                     descText = item.ability.stats;
                     if (item.ability.description) {
-                        descText += ' — ' + this.stripHtml(item.ability.description);
+                        descText += ' — ' + item.ability.description;
                     }
                 } else if (item.ability.description) {
-                    descText = this.stripHtml(item.ability.description);
+                    descText = item.ability.description;
                 }
             } else if (item.ability.stats) {
                 descText = item.ability.stats;
                 if (item.ability.description) {
-                    descText += ' — ' + this.stripHtml(item.ability.description);
+                    descText += ' — ' + item.ability.description;
                 }
             } else if (item.ability.description) {
-                descText = this.stripHtml(item.ability.description);
+                descText = item.ability.description;
             }
 
             return `
                 <div class="ability-picker-item" data-picker-index="${i}">
                     <div class="ability-picker-item-header">
-                        <span class="ability-picker-item-type">${item.ability.type}</span>
-                        <span class="ability-picker-item-name">${item.ability.name}</span>
-                        <span class="ability-picker-item-threat">${item.threatName}</span>
-                        <button class="btn-builder-small ability-picker-import" data-type="${item.ability.type}" data-name="${this.escapeAttr(item.ability.name)}" data-desc="${this.escapeAttr(item.ability.description || '')}" data-stats="${this.escapeAttr(item.ability.stats || '')}">Import</button>
+                        <span class="ability-picker-item-type">${this.escapeHtml(item.ability.type)}</span>
+                        <span class="ability-picker-item-name">${this.escapeHtml(item.ability.name)}</span>
+                        <span class="ability-picker-item-threat">${this.escapeHtml(item.threatName)}</span>
+                        <button class="btn-builder-small ability-picker-import" data-type="${this.escapeAttr(item.ability.type)}" data-name="${this.escapeAttr(item.ability.name)}" data-desc="${this.escapeAttr(item.ability.description || '')}" data-stats="${this.escapeAttr(item.ability.stats || '')}">Import</button>
                     </div>
-                    ${descText ? `<div class="ability-picker-item-desc">${this.truncate(descText, 150)}</div>` : ''}
+                    ${descText ? `<div class="ability-picker-item-desc">${this.escapeHtml(this.truncate(descText, 150))}</div>` : ''}
                 </div>
             `;
         }).join('');
@@ -1013,11 +1040,11 @@ const ThreatBuilderTab = {
             <div class="ability-picker-item" data-picker-index="${i}">
                 <div class="ability-picker-item-header">
                     <span class="ability-picker-item-type">BONUS</span>
-                    <span class="ability-picker-item-name">${item.bonus.name}</span>
-                    <span class="ability-picker-item-threat">${item.threatName}</span>
+                    <span class="ability-picker-item-name">${this.escapeHtml(item.bonus.name)}</span>
+                    <span class="ability-picker-item-threat">${this.escapeHtml(item.threatName)}</span>
                     <button class="btn-builder-small ability-picker-import" data-bname="${this.escapeAttr(item.bonus.name)}" data-bdesc="${this.escapeAttr(item.bonus.description || '')}">Import</button>
                 </div>
-                ${item.bonus.description ? `<div class="ability-picker-item-desc">${this.truncate(this.stripHtml(item.bonus.description), 120)}</div>` : ''}
+                ${item.bonus.description ? `<div class="ability-picker-item-desc">${this.escapeHtml(this.truncate(item.bonus.description, 120))}</div>` : ''}
             </div>
         `).join('');
     },
@@ -1081,7 +1108,7 @@ const ThreatBuilderTab = {
                     </div>
                     <div class="inject-modal-field">
                         <label>Count</label>
-                        <input type="number" id="inject-modal-count" class="builder-input" value="${defaultCount}" min="1" max="20">
+                        <input type="number" id="inject-modal-count" class="builder-input" value="${this.escapeAttr(defaultCount)}" min="1" max="20">
                     </div>
                 </div>
                 <div class="inject-modal-footer">
@@ -1102,7 +1129,13 @@ const ThreatBuilderTab = {
 
         overlay.querySelector('#inject-modal-add').addEventListener('click', () => {
             const newName = document.getElementById('inject-modal-name').value.trim();
-            const count = parseInt(document.getElementById('inject-modal-count').value) || 1;
+            const countBox = document.getElementById('inject-modal-count');
+            const count = BestiaryCheck.readIntegerInput(countBox);
+            if (count === null) {
+                // Not a valid count: keep the modal open and show the opening count
+                countBox.value = String(defaultCount);
+                return;
+            }
             if (!newName) return;
 
             const result = ThreatBuilderState.injectIntoEncounter(count, newName);
@@ -1225,12 +1258,6 @@ const ThreatBuilderTab = {
 
     escapeAttr(text) {
         return String(text).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    },
-
-    stripHtml(html) {
-        const div = document.createElement('div');
-        div.innerHTML = html;
-        return div.textContent || div.innerText || '';
     },
 
     truncate(text, maxLen) {

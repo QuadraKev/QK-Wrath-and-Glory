@@ -356,7 +356,12 @@ const InjuriesTab = {
         const corruptionInput = document.getElementById('corruption-points');
         if (corruptionInput) {
             corruptionInput.addEventListener('change', (e) => {
-                State.setCorruptionPoints(e.target.value);
+                // A refused entry, or a bad entry that the browser cannot read, keeps the stored value
+                const badInput = e.target.validity && e.target.validity.badInput;
+                if (badInput || !State.setCorruptionPoints(e.target.value)) {
+                    e.target.value = State.getCharacter().corruption || 0;
+                    return;
+                }
                 this.render();
             });
         }

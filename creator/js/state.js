@@ -249,34 +249,52 @@ const State = {
         return this.character;
     },
 
+    // The integer of a typed value inside min..max (max can be Infinity), or null. An empty or
+    // blank entry is not a number.
+    _intInRange(value, min, max) {
+        if (typeof value === 'string' && value.trim() === '') return null;
+        if (typeof value !== 'number' && typeof value !== 'string') return null;
+        const n = Number(value);
+        return Number.isInteger(n) && n >= min && n <= max ? n : null;
+    },
+
     // Update character name
     setName(name) {
         this.character.name = name;
         this.notifyListeners('name');
     },
 
-    // Update tier
+    // Update tier (1 to 5). A value outside the range keeps the stored value and gives false.
     setTier(tier) {
+        const value = this._intInRange(tier, 1, 5);
+        if (value === null) return false;
         const oldTier = this.character.tier;
-        this.character.tier = parseInt(tier) || 1;
+        this.character.tier = value;
         this.notifyListeners('tier');
 
         // If Kroot and tier increased, notify that more mutations may be available
         if (this.character.species?.id === 'kroot' && this.character.tier > oldTier) {
             this.notifyListeners('krootMutationsAvailable');
         }
+        return true;
     },
 
-    // Update rank
+    // Update rank (1 to 3, Core Rulebook p.146). A value outside the range keeps the stored value and gives false.
     setRank(rank) {
-        this.character.rank = parseInt(rank) || 1;
+        const value = this._intInRange(rank, 1, 3);
+        if (value === null) return false;
+        this.character.rank = value;
         this.notifyListeners('rank');
+        return true;
     },
 
-    // Update additional XP
+    // Update additional XP (0 or more). A value outside the range keeps the stored value and gives false.
     setAdditionalXP(xp) {
-        this.character.additionalXp = parseInt(xp) || 0;
+        const value = this._intInRange(xp, 0, Infinity);
+        if (value === null) return false;
+        this.character.additionalXp = value;
         this.notifyListeners('xp');
+        return true;
     },
 
     // Update setting description
@@ -1228,10 +1246,13 @@ const State = {
         }
     },
 
-    // Set corruption points
+    // Set corruption points (0 or more). A value outside the range keeps the stored value and gives false.
     setCorruptionPoints(value) {
-        this.character.corruption = Math.max(0, parseInt(value) || 0);
+        const points = this._intInRange(value, 0, Infinity);
+        if (points === null) return false;
+        this.character.corruption = points;
         this.notifyListeners('injuries');
+        return true;
     },
 
     // Add a mutation

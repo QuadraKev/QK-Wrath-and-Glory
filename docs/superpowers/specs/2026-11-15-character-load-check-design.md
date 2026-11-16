@@ -1,7 +1,7 @@
 # Type check on a loaded character (creator) — Design
 
 Date: 2026-11-15. Branch: `character-load-check`. Base: `f6a3be0` (`main`).
-Status: spec for review. Line references are to the tree at `f6a3be0`.
+Status: implemented on the branch `character-load-check` (2026-11-15). Line references are to the tree at `f6a3be0`.
 
 Marks used below:
 
@@ -77,7 +77,7 @@ These rules apply to each row of §5 and §6.
 1. **Plain object.** "Plain object" means `value !== null && typeof value === 'object' && !Array.isArray(value)`.
 2. **Present with a wrong type.** The check replaces the value with the repair value of its row. It adds the path to the repaired list.
 3. **Absent optional key.** An optional key that is absent stays absent. Each optional key has the word "optional" in its row. The app wrote shapes without these keys (for example a follower before `cb56749` has no `mobCount`, and a background entry from before the web app has no `bonusType`).
-4. **Absent key with a default.** A key that `createNewCharacter()` holds inside `species`, `archetype`, `customArchetype`, `attributes`, `skills` or `background` gets its default when it is absent. The path goes into the repaired list. No app version from Electron 1.0.0 on wrote these objects without these keys: the 1.0.0 build and the initial web commit `3b17bac` have the same keys in `createNewCharacter()`. The period before 1.0.0 is not proven. There, the cost is one default key and one warning (the 1.0.0 `loadCharacter` already fills a missing `subOptions`, which hints at an older shape).
+4. **Absent key with a default.** A key that `createNewCharacter()` holds inside `species`, `archetype`, `customArchetype`, `attributes`, `skills` or `background` gets its default when it is absent. The path goes into the repaired list. No app version from Electron 1.0.0 on wrote these objects without these keys: the 1.0.0 build and the initial web commit `3b17bac` have the same keys in `createNewCharacter()`, apart from `customArchetype`, which 1.0.0 does not have. A save with no `customArchetype` key gets the default object from the merge, before the check. The period before 1.0.0 is not proven. There, the cost is one default key and one warning (the 1.0.0 `loadCharacter` already fills a missing `subOptions`, which hints at an older shape).
 5. **Absent key that is not optional, inside a list entry or an overlay.** Inside a list entry, a `relic` or an `improvised` overlay, an absent key that its row does not mark "optional" gets the repair value of its row. The path goes into the repaired list. Where the repair of the key is "drop the entry", an absent key drops the entry. Why: the goal includes "no throw at render", and an absent `relic.oddities` is the same risk as a wrong type. R1: no real save without these keys was found (`followers.js` at `cac2cb3` and `cb56749`; `state.js:999`, `:1024`, `:1055` since `214c3e8`; the 1.0.0 build). The cost for a save from before 1.0.0 is a default key and one warning. **[Controller ruling, 2026-11-15]** (C8)
 6. **Defaults.** The check takes each default from a fresh `createNewCharacter()` object (`defaults` argument). The check uses one default value at most one time, so no two fields share one array or object.
 7. **Strings.** The check never trims, cuts or changes a string. A string of any content is a legal string.
@@ -375,10 +375,10 @@ Unknown keys have one effect outside HTML: `xp-calculator.js:84`, `:104` sum `Ob
 |---|---|---|
 | F1 | The legacy `ascensionPackages` migration is dead since `c744cd0`. Each save with `ascensionPackages` loses its packages at load: the Electron 1.0.0 saves (its `state.js:42`, `:804-805` write `ascensionPackages`) and the web saves from 2026-02-13 to 2026-02-16. | R8: no new migration. The owner can decide. |
 | F2 | `ascension-tab.js:27` loops from `tier + 1` to 5 with no lower bound. A large negative tier hangs the tab. | R5: list, do not design a limit. |
-| F3 | `renderTrackingBoxes` (`character-sheet-tab.js:722`) has no upper bound. A large toughness or willpower hangs the sheet. | R5. |
+| F3 | `renderTrackingBoxes` (`character-sheet-tab.js:722`) has no upper bound. A large toughness or willpower makes the sheet loop for a long time. For `toughness: 1e21`, the sheet then throws `RangeError: Invalid string length`. | R5. |
 | F4 | The comment at `state.js:107` says the injury side is `"left"`/`"right"`. The UI writes `'Left'`/`'Right'`. | R8: no cleanup of adjacent code. The spec uses an escape, not an enum. |
 | F5 | An unknown key in `attributes` or `skills` changes the XP total, or makes it `NaN`. | R6. |
-| F6 | The relic wizard throws at step 5 when `relic.form` is a string that is not a form id (`relic-wizard.js:295`, `:770`). A type check cannot find an unknown id without the data. | The wizard is a modal, not a tab render. |
+| F6 | The relic wizard throws at step 5 and at step 7 when `relic.form` is a string that is not a form id (`relic-wizard.js:295`, `:770`). A type check cannot find an unknown id without the data. | The wizard is a modal, not a tab render. |
 | F7 | `escapeHtml(0)` returns `''`, so a talent choice of `0` (a wargear index) shows nothing on the sheet when `wargear[0]` is not a weapon or armour (`character-sheet-tab.js:1665`). | Display only, no safety effect. Existing. |
 | F8 | `app.js:471` spreads `saved.enabledSources`. A value that is truthy and not iterable throws at start. | Not a character value (R8 scope). |
 | F9 | `CharacterIO.validateCharacterData`, `getCharacterSummary` and `createCharacterSheet` have no caller. | R8: mention only. |
@@ -390,3 +390,4 @@ Unknown keys have one effect outside HTML: `xp-calculator.js:84`, `:104` sum `Ob
 - The Electron build 1.0.0 (2026-01-28) is evidence (§5). Its writers match `3b17bac` for each row. The app before 1.0.0 is not in any history and not in any build on this machine. For that period, the evidence is the readers in today's code that accept two shapes (talents as a string or an object, a background entry with no `bonusType`, `customKeywords`). The check enforces only types that these readers also need. It enforces no range and no pattern.
 - No real `.character` file from a user is on this machine. The no-op corpus of the plan uses shapes from the setters and the readers.
 - `relic-wizard.js` was searched with grep first, then read in the render and prefill parts only.
+- The site counts of §8.2 and the list of the other (b) sites in §8.5 come from the inventory notes of the author. The notes were files of the work session and are not in the repo. Thus the counts cannot be checked from the repo. The final review of the branch tested the result and not the counts: 4527 hostile files went through the real load and each tab, sheet and modal render in headless Chromium, and no value reached the page raw.

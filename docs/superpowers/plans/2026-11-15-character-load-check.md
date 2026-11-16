@@ -718,3 +718,86 @@ git commit --author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github
 
 Each test loads a hostile value through State.loadCharacter and renders the site. The HTML must not hold the raw tag. <two mutation-proof lines>"
 ```
+
+---
+
+## Review record (2026-11-15)
+
+Branch `character-load-check`, base `f6a3be0`. Commits, in sequence: `5ca625f` (spec and plan), `d1c7390` (plan fix round), `8f9336a` (eight text items), `eab27c7` (Task 1), `d53b9b1` (the autosave ruling in the spec and the plan), `a12075c` (Task 1 fix round), `44176ab` (Task 2), `083f494` (Task 3), `6747d99` (Task 4), `978824b` (Task 2 fix round), `56ac472` (Task 3 fix round), `2b4aae9` (helper rule in the spec), `888dd6d` (Task 4 fix round), `36c6f45` (two comment lines), `9ffcb53` (four spec texts after the final review), `5647fc1` and `523d1a4` (the test block of finding X1), then the controller's commit with this record.
+
+### Owner decision
+
+- "Let's go ahead and implement the type check. Everything else looks good for now."
+
+### Rulings
+
+The rulings R1 to R10 are in spec §3. R10 came from the plan review. The rulings below came from the reviews and from the work.
+
+1. C1 (plan review P1, Critical): `ascension-tab.js:483` read `character.skills[key]` through a key of the archetype data and printed the value raw. The site became S20, with an escape at `:374`, `:403`, `:472` and `:483`.
+2. C2: R10. Inside `attributes` and `skills`, an unknown key stays, but its value must be a finite number or `null`. This closes the class of reads through a data key at the load.
+3. C3: the author did a second search for reads of the character through a key that is not a literal. It found no more site.
+4. C4: real saves hold `skills.choice`, `choice1` or `choice2` with `null`, because `state.js:355` writes NaN. The no-op corpus holds this shape. The NaN write stays (spec F11).
+5. C6: the Electron 1.0.0 build is evidence for R1. The plan reviewer installed `p7zip-full` and read the installer from the owner's OneDrive folder. It changed nothing there, and no file of the build is in the repo. The owner was told.
+6. C7: `rank`, `additionalXp` and `corruption` are "integer or `null`". A 309-digit entry saves as `null`, and R1 has priority.
+7. C8: inside a list entry or an overlay, an absent key that the table does not mark "optional" gets its repair value. Where the repair is "drop the entry", an absent key drops the entry.
+8. T1-1: the autosave path tests the shape and uses no `try`. A catch for all errors hides a script that did not load. The app then starts blank, and the next autosave writes over the stored character. Accepted with it: the outer `if (saved.character)` is gone, so an autosave with no `character` key writes the warning. The writer always writes the key.
+9. T1-2 and T4-1: a gap in a fixture table of the plan went directly to the implementer when the reviewer named each row and ran each correction. It did not go through the plan author.
+10. T2-1 and T3-1: the small test gaps of Tasks 2 and 3 were taken, not parked. The two fix rounds had no separate re-review, because each was the reviewer's own correction in 5 to 10 test lines. The final review ran 14 mutants against the new checks of `978824b`, `56ac472` and `888dd6d`, and each check failed for its mutant.
+11. T3-2: the four new `escapeHtml` helpers return `''` only for `null` and `undefined`, so `0` prints as `0`. The spec Helpers paragraph records this. S7 and S12 keep the `isCustom ? ... : ''` ternary around the escape.
+12. T4-2: no render row for sheet `:990` and for `:831` through a species path option. Each reads `rank` with the same expression (`character.rank || 1`) as the sites that the rows prove, and the check types `rank` at the load.
+13. X1 (final review, Important, test): done before the merge. A new block in `scripts/test-load-check.js` builds a character through the real writers and asserts that the load gives the same character and no warning. It guards R1 against the next change of a stored shape. The scoped re-review approved the block and named five more list writers whose entries the check can drop (a power, a free power pick, a discipline, a custom keyword, a custom starting item). They went into the block in `523d1a4`, with a second build for the custom archetype. That commit had no further re-review: the correction was the reviewer's own, a mutant of each of the five writers failed the new checks, and the controller ran all test scripts.
+14. Process: each task review ran in a second worktree, detached at the task commit, so that the next task could start at the same time. Fix rounds stayed in sequence. Test logs went to the session scratch folder, not to the `/tmp/loadcheck-*.log` paths of the plan text. The final review started together with the scoped re-review of the Task 4 fix round.
+
+### Plan lines that no longer match the code
+
+- Task 4, the row table: four rows changed in `888dd6d` (a talent in the two `rank` rows of the sheet, `skills.weaponSkill` in the weapons row, `skills.tech` in place of `skills.athletics`, a legal second entry and one more check in the `targetTier` row). The script has 29 checks.
+- Task 1: `scripts/test-load-check.js` has more rows than the HOSTILE table of the plan (23 rules got a row in `a12075c`), a `'__NONFINITE__'` replacer in `loadJson`, and the block of ruling 13. The script has 2015 checks.
+- Tasks 2 and 3: one more check for S1, one for S3 and one for S4 to S6.
+- The log paths (ruling 14).
+
+### Evidence of the final review
+
+- R1: 580 characters, each built with 60 to 70 operations through the real writers in a real page, loaded with 0 changes, 0 warnings and 0 throws, and each result was equal to the load at `f6a3be0`. Six older shapes on the same files gave 3480 loads that were equal to the base. The only warning was `species.subOptions` (spec §4.1 rule 4).
+- The goal: 4527 hostile files went through the real load and through the render of each tab, the sheet and the modals in headless Chromium. The result was 0 injected elements, 0 attribute breaks and 0 script runs. At the base, script ran for 80 of the 1128 standard files, and each of S1 to S20 appeared.
+- 1776 files with a degenerate value (`null`, `''`, `-1.5`, `1e21`, an absent key, a wrong container): no throw at the load or at a tab render, apart from spec F3. The relic wizard modal throws for some (spec F6).
+- No visible change: the DOM of 12 sections, the sheet, the sidebar, the header and the footer for 80 characters with plain text had 0 differences from the base. With `& < > " '` in the text, the only difference was the `"` escape in `value` attributes (S7, S8, S11, S13).
+- The real paths: import through the Load button and the file input in headless Chromium and WebKit, and the autosave in Chromium and Firefox. Seven bad top levels gave the error dialog and kept the character.
+
+### Findings outside this work
+
+- Spec §11 holds F1 to F11. The largest is F1: the `ascensionPackages` migration never runs, so each save with that key (the Electron 1.0.0 saves included) loses its ascension packages at load. The file on the disk stays intact. This change does not correct it (R8). The owner decides.
+- The old snapshot site (`wrath-and-glory-creator-web`) uses the same autosave key. On the same origin, its autosave loads in this app. Its writers match the spec rows.
+- `Glossary.processText` (`creator/js/glossary.js:149-196`) runs its term regex over serialized HTML, attribute values included. No element that it processes holds a character value in an attribute at this time.
+- The custom wargear repair deletes `equipped` from a custom entry that is not a weapon (`custom-wargear.js:781-786`). The UI cannot set it there.
+
+### Parked items
+
+| Item | Why it was left |
+|---|---|
+| The commit body of `a12075c` says "22 rules" and lists 23. | The count came from the review. No history rewrite. |
+| The check `legal entry renders` of the render test hangs on the row label `'Ascension card targetTier'`. A rename of the row removes the check with no message. | A reading of the re-review. The label and the check are 20 lines apart in one file. |
+| A warning path uses the index of the loaded file. A custom entry with a bad `relic` gets two warnings (the check and the custom repair). A save with no `species.subOptions` gets one warning. | R7 covers one `console.warn` of the check. No user sees the console. |
+| `ascension-tab.js:237` prints `data-key="${key}"` raw. | The key comes from the package data, not from the character. |
+| The site counts of spec §8.2 come from inventory notes that are not in the repo. | Spec §12 says so. The final review tested the result. |
+| The two routes of ruling 12. | Refer to the ruling. |
+
+### Not checked
+
+- A real `.character` file from a user. None is on this machine.
+- The Electron wrappers (separate projects). A wrapper with its own script list needs the new `character-check.js` tag before `state.js`. Without it, each load fails with `CharacterCheck is not defined`.
+- The app before Electron 1.0.0 (no history, no build).
+- Import through the file dialog in Firefox. The hostile files and the DOM comparison ran in Chromium only.
+- Spec F2 (a large negative `tier`) was not run again.
+- The block of ruling 13 calls the setters with the value types that the UI handlers pass. The handlers themselves, and the `open()` methods of the relic wizard, the improvised builder and the custom wargear form, do not run in it. The 580 characters of the final review went through the real page.
+
+### Wave table
+
+| Task | Model | Dispatches | Send-backs | Gate |
+|---|---|---|---|---|
+| Spec and plan | opus (general-purpose) | 1 | 1 | Plan review: 1 Critical, 6 Important, 6 Minor, all closed; 8 Minor text items corrected by the controller |
+| Task 1 The check and the load gate | opus (implementer) | 1 | 3 (fix round 1; the X1 block after the final review; five more writers for that block) | Review: compliant, 1 Important, 3 Minor, all closed; APPROVED |
+| Task 2 Sheet escapes | sonnet | 1 | 1 (two checks) | Review: compliant, APPROVED, 2 Minor; corrected |
+| Task 3 Tab escapes | sonnet | 1 | 1 (one check, one dead stub) | Review: compliant, APPROVED, 3 Minor; corrected |
+| Task 4 Render tests | sonnet | 1 | 1 (four rows) | Review: compliant, 1 Important, 3 Minor, all closed; APPROVED; 1 Minor comment corrected by the controller |
+| Plan and task reviews | opus, xhigh | 5 | 0 | 4 scoped re-reviews through the same reviewers: plan, Task 1, Task 4, the X1 block |
+| Final review | fable, xhigh | 1 | 0 | Ready to merge (0 Critical; 1 Important test gap, closed by ruling 13; 3 Minor spec texts corrected by the controller) |

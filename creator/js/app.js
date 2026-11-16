@@ -12,6 +12,13 @@ const App = {
 
     // Initialize the application
     async init() {
+        // A browser can hold an old page with a new script. Without the check module the restore fails
+        // and the next edit writes over the stored character, so the app does not start (TB3-2).
+        if (typeof CharacterCheck === 'undefined') {
+            document.body.textContent = 'The app did not load completely. Reload the page.';
+            return;
+        }
+
         console.log('Initializing Wrath & Glory Character Creator...');
 
         // Load game data
@@ -156,7 +163,16 @@ const App = {
 
         // Load button - directly opens file dialog
         document.getElementById('btn-load').addEventListener('click', async () => {
-            const result = await CharacterIO.load();
+            // The confirm comes after the file pick: a confirm before it can use up the user activation (CC6).
+            // A character with no name, species or archetype has nothing to lose, so it gets no confirm.
+            const character = State.getCharacter();
+            const confirmLoad = (character.name || character.species?.id || character.archetype?.id)
+                ? fileName => window.api.showConfirm(
+                    `Load "${fileName}"? Unsaved changes to the current character will be lost.`,
+                    'Load Character'
+                )
+                : null;
+            const result = await CharacterIO.load(confirmLoad);
             if (result.success) {
                 this.switchTab('builder');
                 this.switchSection('setting');
@@ -468,26 +484,37 @@ const App = {
         const registry = (typeof SettingsTab !== 'undefined' ? SettingsTab.sourceButtons : []).map(b => b.id);
         const known = Array.isArray(saved.knownSources) ? saved.knownSources : this._LEGACY_KNOWN_SOURCES;
         const addedSinceSave = registry.filter(id => !known.includes(id));
-        return [...new Set([...saved.enabledSources, ...addedSinceSave])];
+        // Only the string entries of the stored list apply (A17).
+        const stored = saved.enabledSources.filter(id => typeof id === 'string');
+        return [...new Set([...stored, ...addedSinceSave])];
     },
 
     // Check for auto-saved state on startup and auto-load it
     checkAutoSave() {
-        const saved = State.getAutoSave();
-        if (!saved) return;
+        // The settings key comes first. An autosave from before that key holds the settings too.
+        const settings = State.getSavedSettings() || State.getAutoSave();
+        if (settings) {
+            // A stored value that is not a list keeps the default sources (A17).
+            if (Array.isArray(settings.enabledSources)) {
+                State.setEnabledSources(this._mergeEnabledSources(settings));
+            }
+            if (settings.ignorePrerequisites === true) {
+                State.setIgnorePrerequisites(true);
+            }
+        }
 
-        if (saved.enabledSources) {
-            State.setEnabledSources(this._mergeEnabledSources(saved));
-        }
-        if (saved.ignorePrerequisites) {
-            State.setIgnorePrerequisites(true);
-        }
+        // The character always comes from the autosave, never from the settings key (P7b).
+        const saved = State.getAutoSave();
         // Test the shape here, so the gate of loadCharacter cannot throw. Each other error stops the start.
-        if (CharacterCheck.isPlainObject(saved.character)) {
+        if (CharacterCheck.isPlainObject(saved?.character)) {
             State.loadCharacter(saved.character);
         } else {
-            console.warn('The auto-save was not loaded: it does not contain a character.');
+            // The settings part can make the state dirty, but a blank character has nothing to save (P14a).
+            State.markClean();
+            if (saved) console.warn('The auto-save was not loaded: it does not contain a character.');
         }
+        // With nothing stored, the start keeps the default view.
+        if (!settings && !saved) return;
 
         SettingTab.refresh();
         SettingsTab.refresh();

@@ -66,13 +66,18 @@ const WargearTab = {
             weapons: [],
             armor: [],
             augmetics: [],
-            equipment: []
+            equipment: [],
+            unknown: []
         };
 
         for (let i = 0; i < character.wargear.length; i++) {
             const item = character.wargear[i];
             const wargear = DataLoader.getWargearItem(item.id);
-            if (!wargear) continue;
+            if (!wargear) {
+                // The data has no item with this id. Show the entry, so the player can remove it.
+                grouped.unknown.push({ id: item.id, wargearIndex: i, isStarting: item.isStarting });
+                continue;
+            }
 
             const entry = { ...wargear, wargearIndex: i, isStarting: item.isStarting, upgrades: item.upgrades || [], relic: item.relic, improvised: item.improvised, custom: item.custom };
 
@@ -120,6 +125,13 @@ const WargearTab = {
             html += '</div>';
         }
 
+        // Unknown (the id is not in the data)
+        if (grouped.unknown.length > 0) {
+            html += '<div class="wargear-group"><h4>Unknown</h4>';
+            html += grouped.unknown.map(u => this.renderUnknownWargear(u)).join('');
+            html += '</div>';
+        }
+
         container.innerHTML = html;
 
         // Bind event handlers
@@ -128,7 +140,7 @@ const WargearTab = {
                 const wargearIndex = parseInt(btn.dataset.index, 10);
                 const wargearEntry = State.getCharacter().wargear[wargearIndex];
                 const item = wargearEntry ? DataLoader.getWargearItem(wargearEntry.id) : null;
-                const name = wargearEntry?.relic?.name || wargearEntry?.improvised?.name || (item ? item.name : 'this item');
+                const name = wargearEntry?.relic?.name || wargearEntry?.improvised?.name || (item ? item.name : (wargearEntry ? `Unknown wargear (${wargearEntry.id})` : 'this item'));
                 const confirmed = await window.api.showConfirm(`Remove ${name}?`);
                 if (!confirmed) return;
                 State.removeWargearByIndex(wargearIndex);
@@ -165,7 +177,7 @@ const WargearTab = {
     renderOwnedWeapon(weapon) {
         const upgradeNames = weapon.upgrades.map(id => {
             const upgrade = DataLoader.getWeaponUpgrade(id);
-            return this.escapeHtml(upgrade ? upgrade.name : id);
+            return upgrade ? this.escapeHtml(upgrade.name) : `<span class="unknown-entry-text">${this.escapeHtml(`Unknown upgrade (${id})`)}</span>`;
         });
 
         const upgradeText = upgradeNames.length > 0
@@ -192,6 +204,23 @@ const WargearTab = {
                     ${relicHtml ? `<button class="btn-small ${editClass}" data-index="${weapon.wargearIndex}">Edit</button>` : ''}
                     <button class="btn-small btn-manage-upgrades" data-index="${weapon.wargearIndex}">Upgrades</button>
                     <button class="btn-small btn-remove-wargear" data-index="${weapon.wargearIndex}">Remove</button>
+                </div>
+            </div>
+        `;
+    },
+
+    // Render an owned entry whose id is not in the data. It has the Remove control only.
+    renderUnknownWargear(entry) {
+        const startingBadge = entry.isStarting ? '<span class="badge-starting">Starting</span>' : '';
+
+        return `
+            <div class="wargear-item wargear-item-owned">
+                <div class="wargear-info">
+                    <div class="wargear-name unknown-entry-text">Unknown wargear (${this.escapeHtml(String(entry.id))}) ${startingBadge}</div>
+                    <div class="wargear-type">Not in the game data</div>
+                </div>
+                <div class="wargear-actions">
+                    <button class="btn-small btn-remove-wargear" data-index="${this.escapeHtml(String(entry.wargearIndex))}">Remove</button>
                 </div>
             </div>
         `;
@@ -436,16 +465,7 @@ const WargearTab = {
 
         if (document.getElementById('btn-add-starting')) {
             document.getElementById('btn-add-starting').addEventListener('click', () => {
-                for (const entry of archetype.startingWargear) {
-                    if (typeof entry === 'string') {
-                        State.addWargear(entry, true);
-                    } else if (typeof entry === 'object' && entry.id) {
-                        const qty = entry.qty || 1;
-                        for (let i = 0; i < qty; i++) {
-                            State.addWargear(entry.id, true);
-                        }
-                    }
-                }
+                this.addStartingWargear(archetype.startingWargear);
                 this.render();
             });
         }
@@ -456,16 +476,7 @@ const WargearTab = {
                 const ascArchetypeId = btn.dataset.archetypeId;
                 const ascArchetype = DataLoader.getArchetype(ascArchetypeId);
                 if (ascArchetype?.startingWargear) {
-                    for (const entry of ascArchetype.startingWargear) {
-                        if (typeof entry === 'string') {
-                            State.addWargear(entry, true);
-                        } else if (typeof entry === 'object' && entry.id) {
-                            const qty = entry.qty || 1;
-                            for (let i = 0; i < qty; i++) {
-                                State.addWargear(entry.id, true);
-                            }
-                        }
-                    }
+                    this.addStartingWargear(ascArchetype.startingWargear);
                     this.render();
                 }
             });
@@ -488,6 +499,31 @@ const WargearTab = {
         });
 
         this.bindBrowserItemEvents();
+    },
+
+    // Add the starting wargear of a list (strings and { id, qty } objects) once.
+    // An id that the data does not have is skipped. The wanted count of an id is its quantity over the whole list.
+    // The starting entries that the list already has count against it, less the ones that the kept custom archetype record lists.
+    addStartingWargear(entries) {
+        const wanted = new Map();
+        for (const entry of entries) {
+            if (typeof entry === 'string') {
+                wanted.set(entry, (wanted.get(entry) || 0) + 1);
+            } else if (entry && typeof entry === 'object' && entry.id) {
+                wanted.set(entry.id, (wanted.get(entry.id) || 0) + (entry.qty || 1));
+            }
+        }
+        const character = State.getCharacter();
+        const record = Array.isArray(character.customArchetype?.wargear) ? character.customArchetype.wargear : [];
+        for (const [id, qty] of wanted) {
+            if (!DataLoader.getWargearItem(id)) continue;
+            const present = character.wargear.filter(w => w.id === id && w.isStarting === true && !w.relic && !w.improvised && !w.custom).length;
+            const listed = record.filter(r => r === id).length;
+            const add = Math.max(0, qty - Math.max(0, present - listed));
+            for (let i = 0; i < add; i++) {
+                State.addWargear(id, true);
+            }
+        }
     },
 
     // Render browser items based on current category and search
@@ -639,7 +675,9 @@ const WargearTab = {
 
         const cards = weapons.map(w => {
             const ownedCount = ownedCounts[w.id] || 0;
-            const range = w.range ? `${w.range.short}/${w.range.medium}/${w.range.long}` : '-';
+            // The data holds a range as text for some weapons (grenades, thrown weapons) and as short/medium/long for the others.
+            const range = typeof w.range === 'string' ? this.escapeHtml(w.range)
+                : w.range ? `${w.range.short ?? '-'}/${w.range.medium ?? '-'}/${w.range.long ?? '-'}` : '-';
             const rarityClass = this.getRarityClass(w.rarity);
             const reqDN = DataLoader.requisitionDN(w);
             const ownedBadge = ownedCount > 0 ? `<span class="owned-count">${ownedCount}</span>` : '';
@@ -864,7 +902,18 @@ const WargearTab = {
             html += '<div class="upgrade-list">';
             for (const upgradeId of currentUpgrades) {
                 const upgrade = DataLoader.getWeaponUpgrade(upgradeId);
-                if (!upgrade) continue;
+                if (!upgrade) {
+                    // The data has no upgrade with this id. Show it, so the player can remove it.
+                    html += `
+                    <div class="upgrade-item upgrade-owned">
+                        <div class="upgrade-info">
+                            <span class="upgrade-name unknown-entry-text">Unknown upgrade (${this.escapeHtml(String(upgradeId))})</span>
+                        </div>
+                        <button class="btn-small btn-remove-upgrade" data-id="${this.escapeHtml(String(upgradeId))}">Remove</button>
+                    </div>
+                `;
+                    continue;
+                }
 
                 html += `
                     <div class="upgrade-item upgrade-owned">

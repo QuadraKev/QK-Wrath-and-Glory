@@ -23,10 +23,37 @@ const State = {
     _autoSaveTimer: null,
     _AUTO_SAVE_KEY: 'wng-creator-autosave',
 
+    // Old ids that the data renamed, and their new ids. The load maps each old id in place (step X2).
+    // Each pair has its evidence in the commit that removed the old id (bug pass spec §9.2).
+    ID_ALIASES: {
+        talents: {
+            daemonic_summoning_dh: 'daemonic_summons_dh',
+            embrace_the_gods_dh: 'eye_of_the_gods_dh',
+            forge_the_sword_dh: 'forge_of_souls_dh',
+            one_or_more_allied_aeldari_or_drukhari_saga_of_majesty_aoa: 'saga_of_majesty_aoa'
+        },
+        wargear: {
+            forceshield: 'force_shield_aeldari',
+            mist_shield: 'mistshield',
+            mandiblaster: 'mandiblasters'
+        },
+        species: {
+            aeldari_psychosensitive: 'aeldari'
+        }
+    },
+
+    // The settings key. It keeps the sources and the house rule also for a blank character (bug pass spec §12).
+    _SETTINGS_KEY: 'wng-creator-settings',
+
+    // The value that a skill had before a key of archetypeSkillChoices selected it: { key: { skill, value } }.
+    // This is in memory only. It is not a field of the character and is never stored.
+    _skillChoicePrior: {},
+
     // Initialize state with default character
     init(gameData) {
         this.gameData = gameData;
         this.character = this.createNewCharacter();
+        this._skillChoicePrior = {};
     },
 
     // Create a new blank character
@@ -130,6 +157,7 @@ const State = {
     // Reset character to new
     newCharacter() {
         this.character = this.createNewCharacter();
+        this._skillChoicePrior = {};
         this.notifyListeners('reset');
         this.isDirty = false;
         this.clearAutoSave();
@@ -143,6 +171,7 @@ const State = {
         }
         const newChar = this.createNewCharacter();
         this.character = { ...newChar, ...data };
+        this._skillChoicePrior = {};
 
         // Repair the type of each known field before the migrations below read them
         const repaired = CharacterCheck.repair(this.character, this.createNewCharacter());
@@ -155,21 +184,50 @@ const State = {
             this.character.species.subOptions = [];
         }
 
-        // Migrate old ascensionPackages array to new ascensions format
-        if (this.character.ascensionPackages && !this.character.ascensions) {
-            const startingTier = this.character.tier || 1;
-            this.character.ascensions = this.character.ascensionPackages.map((packageId, index) => ({
-                targetTier: startingTier + index + 1,
-                type: 'package',
-                packageId: packageId,
-                archetypeId: null
-            }));
+        // The three load steps below are migrations, not type repairs, so they write no warning.
+        // Each step does nothing at a second load of the same character.
+        const c = this.character;
+
+        // X1: delete the phantom skill keys. Only a defect wrote them, and no reader uses them.
+        for (const key of ['choice', 'choice1', 'choice2']) delete c.skills[key];
+
+        // X2: map each old id to its new id in place. The order stays, because talent choices store wargear indices.
+        const aliases = this.ID_ALIASES;
+        // Only an own key is an alias, so an id such as constructor never gets a function of Object.prototype
+        const alias = (table, id) => (Object.prototype.hasOwnProperty.call(table, id) ? table[id] : null);
+        const talentId = t => (typeof t === 'string' ? t : t.id);
+        c.talents.forEach((talent, index) => {
+            const newId = alias(aliases.talents, talentId(talent));
+            // A talent is not mapped onto an id that the list holds: the XP would count it two times (CC5)
+            if (!newId || c.talents.some(t => talentId(t) === newId)) return;
+            if (typeof talent === 'string') c.talents[index] = newId;
+            else talent.id = newId;
+        });
+        // Wargear can hold an item two times, so a wargear id is always mapped
+        c.wargear.forEach(entry => {
+            if (alias(aliases.wargear, entry.id)) entry.id = alias(aliases.wargear, entry.id);
+        });
+        c.customArchetype.wargear.forEach((id, index) => {
+            if (alias(aliases.wargear, id)) c.customArchetype.wargear[index] = alias(aliases.wargear, id);
+        });
+        if (alias(aliases.species, c.species.id)) {
+            // The old species aeldari_psychosensitive had PSYKER. The new species gives it through a sub-option (CC1).
+            if (c.species.id === 'aeldari_psychosensitive' && !c.species.subOptions.some(o => o.type === 'psychosensitive')) {
+                c.species.subOptions.push({ type: 'psychosensitive', optionId: 'psyker' });
+            }
+            c.species.id = alias(aliases.species, c.species.id);
         }
-        if (this.character.ascensionPackages) {
-            delete this.character.ascensionPackages;
-        }
-        if (!this.character.ascensions) {
-            this.character.ascensions = [];
+
+        // X3: fill a missing bonusType of a background entry from the data. Before, a render wrote it.
+        const backgrounds = DataLoader.getBackgrounds();
+        if (CharacterCheck.isPlainObject(backgrounds)) {
+            const lists = { origin: 'origins', accomplishment: 'accomplishments', goal: 'goals' };
+            for (const [key, list] of Object.entries(lists)) {
+                const entry = c.background[key];
+                if (!entry || entry.bonusType) continue;
+                const record = (backgrounds[list] || []).find(b => b.id === entry.id);
+                if (record?.bonusType) entry.bonusType = record.bonusType;
+            }
         }
 
         // Repair the custom wargear entries in place. Never drop an entry: talent choices store indices.
@@ -194,34 +252,52 @@ const State = {
         return this.character;
     },
 
+    // The integer of a typed value inside min..max (max can be Infinity), or null. An empty or
+    // blank entry is not a number.
+    _intInRange(value, min, max) {
+        if (typeof value === 'string' && value.trim() === '') return null;
+        if (typeof value !== 'number' && typeof value !== 'string') return null;
+        const n = Number(value);
+        return Number.isInteger(n) && n >= min && n <= max ? n : null;
+    },
+
     // Update character name
     setName(name) {
         this.character.name = name;
         this.notifyListeners('name');
     },
 
-    // Update tier
+    // Update tier (1 to 5). A value outside the range keeps the stored value and gives false.
     setTier(tier) {
+        const value = this._intInRange(tier, 1, 5);
+        if (value === null) return false;
         const oldTier = this.character.tier;
-        this.character.tier = parseInt(tier) || 1;
+        this.character.tier = value;
         this.notifyListeners('tier');
 
         // If Kroot and tier increased, notify that more mutations may be available
         if (this.character.species?.id === 'kroot' && this.character.tier > oldTier) {
             this.notifyListeners('krootMutationsAvailable');
         }
+        return true;
     },
 
-    // Update rank
+    // Update rank (1 to 3, Core Rulebook p.146). A value outside the range keeps the stored value and gives false.
     setRank(rank) {
-        this.character.rank = parseInt(rank) || 1;
+        const value = this._intInRange(rank, 1, 3);
+        if (value === null) return false;
+        this.character.rank = value;
         this.notifyListeners('rank');
+        return true;
     },
 
-    // Update additional XP
+    // Update additional XP (0 or more). A value outside the range keeps the stored value and gives false.
     setAdditionalXP(xp) {
-        this.character.additionalXp = parseInt(xp) || 0;
+        const value = this._intInRange(xp, 0, Infinity);
+        if (value === null) return false;
+        this.character.additionalXp = value;
         this.notifyListeners('xp');
+        return true;
     },
 
     // Update setting description
@@ -232,28 +308,29 @@ const State = {
 
     // Set species
     setSpecies(speciesId) {
+        // The current species: no change
+        if (speciesId === this.character.species?.id) return;
+
         const species = DataLoader.getSpecies(speciesId);
         if (species) {
-            this.character.species = {
-                id: speciesId,
-                xpCost: species.cost || 0,
-                subOptions: []  // Clear sub-options when species changes
-            };
-
-            // Apply species base attributes
-            if (species.baseAttributes) {
-                for (const [attr, value] of Object.entries(species.baseAttributes)) {
-                    this.character.attributes[attr] = Math.max(this.character.attributes[attr], value);
-                }
-            }
-
             // Always clear archetype when species changes (user must re-select)
             if (this.character.archetype.id) {
                 this.clearArchetype();
             }
+
+            this._withRebase(() => {
+                this.character.species = {
+                    id: speciesId,
+                    xpCost: species.cost || 0,
+                    subOptions: []  // Clear sub-options when species changes
+                };
+            });
         } else {
-            this.character.species = { id: null, xpCost: 0, subOptions: [] };
+            this._withRebase(() => {
+                this.character.species = { id: null, xpCost: 0, subOptions: [] };
+            });
         }
+        this._clampToSpeciesMaximums();
 
         this.notifyListeners('species');
     },
@@ -342,49 +419,33 @@ const State = {
 
     // Set archetype
     setArchetype(archetypeId) {
+        // The current archetype: no change
+        if (archetypeId === this.character.archetype?.id) return;
+        const oldGrants = this._archetypeGrantIds();
+        const keptChoices = this._keptSkillChoices();
+
         const archetype = DataLoader.getArchetype(archetypeId);
         if (archetype) {
-            this.character.archetype = {
-                id: archetypeId,
-                xpCost: archetype.cost || 0
-            };
+            this._withRebase(() => {
+                this.character.archetype = {
+                    id: archetypeId,
+                    xpCost: archetype.cost || 0
+                };
 
-            // Reset sub-faction keyword picks from any previous archetype
-            this.character.archetypeKeywordChoices = {};
-
-            // Apply archetype attribute bonuses
-            if (archetype.attributeBonus) {
-                for (const [attr, value] of Object.entries(archetype.attributeBonus)) {
-                    this.character.attributes[attr] = Math.max(this.character.attributes[attr], value);
-                }
-            }
-
-            // Apply archetype skill bonuses
-            if (archetype.skillBonus) {
-                for (const [skill, value] of Object.entries(archetype.skillBonus)) {
-                    this.character.skills[skill] = Math.max(this.character.skills[skill], value);
-                }
-            }
+                // Reset sub-faction keyword picks and skill picks from any previous archetype
+                this.character.archetypeKeywordChoices = {};
+                this.character.archetypeSkillChoices = {};
+            });
+            this._restoreKeptSkillChoices(keptChoices);
 
             // Wargear is managed via the Wargear tab "Add Starting Wargear" button.
             // We do NOT clear or set wargear here to avoid losing manually added items.
 
-            // Set up psyker starting powers if archetype has psykerConfig
-            if (archetype.psykerConfig) {
-                this.character.freePowers = [];
-                this.character.unlockedDisciplines = [];
-                this.character.psychicPowers = [];
-
-                // Auto-add granted powers (e.g. Smite)
-                for (const powerId of archetype.psykerConfig.grantedPowers || []) {
-                    if (!this.character.psychicPowers.includes(powerId)) {
-                        this.character.psychicPowers.push(powerId);
-                    }
-                    if (!this.character.freePowers.includes(powerId)) {
-                        this.character.freePowers.push(powerId);
-                    }
-                }
-            }
+            // Release the powers that only the old archetype granted, then add the granted powers of the new one (e.g. Smite).
+            // Bought powers, picked powers and chosen disciplines stay in their lists.
+            this._releasePowerGrants(oldGrants);
+            this._applyPowerGrants(this._archetypeGrantIds());
+            this._settleFreePicks();
 
         } else {
             this.clearArchetype();
@@ -395,12 +456,16 @@ const State = {
 
     // Clear archetype selection
     clearArchetype() {
-        this.character.archetype = { id: null, xpCost: 0 };
-        this.character.customArchetype = { name: '', abilityArchetypeId: null, keywords: [], wargear: [] };
-        this.character.freePowers = [];
-        this.character.unlockedDisciplines = [];
-        this.character.psychicPowers = [];
-        this.resetStats();
+        const oldGrants = this._archetypeGrantIds();
+        const keptChoices = this._keptSkillChoices();
+        // The stored custom archetype record stays (CC7)
+        this._withRebase(() => {
+            this.character.archetype = { id: null, xpCost: 0 };
+        });
+        this._restoreKeptSkillChoices(keptChoices);
+        // Release the powers that only the old archetype granted. Bought powers and chosen disciplines stay.
+        this._releasePowerGrants(oldGrants);
+        this._settleFreePicks();
     },
 
     // Check if character is using custom archetype
@@ -421,35 +486,31 @@ const State = {
 
     // Set custom archetype mode
     setCustomArchetype() {
-        this.character.archetype = { id: 'custom', xpCost: 0 };
-        this.character.customArchetype = { name: '', abilityArchetypeId: null, keywords: [], wargear: [] };
+        // Custom is already the archetype: no change
+        if (this.character.archetype?.id === 'custom') return;
+        const oldGrants = this._archetypeGrantIds();
+        // Read the starting wargear of the old archetype before the write
+        const drop = this.getOldStartingEntries();
+        const keptChoices = this._keptSkillChoices();
 
-        // Keep the custom items in order, and move the owned-item talent choices to their new indices.
-        // A choice on a removed entry becomes null, so the player picks again.
-        const oldWargear = Array.isArray(this.character.wargear) ? this.character.wargear : [];
-        const newIndex = new Map();
-        const kept = [];
-        oldWargear.forEach((w, index) => {
-            if (w && w.custom) {
-                newIndex.set(index, kept.length);
-                kept.push(w);
-            }
+        // The stored custom archetype record stays (CC7)
+        this._withRebase(() => {
+            this.character.archetype = { id: 'custom', xpCost: 0 };
         });
-        this.character.wargear = kept;
-        for (const talent of Array.isArray(this.character.talents) ? this.character.talents : []) {
-            if (!talent || typeof talent !== 'object') continue;
-            const choiceType = DataLoader.getTalent(talent.id)?.choiceType;
-            if (choiceType !== 'weapon_owned' && choiceType !== 'armor_owned') continue;
-            if (talent.choice === null || talent.choice === undefined) continue;
-            const old = /^\d+$/.test(String(talent.choice)) ? parseInt(talent.choice, 10) : -1;
-            if (!newIndex.has(old)) {
-                talent.choice = null;
-            } else {
-                talent.choice = typeof talent.choice === 'string' ? String(newIndex.get(old)) : newIndex.get(old);
-            }
-        }
+        this._restoreKeptSkillChoices(keptChoices);
 
-        this.resetStats();
+        // Release the powers that only the old archetype granted, then add the grants of the kept ability archetype
+        this._releasePowerGrants(oldGrants);
+        this._applyPowerGrants(this._archetypeGrantIds());
+
+        // Remove only the starting wargear of the old archetype, and move the owned-item talent choices to their new indices.
+        // A choice on a removed entry becomes null, so the player picks again.
+        const dropped = new Set(drop);
+        const oldWargear = Array.isArray(this.character.wargear) ? this.character.wargear : [];
+        this.character.wargear = oldWargear.filter((w, index) => !dropped.has(index));
+        this._remapWargearRefs(old => dropped.has(old) ? -1 : old - drop.filter(index => index < old).length);
+
+        this._settleFreePicks();
         this.notifyListeners('archetype');
     },
 
@@ -461,30 +522,14 @@ const State = {
 
     // Set custom archetype ability (archetypeId whose ability is purchased, or null)
     setCustomArchetypeAbility(archetypeId) {
+        const oldGrants = this._archetypeGrantIds();
         this.character.customArchetype.abilityArchetypeId = archetypeId || null;
 
-        // Set up psyker starting powers if the ability archetype has psykerConfig
-        const abilityArchetype = archetypeId ? DataLoader.getArchetype(archetypeId) : null;
-        if (abilityArchetype?.psykerConfig) {
-            this.character.freePowers = [];
-            this.character.unlockedDisciplines = [];
-            this.character.psychicPowers = [];
-
-            // Auto-add granted powers (e.g. Smite)
-            for (const powerId of abilityArchetype.psykerConfig.grantedPowers || []) {
-                if (!this.character.psychicPowers.includes(powerId)) {
-                    this.character.psychicPowers.push(powerId);
-                }
-                if (!this.character.freePowers.includes(powerId)) {
-                    this.character.freePowers.push(powerId);
-                }
-            }
-        } else {
-            // Clear psyker state when switching away from a psyker ability
-            this.character.freePowers = [];
-            this.character.unlockedDisciplines = [];
-            this.character.psychicPowers = [];
-        }
+        // Release the powers that only the old ability archetype granted, then add the granted powers of the new one (e.g. Smite).
+        // Bought powers, picked powers and chosen disciplines stay in their lists.
+        this._releasePowerGrants(oldGrants);
+        this._applyPowerGrants(this._archetypeGrantIds());
+        this._settleFreePicks();
 
         this.notifyListeners('customArchetype');
     },
@@ -567,39 +612,133 @@ const State = {
             const wargearIndex = this.character.wargear.findIndex(w => w.id === itemId && w.isStarting);
             if (wargearIndex !== -1) {
                 this.character.wargear.splice(wargearIndex, 1);
+                this._remapWargearRefs(old => old === wargearIndex ? -1 : (old > wargearIndex ? old - 1 : old));
             }
             this.notifyListeners('customArchetype');
             this.notifyListeners('wargear', itemId);
         }
     },
 
-    // Reset attributes and skills to species baseline
+    // Reset attributes and skills to the baseline. A key that is not a known stat name stays as it is.
     resetStats() {
-        const species = DataLoader.getSpecies(this.character.species?.id);
-        const archetype = DataLoader.getArchetype(this.character.archetype?.id);
+        const baseline = XPCalculator.getBaseline(this.character);
 
-        // Reset attributes
-        for (const attr of Object.keys(this.character.attributes)) {
-            let value = 1;
-            if (species?.baseAttributes?.[attr]) {
-                value = Math.max(value, species.baseAttributes[attr]);
-            }
-            if (archetype?.attributeBonus?.[attr]) {
-                value = Math.max(value, archetype.attributeBonus[attr]);
-            }
-            this.character.attributes[attr] = value;
+        for (const attr of XPCalculator.ATTRIBUTE_KEYS) {
+            this.character.attributes[attr] = baseline.attributes[attr];
         }
 
-        // Reset skills
-        for (const skill of Object.keys(this.character.skills)) {
-            let value = 0;
-            if (archetype?.skillBonus?.[skill]) {
-                value = Math.max(value, archetype.skillBonus[skill]);
-            }
-            this.character.skills[skill] = value;
+        for (const skill of XPCalculator.SKILL_KEYS) {
+            this.character.skills[skill] = baseline.skills[skill];
         }
+        this._skillChoicePrior = {};
 
         this.notifyListeners('stats');
+    },
+
+    // Run a change of the species or the archetype and move each known stat to the new baseline.
+    // A value at or under the old free value goes to the new free value.
+    // A value above the old free value stays, but never under the new free value.
+    _withRebase(change) {
+        const oldBase = XPCalculator.getBaseline(this.character);
+        change();
+        const newBase = XPCalculator.getBaseline(this.character);
+
+        for (const attr of XPCalculator.ATTRIBUTE_KEYS) {
+            const value = this.character.attributes[attr];
+            this.character.attributes[attr] = value <= oldBase.attributes[attr]
+                ? newBase.attributes[attr]
+                : Math.max(value, newBase.attributes[attr]);
+        }
+
+        for (const skill of XPCalculator.SKILL_KEYS) {
+            const value = this.character.skills[skill];
+            this.character.skills[skill] = value <= oldBase.skills[skill]
+                ? newBase.skills[skill]
+                : Math.max(value, newBase.skills[skill]);
+        }
+    },
+
+    // The chosen skills that have a kept value and stand at the bonus of their key or under it.
+    // Call this before a change of the parent. Each entry holds the value to give back, never above the bonus.
+    _keptSkillChoices() {
+        const skillBonus = DataLoader.getArchetype(this.character.archetype?.id)?.skillBonus || {};
+        const kept = [];
+        for (const [key, prior] of Object.entries(this._skillChoicePrior)) {
+            const bonus = skillBonus[key];
+            if (typeof bonus !== 'number' || this.character.archetypeSkillChoices?.[key] !== prior.skill) continue;
+            if (this.character.skills[prior.skill] <= bonus) {
+                kept.push({ skill: prior.skill, value: Math.min(prior.value, bonus) });
+            }
+        }
+        return kept;
+    },
+
+    // Call this after the rebase of a change of the parent. A kept skill gets the larger of the kept value
+    // and its new free value. Then the memory is empty (ruling TC4-3).
+    _restoreKeptSkillChoices(kept) {
+        this._skillChoicePrior = {};
+        if (kept.length === 0) return;
+        const free = XPCalculator.getBaseline(this.character).skills;
+        for (const { skill, value } of kept) {
+            this.character.skills[skill] = Math.max(value, free[skill]);
+        }
+    },
+
+    // Store the skill of an "any skill" bonus key of the archetype (for example choice1 of the Inquisitor).
+    // A skill name that is empty clears the choice. A skill that another key holds is refused (Core p.116).
+    // The setter keeps the value that the new skill had before the choice. When the key leaves a skill
+    // at the bonus value or under it, the skill goes back to that kept value (ruling TC4-1).
+    // Return true when the choice is stored.
+    setArchetypeSkillChoice(key, skill) {
+        const archetype = DataLoader.getArchetype(this.character.archetype?.id);
+        const skillBonus = archetype?.skillBonus || {};
+        if (typeof key !== 'string' || !Object.prototype.hasOwnProperty.call(skillBonus, key)) return false;
+        if (XPCalculator.SKILL_KEYS.includes(key)) return false;
+        if (skill !== '' && !XPCalculator.SKILL_KEYS.includes(skill)) return false;
+
+        const choices = this.character.archetypeSkillChoices || {};
+        if (skill !== '') {
+            for (const [otherKey, chosen] of Object.entries(choices)) {
+                if (otherKey === key || !Object.prototype.hasOwnProperty.call(skillBonus, otherKey)) continue;
+                if (chosen === skill) return false;
+            }
+        }
+
+        const oldSkill = choices[key];
+        const prior = this._skillChoicePrior[key];
+        const oldValue = this.character.skills[oldSkill];
+        const valueBefore = this.character.skills[skill];
+
+        // The rebase runs first: the new skill rises to the bonus value and the old skill goes to its free value.
+        this._withRebase(() => {
+            if (!this.character.archetypeSkillChoices) this.character.archetypeSkillChoices = {};
+            this.character.archetypeSkillChoices[key] = skill;
+        });
+
+        // Then the old skill goes back to the kept value, when it was at the bonus value or under it
+        // before the change. The restore runs after the rebase, because the rebase would set the old
+        // skill to its free value and so would overwrite the restore.
+        if (oldSkill !== skill) {
+            if (prior && prior.skill === oldSkill && oldValue <= skillBonus[key]) {
+                const free = XPCalculator.getBaseline(this.character).skills[oldSkill];
+                this.character.skills[oldSkill] = Math.max(Math.min(prior.value, skillBonus[key]), free);
+            }
+            if (skill === '') delete this._skillChoicePrior[key];
+            else this._skillChoicePrior[key] = { skill, value: valueBefore };
+        }
+        this.notifyListeners('stats');
+        return true;
+    },
+
+    // Lower each attribute above the maximum of the current species to that maximum (Core p.25)
+    _clampToSpeciesMaximums() {
+        const species = DataLoader.getSpecies(this.character.species?.id);
+        for (const attr of XPCalculator.ATTRIBUTE_KEYS) {
+            const max = species?.attributeMaximums?.[attr] || 8;
+            if (this.character.attributes[attr] > max) {
+                this.character.attributes[attr] = max;
+            }
+        }
     },
 
     // Increase an attribute
@@ -621,17 +760,7 @@ const State = {
 
     // Decrease an attribute
     decreaseAttribute(attr) {
-        const species = DataLoader.getSpecies(this.character.species?.id);
-        const archetype = DataLoader.getArchetype(this.character.archetype?.id);
-
-        // Calculate minimum (species base or archetype bonus, whichever is higher)
-        let min = 1;
-        if (species?.baseAttributes?.[attr]) {
-            min = Math.max(min, species.baseAttributes[attr]);
-        }
-        if (archetype?.attributeBonus?.[attr]) {
-            min = Math.max(min, archetype.attributeBonus[attr]);
-        }
+        const min = XPCalculator.getBaseline(this.character).attributes[attr] ?? 1;
 
         const current = this.character.attributes[attr] || 1;
         if (current > min) {
@@ -660,8 +789,7 @@ const State = {
 
     // Decrease a skill
     decreaseSkill(skill) {
-        const archetype = DataLoader.getArchetype(this.character.archetype?.id);
-        const min = archetype?.skillBonus?.[skill] || 0;
+        const min = XPCalculator.getBaseline(this.character).skills[skill] ?? 0;
         const current = this.character.skills[skill] || 0;
 
         if (current > min) {
@@ -764,6 +892,15 @@ const State = {
             if (freeIndex !== -1) {
                 this.character.freePowers.splice(freeIndex, 1);
             }
+            // Also remove it from each grant record, so a later free pick of the same power does not go with the package
+            for (const entry of this.character.ascensions || []) {
+                if (!entry.granted) continue;
+                for (const key of ['powers', 'freePowers']) {
+                    if (Array.isArray(entry.granted[key])) {
+                        entry.granted[key] = entry.granted[key].filter(id => id !== powerId);
+                    }
+                }
+            }
             this.notifyListeners('power', powerId);
             return true;
         }
@@ -781,6 +918,7 @@ const State = {
         const index = this.character.wargear.findIndex(w => w.id === itemId);
         if (index !== -1) {
             this.character.wargear.splice(index, 1);
+            this._remapWargearRefs(old => old === index ? -1 : (old > index ? old - 1 : old));
             this.notifyListeners('wargear', itemId);
             return true;
         }
@@ -792,10 +930,65 @@ const State = {
         if (wargearIndex >= 0 && wargearIndex < this.character.wargear.length) {
             const item = this.character.wargear[wargearIndex];
             this.character.wargear.splice(wargearIndex, 1);
+            this._remapWargearRefs(old => old === wargearIndex ? -1 : (old > wargearIndex ? old - 1 : old));
             this.notifyListeners('wargear', item.id);
             return true;
         }
         return false;
+    },
+
+    // Move each owned-item talent choice (Trademark Weapon, Armour-Monger) to the new index of its entry.
+    // newIndexOf(oldIndex, choiceType) gives the new index, or -1 when the entry is gone; the choice then becomes null.
+    // A choice that is not an index stays. A choice keeps its type (string or number).
+    _remapWargearRefs(newIndexOf) {
+        for (const talent of Array.isArray(this.character.talents) ? this.character.talents : []) {
+            if (!talent || typeof talent !== 'object') continue;
+            const choiceType = DataLoader.getTalent(talent.id)?.choiceType;
+            if (choiceType !== 'weapon_owned' && choiceType !== 'armor_owned') continue;
+            if (talent.choice === null || talent.choice === undefined) continue;
+            if (!/^\d+$/.test(String(talent.choice))) continue;
+            const index = newIndexOf(parseInt(talent.choice, 10), choiceType);
+            if (index === -1) {
+                talent.choice = null;
+            } else {
+                talent.choice = typeof talent.choice === 'string' ? String(index) : index;
+            }
+        }
+    },
+
+    // The indices of the starting wargear of the current standard archetype, as Custom Archetype removes it.
+    // For each id: the quantity over the whole starting list, then the first entries with that id that are
+    // starting entries with no relic, improvised or custom overlay. The first entries that the kept custom
+    // archetype record lists are left out (CC16). A custom archetype or an archetype that the data does not have gives [].
+    getOldStartingEntries() {
+        const archetypeId = this.character.archetype?.id;
+        const archetype = archetypeId && archetypeId !== 'custom' ? DataLoader.getArchetype(archetypeId) : null;
+        if (!archetype || !Array.isArray(archetype.startingWargear)) return [];
+        const remaining = new Map();
+        for (const entry of archetype.startingWargear) {
+            if (typeof entry === 'string') {
+                remaining.set(entry, (remaining.get(entry) || 0) + 1);
+            } else if (entry && typeof entry === 'object' && entry.id) {
+                remaining.set(entry.id, (remaining.get(entry.id) || 0) + (entry.qty || 1));
+            }
+        }
+        const recordCount = new Map();
+        const record = this.character.customArchetype?.wargear;
+        for (const id of Array.isArray(record) ? record : []) {
+            recordCount.set(id, (recordCount.get(id) || 0) + 1);
+        }
+        const indices = [];
+        (Array.isArray(this.character.wargear) ? this.character.wargear : []).forEach((w, index) => {
+            if (!w || typeof w !== 'object' || !remaining.get(w.id)) return;
+            if (w.isStarting !== true || w.relic || w.improvised || w.custom) return;
+            if (recordCount.get(w.id)) {
+                recordCount.set(w.id, recordCount.get(w.id) - 1);
+                return;
+            }
+            remaining.set(w.id, remaining.get(w.id) - 1);
+            indices.push(index);
+        });
+        return indices;
     },
 
     // Add a Holy Relic wargear entry (base item id + relic overlay)
@@ -811,6 +1004,9 @@ const State = {
         if (entry.id !== itemId) {
             entry.id = itemId;
             entry.upgrades = [];
+            // An owned-item choice on this entry becomes null when the new item is not of the talent's kind
+            const kindMatches = { weapon_owned: !!DataLoader.getWeapon(itemId), armor_owned: !!DataLoader.getArmor(itemId) };
+            this._remapWargearRefs((old, choiceType) => old === wargearIndex && !kindMatches[choiceType] ? -1 : old);
         }
         entry.relic = relic;
         this.notifyListeners('wargear', itemId);
@@ -1053,10 +1249,13 @@ const State = {
         }
     },
 
-    // Set corruption points
+    // Set corruption points (0 or more). A value outside the range keeps the stored value and gives false.
     setCorruptionPoints(value) {
-        this.character.corruption = Math.max(0, parseInt(value) || 0);
+        const points = this._intInRange(value, 0, Infinity);
+        if (points === null) return false;
+        this.character.corruption = points;
         this.notifyListeners('injuries');
+        return true;
     },
 
     // Add a mutation
@@ -1134,9 +1333,10 @@ const State = {
     // === SESSION TRACKING (Current Wounds, Shock, Wealth) ===
     // Note: Wounds and Shock count UP from 0 (tracking damage taken)
 
-    // Get current wounds (null means 0, tracks damage taken)
+    // Get current wounds (null means 0, tracks damage taken). The value stays inside the current maximum.
+    // The stored value does not change here. Only a setter changes it.
     getCurrentWounds() {
-        return this.character.currentWounds || 0;
+        return Math.min(this.character.currentWounds || 0, DerivedStats.calculateMaxWounds(this.character));
     },
 
     // Set current wounds (capped at max)
@@ -1155,9 +1355,9 @@ const State = {
         this.setCurrentWounds(current + delta);
     },
 
-    // Get current shock (null means 0, tracks shock taken)
+    // Get current shock (null means 0, tracks shock taken). The value stays inside the current maximum.
     getCurrentShock() {
-        return this.character.currentShock || 0;
+        return Math.min(this.character.currentShock || 0, DerivedStats.calculateMaxShock(this.character));
     },
 
     // Set current shock (capped at max)
@@ -1252,13 +1452,13 @@ const State = {
         this.setCurrentWrath(current + delta);
     },
 
-    // Get current Faith (null means equal to max)
+    // Get current Faith (null means equal to max). The value stays inside the current maximum.
     getCurrentFaith() {
         const max = this.getMaxFaith();
         if (this.character.currentFaith === null) {
             return max; // Default to max faith
         }
-        return this.character.currentFaith;
+        return Math.min(this.character.currentFaith, max);
     },
 
     // Set current Faith (capped at max, minimum 0)
@@ -1311,6 +1511,7 @@ const State = {
             if (data.choices) {
                 entry.choices = data.choices;
             }
+            // The grant record is never copied from data: only the grant step below writes it
             this.character.ascensions.push(entry);
             // Sort by targetTier for consistency
             this.character.ascensions.sort((a, b) => a.targetTier - b.targetTier);
@@ -1319,14 +1520,16 @@ const State = {
             this._applyAscensionEffects(entry);
         }
 
+        this._settleFreePicks();
         this.notifyListeners('ascension', targetTier);
     },
 
-    // Apply mechanical effects from an ascension package
+    // Apply mechanical effects from an ascension package, and record what the grant step added
     _applyAscensionEffects(entry) {
         if (entry.type !== 'package' || !entry.packageId) return;
         const pkg = DataLoader.getAscensionPackages().find(p => p.id === entry.packageId);
         if (!pkg) return;
+        const granted = { powers: [], freePowers: [], talents: [] };
 
         // Auto-grant talents
         if (pkg.talentsGranted) {
@@ -1337,97 +1540,156 @@ const State = {
                 );
                 if (!hasTalent) {
                     this.character.talents.push({ id: talentId, ascensionGranted: true });
+                    granted.talents.push(talentId);
                 }
             }
         }
 
-        // Auto-grant psychic powers
-        if (pkg.psykerConfig?.grantedPowers) {
-            for (const powerId of pkg.psykerConfig.grantedPowers) {
-                if (!this.character.psychicPowers.includes(powerId)) {
-                    this.character.psychicPowers.push(powerId);
-                }
-                if (!this.character.freePowers) this.character.freePowers = [];
-                if (!this.character.freePowers.includes(powerId)) {
-                    this.character.freePowers.push(powerId);
-                }
-            }
-        }
+        // Auto-grant psychic powers (e.g. Smite) and specific powers (e.g. Lost Upon The Seer Path).
+        // A power that the character has stays as it is.
+        const added = this._applyPowerGrants([
+            ...(pkg.psykerConfig?.grantedPowers || []),
+            ...(pkg.powersGranted || [])
+        ]);
+        granted.powers = [...added];
+        granted.freePowers = [...added];
 
-        // Auto-grant specific powers (e.g., Lost Upon The Seer Path)
-        if (pkg.powersGranted) {
-            for (const powerId of pkg.powersGranted) {
-                if (!this.character.psychicPowers.includes(powerId)) {
-                    this.character.psychicPowers.push(powerId);
-                }
-                if (!this.character.freePowers) this.character.freePowers = [];
-                if (!this.character.freePowers.includes(powerId)) {
-                    this.character.freePowers.push(powerId);
-                }
-            }
-        }
-
-        // Auto-unlock disciplines
-        if (pkg.disciplinesUnlocked) {
-            if (!this.character.unlockedDisciplines) this.character.unlockedDisciplines = [];
-            for (const d of pkg.disciplinesUnlocked) {
-                if (!this.character.unlockedDisciplines.includes(d)) {
-                    this.character.unlockedDisciplines.push(d);
-                }
-            }
-        }
+        // The disciplines that the package unlocks are not stored: getUnlockedDisciplines reads them from the package
+        entry.granted = granted;
     },
 
-    // Remove mechanical effects from an ascension package
+    // Remove mechanical effects from an ascension package.
+    // With a grant record, only the recorded ids can go. With no record (a save from before the record),
+    // the grant lists of the package can go. An id that another current source grants stays, and a bought power stays.
     _removeAscensionEffects(entry) {
         if (entry.type !== 'package' || !entry.packageId) return;
         const pkg = DataLoader.getAscensionPackages().find(p => p.id === entry.packageId);
-        if (!pkg) return;
+        const record = entry.granted;
+        if (!record && !pkg) return;
 
-        // Remove ascension-granted talents
-        if (pkg.talentsGranted) {
-            for (const talentId of pkg.talentsGranted) {
-                const idx = this.character.talents.findIndex(t =>
-                    typeof t === 'object' && t.id === talentId && t.ascensionGranted
-                );
-                if (idx !== -1) {
-                    this.character.talents.splice(idx, 1);
+        // Release the granted psychic powers
+        const powerIds = record
+            ? [...(record.powers || []), ...(record.freePowers || [])]
+            : [...(pkg.psykerConfig?.grantedPowers || []), ...(pkg.powersGranted || [])];
+        this._releasePowerGrants([...new Set(powerIds)], entry);
+
+        // Remove the ascension-granted talents that no other current package grants
+        const talentIds = record ? (record.talents || []) : (pkg.talentsGranted || []);
+        for (const talentId of talentIds) {
+            const idx = this.character.talents.findIndex(t =>
+                typeof t === 'object' && t.id === talentId && t.ascensionGranted
+            );
+            if (idx === -1) continue;
+            const holders = (this.character.ascensions || []).filter(other => {
+                if (other === entry || other.type !== 'package' || !other.packageId) return false;
+                const otherPkg = DataLoader.getAscensionPackages().find(p => p.id === other.packageId);
+                return (otherPkg?.talentsGranted || []).includes(talentId);
+            });
+            if (holders.length === 0) {
+                this.character.talents.splice(idx, 1);
+                continue;
+            }
+            // Another package grants it: it stays, and it goes into the record of the first such entry that has a record
+            const holder = holders.find(other => other.granted);
+            if (holder) {
+                if (!Array.isArray(holder.granted.talents)) holder.granted.talents = [];
+                if (!holder.granted.talents.includes(talentId)) holder.granted.talents.push(talentId);
+            }
+        }
+
+        // Unlocked and chosen disciplines stay: getUnlockedDisciplines reads the disciplines of the current packages
+    },
+
+    // The power ids that the archetype grants (P1), or the ability archetype of a custom archetype (P2)
+    _archetypeGrantIds() {
+        const archetypeId = this.character.archetype?.id === 'custom'
+            ? this.character.customArchetype?.abilityArchetypeId
+            : this.character.archetype?.id;
+        const archetype = archetypeId ? DataLoader.getArchetype(archetypeId) : null;
+        return [...(archetype?.psykerConfig?.grantedPowers || [])];
+    },
+
+    // The power ids that a current source grants: the archetype, and each package ascension except excludeEntry.
+    // For an entry whose package the data does not have, the ids of its grant record count (TC5-2).
+    _grantedPowerIds(excludeEntry = null) {
+        const ids = new Set(this._archetypeGrantIds());
+        for (const entry of this.character.ascensions || []) {
+            if (entry === excludeEntry || entry.type !== 'package' || !entry.packageId) continue;
+            const pkg = DataLoader.getAscensionPackages().find(p => p.id === entry.packageId);
+            if (!pkg && entry.granted) {
+                for (const key of ['powers', 'freePowers']) {
+                    for (const id of Array.isArray(entry.granted[key]) ? entry.granted[key] : []) ids.add(id);
                 }
+                continue;
             }
+            for (const id of pkg?.psykerConfig?.grantedPowers || []) ids.add(id);
+            for (const id of pkg?.powersGranted || []) ids.add(id);
         }
+        return ids;
+    },
 
-        // Remove auto-granted psychic powers
-        const powersToRemove = [
-            ...(pkg.psykerConfig?.grantedPowers || []),
-            ...(pkg.powersGranted || [])
-        ];
-        for (const powerId of powersToRemove) {
-            const powerIdx = this.character.psychicPowers.indexOf(powerId);
-            if (powerIdx !== -1) {
-                this.character.psychicPowers.splice(powerIdx, 1);
-            }
-            const freeIdx = (this.character.freePowers || []).indexOf(powerId);
-            if (freeIdx !== -1) {
-                this.character.freePowers.splice(freeIdx, 1);
-            }
+    // Add each id that the character does not have to psychicPowers and freePowers. Returns the ids that it added.
+    // An id that the character has (bought or picked) stays as it is.
+    _applyPowerGrants(ids) {
+        if (!Array.isArray(this.character.freePowers)) this.character.freePowers = [];
+        const added = [];
+        for (const id of ids) {
+            if (this.character.psychicPowers.includes(id)) continue;
+            this.character.psychicPowers.push(id);
+            if (!this.character.freePowers.includes(id)) this.character.freePowers.push(id);
+            added.push(id);
         }
+        return added;
+    },
 
-        // Remove auto-unlocked disciplines
-        if (pkg.disciplinesUnlocked) {
-            for (const d of pkg.disciplinesUnlocked) {
-                const idx = (this.character.unlockedDisciplines || []).indexOf(d);
-                if (idx !== -1) {
-                    this.character.unlockedDisciplines.splice(idx, 1);
+    // Remove from both lists each free id that no current source grants. A bought power is not free, so it stays.
+    // An id that another package entry still grants stays, and goes into the record of the first such entry
+    // that has a record (adoption), so the remove of that entry releases it later.
+    _releasePowerGrants(ids, excludeEntry = null) {
+        const free = Array.isArray(this.character.freePowers) ? this.character.freePowers : [];
+        const granted = this._grantedPowerIds(excludeEntry);
+        for (const id of ids) {
+            if (!free.includes(id)) continue;
+            if (granted.has(id)) {
+                const holder = (this.character.ascensions || []).find(entry => {
+                    if (entry === excludeEntry || !entry.granted || entry.type !== 'package' || !entry.packageId) return false;
+                    const pkg = DataLoader.getAscensionPackages().find(p => p.id === entry.packageId);
+                    return (pkg?.psykerConfig?.grantedPowers || []).includes(id) || (pkg?.powersGranted || []).includes(id);
+                });
+                if (holder) {
+                    for (const key of ['powers', 'freePowers']) {
+                        if (!Array.isArray(holder.granted[key])) holder.granted[key] = [];
+                        if (!holder.granted[key].includes(id)) holder.granted[key].push(id);
+                    }
                 }
+                continue;
             }
+            free.splice(free.indexOf(id), 1);
+            const index = this.character.psychicPowers.indexOf(id);
+            if (index !== -1) this.character.psychicPowers.splice(index, 1);
         }
+    },
 
-        // Remove discipline choices associated with this package's psykerConfig
-        if (pkg.psykerConfig?.disciplineChoices) {
-            // We can't know which specific discipline was chosen for this package,
-            // so we leave user-chosen disciplines intact. They'll be cleaned up
-            // by getRemainingDisciplineChoices() returning negative count.
-        }
+    // CC4: a free id that no current source grants stays free only while a free pick slot of getPsykerConfig covers it.
+    // A slot covers the first `count` such ids, in the order of freePowers, whose discipline matches.
+    // An id that no slot covers leaves freePowers and stays in psychicPowers as a paid power.
+    // A power id that the data does not have stays in freePowers (TC5-2).
+    _settleFreePicks() {
+        const free = this.character.freePowers;
+        if (!Array.isArray(free) || free.length === 0) return;
+        const granted = this._grantedPowerIds();
+        const slots = (this.getPsykerConfig()?.freePowerChoices || [])
+            .map(slot => ({ disciplines: slot.disciplines || [], left: slot.count || 0 }));
+        const kept = free.filter(id => {
+            if (granted.has(id)) return true;
+            const power = DataLoader.getPsychicPower(id);
+            if (!power) return true;
+            const slot = slots.find(s => s.left > 0 && s.disciplines.some(d => d.toLowerCase() === power.discipline.toLowerCase()));
+            if (!slot) return false;
+            slot.left--;
+            return true;
+        });
+        free.splice(0, free.length, ...kept);
     },
 
     // Set a choice for an ascension package (e.g., Demanding Patron benefit)
@@ -1447,12 +1709,20 @@ const State = {
         this.notifyListeners('ascension', targetTier);
     },
 
+    // Remove the old ascensionPackages list of an older version
+    clearLegacyAscensionPackages() {
+        delete this.character.ascensionPackages;
+        this.notifyListeners('ascension');
+    },
+
     // Get the effective tier (starting tier + number of non-creation ascensions)
     // Creation ascension = slot where targetTier <= starting tier
     getEffectiveTier() {
         const startingTier = this.character.tier || 1;
         const ascensions = this.character.ascensions || [];
-        const earnedAscensions = ascensions.filter(a => a.targetTier > startingTier).length;
+        // An empty slot (no package and no archetype chosen) does not raise the tier
+        const earnedAscensions = ascensions.filter(a => a.targetTier > startingTier &&
+            ((a.type === 'package' && a.packageId) || (a.type === 'archetype' && a.archetypeId))).length;
         return Math.min(5, startingTier + earnedAscensions);
     },
 
@@ -1466,6 +1736,7 @@ const State = {
     // Set enabled sources
     setEnabledSources(sources) {
         this.enabledSources = sources;
+        this.saveSettings();
         this.notifyListeners('sources');
     },
 
@@ -1477,6 +1748,7 @@ const State = {
     // Set the ignore-prerequisites house rule
     setIgnorePrerequisites(enabled) {
         this.ignorePrerequisites = !!enabled;
+        this.saveSettings();
         this.notifyListeners('houseRules');
     },
 
@@ -1553,6 +1825,32 @@ const State = {
     // Clear the auto-save
     clearAutoSave() {
         localStorage.removeItem(this._AUTO_SAVE_KEY);
+    },
+
+    // Write the settings to their own key. New Character does not clear this key.
+    saveSettings() {
+        try {
+            const data = {
+                enabledSources: this.enabledSources,
+                // The rule of _performAutoSave: every source the app offered at save time.
+                knownSources: (typeof SettingsTab !== 'undefined' ? SettingsTab.sourceButtons : []).map(b => b.id),
+                ignorePrerequisites: this.ignorePrerequisites
+            };
+            localStorage.setItem(this._SETTINGS_KEY, JSON.stringify(data));
+        } catch (e) {
+            console.warn('Settings save failed:', e);
+        }
+    },
+
+    // Get the stored settings, or null. A blocked storage or a bad value gives null.
+    getSavedSettings() {
+        try {
+            const raw = localStorage.getItem(this._SETTINGS_KEY);
+            return raw ? JSON.parse(raw) : null;
+        } catch (e) {
+            console.warn('Failed to read settings:', e);
+            return null;
+        }
     },
 
     // Get character keywords

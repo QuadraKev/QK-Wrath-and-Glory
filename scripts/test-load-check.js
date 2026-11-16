@@ -29,7 +29,7 @@ function canon(value) {
 }
 
 const DATA = {};
-for (const f of ['glossary.json', 'weapons.json', 'armor.json', 'equipment.json'])
+for (const f of ['glossary.json', 'weapons.json', 'armor.json', 'equipment.json', 'backgrounds.json'])
     DATA[f] = readJson(`data/${f}`);
 
 // Runs a source file into a context. A top-level const stays visible to the later files of the context.
@@ -123,14 +123,16 @@ const CORPUS = {
         skills: Object.fromEntries(Object.keys(base().skills).map(k => [k, 0])) }),
     'full character': () => ({ ...base(),
         rank: -3, additionalXp: -10, corruption: 7,
-        // Real shape (spec §5 row 26a): setArchetype writes NaN (saved as null) for the data keys choice1/choice2; resetStats can write a number.
-        skills: { ...base().skills, choice1: null, choice2: 4 },
+        // The load deletes the phantom keys choice, choice1 and choice2 (step X1, bug pass spec §4.3), so the corpus does not hold them.
+        skills: { ...base().skills },
         species: { id: 'kroot', xpCost: 10, subOptions: [{ type: 'mutation', optionId: 'a' }, { type: 'mutation', optionId: 'b' }] },
         archetype: { id: 'custom', xpCost: 0 },
         customArchetype: { name: 'Gun for hire', abilityArchetypeId: 'sanctioned_psyker', keywords: ['IMPERIUM', 'SCUM'], wargear: ['knife'] },
         archetypeKeywordChoices: { '[ORDO]': 'HERETICUS', '[FORGE WORLD]': '' },
+        archetypeSkillChoices: { choice1: 'insight' },
         ascensions: [
-            { targetTier: 2, type: 'package', packageId: 'demanding_patron', archetypeId: null, choices: { patronBenefit: 'wealth', '[ANY]': 'ADEPTUS MINISTORUM', '[ANY]2': '' } },
+            { targetTier: 2, type: 'package', packageId: 'demanding_patron', archetypeId: null, choices: { patronBenefit: 'wealth', '[ANY]': 'ADEPTUS MINISTORUM', '[ANY]2': '' },
+                granted: { powers: [], freePowers: [], talents: [] } },
             { targetTier: 3, type: 'archetype', packageId: null, archetypeId: 'tactical_space_marine' },
             { targetTier: 4, type: 'package', packageId: null, archetypeId: null }
         ],
@@ -182,8 +184,9 @@ for (const [name, make] of Object.entries(CORPUS)) {
 }
 {
     const r = loadJson(LEGACY());
-    const expected = LEGACY(); delete expected.ascensionPackages; expected.ascensions = [];
-    check('no-op: legacy ascensionPackages gets only the documented migration', canon(r.character), canon(rt(expected)));
+    // The old key stays (bug pass spec §8.1). Only the merge with the defaults adds ascensions.
+    const expected = { ...LEGACY(), ascensions: [] };
+    check('no-op: legacy ascensionPackages stays', canon(r.character), canon(rt(expected)));
     check('no-op: legacy ascensionPackages writes no warning', r.warns, []);
 }
 
@@ -216,14 +219,17 @@ for (const [name, make] of Object.entries(CORPUS)) {
     B.setTier('3'); B.setRank('2'); B.setAdditionalXP('5000');
     B.setSpecies('human');
     B.setSpeciesSubOption('homeworld', 'death_world_aoa');
-    // inquisitor has the skillBonus keys choice1 and choice2: setArchetype writes NaN there, which JSON saves as null
+    // inquisitor has the skillBonus keys choice1 and choice2: setArchetype no longer writes the data keys choice1 / choice2
     B.setArchetype('inquisitor');
+    B.setArchetypeSkillChoice('choice1', 'insight');
     B.setArchetypeKeywordChoice('[ORDO]', 'HERETICUS');
     B.setArchetypeKeywordChoice('[ANY]', 'MY TYPED KEYWORD');
     B.increaseAttribute('strength'); B.increaseSkill('awareness');
     // ascension with a choice
     B.setAscension(4, { type: 'package', packageId: 'demanding_patron', archetypeId: null });
     B.setAscensionChoice(4, 'patronBenefit', 'wealth');
+    // ascension that grants powers: its entry gets a grant record with ids
+    B.setAscension(5, { type: 'package', packageId: 'lost_seer_path_aoa', archetypeId: null });
     // wargear: add, a starting item, equip, an upgrade
     B.addWargear('lasgun'); B.addWargear('knife', true);
     B.toggleWeaponEquipped(0);
@@ -276,7 +282,7 @@ for (const [name, make] of Object.entries(CORPUS)) {
     const isObj = v => v !== null && typeof v === 'object';
     check('setters: the built character holds each shape', {
         // Optional chaining: a broken writer must give a FAIL line here, not a TypeError
-        ascensionChoice: built.ascensions.length === 1 && built.ascensions[0].choices?.patronBenefit === 'wealth',
+        ascensionChoice: built.ascensions.length === 2 && built.ascensions[0].choices?.patronBenefit === 'wealth',
         talentChoice: built.talents.some(t => isObj(t) && t.choice === '0'),
         talentString: built.talents.includes('angel_of_death'),
         equippedUpgrade: built.wargear[0]?.equipped === true && built.wargear[0]?.upgrades?.length === 1,
@@ -291,19 +297,22 @@ for (const [name, make] of Object.entries(CORPUS)) {
         mob: built.followers.some(f => f.kind === 'mob' && f.count === 3 && f.livingCount === 2 && f.mobCount === 3),
         subOption: built.species.subOptions.length === 1,
         keywordChoice: built.archetypeKeywordChoices['[ORDO]'] === 'HERETICUS',
-        skillChoiceKey: built.skills.choice1 === null && built.skills.choice2 === null,
+        skillChoice: built.archetypeSkillChoices?.choice1 === 'insight',
+        skillChoiceKey: !('choice1' in built.skills) && !('choice2' in built.skills),
         powers: built.psychicPowers.includes('smite') && built.psychicPowers.includes('psyniscience') && built.freePowers.includes('psyniscience'),
-        discipline: built.unlockedDisciplines.includes('Biomancy')
+        discipline: built.unlockedDisciplines.includes('Biomancy'),
+        grantRecord: JSON.stringify(built.ascensions[1]?.granted) === JSON.stringify({ powers: ['prescience', 'scriers_gaze'], freePowers: ['prescience', 'scriers_gaze'], talents: [] })
     }, {
         ascensionChoice: true, talentChoice: true, talentString: true, equippedUpgrade: true, starting: true, relic: true,
         improvised: true, custom: true, background: true, languages: true, injuries: true, mutation: true, mob: true,
-        subOption: true, keywordChoice: true, skillChoiceKey: true, powers: true, discipline: true
+        subOption: true, keywordChoice: true, skillChoice: true, skillChoiceKey: true, powers: true, discipline: true,
+        grantRecord: true
     });
     const r = loadJson(built);
     check('setters: a character built through the real writers loads deep-equal', canon(r.character), canon(built));
     check('setters: a character built through the real writers writes no warning', r.warns, []);
 
-    // A second build for the custom archetype: setCustomArchetype clears the wargear and the stats
+    // A second build for the custom archetype: setCustomArchetype keeps the custom wargear and moves the stats to the new baseline
     B.newCharacter();
     B.setTier('2'); B.setAdditionalXP('500');
     B.setSpecies('human');
@@ -338,7 +347,8 @@ const OBJ_BAD = [EVIL, [], null, 5];
 const ARR_BAD = [EVIL, {}, null, 5];
 const BOOL_BAD = [EVIL, 1, null, {}];
 
-// Rows: path, bad values, expected value, optional read path (spec row numbers in the comments)
+// Rows: path, bad values, expected value, optional read path, optional override, optional warning path (spec row numbers in the comments)
+// The warning of a row holds its path: a number is [n] and a name is .name. A row that a dropped entry repairs gives the warning path of the entry.
 const HOSTILE = [
     [['name'], STR_BAD, ''], [['setting'], STR_BAD, ''], [['notes'], STR_BAD, ''],             // 1-3
     [['tier'], INT_BAD, 1], [['rank'], INT_NULL_BAD, 1], [['additionalXp'], INT_NULL_BAD, 0], [['corruption'], INT_NULL_BAD, 0], // 4-7
@@ -348,13 +358,15 @@ const HOSTILE = [
     [['customArchetype'], OBJ_BAD, { name: '', abilityArchetypeId: null, keywords: [], wargear: [] }],
     [['customArchetype', 'name'], STR_BAD, ''], [['customArchetype', 'abilityArchetypeId'], STR_NULL_BAD, null],
     [['archetypeKeywordChoices'], OBJ_BAD, {}], [['archetypeKeywordChoices', '[ORDO]'], STR_BAD, ''],
+    [['archetypeSkillChoices'], OBJ_BAD, {}], [['archetypeSkillChoices', 'choice1'], STR_BAD, ''],
     [['attributes'], OBJ_BAD, { strength: 1, toughness: 1, agility: 1, initiative: 1, willpower: 1, intellect: 1, fellowship: 1 }],
     ...['strength', 'toughness', 'agility', 'initiative', 'willpower', 'intellect', 'fellowship'].map(k => [['attributes', k], INT_BAD, 1]),
     ...Object.keys(base().skills).map(k => [['skills', k], INT_BAD, 0]),
     // R10: an unknown key in attributes or skills keeps its key; a value that is not a finite number or null becomes null
-    [['skills', 'choice1'], NUM_NULL_BAD, null], [['attributes', 'luck'], NUM_NULL_BAD, null],
+    // The row uses an unknown key that is not a phantom key: step X1 deletes skills.choice1.
+    [['skills', 'zzSkill'], NUM_NULL_BAD, null], [['attributes', 'luck'], NUM_NULL_BAD, null],
     [['background'], OBJ_BAD, { origin: null, accomplishment: null, goal: null, bonusUsed: null }],
-    [['background', 'origin'], [EVIL, [], 5, true], null], [['background', 'origin', 'id'], STR_BAD, null, ['background', 'origin']],
+    [['background', 'origin'], [EVIL, [], 5, true], null], [['background', 'origin', 'id'], STR_BAD, null, ['background', 'origin'], undefined, 'background.origin'],
     [['background', 'accomplishment', 'bonusType'], STR_NULL_BAD, null], [['background', 'bonusUsed'], STR_NULL_BAD, null],
     // lists that are not arrays (spec §6.1)
     ...['species.subOptions', 'customArchetype.keywords', 'customArchetype.wargear', 'ascensions', 'talents', 'wargear',
@@ -362,12 +374,15 @@ const HOSTILE = [
         'followers', 'freeLanguages', 'customKeywords'].map(p => [p.split('.'), ARR_BAD, []]),
     [['languages'], ARR_BAD, ['low_gothic']],
     // ascension entry (spec §6.2); a dropped entry is read through the list length
-    [['ascensions', 0, 'targetTier'], INT_BAD, 2, ['ascensions', 'length']],
+    [['ascensions', 0, 'targetTier'], INT_BAD, 2, ['ascensions', 'length'], undefined, 'ascensions[0]'],
     [['ascensions', 0, 'type'], STR_BAD, ''], [['ascensions', 0, 'packageId'], STR_NULL_BAD, null],
     [['ascensions', 0, 'choices'], [EVIL, [], 5, null], undefined], [['ascensions', 0, 'choices', '[ANY]'], STR_BAD, ''],
+    // the grant record of a package entry (spec §6.3, Q7)
+    [['ascensions', 0, 'granted'], OBJ_BAD, undefined],
+    ...['powers', 'freePowers', 'talents'].map(k => [['ascensions', 0, 'granted', k], ARR_BAD, []]),
     // talent entry (spec §6.3)
     [['talents', 1, 'choice'], [{}, [], true, INF], null], [['talents', 5, 'choice'], [5, {}, true], null],
-    [['talents', 7, 'ascensionGranted'], BOOL_BAD, false], [['talents', 1, 'id'], STR_BAD, 7, ['talents', 'length']],
+    [['talents', 7, 'ascensionGranted'], BOOL_BAD, false], [['talents', 1, 'id'], STR_BAD, 7, ['talents', 'length'], undefined, 'talents[1]'],
     // wargear entry (spec §6.4): never dropped
     [['wargear', 1, 'isStarting'], BOOL_BAD, false], [['wargear', 1, 'equipped'], BOOL_BAD, false],
     [['wargear', 1, 'upgrades'], ARR_BAD, []], [['wargear', 1, 'id'], [5, {}, null], ''],
@@ -380,9 +395,9 @@ const HOSTILE = [
     // injuries and mutations
     [['memorableInjuries', 0, 'escalated'], BOOL_BAD, false], [['traumaticInjuries', 0, 'side'], STR_NULL_BAD, null],
     [['traumaticInjuries', 1, 'reconstructed'], BOOL_BAD, false], [['mutations', 0, 'subChoice'], STR_NULL_BAD, null],
-    [['memorableInjuries', 0, 'id'], STR_BAD, 1, ['memorableInjuries', 'length']],
+    [['memorableInjuries', 0, 'id'], STR_BAD, 1, ['memorableInjuries', 'length'], undefined, 'memorableInjuries[0]'],
     // follower entry (spec §6.5)
-    [['followers', 0, 'id'], STR_BAD, 2, ['followers', 'length']], [['followers', 0, 'threatId'], STR_BAD, ''],
+    [['followers', 0, 'id'], STR_BAD, 2, ['followers', 'length'], undefined, 'followers[0]'], [['followers', 0, 'threatId'], STR_BAD, ''],
     [['followers', 0, 'kind'], STR_BAD, 'individual'], [['followers', 1, 'count'], NUM_NULL_BAD, 1],
     [['followers', 1, 'livingCount'], NUM_NULL_BAD, 1], [['followers', 1, 'mobCount'], NUM_NULL_BAD, null],
     [['followers', 1, 'useAlternativeStats'], BOOL_BAD, false], [['followers', 1, 'currentWounds'], NUM_NULL_BAD, null],
@@ -399,8 +414,11 @@ const HOSTILE = [
     }]]
 ];
 
-for (const [rowPath, bads, expected, readPathArg, override] of HOSTILE) {
+// The path text that the warning of a row must hold.
+const warnPathText = keys => keys.map((k, i) => (typeof k === 'number' ? `[${k}]` : (i ? `.${k}` : k))).join('');
+for (const [rowPath, bads, expected, readPathArg, override, warnPathArg] of HOSTILE) {
     const readPath = readPathArg || rowPath;
+    const warnPath = warnPathArg || warnPathText(rowPath);
     for (const bad of bads) {
         const c = override ? override[1]() : rowPath[0] === 'customKeywords' ? CORPUS['pre-web shapes']() : CORPUS['full character']();
         setPath(c, rowPath, bad);
@@ -414,6 +432,7 @@ for (const [rowPath, bads, expected, readPathArg, override] of HOSTILE) {
             check(`hostile ${label}: repaired`, canon(getPath(r.character, readPath)), canon(expected));
         }
         check(`hostile ${label}: one warning`, r.warns.length, 1);
+        check(`hostile ${label}: the warning names ${warnPath}`, (r.warns[0] || '').replace('Character data was repaired on load: ', ''), warnPath);
     }
 }
 // True when parent is an object and key is absent from it.
@@ -422,6 +441,16 @@ function isAbsent(parent, key) {
 }
 
 // bad entries in lists that are not index-referenced are dropped; good entries stay in order
+// the grant record: a bad entry of each of its lists is dropped, and one warning names each path
+{
+    const c = CORPUS['full character']();
+    c.ascensions[0].granted = { powers: ['a', 5], freePowers: [null, 'b'], talents: [{}, 'c'] };
+    const r = loadJson(c);
+    check('hostile: bad entries of the grant record are dropped', r.character.ascensions[0].granted, { powers: ['a'], freePowers: ['b'], talents: ['c'] });
+    check('hostile: the grant record writes one warning that names each path', [r.warns.length,
+        ['ascensions[0].granted.powers[1]', 'ascensions[0].granted.freePowers[0]', 'ascensions[0].granted.talents[0]'].every(p => (r.warns[0] || '').includes(p))],
+        [1, true]);
+}
 check('hostile: bad entries of a string list are dropped', loadJson({ ...base(), psychicPowers: ['smite', 5, null, {}, 'psyniscience'] }).character.psychicPowers, ['smite', 'psyniscience']);
 check('hostile: a talent that is not a string or an object with a string id is dropped',
     loadJson({ ...base(), talents: ['a', 5, null, [], { id: 5 }, { id: 'b', choice: 'x' }] }).character.talents, ['a', { id: 'b', choice: 'x' }]);
@@ -499,11 +528,111 @@ check('hostile: a sub-option with a number type is dropped',
     check('absent: the path goes into the one warning', r.warns, ['Character data was repaired on load: wargear[3].relic.oddities']);
 }
 
-// order: the check runs before the old migration (spec §7.1)
+// order: the check repairs ascensions and ascensionPackages in one warning (spec §7.1, bug pass spec §8.1)
 {
     const r = loadJson({ ...base(), ascensions: null, ascensionPackages: 'x' });
     check('order: a hostile ascensionPackages does not throw', r.threw, false);
-    check('order: ascensions is [] and ascensionPackages is gone', [r.character.ascensions, 'ascensionPackages' in r.character], [[], false]);
+    check('order: ascensions is [], ascensionPackages is [], and one warning',
+        [r.character.ascensions, r.character.ascensionPackages, r.warns.length], [[], [], 1]);
+}
+
+// the old ascensionPackages key: an optional list of strings (bug pass spec §8.1)
+{
+    const r = loadJson({ ...base(), ascensionPackages: EVIL });
+    check('hostile: ascensionPackages that is not an array becomes []', r.character.ascensionPackages, []);
+    check('hostile: ascensionPackages that is not an array writes one warning that names it',
+        [r.warns.length, (r.warns[0] || '').includes('ascensionPackages')], [1, true]);
+    const r2 = loadJson({ ...base(), ascensionPackages: ['a', 5] });
+    check('hostile: a non-string entry of ascensionPackages is dropped', r2.character.ascensionPackages, ['a']);
+    check('hostile: the drop writes one warning that names ascensionPackages[1]',
+        [r2.warns.length, (r2.warns[0] || '').includes('ascensionPackages[1]')], [1, true]);
+}
+
+// --- load steps X1, X2, X3 (bug pass spec §2.1) ---
+// Loads value, saves the result to JSON, and loads that JSON again. A step must do nothing at the second load.
+function loadTwice(value) {
+    const first = loadJson(value);
+    const second = loadJson(first.character);
+    return { first, second };
+}
+
+// X1: the load deletes the phantom keys skills.choice, skills.choice1 and skills.choice2 (spec §4.3)
+{
+    // choice3 is an unknown key that X1 does not name, so it stays (R10)
+    const { first: r, second } = loadTwice({ ...base(), skills: { ...base().skills, choice: null, choice1: 4, choice2: 0, choice3: 1 } });
+    check('X1: only choice3 of the choice keys stays', Object.keys(r.character.skills).filter(k => k.startsWith('choice')), ['choice3']);
+    check('X1: the 18 skills and choice3 load deep-equal', canon(r.character.skills), canon({ ...base().skills, choice3: 1 }));
+    check('X1: no warning', r.warns, []);
+    check('X1: the second load changes nothing and writes no warning', [canon(second.character), second.warns], [canon(r.character), []]);
+}
+
+// X2: the alias table maps each old id to its new id in place (spec §9.2, CC1, CC5)
+{
+    const make = () => ({ ...base(),
+        talents: ['daemonic_summoning_dh', { id: 'forge_the_sword_dh', choice: null }, 'precision_shooter'],
+        wargear: [{ id: 'forceshield', isStarting: true }, { id: 'lasgun', isStarting: false }],
+        customArchetype: { ...base().customArchetype, wargear: ['mist_shield'] },
+        species: { id: 'aeldari_psychosensitive', xpCost: 10, subOptions: [{ type: 'path', optionId: 'path_of_the_artisan' }] } });
+    const { first: r, second } = loadTwice(make());
+    const c = r.character;
+    check('X2: talents are mapped in place', c.talents, ['daemonic_summons_dh', { id: 'forge_of_souls_dh', choice: null }, 'precision_shooter']);
+    check('X2: wargear ids are mapped in place', c.wargear.map(w => w.id), ['force_shield_aeldari', 'lasgun']);
+    check('X2: custom archetype wargear is mapped', c.customArchetype.wargear, ['mistshield']);
+    check('X2: the species id is mapped', c.species.id, 'aeldari');
+    check('X2: the psychosensitive sub-option is added (CC1)', c.species.subOptions,
+        [{ type: 'path', optionId: 'path_of_the_artisan' }, { type: 'psychosensitive', optionId: 'psyker' }]);
+    check('X2: no warning', r.warns, []);
+    const expected = make();
+    expected.talents = ['daemonic_summons_dh', { id: 'forge_of_souls_dh', choice: null }, 'precision_shooter'];
+    expected.wargear[0].id = 'force_shield_aeldari';
+    expected.customArchetype.wargear = ['mistshield'];
+    expected.species = { id: 'aeldari', xpCost: 10, subOptions: [{ type: 'path', optionId: 'path_of_the_artisan' }, { type: 'psychosensitive', optionId: 'psyker' }] };
+    check('X2: each other value loads deep-equal', canon(c), canon(expected));
+    check('X2: the second load changes nothing and writes no warning', [canon(second.character), second.warns], [canon(c), []]);
+}
+{
+    // Wargear can hold an item two times, so a wargear alias maps also onto an id that the list holds (spec §9.2)
+    const r = loadJson({ ...base(), wargear: [{ id: 'force_shield_aeldari', isStarting: true }, { id: 'forceshield', isStarting: true }] });
+    check('X2: a wargear alias maps onto an id that the wargear list holds', r.character.wargear,
+        [{ id: 'force_shield_aeldari', isStarting: true }, { id: 'force_shield_aeldari', isStarting: true }]);
+}
+{
+    // An id that is a key of Object.prototype is not an alias. Each such string stays, as at e976ca8 (review finding F1).
+    const r = loadJson({ ...base(), talents: ['constructor', { id: 'toString' }], wargear: [{ id: 'valueOf', isStarting: false }],
+        customArchetype: { ...base().customArchetype, wargear: ['hasOwnProperty'] }, species: { id: 'constructor', xpCost: 0, subOptions: [] } });
+    const c = r.character;
+    check('X2: a talent string constructor stays', c.talents[0], 'constructor');
+    check('X2: a talent object with the id toString stays', c.talents[1], { id: 'toString' });
+    check('X2: a wargear id valueOf stays', c.wargear[0], { id: 'valueOf', isStarting: false });
+    check('X2: a custom archetype wargear id hasOwnProperty stays', c.customArchetype.wargear, ['hasOwnProperty']);
+    check('X2: a species id constructor stays', c.species, { id: 'constructor', xpCost: 0, subOptions: [] });
+    check('X2: the prototype key ids write no warning', r.warns, []);
+}
+{
+    const r = loadJson({ ...base(), species: { id: 'aeldari_psychosensitive', xpCost: 10, subOptions: [{ type: 'psychosensitive', optionId: 'psyker' }] } });
+    check('CC1: a species that has the psychosensitive sub-option keeps one such entry', r.character.species,
+        { id: 'aeldari', xpCost: 10, subOptions: [{ type: 'psychosensitive', optionId: 'psyker' }] });
+}
+check('CC5: a talent alias does not map onto an id that the talent list holds',
+    loadJson({ ...base(), talents: ['forge_the_sword_dh', 'forge_of_souls_dh'] }).character.talents, ['forge_the_sword_dh', 'forge_of_souls_dh']);
+
+// X3: a missing bonusType of a background entry gets its value from the data (spec §11.2)
+{
+    const BGD = DATA['backgrounds.json'];
+    const origin = BGD.origins.find(o => o.bonusType);
+    const withBackground = background => ({ ...base(), background: { ...base().background, ...background } });
+    const { first: r, second } = loadTwice(withBackground({ origin: { id: origin.id } }));
+    check('X3: an origin with no bonusType gets the bonusType of the data', r.character.background.origin, { id: origin.id, bonusType: origin.bonusType });
+    check('X3: no warning', r.warns, []);
+    check('X3: the second load changes nothing and writes no warning', [canon(second.character), second.warns], [canon(r.character), []]);
+    check('X3: an origin with bonusType wealth keeps wealth',
+        loadJson(withBackground({ origin: { id: origin.id, bonusType: 'wealth' } })).character.background.origin, { id: origin.id, bonusType: 'wealth' });
+    check('X3: a null or empty bonusType of an accomplishment and a goal gets the value of the data',
+        [loadJson(withBackground({ accomplishment: { id: BGD.accomplishments[0].id, bonusType: null }, goal: { id: BGD.goals[0].id, bonusType: '' } })).character.background]
+            .map(b => [b.accomplishment.bonusType, b.goal.bonusType])[0],
+        [BGD.accomplishments[0].bonusType, BGD.goals[0].bonusType]);
+    check('X3: an origin id that the data does not have stays with no bonusType',
+        loadJson(withBackground({ origin: { id: 'o1' } })).character.background.origin, { id: 'o1' });
 }
 
 // save no longer throws on a hostile name

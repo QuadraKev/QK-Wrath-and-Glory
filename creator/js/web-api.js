@@ -5,6 +5,8 @@
     let _pendingFile = null;
     // Store file handle from File System Access API for save/overwrite
     let _saveFileHandle = null;
+    // The file handle from before the last open dialog. cancelOpen puts it back (CC17).
+    let _previousSaveFileHandle = null;
     // Chrome Android supports showSaveFilePicker but its implementation is buggy
     // (0-byte files, appends .json to custom extensions) — skip it on Android
     const _isAndroid = /Android/i.test(navigator.userAgent);
@@ -17,7 +19,7 @@
     window.api = {
         // Load game data via fetch (cache-busted with version)
         loadGameData: async (filename) => {
-            const response = await fetch('../data/' + filename + '?v=47');
+            const response = await fetch('../data/' + filename + '?v=48');
             if (!response.ok) throw new Error(`Failed to load ${filename}`);
             return response.json();
         },
@@ -56,6 +58,7 @@
 
         // Show open dialog - opens file picker and stores file reference
         showOpenDialog: async () => {
+            _previousSaveFileHandle = _saveFileHandle;
             // Use File System Access API when available for handle-based open
             if (window.showOpenFilePicker && !_isAndroid) {
                 try {
@@ -100,6 +103,12 @@
                 input.oncancel = () => resolve({ canceled: true });
                 input.click();
             });
+        },
+
+        // Undo the last open dialog: put back the file handle from before it, and drop the picked file
+        cancelOpen: () => {
+            _saveFileHandle = _previousSaveFileHandle;
+            _pendingFile = null;
         },
 
         // Export character - writes to file handle if available, otherwise triggers download

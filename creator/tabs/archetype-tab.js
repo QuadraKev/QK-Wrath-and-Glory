@@ -94,10 +94,7 @@ const ArchetypeTab = {
                 </div>
             `;
 
-            customItem.addEventListener('click', () => {
-                State.setCustomArchetype();
-                this.renderCustomConfig();
-            });
+            customItem.addEventListener('click', () => this.selectCustomArchetype());
 
             customGroup.appendChild(customItem);
             container.appendChild(customGroup);
@@ -149,6 +146,25 @@ const ArchetypeTab = {
         if (sortedFactions.length === 0 && !showCustom) {
             container.innerHTML = '<p class="text-muted">No archetypes match your criteria. Try selecting a species or adjusting the tier.</p>';
         }
+    },
+
+    // Ask before Custom Archetype removes the starting wargear of the old archetype
+    async selectCustomArchetype() {
+        const removed = State.getOldStartingEntries();
+        if (removed.length > 0) {
+            const character = State.getCharacter();
+            const archetype = DataLoader.getArchetype(character.archetype.id);
+            const names = removed.map(index => {
+                const entry = character.wargear[index];
+                return DataLoader.getWargearItem(entry.id)?.name || entry.id;
+            });
+            const confirmed = await window.api.showConfirm(
+                `Custom Archetype removes the starting wargear of ${archetype.name}: ${names.join(', ')}. Continue?`
+            );
+            if (!confirmed) return;
+        }
+        State.setCustomArchetype();
+        this.renderCustomConfig();
     },
 
     renderDetail() {
@@ -221,6 +237,8 @@ const ArchetypeTab = {
 
             ${this.renderKeywordChoices(archetype, character)}
 
+            ${this.renderSkillChoices(archetype, character)}
+
             ${archetype.abilities && archetype.abilities.length > 0 ? `
                 <div class="detail-section">
                     ${archetype.abilities.map(a => `
@@ -254,6 +272,7 @@ const ArchetypeTab = {
         });
 
         this.bindKeywordChoiceEvents(detail);
+        this.bindSkillChoiceEvents(detail);
 
         // Enhance ability descriptions with glossary terms
         detail.querySelectorAll('.ability-desc').forEach(el => {
@@ -293,7 +312,7 @@ const ArchetypeTab = {
 
             if (category.options.length > 0) {
                 const isCustom = currentValue && !category.options.some(o => o.value === currentValue);
-                html += `<select class="keyword-choice-select">`;
+                html += `<select class="keyword-choice-select" aria-label="${this.escapeAttr(`${category.label} (${placeholder})`)}">`;
                 html += `<option value="">-- Select --</option>`;
                 for (const opt of category.options) {
                     html += `<option value="${opt.value}"${currentValue === opt.value ? ' selected' : ''}>${opt.label}</option>`;
@@ -316,6 +335,8 @@ const ArchetypeTab = {
         return html ? `<div class="detail-section"><div class="detail-section-title">Sub-faction Keywords</div>${html}</div>` : '';
     },
 
+    // The setter accepts each change, so the changed select stays in the page and keeps the focus, as for the
+    // "any skill" selects. The type-ahead of the browser works. Only the custom input and the bonus panel change, in place.
     bindKeywordChoiceEvents(detail) {
         detail.querySelectorAll('.archetype-keyword-choice .keyword-choice-select').forEach(select => {
             select.addEventListener('change', (e) => {
@@ -327,7 +348,15 @@ const ArchetypeTab = {
                     if (custom) custom.style.display = 'block';
                 } else {
                     State.setArchetypeKeywordChoice(placeholder, e.target.value);
-                    this.renderDetail();
+                    const custom = div.querySelector('.keyword-choice-custom');
+                    if (custom) {
+                        custom.style.display = 'none';
+                        custom.value = '';
+                    }
+                    const oldPanel = div.querySelector('.keyword-bonus-panel');
+                    if (oldPanel) oldPanel.remove();
+                    const panel = KeywordBonus.renderPanel(e.target.value);
+                    if (panel) div.insertAdjacentHTML('beforeend', panel);
                 }
             });
         });
@@ -336,6 +365,72 @@ const ArchetypeTab = {
             input.addEventListener('input', (e) => {
                 const div = e.target.closest('.archetype-keyword-choice');
                 State.setArchetypeKeywordChoice(div.dataset.placeholder, e.target.value.toUpperCase());
+            });
+        });
+    },
+
+    // One skill select for each "any skill" bonus key of the archetype (for example choice1 and choice2 of the Inquisitor).
+    // A select does not offer a skill that another key holds (Core p.116: any two skills).
+    renderSkillChoices(archetype, character) {
+        const skillBonus = archetype.skillBonus || {};
+        const keys = Object.keys(skillBonus).filter(k => !XPCalculator.SKILL_KEYS.includes(k));
+        if (keys.length === 0) return '';
+
+        const choices = character.archetypeSkillChoices || {};
+        let html = '';
+        for (const key of keys) {
+            html += `<div class="archetype-keyword-choice">`;
+            html += `<div class="ascension-choice-label">Skill of your choice (${this.escapeHtml(String(skillBonus[key]))}):</div>`;
+            const position = keys.length > 1 ? `, ${keys.indexOf(key) + 1} of ${keys.length}` : '';
+            const ariaLabel = `Skill of your choice (${skillBonus[key]})${position}`;
+            html += `<select class="skill-choice-select" data-choice-key="${this.escapeAttr(key)}" aria-label="${this.escapeAttr(ariaLabel)}">`;
+            html += this.skillOptionsHtml(key, keys, choices);
+            html += `</select>`;
+            html += `</div>`;
+        }
+
+        return `<div class="detail-section"><div class="detail-section-title">Skill of your choice</div>${html}</div>`;
+    },
+
+    // The options of the select of one key. A skill that another key holds is not offered (Core p.116: any two skills).
+    skillOptionsHtml(key, keys, choices) {
+        const currentValue = XPCalculator.SKILL_KEYS.includes(choices[key]) ? choices[key] : '';
+        let html = `<option value="">-- Select a skill --</option>`;
+        for (const skill of XPCalculator.SKILL_KEYS) {
+            const heldByOther = keys.some(k => k !== key && choices[k] === skill);
+            if (heldByOther) continue;
+            html += `<option value="${this.escapeAttr(skill)}"${currentValue === skill ? ' selected' : ''}>${this.escapeHtml(DerivedStats.formatSkillName(skill))}</option>`;
+        }
+        return html;
+    },
+
+    // When the setter accepts the change, the changed select stays in the page, so the type-ahead of the
+    // browser works (typing "aw" ends on Awareness). Only the options of the other selects change, in place.
+    // When the setter refuses the change, the detail is drawn again and shows the stored value. The redraw
+    // replaces the select, so the focus goes back to the select of the same key.
+    bindSkillChoiceEvents(detail) {
+        const selector = '.archetype-keyword-choice .skill-choice-select';
+        detail.querySelectorAll(selector).forEach(select => {
+            select.addEventListener('change', (e) => {
+                const key = e.target.dataset.choiceKey;
+                if (State.setArchetypeSkillChoice(key, e.target.value)) {
+                    const selects = Array.from(detail.querySelectorAll(selector));
+                    const keys = selects.map(s => s.dataset.choiceKey);
+                    const choices = State.getCharacter().archetypeSkillChoices || {};
+                    for (const other of selects) {
+                        if (other.dataset.choiceKey !== key) {
+                            other.innerHTML = this.skillOptionsHtml(other.dataset.choiceKey, keys, choices);
+                        }
+                    }
+                    return;
+                }
+                this.renderDetail();
+                for (const redrawn of detail.querySelectorAll(selector)) {
+                    if (redrawn.dataset.choiceKey === key) {
+                        redrawn.focus();
+                        break;
+                    }
+                }
             });
         });
     },
@@ -684,6 +779,11 @@ const ArchetypeTab = {
 
         const parts = [];
         for (const [key, value] of Object.entries(bonuses)) {
+            // A skill key that is not a skill name is an "any skill" bonus
+            if (!isAttribute && !XPCalculator.SKILL_KEYS.includes(key)) {
+                parts.push(`Skill of your choice ${value}`);
+                continue;
+            }
             const name = isAttribute
                 ? DerivedStats.formatAttributeName(key)
                 : DerivedStats.formatSkillName(key);

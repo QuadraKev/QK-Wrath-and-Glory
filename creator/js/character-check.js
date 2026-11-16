@@ -57,6 +57,12 @@ const CharacterCheck = {
             this._stringValues(choices, 'archetypeKeywordChoices', paths);
         }
 
+        // The skill of each "any skill" key of the archetype: optional, so an absent key stays absent
+        if (this._has(c, 'archetypeSkillChoices')) {
+            const skillChoices = this._object(c, 'archetypeSkillChoices', {}, 'archetypeSkillChoices', paths);
+            this._stringValues(skillChoices, 'archetypeSkillChoices', paths);
+        }
+
         // Rows 23-26a
         this._numberMap(c, 'attributes', defaults.attributes, paths);
         this._numberMap(c, 'skills', defaults.skills, paths);
@@ -103,6 +109,8 @@ const CharacterCheck = {
         this._list(c, 'languages', defaults.languages, 'languages', paths, isString);
         this._list(c, 'freeLanguages', defaults.freeLanguages, 'freeLanguages', paths, isString);
         this._list(c, 'customKeywords', [], 'customKeywords', paths, isString, true);
+        // The old package list of an older app version: optional, and it stays (bug pass spec §8.1)
+        this._list(c, 'ascensionPackages', [], 'ascensionPackages', paths, isString, true);
 
         return paths;
     },
@@ -120,6 +128,17 @@ const CharacterCheck = {
                 paths.push(`${path}.choices`);
             } else {
                 this._stringValues(entry.choices, `${path}.choices`, paths);
+            }
+        }
+        // The record of the ids that the grant step of a package added: optional
+        if (this._has(entry, 'granted')) {
+            if (!this.isPlainObject(entry.granted)) {
+                delete entry.granted;
+                paths.push(`${path}.granted`);
+            } else {
+                for (const key of ['powers', 'freePowers', 'talents']) {
+                    this._list(entry.granted, key, [], `${path}.granted.${key}`, paths, is.string, true);
+                }
             }
         }
         return true;

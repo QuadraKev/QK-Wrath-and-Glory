@@ -78,26 +78,45 @@ const SpeciesTab = {
             // Build sub-option display if selected and has sub-options
             let subOptionDisplay = '';
             let hasSubOptionsToShow = false;
-            if (isSelected && sp.subOptions) {
+            if (isSelected) {
                 const selectedSubOptions = State.getSpeciesSubOptions();
-                const subOptionsConfig = Array.isArray(sp.subOptions) ? sp.subOptions : [sp.subOptions];
+                const subOptionsConfig = !sp.subOptions ? [] : (Array.isArray(sp.subOptions) ? sp.subOptions : [sp.subOptions]);
+                let extraRows = '';
+
+                // A stored sub-option that the config does not have shows as a row with a Remove control
+                for (const sel of selectedSubOptions) {
+                    const config = subOptionsConfig.find(c => c.type === sel.type);
+                    if (!config || !config.options?.some(o => o.id === sel.optionId))
+                        extraRows += this.renderSubOptionRow(`<span class="unknown-entry-text">Unknown sub-option (${this.escapeHtml(String(sel.optionId))})</span>`, sel.type, sel.optionId);
+                }
 
                 for (const config of subOptionsConfig) {
                     const selected = selectedSubOptions.filter(opt => opt.type === config.type);
-                    if (selected.length > 0) {
+                    const known = selected.filter(sel => config.options?.some(o => o.id === sel.optionId));
+                    // A Kroot mutation past the Tier limit stays stored. It shows with a mark and a Remove control.
+                    const limit = config.countByTier ? State.getKrootMutationCount() : Infinity;
+                    const inTier = known.filter(sel => selected.indexOf(sel) < limit);
+                    const aboveTier = known.filter(sel => selected.indexOf(sel) >= limit);
+                    for (const sel of aboveTier) {
+                        const option = config.options.find(o => o.id === sel.optionId);
+                        extraRows += this.renderSubOptionRow(`${this.escapeHtml(option.name)} (above the limit of Tier ${limit})`, sel.type, sel.optionId);
+                    }
+                    if (inTier.length > 0) {
                         hasSubOptionsToShow = true;
-                        const names = selected.map(sel => {
-                            const option = config.options?.find(o => o.id === sel.optionId);
-                            return this.escapeHtml(option?.name || sel.optionId);
-                        });
+                        const names = inTier.map(sel => this.escapeHtml(config.options.find(o => o.id === sel.optionId).name));
                         subOptionDisplay += `<div class="card-suboption"><strong>${config.label}:</strong> ${names.join(', ')}</div>`;
-                    } else if (config.required === false) {
+                    } else if (config.required === false && known.length === 0) {
                         hasSubOptionsToShow = true;
                         subOptionDisplay += `<div class="card-suboption"><strong>${config.label}:</strong> None</div>`;
                     }
                 }
 
-                if (hasSubOptionsToShow) {
+                if (extraRows) {
+                    hasSubOptionsToShow = true;
+                    subOptionDisplay += extraRows;
+                }
+
+                if (hasSubOptionsToShow && subOptionsConfig.length > 0) {
                     subOptionDisplay += `<div class="card-suboption-change">Click to change ${subOptionsConfig.map(c => c.label.toLowerCase()).join('/')}</div>`;
                 }
             }
@@ -114,6 +133,15 @@ const SpeciesTab = {
                     <span class="card-source">${DataLoader.formatSourcePage(sp)}</span>
                 </div>
             `;
+
+            // The Remove control of a row takes the sub-option out through State and does not click the card
+            card.querySelectorAll('.btn-remove-suboption').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    State.removeSpeciesSubOption(btn.dataset.type, btn.dataset.optionId);
+                    this.render();
+                });
+            });
 
             card.addEventListener('click', () => {
                 const wasSelected = isSelected;
@@ -136,6 +164,11 @@ const SpeciesTab = {
 
             container.appendChild(card);
         }
+    },
+
+    // One row of the selected card with a Remove control. The label is HTML that the caller has escaped.
+    renderSubOptionRow(labelHtml, type, optionId) {
+        return `<div class="card-suboption">${labelHtml} <button class="btn-small btn-remove-suboption" data-type="${this.escapeHtml(String(type))}" data-option-id="${this.escapeHtml(String(optionId))}">Remove</button></div>`;
     },
 
     // Show the sub-option modal for a species
@@ -306,19 +339,23 @@ const SpeciesTab = {
             }
         } else {
             // For single-select, check if something is selected
+            const offered = new Set((config.options || []).map(o => o.id));
             const selectedBtn = document.querySelector('#suboption-modal-options .choice-option-btn.selected');
             if (!selectedBtn) {
                 if (config.required !== false) {
                     alert(`Please select a ${config.label.toLowerCase()}.`);
                     return;
                 }
-                // Optional sub-option — clear any existing selection
+                // Optional sub-option — clear the existing selection. A stored option that the data does not
+                // have is not in the window, so it stays. Its Unknown row has the Remove control.
                 const existing = State.getSpeciesSubOptionsByType(config.type);
                 for (const sel of existing) {
-                    State.removeSpeciesSubOption(config.type, sel.optionId);
+                    if (offered.has(sel.optionId)) {
+                        State.removeSpeciesSubOption(config.type, sel.optionId);
+                    }
                 }
-            } else {
-                // Save the selection
+            } else if (!State.getSpeciesSubOptionsByType(config.type).some(sel => sel.optionId === selectedBtn.dataset.optionId)) {
+                // Save the selection. A button that the window showed as selected is not a pick.
                 State.setSpeciesSubOption(config.type, selectedBtn.dataset.optionId);
             }
         }

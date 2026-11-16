@@ -306,14 +306,35 @@ const TalentsTab = {
             const isAscensionGranted = typeof talentEntry === 'object' && talentEntry.ascensionGranted;
 
             const talent = DataLoader.getTalent(talentId);
-            if (!talent) continue;
+            if (!talent) {
+                // The data has no talent with this id. Show it with a Remove control, also if an ascension granted it.
+                const unknownItem = document.createElement('div');
+                unknownItem.className = 'selected-talent';
+                unknownItem.innerHTML = `
+                <div class="selected-talent-header">
+                    <span class="selected-talent-name unknown-entry-text">Unknown talent (${this.escapeHtml(String(talentId))})</span>
+                    <button class="btn-remove" data-id="${this.escapeHtml(String(talentId))}">REMOVE</button>
+                </div>
+            `;
+                unknownItem.querySelector('.btn-remove').addEventListener('click', async () => {
+                    const confirmed = await window.api.showConfirm(`Remove talent ${talentId}?`);
+                    if (!confirmed) return;
+                    State.removeTalent(talentId, talentIdx);
+                    this.render();
+                });
+                container.appendChild(unknownItem);
+                continue;
+            }
 
             // Build display name with choice if applicable
             let displayName = talent.name;
-            if (talentChoice !== null && talentChoice !== undefined) {
+            const isOwnedItemTalent = talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned';
+            let choiceDisplay = talentChoice !== null && talentChoice !== undefined ? this.escapeHtml(String(talentChoice)) : null;
+            if (choiceDisplay !== null) {
                 // For weapon_owned choices, convert wargear index to weapon name
-                let choiceDisplay = this.escapeHtml(String(talentChoice));
-                if (talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned') {
+                if (isOwnedItemTalent && (this.isIndexChoice(talentChoice) || talentChoice === '')) {
+                    // An index with no item of the kind of the talent gives no choice to show. A text choice shows as it is.
+                    choiceDisplay = null;
                     const wargearIndex = parseInt(talentChoice, 10);
                     if (!isNaN(wargearIndex) && character.wargear[wargearIndex]) {
                         const item = talent.choiceType === 'weapon_owned'
@@ -324,13 +345,18 @@ const TalentsTab = {
                         }
                     }
                 }
+            }
 
+            if (choiceDisplay !== null) {
                 // Replace [Any], [Skill], [Trait], etc. with the actual choice
                 displayName = displayName.replace(/\[.*?\]/, () => `(${choiceDisplay})`);
                 if (displayName === talent.name) {
                     // If no placeholder found, append the choice
                     displayName = `${talent.name} (${choiceDisplay})`;
                 }
+            } else if (isOwnedItemTalent) {
+                // The item of the choice is gone, so the player must pick again
+                displayName = `${talent.name} (no item selected)`;
             }
 
             // Build flavor text (displayed under effect, escaped to prevent glossary enhancement)
@@ -588,6 +614,12 @@ const TalentsTab = {
 
     refresh() {
         this.render();
+    },
+
+    // A wargear index is a whole number of 0 or more, or a string of digits only
+    isIndexChoice(choice) {
+        return (typeof choice === 'number' && Number.isInteger(choice) && choice >= 0)
+            || (typeof choice === 'string' && /^\d+$/.test(choice));
     },
 
     escapeHtml(text) {

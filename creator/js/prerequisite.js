@@ -221,8 +221,8 @@ const PrerequisiteChecker = {
             character.customKeywords.forEach(k => keywords.add(k));
         }
 
-        // Custom archetype keywords
-        if (character.customArchetype?.keywords) {
+        // Custom archetype keywords count only while the archetype is custom (a kept record has no effect)
+        if (character.archetype?.id === 'custom' && character.customArchetype?.keywords) {
             character.customArchetype.keywords.forEach(k => keywords.add(k));
         }
 

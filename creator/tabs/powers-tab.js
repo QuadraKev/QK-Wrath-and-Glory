@@ -49,7 +49,12 @@ const PowersTab = {
                     <p style="font-size: 16px; margin-bottom: 10px;">Your character does not have psychic abilities.</p>
                     <p class="text-muted">To access psychic powers, your character needs the PSYKER keyword. This can be obtained through certain archetypes (like Sanctioned Psyker) or by purchasing the Psychic Mastery skill.</p>
                 </div>
+                ${this.renderSetupSection(true)}
+                <div id="selected-powers" class="selected-powers"></div>
             `;
+            // The character can hold powers and disciplines from before. Show them with a remove control.
+            this.attachSetupListeners();
+            this.renderSelected();
             return;
         }
 
@@ -134,17 +139,18 @@ const PowersTab = {
     },
 
     // Render the setup section for pending psyker choices (discipline unlocks + free power picks)
-    renderSetupSection() {
-        const psykerConfig = State.getPsykerConfig();
-        if (!psykerConfig) return '';
+    // chipsOnly is true for a character with no PSYKER keyword: it shows only the chosen disciplines, with no new choice.
+    renderSetupSection(chipsOnly = false) {
+        const psykerConfig = chipsOnly ? null : State.getPsykerConfig();
+        const chosenDisciplines = State.getCharacter().unlockedDisciplines || [];
+        if (!psykerConfig && chosenDisciplines.length === 0) return '';
 
         let html = '';
 
-        // 1. Discipline unlock prompt
-        const allowed = psykerConfig.disciplineChoices || 0;
-        const remainingChoices = State.getRemainingDisciplineChoices();
-        if (allowed > 0) {
-            const chosenDisciplines = State.getCharacter().unlockedDisciplines || [];
+        // 1. Discipline unlock prompt. The chosen disciplines show whenever the character holds one.
+        const allowed = psykerConfig ? (psykerConfig.disciplineChoices || 0) : 0;
+        const remainingChoices = psykerConfig ? State.getRemainingDisciplineChoices() : 0;
+        if (allowed > 0 || chosenDisciplines.length > 0) {
 
             // Show chosen disciplines as removable chips
             const chosenHtml = chosenDisciplines.map(d =>
@@ -184,7 +190,7 @@ const PowersTab = {
         }
 
         // 2. Free power pick prompts
-        const choiceStatus = State.getFreePowerChoiceStatus();
+        const choiceStatus = psykerConfig ? State.getFreePowerChoiceStatus() : [];
         for (let i = 0; i < choiceStatus.length; i++) {
             const entry = choiceStatus[i];
             if (entry.remaining <= 0) continue;
@@ -268,22 +274,23 @@ const PowersTab = {
             if (State.UNIVERSAL_ABILITY_IDS.includes(powerId)) continue;
 
             const power = DataLoader.getPsychicPower(powerId);
-            if (!power) continue;
 
             const isFree = (character.freePowers || []).includes(powerId);
-            const isGranted = grantedPowers.includes(powerId);
+            // A power that the data does not have always has the Remove control
+            const isGranted = power && grantedPowers.includes(powerId);
             const freeLabel = isFree ? ' <span class="power-free-label">(Free)</span>' : '';
+            const powerName = power ? power.name : `<span class="unknown-entry-text">Unknown power (${this.escapeHtml(String(powerId))})</span>`;
 
             const chip = document.createElement('span');
             chip.className = 'power-chip';
 
             if (isGranted) {
                 // Granted powers (e.g. Smite) cannot be removed
-                chip.innerHTML = `${power.name}${freeLabel}`;
+                chip.innerHTML = `${powerName}${freeLabel}`;
             } else {
                 chip.innerHTML = `
-                    ${power.name}${freeLabel}
-                    <span class="power-chip-remove" data-id="${powerId}">&times;</span>
+                    ${powerName}${freeLabel}
+                    <span class="power-chip-remove" data-id="${this.escapeHtml(String(powerId))}">&times;</span>
                 `;
 
                 chip.querySelector('.power-chip-remove').addEventListener('click', async () => {

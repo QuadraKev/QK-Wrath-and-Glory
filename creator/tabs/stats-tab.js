@@ -74,7 +74,7 @@ const StatsTab = {
         const container = document.getElementById('attributes-list');
         const character = State.getCharacter();
         const species = DataLoader.getSpecies(character.species?.id);
-        const archetype = DataLoader.getArchetype(character.archetype?.id);
+        const baseline = XPCalculator.getBaseline(character);
 
         const attributes = [
             'strength', 'toughness', 'agility', 'initiative',
@@ -87,14 +87,7 @@ const StatsTab = {
             const value = character.attributes[attr] || 1;
             const max = species?.attributeMaximums?.[attr] || 8;
 
-            // Calculate minimum (species base or archetype, whichever is higher)
-            let min = 1;
-            if (species?.baseAttributes?.[attr]) {
-                min = Math.max(min, species.baseAttributes[attr]);
-            }
-            if (archetype?.attributeBonus?.[attr]) {
-                min = Math.max(min, archetype.attributeBonus[attr]);
-            }
+            const min = baseline.attributes[attr];
 
             const nextCost = XPCalculator.getNextAttributeCost(value);
             const canIncrease = value < max && nextCost !== null && XPCalculator.canAfford(character, nextCost);
@@ -171,7 +164,7 @@ const StatsTab = {
     renderSkills() {
         const container = document.getElementById('skills-list');
         const character = State.getCharacter();
-        const archetype = DataLoader.getArchetype(character.archetype?.id);
+        const baseline = XPCalculator.getBaseline(character);
 
         const skills = [
             'athletics', 'awareness', 'ballisticSkill', 'cunning',
@@ -186,7 +179,7 @@ const StatsTab = {
         for (const skill of skills) {
             const value = character.skills[skill] || 0;
             const max = 8;
-            const min = archetype?.skillBonus?.[skill] || 0;
+            const min = baseline.skills[skill];
 
             const linkedAttr = DerivedStats.getLinkedAttribute(skill);
             const attrValue = DerivedStats.getEffectiveAttribute(character, linkedAttr);

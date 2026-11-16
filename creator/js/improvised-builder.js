@@ -359,7 +359,7 @@ const ImprovisedBuilder = {
     },
 
     formatRange(w) {
-        return w.range && typeof w.range === 'object' ? `${w.range.short}/${w.range.medium}/${w.range.long}` : '-';
+        return w.range && typeof w.range === 'object' ? `${w.range.short ?? '-'}/${w.range.medium ?? '-'}/${w.range.long ?? '-'}` : '-';
     },
 
     formatStatLine(w) {

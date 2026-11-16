@@ -7,20 +7,22 @@ const SettingTab = {
             State.setName(e.target.value);
         });
 
+        // A number field commits on change, not on every keystroke, so a legal value is never
+        // refused half-way (the 1 of 12). A refused entry keeps the stored value and the input
+        // shows it again. An entry that the browser cannot read as a number has the value ''.
+        // The setters refuse it, because no field of the creator treats an empty box as clear.
+        const commit = (setter) => (e) => {
+            if (!setter(e.target.value)) this.refresh();
+        };
+
         // Additional XP input
-        document.getElementById('additional-xp').addEventListener('change', (e) => {
-            State.setAdditionalXP(e.target.value);
-        });
+        document.getElementById('additional-xp').addEventListener('change', commit(v => State.setAdditionalXP(v)));
 
         // Rank input
-        document.getElementById('character-rank').addEventListener('change', (e) => {
-            State.setRank(e.target.value);
-        });
+        document.getElementById('character-rank').addEventListener('change', commit(v => State.setRank(v)));
 
         // Tier select
-        document.getElementById('tier-select').addEventListener('change', (e) => {
-            State.setTier(e.target.value);
-        });
+        document.getElementById('tier-select').addEventListener('change', commit(v => State.setTier(v)));
 
         // Setting description
         document.getElementById('setting-desc').addEventListener('input', (e) => {

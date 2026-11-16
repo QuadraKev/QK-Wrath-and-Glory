@@ -23,8 +23,8 @@ const AscensionTab = {
             });
         }
 
-        // Experience ascension slots: tiers above starting tier, up to 5
-        for (let t = startingTier + 1; t <= 5; t++) {
+        // Experience ascension slots: tiers above starting tier, up to 5 (never below tier 1)
+        for (let t = Math.max(1, startingTier + 1); t <= 5; t++) {
             slots.push({
                 targetTier: t,
                 label: `Ascension to Tier ${t}`,
@@ -32,15 +32,20 @@ const AscensionTab = {
             });
         }
 
+        // The notice for the old package list and the rows for ascensions that no slot shows
+        let html = this.renderLegacyNotice(character) + this.renderOrphanRows(character, slots);
+
         // Tier 5 starting campaign: no slots available
         if (slots.length === 0) {
-            container.innerHTML = '<p class="text-muted">No ascension slots available. Your character is already at the maximum tier (Tier 5).</p>';
+            html += '<p class="text-muted">No ascension slots available. Your character is already at the maximum tier (Tier 5).</p>';
+            container.innerHTML = html;
+            this.bindEvents(container);
             return;
         }
 
         // Show effective tier summary
         const effectiveTier = State.getEffectiveTier();
-        let html = `<div class="ascension-summary">
+        html += `<div class="ascension-summary">
             <span class="ascension-tier-info">Starting Tier: <strong>${startingTier}</strong></span>
             <span class="ascension-tier-info">Effective Tier: <strong>${effectiveTier}</strong></span>
         </div>`;
@@ -52,6 +57,59 @@ const AscensionTab = {
 
         container.innerHTML = html;
         this.bindEvents(container);
+    },
+
+    // Notice for the ascensionPackages list that an older version saved. The user removes it with the button.
+    renderLegacyNotice(character) {
+        const list = character.ascensionPackages;
+        if (!Array.isArray(list) || list.length === 0) return '';
+        const packages = DataLoader.getAscensionPackages();
+        const names = list.map(id => {
+            const pkg = packages.find(p => p.id === id);
+            // An id that the data does not have has the class that wraps a long id
+            return pkg ? this.escapeHtml(pkg.name) : `<span class="unknown-entry-text">${this.escapeHtml(String(id))}</span>`;
+        });
+        return `<div class="info-box" style="margin-bottom: 15px; padding: 10px; background: var(--bg-tertiary); border-radius: var(--radius-sm); font-size: 13px; color: var(--text-secondary);">
+            <p>These ascension packages come from an older version of the app. Select them again in the slots below.</p>
+            <p>${names.join(', ')}</p>
+            <button id="btn-clear-legacy-packages" class="btn-small">Remove old package list</button>
+        </div>`;
+    },
+
+    // Row of an ascension entry that has a Remove control. The text is already escaped.
+    renderAscensionRow(targetTier, text) {
+        return `<div class="ascension-orphan-row">
+            <span>${text}</span>
+            <button class="btn-remove btn-remove-ascension" data-target-tier="${this.escapeHtml(targetTier)}">Remove</button>
+        </div>`;
+    },
+
+    // Describe an ascension entry in escaped text, and mark an id that the data does not have
+    describeAscension(entry) {
+        if (entry.type === 'package') {
+            if (!entry.packageId) return 'Ascension package (none chosen)';
+            const pkg = DataLoader.getAscensionPackages().find(p => p.id === entry.packageId);
+            return pkg ? this.escapeHtml(pkg.name) : `<span class="unknown-entry-text">Unknown ascension package (${this.escapeHtml(entry.packageId)})</span>`;
+        }
+        if (entry.type === 'archetype') {
+            if (!entry.archetypeId) return 'Archetype ascension (none chosen)';
+            const archetype = DataLoader.getArchetype(entry.archetypeId);
+            return archetype ? this.escapeHtml(archetype.name) : `<span class="unknown-entry-text">Unknown archetype (${this.escapeHtml(entry.archetypeId)})</span>`;
+        }
+        return this.escapeHtml(entry.type);
+    },
+
+    // Rows for the ascensions that no slot shows
+    renderOrphanRows(character, slots) {
+        const shown = new Set(slots.map(s => s.targetTier));
+        const orphans = (character.ascensions || []).filter(a => !shown.has(a.targetTier));
+        if (orphans.length === 0) return '';
+        let html = `<div class="ascension-orphans" style="margin-bottom: 15px;">
+            <h3 class="ascension-slot-title">Ascensions with no slot</h3>`;
+        for (const entry of orphans) {
+            html += this.renderAscensionRow(entry.targetTier, `<strong>${this.describeAscension(entry)}</strong> Tier ${this.escapeHtml(entry.targetTier)}. This ascension has no slot at the current Tier. Its XP cost and its effects stay until you remove it.`);
+        }
+        return html + '</div>';
     },
 
     // Render a single ascension slot
@@ -76,6 +134,14 @@ const AscensionTab = {
                     <span>Archetype Ascension</span>
                 </label>
             </div>`;
+
+        // An id that the data does not have gets a row with a Remove control
+        const unknown = current && (
+            (currentType === 'package' && current.packageId && !DataLoader.getAscensionPackages().some(p => p.id === current.packageId)) ||
+            (currentType === 'archetype' && current.archetypeId && !DataLoader.getArchetype(current.archetypeId)));
+        if (unknown) {
+            html += this.renderAscensionRow(slot.targetTier, this.describeAscension(current));
+        }
 
         if (currentType === 'package') {
             html += this.renderPackageSelector(slot, current, character);
@@ -475,12 +541,27 @@ const AscensionTab = {
 
         // Skill prerequisites from archetype's skillBonus
         if (archetype.skillBonus) {
+            const anySkillValues = [];
             for (const [skill, val] of Object.entries(archetype.skillBonus)) {
+                // A key that is not a skill name is an "any skill" bonus. It is counted below.
+                if (!XPCalculator.SKILL_KEYS.includes(skill)) {
+                    anySkillValues.push(val);
+                    continue;
+                }
                 const current = character.skills?.[skill] || 0;
                 const met = current >= val;
                 if (!met) allMet = false;
                 const skillName = DerivedStats.formatSkillName(skill);
                 parts.push(`<span class="${met ? '' : 'ascension-stat-unmet'}">${skillName} ${val}${met ? '' : ` (have ${this.escapeHtml(String(current))})`}</span>`);
+            }
+
+            // An "any skill" key is met when enough different skills are at the value or more (spec 4.4)
+            for (const val of [...new Set(anySkillValues)]) {
+                const needed = anySkillValues.filter(v => v === val).length;
+                const have = XPCalculator.SKILL_KEYS.filter(s => character.skills?.[s] >= val).length;
+                const met = have >= needed;
+                if (!met) allMet = false;
+                parts.push(`<span class="${met ? '' : 'ascension-stat-unmet'}">Skills of your choice: ${needed} at ${val}${met ? '' : ` (have ${have})`}</span>`);
             }
         }
 
@@ -634,6 +715,22 @@ const AscensionTab = {
                 const choiceDiv = row.closest('.ascension-keyword-choice');
                 const targetTier = parseInt(choiceDiv.dataset.targetTier);
                 State.removeAscensionChoice(targetTier, row.dataset.key);
+                this.render();
+            });
+        });
+
+        // Remove buttons of an ascension row (no slot, or an unknown id)
+        container.querySelectorAll('.btn-remove-ascension').forEach(btn => {
+            btn.addEventListener('click', () => {
+                State.setAscension(parseInt(btn.dataset.targetTier), null);
+                this.render();
+            });
+        });
+
+        // Remove the old ascensionPackages list
+        container.querySelectorAll('#btn-clear-legacy-packages').forEach(btn => {
+            btn.addEventListener('click', () => {
+                State.clearLegacyAscensionPackages();
                 this.render();
             });
         });

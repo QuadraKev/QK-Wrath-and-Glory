@@ -2750,6 +2750,7 @@ textarea {
     margin: 8px 0;
 }
 .keyword-choice-select,
+.skill-choice-select,
 .keyword-choice-text,
 .keyword-choice-custom,
 .keyword-extra-input {
@@ -2761,7 +2762,8 @@ textarea {
     border-radius: 4px;
     font-size: 0.9em;
 }
-.keyword-choice-select option {
+.keyword-choice-select option,
+.skill-choice-select option {
     background: var(--bg-card);
 }
 .ascension-keyword-extra {
@@ -2823,6 +2825,7 @@ textarea {
     white-space: pre-line;
 }
 .archetype-keyword-choice .keyword-choice-select,
+.archetype-keyword-choice .skill-choice-select,
 .archetype-keyword-choice .keyword-choice-custom,
 .archetype-keyword-choice .keyword-choice-text {
     max-width: 420px;
@@ -6326,6 +6329,12 @@ textarea {
     }
 }
 
+/* The count text of a tracker with more boxes than the limit starts a row of its own in the grid layout, on one line */
+.sheet-strip-trackers .tracking-boxes .sheet-empty {
+    grid-column-start: 1;
+    white-space: nowrap;
+}
+
 /* The top padding that .tab-fullwidth has at these widths, moved into the sheet (refer to the full-mode block above) */
 @media screen and (max-width: 768px) {
     #tab-character-sheet .character-sheet {
@@ -6367,4 +6376,10 @@ textarea {
     .sheet-tabbar::after {
         right: -16px;
     }
+}
+
+/* An id that the data does not have shows in an "Unknown ..." row. The id has no spaces, so a long id
+   must wrap inside its card. Only the text of such a row has this class. */
+.unknown-entry-text {
+    overflow-wrap: anywhere;
 }

@@ -5,6 +5,9 @@ const CharacterSheetTab = {
     // Guards against asking DataLoader for the threats more than once.
     _followerThreatLoad: 'idle',
 
+    // The most boxes that a tracker draws. A larger maximum shows the count of the rest as text.
+    BOX_LIMIT: 100,
+
     // The selected sheet tab. It stays for the page session and is never stored.
     activeSheetTab: 'stats',
 
@@ -72,9 +75,6 @@ const CharacterSheetTab = {
         const viewState = this._captureViewState();
 
         const character = State.getCharacter();
-
-        // Repair any background selections missing bonusType
-        this.repairBackgroundBonusTypes(character);
 
         const species = DataLoader.getSpecies(character.species?.id);
         const archetype = DataLoader.getArchetype(character.archetype?.id);
@@ -342,10 +342,17 @@ const CharacterSheetTab = {
             : (archetype?.name || '-');
     },
 
+    // True when the character holds a power that is not a universal ability, or a chosen discipline.
+    // These cost XP, so the sheet shows them also for a character with no PSYKER keyword.
+    hasStoredPowers(character) {
+        const powers = (character.psychicPowers || []).filter(id => !State.UNIVERSAL_ABILITY_IDS.includes(id));
+        return powers.length > 0 || (character.unlockedDisciplines || []).length > 0;
+    },
+
     // Get the ids of the tabs to show, in tab order
     getVisibleSheetTabs(character) {
         return this.SHEET_TABS.map(tab => tab.id).filter(id => {
-            if (id === 'powers') return State.isPsyker();
+            if (id === 'powers') return State.isPsyker() || this.hasStoredPowers(character);
             if (id === 'companions') return (character.followers || []).length > 0;
             return true;
         });
@@ -391,11 +398,11 @@ const CharacterSheetTab = {
             <div class="sheet-strip-trackers">
                 <div class="sheet-strip-group sheet-strip-wounds">
                     <span class="sheet-strip-label tracker-label">Wounds</span>
-                    <div class="tracking-boxes" style="--n: ${this.escapeHtml(String(stats.maxWounds))}">${this.renderTrackingBoxes('wounds', State.getCurrentWounds(), stats.maxWounds)}</div>
+                    <div class="tracking-boxes" style="--n: ${this.escapeHtml(String(Math.min(stats.maxWounds, this.BOX_LIMIT)))}">${this.renderTrackingBoxes('wounds', State.getCurrentWounds(), stats.maxWounds)}</div>
                 </div>
                 <div class="sheet-strip-group sheet-strip-shock">
                     <span class="sheet-strip-label tracker-label">Shock</span>
-                    <div class="tracking-boxes" style="--n: ${this.escapeHtml(String(stats.maxShock))}">${this.renderTrackingBoxes('shock', State.getCurrentShock(), stats.maxShock)}</div>
+                    <div class="tracking-boxes" style="--n: ${this.escapeHtml(String(Math.min(stats.maxShock, this.BOX_LIMIT)))}">${this.renderTrackingBoxes('shock', State.getCurrentShock(), stats.maxShock)}</div>
                 </div>
                 <div class="sheet-strip-counters">${counter('wrath', 'Wrath', State.getCurrentWrath())}${State.getMaxFaith() > 0 ? counter('faith', 'Faith', State.getCurrentFaith()) : ''}
                 </div>
@@ -709,20 +716,24 @@ const CharacterSheetTab = {
 
     renderFollowerBoxes(type, current, max) {
         let boxes = '';
-        for (let i = 0; i < max; i++) {
+        const drawn = Math.min(max, this.BOX_LIMIT);
+        for (let i = 0; i < drawn; i++) {
             const filled = i < current ? 'filled' : '';
             boxes += `<span class="tracking-box follower-box ${filled}" data-track-type="${type}" data-index="${i}"></span>`;
         }
+        if (max > drawn) boxes += `<span class="sheet-empty">+${max - drawn} more</span>`;
         return boxes || '<span class="sheet-empty">-</span>';
     },
 
     // Render clickable tracking boxes for wounds/shock
     renderTrackingBoxes(type, current, max) {
         let boxes = '';
-        for (let i = 0; i < max; i++) {
+        const drawn = Math.min(max, this.BOX_LIMIT);
+        for (let i = 0; i < drawn; i++) {
             const filled = i < current ? 'filled' : '';
             boxes += `<span class="tracking-box ${filled}" data-type="${type}" data-index="${i}" style="--i: ${i}"></span>`;
         }
+        if (max > drawn) boxes += `<span class="sheet-empty">+${max - drawn} more</span>`;
         return boxes;
     },
 
@@ -877,6 +888,7 @@ const CharacterSheetTab = {
                     isEquipped: isEquipped,
                     calculatedDamage: damageInfo,
                     upgradeDetails: upgradeDetails,
+                    unknownUpgradeIds: upgrades.filter(id => !DataLoader.getWeaponUpgrade(id)),
                     attackDice: attackDice,
                     relic: item.relic
                 });
@@ -918,7 +930,7 @@ const CharacterSheetTab = {
             // Build upgrade names display (each name is a glossary term with a popout)
             const upgradeNames = weapon.upgradeDetails.map(u =>
                 `<span class="glossary-term" data-term-key="${this.escapeHtml(u.id)}" data-term-type="weaponUpgrade">${this.escapeHtml(u.name)}</span>`
-            ).join(', ');
+            ).concat(weapon.unknownUpgradeIds.map(id => `<span class="unknown-entry-text">${this.escapeHtml(`Unknown upgrade (${id})`)}</span>`)).join(', ');
             const upgradesDisplay = upgradeNames
                 ? `<div class="sheet-weapon-upgrades">${upgradeNames}</div>`
                 : '';
@@ -1263,6 +1275,9 @@ const CharacterSheetTab = {
             const equip = DataLoader.getEquipment(item.id);
             if (equip && equip.category !== 'augmetic') {
                 equipment.push({ ...equip, relic: item.relic });
+            } else if (!DataLoader.getWargearItem(item.id)) {
+                // The data has no item with this id. Show the entry as a row.
+                equipment.push({ unknownId: item.id });
             }
         }
 
@@ -1271,6 +1286,17 @@ const CharacterSheetTab = {
         }
 
         const rows = equipment.map(equip => {
+            if ('unknownId' in equip) {
+                return `
+                <tbody class="sheet-equip-group">
+                    <tr>
+                        <td class="sheet-equip-name unknown-entry-text">Unknown wargear (${this.escapeHtml(String(equip.unknownId))})</td>
+                        <td class="sheet-equip-effect">-</td>
+                    </tr>
+                </tbody>
+            `;
+            }
+
             // Rarity display
             const rarityClass = this.getRarityClass(equip.rarity);
             const rarityDisplay = equip.rarity && equip.rarity !== 'Common'
@@ -1426,6 +1452,21 @@ const CharacterSheetTab = {
                     name: ability.name,
                     flavor: ability.flavor || null,
                     effect: ability.effect || ability.description,
+                    source: species.name
+                });
+            }
+        }
+
+        // A stored sub-option that the species does not have shows as a row. It has no effect text.
+        const storedSubOptions = character.species?.subOptions || [];
+        const knownConfig = !species.subOptions ? [] : (Array.isArray(species.subOptions) ? species.subOptions : [species.subOptions]);
+        for (const sel of storedSubOptions) {
+            const config = knownConfig.find(c => c.type === sel.type);
+            if (!config || !config.options?.some(o => o.id === sel.optionId)) {
+                allAbilities.push({
+                    name: `<span class="unknown-entry-text">Unknown sub-option (${this.escapeHtml(String(sel.optionId))})</span>`,
+                    flavor: null,
+                    effect: '-',
                     source: species.name
                 });
             }
@@ -1603,6 +1644,8 @@ const CharacterSheetTab = {
                     if (pkg.keywordsGained && pkg.keywordsGained.length > 0) {
                         details += `<div class="sheet-ascension-keywords">Keywords: ${pkg.keywordsGained.join(', ')}</div>`;
                     }
+                } else {
+                    name = `<span class="unknown-entry-text">Unknown ascension package (${this.escapeHtml(String(asc.packageId))})</span>`;
                 }
             } else if (asc.type === 'archetype' && asc.archetypeId) {
                 const arch = DataLoader.getArchetype(asc.archetypeId);
@@ -1613,6 +1656,8 @@ const CharacterSheetTab = {
                         const abilityNames = arch.abilities.map(a => a.name).join(', ');
                         details += `<div>Abilities: ${abilityNames}</div>`;
                     }
+                } else {
+                    name = `<span class="unknown-entry-text">Unknown archetype (${this.escapeHtml(String(asc.archetypeId))})</span>`;
                 }
             }
 
@@ -1642,6 +1687,37 @@ const CharacterSheetTab = {
         `;
     },
 
+    // The choice of a talent as text. A wargear index of an owned-item talent gives the name of the item.
+    // An index with no item of the kind of the talent gives no choice to show. A text choice shows as it is.
+    // `escape` escapes each value: the sheet passes its HTML escape and the plain-text copy passes none.
+    talentChoiceDisplay(character, talent, choice, escape) {
+        let choiceDisplay = choice === null || choice === undefined ? '' : escape(String(choice));
+        if (this.isIndexChoice(choice) && (talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned')) {
+            choiceDisplay = '';
+            const wargearIndex = parseInt(choice, 10);
+            if (!isNaN(wargearIndex) && character.wargear[wargearIndex]) {
+                const item = talent.choiceType === 'weapon_owned'
+                    ? DataLoader.getWeapon(character.wargear[wargearIndex].id)
+                    : DataLoader.getArmor(character.wargear[wargearIndex].id);
+                if (item) {
+                    choiceDisplay = escape(item.name);
+                }
+            }
+        }
+        return choiceDisplay;
+    },
+
+    // The name of a talent with its choice, as the selected-talent row of the Talents tab shows it:
+    // the choice takes the place of [Any], [Skill] and the like, or goes after the name when there is none.
+    talentNameWithChoice(talent, choiceDisplay) {
+        if (choiceDisplay) {
+            const replaced = talent.name.replace(/\[.*?\]/, () => `(${choiceDisplay})`);
+            return replaced === talent.name ? `${talent.name} (${choiceDisplay})` : replaced;
+        }
+        const isOwnedItemTalent = talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned';
+        return isOwnedItemTalent ? `${talent.name} (no item selected)` : talent.name;
+    },
+
     // Render talents
     renderTalents(character) {
         if (!character.talents || character.talents.length === 0) {
@@ -1659,26 +1735,19 @@ const CharacterSheetTab = {
             const isAscensionGranted = typeof entry === 'object' && entry.ascensionGranted;
             const talent = DataLoader.getTalent(talentId);
 
-            if (!talent) return '';
-
-            // For weapon_owned/armor_owned choices, convert wargear index to item name
-            let choiceDisplay = this.escapeHtml(choice);
-            if (choice !== null && choice !== undefined && (talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned')) {
-                const wargearIndex = parseInt(choice, 10);
-                if (!isNaN(wargearIndex) && character.wargear[wargearIndex]) {
-                    const item = talent.choiceType === 'weapon_owned'
-                        ? DataLoader.getWeapon(character.wargear[wargearIndex].id)
-                        : DataLoader.getArmor(character.wargear[wargearIndex].id);
-                    if (item) {
-                        choiceDisplay = this.escapeHtml(item.name);
-                    }
-                }
+            if (!talent) {
+                return `
+                <div class="sheet-talent">
+                    <div class="sheet-talent-header">
+                        <span class="sheet-talent-name unknown-entry-text">Unknown talent (${this.escapeHtml(String(talentId))})</span>
+                    </div>
+                </div>
+            `;
             }
 
+            const choiceDisplay = this.talentChoiceDisplay(character, talent, choice, v => this.escapeHtml(v));
             const grantedLabel = isAscensionGranted ? ' <span class="sheet-talent-granted">(Ascension)</span>' : '';
-            const nameWithChoice = choiceDisplay
-                ? `${talent.name} (${choiceDisplay})`
-                : talent.name;
+            const nameWithChoice = this.talentNameWithChoice(talent, choiceDisplay);
 
             // Build effect description with choice highlighted
             let effectText = talent.effect || '-';
@@ -1718,12 +1787,13 @@ const CharacterSheetTab = {
 
     // Render psychic powers
     renderPsychicPowers(character) {
-        if (!State.isPsyker()) {
+        const isPsyker = State.isPsyker();
+        if (!isPsyker && !this.hasStoredPowers(character)) {
             return '';
         }
 
-        // Universal psyker abilities first
-        const universalRows = State.UNIVERSAL_ABILITY_IDS.map(id => {
+        // Universal psyker abilities first. A character with no PSYKER keyword does not have them.
+        const universalRows = (isPsyker ? State.UNIVERSAL_ABILITY_IDS : []).map(id => {
             const power = DataLoader.getPsychicPower(id);
             if (!power) return '';
             return `
@@ -1739,7 +1809,16 @@ const CharacterSheetTab = {
         // Character's purchased/granted powers (skip universal IDs to prevent duplicates)
         const rows = (character.psychicPowers || []).filter(id => !State.UNIVERSAL_ABILITY_IDS.includes(id)).map(powerId => {
             const power = DataLoader.getPsychicPower(powerId);
-            if (!power) return '';
+            if (!power) {
+                return `
+                <tr>
+                    <td class="sheet-power-name unknown-entry-text">Unknown power (${this.escapeHtml(String(powerId))})</td>
+                    <td class="sheet-power-dn">-</td>
+                    <td class="sheet-power-range">-</td>
+                    <td class="sheet-power-desc">-</td>
+                </tr>
+            `;
+            }
 
             return `
                 <tr>
@@ -1750,6 +1829,12 @@ const CharacterSheetTab = {
                 </tr>
             `;
         }).join('');
+
+        // A character with no PSYKER keyword shows its stored disciplines too
+        const disciplines = isPsyker ? [] : (character.unlockedDisciplines || []);
+        const disciplinesHtml = disciplines.length > 0
+            ? `<p class="sheet-background-item"><strong>Disciplines:</strong> ${disciplines.map(d => this.escapeHtml(String(d))).join(', ')}</p>`
+            : '';
 
         return `
             <div class="sheet-section">
@@ -1767,8 +1852,18 @@ const CharacterSheetTab = {
                         ${universalRows}${rows}
                     </tbody>
                 </table>
+                ${disciplinesHtml}
             </div>
         `;
+    },
+
+    // A row for an injury that the data does not have
+    renderUnknownInjury(id) {
+        return `
+                    <div class="sheet-injury-item">
+                        <span class="sheet-injury-name unknown-entry-text">Unknown injury (${this.escapeHtml(String(id))})</span>
+                    </div>
+                `;
     },
 
     // Render injuries & corruption section
@@ -1791,7 +1886,7 @@ const CharacterSheetTab = {
         if (memorableInjuries.length > 0) {
             const items = memorableInjuries.map(entry => {
                 const inj = (data.memorableInjuries || []).find(i => i.id === entry.id);
-                if (!inj) return '';
+                if (!inj) return this.renderUnknownInjury(entry.id);
                 const escalatedLabel = entry.escalated
                     ? ` <span class="sheet-injury-escalated">(${inj.escalation})</span>`
                     : '';
@@ -1816,7 +1911,7 @@ const CharacterSheetTab = {
         if (traumaticInjuries.length > 0) {
             const items = traumaticInjuries.map(entry => {
                 const inj = (data.traumaticInjuries || []).find(i => i.id === entry.id);
-                if (!inj) return '';
+                if (!inj) return this.renderUnknownInjury(entry.id);
                 const sideLabel = entry.side ? ` (${this.escapeHtml(entry.side)})` : '';
                 return `
                     <div class="sheet-injury-item">
@@ -1867,7 +1962,15 @@ const CharacterSheetTab = {
         const allMutations = data.mutations || [];
         const items = mutations.map(entry => {
             const mutation = allMutations.find(m => m.id === entry.id);
-            if (!mutation) return '';
+            if (!mutation) {
+                return `
+                <div class="sheet-mutation-item">
+                    <div class="sheet-mutation-header">
+                        <span class="sheet-mutation-name unknown-entry-text">Unknown mutation (${this.escapeHtml(String(entry.id))})</span>
+                    </div>
+                </div>
+            `;
+            }
 
             let subChoiceLabel = '';
             let effectText = mutation.effect;
@@ -1933,23 +2036,17 @@ const CharacterSheetTab = {
 
         if (character.background?.origin?.id) {
             const origin = backgrounds.origins?.find(o => o.id === character.background.origin.id);
-            if (origin) {
-                parts.push(`<strong>Origin:</strong> ${origin.name}`);
-            }
+            parts.push(`<strong>Origin:</strong> ${origin ? origin.name : `<span class="unknown-entry-text">${this.escapeHtml(`Unknown origin (${character.background.origin.id})`)}</span>`}`);
         }
 
         if (character.background?.accomplishment?.id) {
             const accomplishment = backgrounds.accomplishments?.find(a => a.id === character.background.accomplishment.id);
-            if (accomplishment) {
-                parts.push(`<strong>Accomplishment:</strong> ${accomplishment.name}`);
-            }
+            parts.push(`<strong>Accomplishment:</strong> ${accomplishment ? accomplishment.name : `<span class="unknown-entry-text">${this.escapeHtml(`Unknown accomplishment (${character.background.accomplishment.id})`)}</span>`}`);
         }
 
         if (character.background?.goal?.id) {
             const goal = backgrounds.goals?.find(g => g.id === character.background.goal.id);
-            if (goal) {
-                parts.push(`<strong>Goal:</strong> ${goal.name}`);
-            }
+            parts.push(`<strong>Goal:</strong> ${goal ? goal.name : `<span class="unknown-entry-text">${this.escapeHtml(`Unknown goal (${character.background.goal.id})`)}</span>`}`);
         }
 
         // Languages
@@ -2045,7 +2142,8 @@ const CharacterSheetTab = {
             for (const entry of character.talents) {
                 const talentId = typeof entry === 'string' ? entry : entry.id;
                 const talent = DataLoader.getTalent(talentId);
-                if (talent) lines.push(`  ${talent.name}`);
+                const choice = typeof entry === 'object' ? entry.choice : null;
+                lines.push(`  ${talent ? this.talentNameWithChoice(talent, this.talentChoiceDisplay(character, talent, choice, v => v)) : `Unknown talent (${talentId})`}`);
             }
             lines.push('');
         }
@@ -2055,7 +2153,10 @@ const CharacterSheetTab = {
             lines.push('WARGEAR');
             for (const item of character.wargear) {
                 const wargear = DataLoader.getWargearItem(item.id);
-                if (!wargear) continue;
+                if (!wargear) {
+                    lines.push(`  Unknown wargear (${item.id})`);
+                    continue;
+                }
                 if (item.relic) {
                     const parts = this.getRelicDisplayParts(item.relic);
                     const choiceText = item.relic.powerChoice ? ` (${item.relic.powerChoice})` : '';
@@ -2083,10 +2184,10 @@ const CharacterSheetTab = {
         }
 
         // Psychic Powers
-        if (State.isPsyker()) {
+        if (State.isPsyker() || this.hasStoredPowers(character)) {
             lines.push('PSYCHIC POWERS');
-            // Universal abilities
-            for (const uaId of State.UNIVERSAL_ABILITY_IDS) {
+            // Universal abilities. A character with no PSYKER keyword does not have them.
+            for (const uaId of (State.isPsyker() ? State.UNIVERSAL_ABILITY_IDS : [])) {
                 const power = DataLoader.getPsychicPower(uaId);
                 if (power) lines.push(`  ${power.name} (DN ${power.dn || '-'}) [Universal]`);
             }
@@ -2094,7 +2195,10 @@ const CharacterSheetTab = {
             for (const powerId of (character.psychicPowers || [])) {
                 if (State.UNIVERSAL_ABILITY_IDS.includes(powerId)) continue;
                 const power = DataLoader.getPsychicPower(powerId);
-                if (power) lines.push(`  ${power.name} (DN ${power.dn || '-'})`);
+                lines.push(power ? `  ${power.name} (DN ${power.dn || '-'})` : `  Unknown power (${powerId})`);
+            }
+            if (!State.isPsyker() && (character.unlockedDisciplines || []).length > 0) {
+                lines.push(`  Disciplines: ${character.unlockedDisciplines.join(', ')}`);
             }
             lines.push('');
         }
@@ -2783,6 +2887,12 @@ const CharacterSheetTab = {
         return 'rarity-' + rarity.toLowerCase().replace(' ', '-');
     },
 
+    // A wargear index is a whole number of 0 or more, or a string of digits only
+    isIndexChoice(choice) {
+        return (typeof choice === 'number' && Number.isInteger(choice) && choice >= 0)
+            || (typeof choice === 'string' && /^\d+$/.test(choice));
+    },
+
     // Helper: Escape HTML
     escapeHtml(text) {
         if (!text) return '';
@@ -2792,35 +2902,5 @@ const CharacterSheetTab = {
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#39;');
-    },
-
-    // Repair any background selections that are missing bonusType
-    repairBackgroundBonusTypes(character) {
-        const backgrounds = DataLoader.getBackgrounds();
-        if (!backgrounds) return;
-
-        // Check origin
-        if (character.background?.origin?.id && !character.background.origin.bonusType) {
-            const origin = (backgrounds.origins || []).find(o => o.id === character.background.origin.id);
-            if (origin?.bonusType) {
-                character.background.origin.bonusType = origin.bonusType;
-            }
-        }
-
-        // Check accomplishment
-        if (character.background?.accomplishment?.id && !character.background.accomplishment.bonusType) {
-            const accomplishment = (backgrounds.accomplishments || []).find(a => a.id === character.background.accomplishment.id);
-            if (accomplishment?.bonusType) {
-                character.background.accomplishment.bonusType = accomplishment.bonusType;
-            }
-        }
-
-        // Check goal
-        if (character.background?.goal?.id && !character.background.goal.bonusType) {
-            const goal = (backgrounds.goals || []).find(g => g.id === character.background.goal.id);
-            if (goal?.bonusType) {
-                character.background.goal.bonusType = goal.bonusType;
-            }
-        }
     }
 };

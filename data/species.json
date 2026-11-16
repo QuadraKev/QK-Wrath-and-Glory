@@ -995,7 +995,7 @@
     },
     "baseSkills": {},
     "attributeMaximums": {
-      "strength": 8,
+      "strength": 7,
       "toughness": 7,
       "agility": 12,
       "initiative": 12,
@@ -1145,8 +1145,8 @@
     },
     "baseSkills": {},
     "attributeMaximums": {
-      "strength": 10,
-      "toughness": 10,
+      "strength": 12,
+      "toughness": 12,
       "agility": 7,
       "initiative": 7,
       "willpower": 8,

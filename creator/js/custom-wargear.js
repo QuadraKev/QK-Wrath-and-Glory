@@ -605,7 +605,7 @@ const CustomWargear = {
             const parts = [damage, `ED ${record.ed}`, `AP ${record.ap}`];
             if (ranged) {
                 const r = record.range;
-                parts.push(r ? `Range ${r.short}/${r.medium}/${r.long}m` : 'Range -', `Salvo ${record.salvo}`);
+                parts.push(r ? `Range ${r.short ?? '-'}/${r.medium ?? '-'}/${r.long ?? '-'}m` : 'Range -', `Salvo ${record.salvo}`);
             } else if (record.reach !== undefined) {
                 parts.push(`Range ${record.reach}m`);
             }

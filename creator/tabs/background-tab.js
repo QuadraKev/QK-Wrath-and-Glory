@@ -59,13 +59,11 @@ const BackgroundTab = {
         const backgrounds = DataLoader.getBackgrounds();
         const character = State.getCharacter();
 
-        // Repair any existing selections that are missing bonusType
-        this.repairMissingBonusTypes(character, backgrounds);
-
         // Populate origin select
         const originSelect = document.getElementById('origin-select');
         const origins = backgrounds.origins || [];
         originSelect.innerHTML = '<option value="">Select an Origin...</option>';
+        this.addUnknownOption(originSelect, 'origin', character.background.origin?.id, origins);
         for (const origin of origins) {
             const selected = character.background.origin?.id === origin.id ? 'selected' : '';
             originSelect.innerHTML += `<option value="${origin.id}" ${selected}>${origin.name} - ${origin.bonus || ''}</option>`;
@@ -75,6 +73,7 @@ const BackgroundTab = {
         const accomplishmentSelect = document.getElementById('accomplishment-select');
         const accomplishments = backgrounds.accomplishments || [];
         accomplishmentSelect.innerHTML = '<option value="">Select an Accomplishment...</option>';
+        this.addUnknownOption(accomplishmentSelect, 'accomplishment', character.background.accomplishment?.id, accomplishments);
         for (const acc of accomplishments) {
             const selected = character.background.accomplishment?.id === acc.id ? 'selected' : '';
             accomplishmentSelect.innerHTML += `<option value="${acc.id}" ${selected}>${acc.name} - ${acc.bonus || ''}</option>`;
@@ -84,10 +83,18 @@ const BackgroundTab = {
         const goalSelect = document.getElementById('goal-select');
         const goals = backgrounds.goals || [];
         goalSelect.innerHTML = '<option value="">Select a Goal...</option>';
+        this.addUnknownOption(goalSelect, 'goal', character.background.goal?.id, goals);
         for (const goal of goals) {
             const selected = character.background.goal?.id === goal.id ? 'selected' : '';
             goalSelect.innerHTML += `<option value="${goal.id}" ${selected}>${goal.name} - ${goal.bonus || ''}</option>`;
         }
+    },
+
+    // A stored id that the data does not have shows as a disabled, selected option. The player can pick another entry.
+    addUnknownOption(select, kind, id, list) {
+        if (!id || list.some(entry => entry.id === id)) return;
+        const text = this.escapeHtml(`Unknown ${kind} (${id})`);
+        select.innerHTML += `<option value="${this.escapeAttr(String(id))}" selected disabled>${text}</option>`;
     },
 
     renderDetails() {
@@ -174,34 +181,33 @@ const BackgroundTab = {
         const bonusDisplay = document.getElementById('background-bonus');
         const character = State.getCharacter();
         const backgrounds = DataLoader.getBackgrounds();
-
-        if (!character.background.bonusUsed) {
-            bonusDisplay.classList.add('hidden');
-            return;
-        }
+        const lists = { origin: backgrounds.origins, accomplishment: backgrounds.accomplishments, goal: backgrounds.goals };
+        const labels = {
+            determination: 'Determination', conviction: 'Conviction', influence: 'Influence', resolve: 'Resolve',
+            maxShock: 'Max Shock', maxWounds: 'Max Wounds', wealth: 'Wealth'
+        };
 
         let bonusText = '';
         const type = character.background.bonusUsed;
+        const entry = lists[type] ? character.background[type] : null;
 
-        if (type === 'origin' && character.background.origin?.id) {
-            const origin = (backgrounds.origins || []).find(o => o.id === character.background.origin.id);
-            if (origin) {
-                bonusText = `${origin.name}: ${origin.bonusDescription || origin.bonus || ''}`;
-            }
-        } else if (type === 'accomplishment' && character.background.accomplishment?.id) {
-            const acc = (backgrounds.accomplishments || []).find(a => a.id === character.background.accomplishment.id);
-            if (acc) {
-                bonusText = `${acc.name}: ${acc.bonusDescription || acc.bonus || ''}`;
-            }
-        } else if (type === 'goal' && character.background.goal?.id) {
-            const goal = (backgrounds.goals || []).find(g => g.id === character.background.goal.id);
-            if (goal) {
-                bonusText = `${goal.name}: ${goal.bonusDescription || goal.bonus || ''}`;
+        if (entry?.id) {
+            const record = (lists[type] || []).find(r => r.id === entry.id);
+            if (record) {
+                bonusText = `${this.escapeHtml(record.name)}: ${this.escapeHtml(record.bonusDescription || record.bonus || '')}`;
+            } else {
+                // An id that the data does not have: show it with the stored bonus that still applies.
+                const applied = DerivedStats.getAppliedBackgroundBonus(character);
+                if (applied) bonusText = `<span class="unknown-entry-text">${this.escapeHtml(`Unknown ${type} (${entry.id})`)}</span>: +1 ${this.escapeHtml(labels[applied])}`;
             }
         }
 
         if (bonusText) {
             bonusDisplay.innerHTML = `<strong>Selected Bonus:</strong> ${bonusText}`;
+            bonusDisplay.classList.remove('hidden');
+        } else if (['origin', 'accomplishment', 'goal'].some(key => character.background[key]?.id)) {
+            // An entry is set but no bonus applies: tell the user to select one.
+            bonusDisplay.innerHTML = 'Select one bonus with USE THIS BONUS. A character gets one Background bonus (Core Rulebook p.43).';
             bonusDisplay.classList.remove('hidden');
         } else {
             bonusDisplay.classList.add('hidden');
@@ -246,33 +252,6 @@ const BackgroundTab = {
 
     refresh() {
         this.render();
-    },
-
-    // Repair any background selections that are missing bonusType
-    repairMissingBonusTypes(character, backgrounds) {
-        // Check origin
-        if (character.background.origin?.id && !character.background.origin.bonusType) {
-            const origin = (backgrounds.origins || []).find(o => o.id === character.background.origin.id);
-            if (origin?.bonusType) {
-                character.background.origin.bonusType = origin.bonusType;
-            }
-        }
-
-        // Check accomplishment
-        if (character.background.accomplishment?.id && !character.background.accomplishment.bonusType) {
-            const accomplishment = (backgrounds.accomplishments || []).find(a => a.id === character.background.accomplishment.id);
-            if (accomplishment?.bonusType) {
-                character.background.accomplishment.bonusType = accomplishment.bonusType;
-            }
-        }
-
-        // Check goal
-        if (character.background.goal?.id && !character.background.goal.bonusType) {
-            const goal = (backgrounds.goals || []).find(g => g.id === character.background.goal.id);
-            if (goal?.bonusType) {
-                character.background.goal.bonusType = goal.bonusType;
-            }
-        }
     },
 
     escapeHtml(text) {

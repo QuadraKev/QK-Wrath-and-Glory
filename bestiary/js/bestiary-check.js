@@ -191,6 +191,7 @@ const BestiaryCheck = {
         const text = String(input.value).trim();
         if (!/^-?\d+$/.test(text)) return null;
         const value = parseInt(text, 10);
+        if (!Number.isSafeInteger(value)) return null;
         const { min, max } = input;
         if (min !== undefined && min !== '' && value < Number(min)) return null;
         if (max !== undefined && max !== '' && value > Number(max)) return null;

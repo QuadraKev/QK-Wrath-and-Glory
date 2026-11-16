@@ -21,6 +21,7 @@ const ThreatBuilderState = {
     // Indexes built lazily from all threats
     _abilityIndex: null, // Map<type, Array<{ability, threatName, threatId}>>
     _bonusIndex: null,   // Array<{bonus, threatName, threatId}>
+    _indexVersion: null, // DataLoader.threatsVersion when the indexes were built
 
     // Track unsaved state
     _isDirty: false,
@@ -39,10 +40,11 @@ const ThreatBuilderState = {
         this.clear();
     },
 
-    // Build indexes from all threats (lazy, called once on first use)
+    // Build indexes from all threats (lazy). They are built again after a change of the threat set (TB10-2).
     buildIndex() {
-        if (this._abilityIndex) return;
+        if (this._abilityIndex && this._indexVersion === DataLoader.threatsVersion) return;
 
+        this._indexVersion = DataLoader.threatsVersion;
         this._abilityIndex = new Map();
         this._bonusIndex = [];
 

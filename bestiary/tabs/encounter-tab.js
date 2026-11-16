@@ -516,8 +516,9 @@ const EncounterTab = {
         // Get all non-hidden items
         const items = Array.from(container.querySelectorAll('.encounter-item:not(.drag-original-hidden)'));
 
-        // Find where to insert placeholder based on pointer position
-        let newIndex = items.length;
+        // Find where to insert placeholder based on pointer position.
+        // newIndex is an index of the children. With no entry below the pointer, it is the end (TB10-1).
+        let newIndex = container.children.length;
         for (let i = 0; i < items.length; i++) {
             const itemRect = items[i].getBoundingClientRect();
             const itemMiddle = itemRect.top + itemRect.height / 2;

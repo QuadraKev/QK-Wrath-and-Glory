@@ -88,12 +88,17 @@ function P(f) {
     return `${f}" data-pwn="${f}"></textarea><img src=x data-pwnimg="${f}" onerror="(window.__hits=window.__hits||[]).push('${f}')">`;
 }
 
+// Reads the hits of one step. The list of script hits is cleared after the read, so that a later step starts with none (TB10-5).
 async function hits(page) {
-    return page.evaluate(() => ({
-        js: [...new Set(window.__hits || [])],
-        attr: [...new Set([...document.querySelectorAll('[data-pwn]')].map(e => e.getAttribute('data-pwn')))],
-        img: [...new Set([...document.querySelectorAll('[data-pwnimg]')].map(e => e.getAttribute('data-pwnimg')))]
-    }));
+    return page.evaluate(() => {
+        const js = [...new Set(window.__hits || [])];
+        window.__hits = [];
+        return {
+            js,
+            attr: [...new Set([...document.querySelectorAll('[data-pwn]')].map(e => e.getAttribute('data-pwn')))],
+            img: [...new Set([...document.querySelectorAll('[data-pwnimg]')].map(e => e.getAttribute('data-pwnimg')))]
+        };
+    });
 }
 
 async function pickFile(page, selector, filePath) {
@@ -433,12 +438,13 @@ const scenarios = [];
 const scenario = (name, fn) => scenarios.push({ name, fn });
 
 // A hostile step passes when it runs no script and adds no test element or test attribute.
-async function hostileStep(page, label, kind, seen) {
+// The step waits until each test image has failed to load, so that no late onerror handler reports in the next step.
+async function hostileStep(page, label, kind) {
     await wait(page, 300);
+    await page.waitForFunction(() => [...document.querySelectorAll('img[data-pwnimg]')].every(img => img.complete));
+    await wait(page, 100);
     const h = await hits(page);
-    const newJs = h.js.filter(x => !seen.js.has(x));
-    h.js.forEach(x => seen.js.add(x));
-    check(`hostile ${kind} ${label}: no script, no injected element, no attribute break`, { js: newJs, attr: h.attr, img: h.img }, { js: [], attr: [], img: [] });
+    check(`hostile ${kind} ${label}: no script, no injected element, no attribute break`, { js: h.js, attr: h.attr, img: h.img }, { js: [], attr: [], img: [] });
 }
 
 const ROW_TYPES = ['individual', 'mob', 'player', 'vehicle'];
@@ -473,8 +479,7 @@ scenario('hostile-desktop', async () => {
         pl: writeFixture('hostile.players', hostile.players)
     };
     await open(page);
-    const seen = { js: new Set() };
-    const step = (label) => hostileStep(page, label, 'desktop', seen);
+    const step = (label) => hostileStep(page, label, 'desktop');
 
     await goTab(page, 'encounter');
     await pickFile(page, '#btn-load-encounter', files.enc);
@@ -563,7 +568,6 @@ scenario('hostile-desktop', async () => {
 
     await wait(page, 2500);
     await reload(page);
-    seen.js = new Set();
     await step('reload');
     await goTab(page, 'encounter');
     check('hostile desktop: the four row types are drawn after the reload', await rowTypeCounts(page), { individual: 2, mob: 1, player: 1, vehicle: 1 });
@@ -592,12 +596,10 @@ scenario('hostile-mobile', async () => {
     const page = s.page;
     writeFixture('hostile.encounter', hostile.encounter);
     await open(page);
-    const seen = { js: new Set() };
-    const step = (label) => hostileStep(page, label, 'mobile', seen);
+    const step = (label) => hostileStep(page, label, 'mobile');
 
     await lsSet(page, KEY_ENC, JSON.stringify({ encounter: hostile.encounter, customThreats: [hostile.hostileCustom], timestamp: 1 }));
     await reload(page);
-    seen.js = new Set();
     await step('restore');
     check('hostile mobile: the four row types are drawn after the restore', await rowTypeCounts(page), { individual: 1, mob: 1, player: 1, vehicle: 1 });
 
@@ -1252,6 +1254,73 @@ scenario('inputs', async () => {
 });
 
 // ===== Main =====
+
+// TB10-1: a dragged entry lands where the placeholder shows, also below the last entry.
+scenario('drag', async () => {
+    const s = await newSession();
+    const page = s.page;
+    await open(page);
+    await goTab(page, 'encounter');
+    const setup = () => page.evaluate(() => {
+        EncounterState.clearEncounter();
+        const ids = ['sly_marbo_aaa', 'tactical_space_marine', 'astra_militarum_trooper'].map(t => EncounterState.addIndividual(t, 1)[0]);
+        EncounterState.setEncounterOrder(ids.map(id => ({ type: 'individual', id })));
+        EncounterTab.renderEncounterList();
+        return ids;
+    });
+    const rowIds = () => page.evaluate(() => [...document.querySelectorAll('#encounter-list .encounter-item')].map(e => e.dataset.id));
+    // The rows that the pointer can meet: the ones that are not hidden. The hidden original keeps its space.
+    const liveRows = () => page.evaluate(() => [...document.querySelectorAll('#encounter-list .encounter-item:not(.drag-original-hidden)')]
+        .map(e => { const r = e.getBoundingClientRect(); return { top: r.top, bottom: r.bottom }; }));
+    // Drag the handle of row `from` with real mouse moves. `before` is the index of the other row that
+    // the entry goes before, or 'end' for a place below the last row.
+    async function drag(from, before) {
+        const pos = await page.evaluate((i) => {
+            const h = document.querySelectorAll('#encounter-list .encounter-item')[i].querySelector('.drag-handle').getBoundingClientRect();
+            return { x: h.x + h.width / 2, y: h.y + h.height / 2 };
+        }, from);
+        await page.mouse.move(pos.x, pos.y);
+        await page.mouse.down();
+        await page.mouse.move(pos.x, pos.y + 1);
+        // The placeholder moves the rows, so the target is read again after each move.
+        for (let k = 0; k < 4; k++) {
+            const rows = await liveRows();
+            const y = before === 'end' ? rows[rows.length - 1].bottom + 15 : rows[before].top + 2;
+            await page.mouse.move(pos.x, y, { steps: 3 });
+        }
+        await page.mouse.up();
+        await wait(page, 100);
+    }
+    const letters = (ids, now) => now.map(id => 'ABC'[ids.indexOf(id)]).join('');
+
+    let ids = await setup();
+    await drag(0, 'end');
+    check('drag: A to the end gives B, C, A', letters(ids, await rowIds()), 'BCA');
+    ids = await setup();
+    await drag(2, 0);
+    check('drag: C to the start gives C, A, B', letters(ids, await rowIds()), 'CAB');
+    ids = await setup();
+    await drag(0, 1);
+    check('drag: A below B gives B, A, C', letters(ids, await rowIds()), 'BAC');
+    ids = await setup();
+    await drag(1, 0);
+    check('drag: B above A gives B, A, C', letters(ids, await rowIds()), 'BAC');
+    ids = await setup();
+    await drag(1, 'end');
+    check('drag: B to the end gives A, C, B', letters(ids, await rowIds()), 'ACB');
+    ids = await setup();
+    await drag(1, 1);
+    check('drag: B released at its own place keeps A, B, C', letters(ids, await rowIds()), 'ABC');
+
+    // The last order stays after a reload.
+    ids = await setup();
+    await drag(0, 'end');
+    await wait(page, 2500);
+    await reload(page);
+    await goTab(page, 'encounter');
+    check('drag: the order B, C, A stays after a reload', letters(ids, await rowIds()), 'BCA');
+    check('drag: no page error', s.errors, []);
+});
 
 async function main() {
     const args = process.argv.slice(2);

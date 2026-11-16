@@ -675,6 +675,13 @@ const EncounterState = {
 
         const visibleItems = this.getEncounterListItems();
 
+        // A place next to the own place (the own index or the next one) changes nothing (TB10-1).
+        const ownIndex = visibleItems.findIndex(item => item.type === itemType && item.id === itemId);
+        if (ownIndex !== -1 && (newIndex === ownIndex || newIndex === ownIndex + 1)) {
+            this.markDirty();
+            return;
+        }
+
         // Find and remove the item from its current position
         const currentIndex = this.encounterOrder.findIndex(
             item => item.type === itemType && item.id === itemId

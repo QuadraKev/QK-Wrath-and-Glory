@@ -4,6 +4,9 @@ const DataLoader = {
     // Cache for loaded data
     cache: {},
 
+    // Counts each change of the threat set that injectThreat and removeThreat make (TB10-2)
+    threatsVersion: 0,
+
     // Faction definitions - maps faction names to keywords that indicate membership
     factionKeywordMap: {
         'Adeptus Astartes': ['ADEPTUS ASTARTES', '[CHAPTER]'],
@@ -556,12 +559,14 @@ const DataLoader = {
         if (idx !== -1) threats.splice(idx, 1);
         threats.push(threat);
         this.cache['threats.json'] = threats;
+        this.threatsVersion++;
     },
 
     // Remove a threat from the cache by ID
     removeThreat(threatId) {
         const threats = this.cache['threats.json'] || [];
         this.cache['threats.json'] = threats.filter(t => t.id !== threatId);
+        this.threatsVersion++;
     },
 
     // Filter threats by criteria

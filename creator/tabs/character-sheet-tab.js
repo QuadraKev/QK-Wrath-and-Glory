@@ -6,7 +6,7 @@ const CharacterSheetTab = {
     _followerThreatLoad: 'idle',
 
     // The most boxes that a tracker draws. A larger maximum shows the count of the rest as text.
-    BOX_LIMIT: 50,
+    BOX_LIMIT: 100,
 
     // The selected sheet tab. It stays for the page session and is never stored.
     activeSheetTab: 'stats',

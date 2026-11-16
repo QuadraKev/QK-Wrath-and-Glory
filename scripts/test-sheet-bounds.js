@@ -102,15 +102,15 @@ const attrs = toughness => ({ strength: 1, toughness, agility: 1, initiative: 1,
 const loadCharacter = over => State.loadCharacter(JSON.parse(JSON.stringify({ ...base, attributes: attrs(1), ...over })));
 
 // === The box functions ===
-check('BOX_LIMIT is 50', CharacterSheetTab.BOX_LIMIT, 50);
+check('BOX_LIMIT is 100', CharacterSheetTab.BOX_LIMIT, 100);
 
 for (const [label, fn] of [['renderTrackingBoxes', 'renderTrackingBoxes'], ['renderFollowerBoxes', 'renderFollowerBoxes']]) {
     let html = '';
     const start = Date.now();
     try { html = CharacterSheetTab[fn]('wounds', 0, 30000); } catch (e) { html = 'THROW ' + e.message; }
     const ms = Date.now() - start;
-    check(`${label} 30000: 50 boxes`, count(html, /class="tracking-box/g), 50);
-    check(`${label} 30000: the rest as text`, html.includes('<span class="sheet-empty">+29950 more</span>'), true);
+    check(`${label} 30000: 100 boxes`, count(html, /class="tracking-box/g), 100);
+    check(`${label} 30000: the rest as text`, html.includes('<span class="sheet-empty">+29900 more</span>'), true);
     check(`${label} 30000: under 200 ms`, ms < 200, true);
 
     const small = CharacterSheetTab[fn]('wounds', 2, 5);
@@ -118,19 +118,23 @@ for (const [label, fn] of [['renderTrackingBoxes', 'renderTrackingBoxes'], ['ren
     check(`${label} 5 boxes, 2 filled: 2 filled`, count(small, /tracking-box (?:follower-box )?filled/g), 2);
     check(`${label} 5 boxes: no count text`, small.includes('more'), false);
 
-    const exact = CharacterSheetTab[fn]('shock', 0, 50);
-    check(`${label} 50 boxes: 50 boxes and no count text`, [count(exact, /class="tracking-box/g), exact.includes('more')], [50, false]);
-    const over = CharacterSheetTab[fn]('shock', 60, 51);
-    check(`${label} 51 boxes: 50 boxes, +1 more`, [count(over, /class="tracking-box/g), over.includes('+1 more')], [50, true]);
+    const stacked = CharacterSheetTab[fn]('wounds', 0, 57);
+    check(`${label} 57 boxes: 57 boxes and no count text`, [count(stacked, /class="tracking-box/g), stacked.includes('more')], [57, false]);
+    const exact = CharacterSheetTab[fn]('shock', 0, 100);
+    check(`${label} 100 boxes: 100 boxes and no count text`, [count(exact, /class="tracking-box/g), exact.includes('more')], [100, false]);
+    const over = CharacterSheetTab[fn]('shock', 120, 101);
+    check(`${label} 101 boxes: 100 boxes, +1 more`, [count(over, /class="tracking-box/g), over.includes('+1 more')], [100, true]);
 }
-check('the filled count stays at the drawn boxes', count(CharacterSheetTab.renderTrackingBoxes('wounds', 60, 51), /tracking-box filled/g), 50);
+check('the filled count stays at the drawn boxes', count(CharacterSheetTab.renderTrackingBoxes('wounds', 120, 101), /tracking-box filled/g), 100);
 
 // === The strip: the --n style uses the drawn count ===
 {
     loadCharacter({});
     const strip = CharacterSheetTab.renderStripTrackers({ maxWounds: 30000, maxShock: 8 });
-    check('strip: --n is 50 for 30000 Wounds', strip.includes('<div class="tracking-boxes" style="--n: 50">'), true);
+    check('strip: --n is the limit for 30000 Wounds', strip.includes('<div class="tracking-boxes" style="--n: 100">'), true);
     check('strip: --n is 8 for 8 Shock', strip.includes('<div class="tracking-boxes" style="--n: 8">'), true);
+    const shockStrip = CharacterSheetTab.renderStripTrackers({ maxWounds: 8, maxShock: 30000 });
+    check('strip: --n is the limit for 30000 Shock', [shockStrip.includes('<div class="tracking-boxes" style="--n: 100">'), shockStrip.includes('<div class="tracking-boxes" style="--n: 8">')], [true, true]);
 }
 
 // === The getters ===
@@ -143,6 +147,9 @@ check('Faith 2 of 1: the getter gives 1', State.getCurrentFaith(), 1);
 check('Faith 2 of 1: the stored value stays 2 after the getter', State.character.currentFaith, 2);
 State.modifyCurrentFaith(1);
 check('Faith 2 of 1: "+" gives 1', State.getCurrentFaith(), 1);
+loadCharacter({ talents: [faithTalent.id], currentFaith: 2 });
+State.modifyCurrentFaith(-1);
+check('Faith 2 of 1: "-" stores 0', State.character.currentFaith, 0);
 loadCharacter({ talents: [faithTalent.id], currentFaith: 0 });
 check('Faith 0 of 1: the getter gives 0', State.getCurrentFaith(), 0);
 loadCharacter({ talents: [faithTalent.id], currentFaith: null });

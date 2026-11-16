@@ -1103,6 +1103,65 @@ scenario('d1', async () => {
     check('d1: the × of the marked row removes it and keeps the count 2', { clicked, players: w.players, count: w.count }, { clicked: true, players: 2, count: 2 });
 });
 
+// TB3-1: a player count above 10 with that number of players. The start and each load must keep every player.
+// The count loads as 10. The players above it stay, with a mark, and the stored key keeps all of them.
+scenario('players12', async () => {
+    const names = Array.from({ length: 12 }, (_, i) => 'P' + (i + 1));
+    const players = names.map((n, i) => ({ id: 'p12-' + i, name: n, initiative: null, notes: '' }));
+    const encounter = (count) => mkEnc({ settings: { tier: 1, playerCount: count, name: 'Twelve', round: 1 }, playerCharacters: players });
+    const WANT = { keyPlayers: 12, rows: 12, marked: ['P11', 'P12'], box: '10' };
+    // The four results: the players in the stored key, the rows drawn, the rows with the mark, and the Players box.
+    const read = (page) => page.evaluate((key) => {
+        let keyPlayers = null;
+        try { keyPlayers = JSON.parse(localStorage.getItem(key)).encounter.playerCharacters.length; } catch (e) { /* no key */ }
+        const rows = [...document.querySelectorAll('#player-character-inputs .player-character-row')];
+        const marked = rows.filter(r => r.classList.contains('player-character-row--extra')
+            && r.querySelector('.pc-extra-mark') && r.querySelector('.pc-extra-mark').textContent === 'Above player count')
+            .map(r => r.querySelector('.pc-name-input').value);
+        return { keyPlayers, rows: rows.length, marked, box: document.getElementById('encounter-players').value };
+    }, KEY_ENC);
+
+    // 1. The start.
+    let s = await newSession();
+    await open(s.page);
+    await lsSet(s.page, KEY_ENC, JSON.stringify({ encounter: encounter(12), customThreats: [], timestamp: 1 }));
+    await reload(s.page);
+    await wait(s.page, 3000);
+    check('players12 start: the key, the rows, the marks and the box', await read(s.page), WANT);
+
+    // 2. Load Encounter with a file of the same shape.
+    s = await newSession();
+    await open(s.page);
+    await goTab(s.page, 'encounter');
+    await pickFile(s.page, '#btn-load-encounter', writeFixture('players12.encounter', encounter(12)));
+    await wait(s.page, 3000);
+    check('players12 Load Encounter: the key, the rows, the marks and the box', await read(s.page), WANT);
+
+    // 3. Load Players with a file of count 12 and 12 players.
+    s = await newSession();
+    await open(s.page);
+    await goTab(s.page, 'encounter');
+    await pickFile(s.page, '#btn-load-players', writeFixture('players12.players',
+        { version: 1, playerCount: 12, players: names.map(n => ({ name: n, notes: '' })) }));
+    await wait(s.page, 3000);
+    check('players12 Load Players: the key, the rows, the marks and the box', await read(s.page), WANT);
+
+    // 4. A stored count of 300000 with 12 players: a fast start, and the key keeps 12 players.
+    s = await newSession();
+    await open(s.page);
+    await lsSet(s.page, KEY_ENC, JSON.stringify({ encounter: encounter(300000), customThreats: [], timestamp: 1 }));
+    const t0 = Date.now();
+    await s.page.reload({ waitUntil: 'load', timeout: 60000 });
+    let shown = true;
+    try { await s.page.waitForSelector('#encounter-list .encounter-item', { timeout: 60000, state: 'attached' }); } catch (e) { shown = false; }
+    const elapsed = Date.now() - t0;
+    await wait(s.page, 3000);
+    const after = await read(s.page);
+    check('players12 count 300000: a start under 2 s, and the key and the rows keep 12 players',
+        { shown, under2s: elapsed < 2000, keyPlayers: after.keyPlayers, rows: after.rows, marked: after.marked }, { shown: true, under2s: true, keyPlayers: 12, rows: 12, marked: ['P11', 'P12'] });
+    console.log(`        the start took ${elapsed} ms`);
+});
+
 // B6: mob ability lists and mob option lists on the card and on the mini card.
 scenario('b6', async () => {
     const s = await newSession();

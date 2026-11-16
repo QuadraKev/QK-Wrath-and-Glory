@@ -306,7 +306,25 @@ const TalentsTab = {
             const isAscensionGranted = typeof talentEntry === 'object' && talentEntry.ascensionGranted;
 
             const talent = DataLoader.getTalent(talentId);
-            if (!talent) continue;
+            if (!talent) {
+                // The data has no talent with this id. Show it with a Remove control, also if an ascension granted it.
+                const unknownItem = document.createElement('div');
+                unknownItem.className = 'selected-talent';
+                unknownItem.innerHTML = `
+                <div class="selected-talent-header">
+                    <span class="selected-talent-name">Unknown talent (${this.escapeHtml(String(talentId))})</span>
+                    <button class="btn-remove" data-id="${this.escapeHtml(String(talentId))}">REMOVE</button>
+                </div>
+            `;
+                unknownItem.querySelector('.btn-remove').addEventListener('click', async () => {
+                    const confirmed = await window.api.showConfirm(`Remove talent ${talentId}?`);
+                    if (!confirmed) return;
+                    State.removeTalent(talentId, talentIdx);
+                    this.render();
+                });
+                container.appendChild(unknownItem);
+                continue;
+            }
 
             // Build display name with choice if applicable
             let displayName = talent.name;

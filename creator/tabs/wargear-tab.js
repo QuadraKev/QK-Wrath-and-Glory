@@ -66,13 +66,18 @@ const WargearTab = {
             weapons: [],
             armor: [],
             augmetics: [],
-            equipment: []
+            equipment: [],
+            unknown: []
         };
 
         for (let i = 0; i < character.wargear.length; i++) {
             const item = character.wargear[i];
             const wargear = DataLoader.getWargearItem(item.id);
-            if (!wargear) continue;
+            if (!wargear) {
+                // The data has no item with this id. Show the entry, so the player can remove it.
+                grouped.unknown.push({ id: item.id, wargearIndex: i, isStarting: item.isStarting });
+                continue;
+            }
 
             const entry = { ...wargear, wargearIndex: i, isStarting: item.isStarting, upgrades: item.upgrades || [], relic: item.relic, improvised: item.improvised, custom: item.custom };
 
@@ -120,6 +125,13 @@ const WargearTab = {
             html += '</div>';
         }
 
+        // Unknown (the id is not in the data)
+        if (grouped.unknown.length > 0) {
+            html += '<div class="wargear-group"><h4>Unknown</h4>';
+            html += grouped.unknown.map(u => this.renderUnknownWargear(u)).join('');
+            html += '</div>';
+        }
+
         container.innerHTML = html;
 
         // Bind event handlers
@@ -128,7 +140,7 @@ const WargearTab = {
                 const wargearIndex = parseInt(btn.dataset.index, 10);
                 const wargearEntry = State.getCharacter().wargear[wargearIndex];
                 const item = wargearEntry ? DataLoader.getWargearItem(wargearEntry.id) : null;
-                const name = wargearEntry?.relic?.name || wargearEntry?.improvised?.name || (item ? item.name : 'this item');
+                const name = wargearEntry?.relic?.name || wargearEntry?.improvised?.name || (item ? item.name : (wargearEntry ? `Unknown wargear (${wargearEntry.id})` : 'this item'));
                 const confirmed = await window.api.showConfirm(`Remove ${name}?`);
                 if (!confirmed) return;
                 State.removeWargearByIndex(wargearIndex);
@@ -165,7 +177,7 @@ const WargearTab = {
     renderOwnedWeapon(weapon) {
         const upgradeNames = weapon.upgrades.map(id => {
             const upgrade = DataLoader.getWeaponUpgrade(id);
-            return this.escapeHtml(upgrade ? upgrade.name : id);
+            return this.escapeHtml(upgrade ? upgrade.name : `Unknown upgrade (${id})`);
         });
 
         const upgradeText = upgradeNames.length > 0
@@ -192,6 +204,23 @@ const WargearTab = {
                     ${relicHtml ? `<button class="btn-small ${editClass}" data-index="${weapon.wargearIndex}">Edit</button>` : ''}
                     <button class="btn-small btn-manage-upgrades" data-index="${weapon.wargearIndex}">Upgrades</button>
                     <button class="btn-small btn-remove-wargear" data-index="${weapon.wargearIndex}">Remove</button>
+                </div>
+            </div>
+        `;
+    },
+
+    // Render an owned entry whose id is not in the data. It has the Remove control only.
+    renderUnknownWargear(entry) {
+        const startingBadge = entry.isStarting ? '<span class="badge-starting">Starting</span>' : '';
+
+        return `
+            <div class="wargear-item wargear-item-owned">
+                <div class="wargear-info">
+                    <div class="wargear-name">Unknown wargear (${this.escapeHtml(String(entry.id))}) ${startingBadge}</div>
+                    <div class="wargear-type">Not in the game data</div>
+                </div>
+                <div class="wargear-actions">
+                    <button class="btn-small btn-remove-wargear" data-index="${this.escapeHtml(String(entry.wargearIndex))}">Remove</button>
                 </div>
             </div>
         `;
@@ -871,7 +900,18 @@ const WargearTab = {
             html += '<div class="upgrade-list">';
             for (const upgradeId of currentUpgrades) {
                 const upgrade = DataLoader.getWeaponUpgrade(upgradeId);
-                if (!upgrade) continue;
+                if (!upgrade) {
+                    // The data has no upgrade with this id. Show it, so the player can remove it.
+                    html += `
+                    <div class="upgrade-item upgrade-owned">
+                        <div class="upgrade-info">
+                            <span class="upgrade-name">Unknown upgrade (${this.escapeHtml(String(upgradeId))})</span>
+                        </div>
+                        <button class="btn-small btn-remove-upgrade" data-id="${this.escapeHtml(String(upgradeId))}">Remove</button>
+                    </div>
+                `;
+                    continue;
+                }
 
                 html += `
                     <div class="upgrade-item upgrade-owned">

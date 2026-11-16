@@ -1687,6 +1687,37 @@ const CharacterSheetTab = {
         `;
     },
 
+    // The choice of a talent as text. A wargear index of an owned-item talent gives the name of the item.
+    // An index with no item of the kind of the talent gives no choice to show. A text choice shows as it is.
+    // `escape` escapes each value: the sheet passes its HTML escape and the plain-text copy passes none.
+    talentChoiceDisplay(character, talent, choice, escape) {
+        let choiceDisplay = choice === null || choice === undefined ? '' : escape(String(choice));
+        if (this.isIndexChoice(choice) && (talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned')) {
+            choiceDisplay = '';
+            const wargearIndex = parseInt(choice, 10);
+            if (!isNaN(wargearIndex) && character.wargear[wargearIndex]) {
+                const item = talent.choiceType === 'weapon_owned'
+                    ? DataLoader.getWeapon(character.wargear[wargearIndex].id)
+                    : DataLoader.getArmor(character.wargear[wargearIndex].id);
+                if (item) {
+                    choiceDisplay = escape(item.name);
+                }
+            }
+        }
+        return choiceDisplay;
+    },
+
+    // The name of a talent with its choice, as the selected-talent row of the Talents tab shows it:
+    // the choice takes the place of [Any], [Skill] and the like, or goes after the name when there is none.
+    talentNameWithChoice(talent, choiceDisplay) {
+        if (choiceDisplay) {
+            const replaced = talent.name.replace(/\[.*?\]/, () => `(${choiceDisplay})`);
+            return replaced === talent.name ? `${talent.name} (${choiceDisplay})` : replaced;
+        }
+        const isOwnedItemTalent = talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned';
+        return isOwnedItemTalent ? `${talent.name} (no item selected)` : talent.name;
+    },
+
     // Render talents
     renderTalents(character) {
         if (!character.talents || character.talents.length === 0) {
@@ -1714,27 +1745,9 @@ const CharacterSheetTab = {
             `;
             }
 
-            // For weapon_owned/armor_owned choices, convert wargear index to item name
-            let choiceDisplay = choice === null || choice === undefined ? '' : this.escapeHtml(String(choice));
-            if (this.isIndexChoice(choice) && (talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned')) {
-                // An index with no item of the kind of the talent gives no choice to show. A text choice shows as it is.
-                choiceDisplay = '';
-                const wargearIndex = parseInt(choice, 10);
-                if (!isNaN(wargearIndex) && character.wargear[wargearIndex]) {
-                    const item = talent.choiceType === 'weapon_owned'
-                        ? DataLoader.getWeapon(character.wargear[wargearIndex].id)
-                        : DataLoader.getArmor(character.wargear[wargearIndex].id);
-                    if (item) {
-                        choiceDisplay = this.escapeHtml(item.name);
-                    }
-                }
-            }
-
+            const choiceDisplay = this.talentChoiceDisplay(character, talent, choice, v => this.escapeHtml(v));
             const grantedLabel = isAscensionGranted ? ' <span class="sheet-talent-granted">(Ascension)</span>' : '';
-            const isOwnedItemTalent = talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned';
-            const nameWithChoice = choiceDisplay
-                ? `${talent.name} (${choiceDisplay})`
-                : (isOwnedItemTalent ? `${talent.name} (no item selected)` : talent.name);
+            const nameWithChoice = this.talentNameWithChoice(talent, choiceDisplay);
 
             // Build effect description with choice highlighted
             let effectText = talent.effect || '-';
@@ -2129,7 +2142,8 @@ const CharacterSheetTab = {
             for (const entry of character.talents) {
                 const talentId = typeof entry === 'string' ? entry : entry.id;
                 const talent = DataLoader.getTalent(talentId);
-                lines.push(`  ${talent ? talent.name : `Unknown talent (${talentId})`}`);
+                const choice = typeof entry === 'object' ? entry.choice : null;
+                lines.push(`  ${talent ? this.talentNameWithChoice(talent, this.talentChoiceDisplay(character, talent, choice, v => v)) : `Unknown talent (${talentId})`}`);
             }
             lines.push('');
         }

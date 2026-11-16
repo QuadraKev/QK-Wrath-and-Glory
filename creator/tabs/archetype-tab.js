@@ -312,7 +312,7 @@ const ArchetypeTab = {
 
             if (category.options.length > 0) {
                 const isCustom = currentValue && !category.options.some(o => o.value === currentValue);
-                html += `<select class="keyword-choice-select">`;
+                html += `<select class="keyword-choice-select" aria-label="${this.escapeAttr(`${category.label} (${placeholder})`)}">`;
                 html += `<option value="">-- Select --</option>`;
                 for (const opt of category.options) {
                     html += `<option value="${opt.value}"${currentValue === opt.value ? ' selected' : ''}>${opt.label}</option>`;
@@ -335,6 +335,8 @@ const ArchetypeTab = {
         return html ? `<div class="detail-section"><div class="detail-section-title">Sub-faction Keywords</div>${html}</div>` : '';
     },
 
+    // The setter accepts each change, so the changed select stays in the page and keeps the focus, as for the
+    // "any skill" selects. The type-ahead of the browser works. Only the custom input and the bonus panel change, in place.
     bindKeywordChoiceEvents(detail) {
         detail.querySelectorAll('.archetype-keyword-choice .keyword-choice-select').forEach(select => {
             select.addEventListener('change', (e) => {
@@ -346,7 +348,15 @@ const ArchetypeTab = {
                     if (custom) custom.style.display = 'block';
                 } else {
                     State.setArchetypeKeywordChoice(placeholder, e.target.value);
-                    this.renderDetail();
+                    const custom = div.querySelector('.keyword-choice-custom');
+                    if (custom) {
+                        custom.style.display = 'none';
+                        custom.value = '';
+                    }
+                    const oldPanel = div.querySelector('.keyword-bonus-panel');
+                    if (oldPanel) oldPanel.remove();
+                    const panel = KeywordBonus.renderPanel(e.target.value);
+                    if (panel) div.insertAdjacentHTML('beforeend', panel);
                 }
             });
         });

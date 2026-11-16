@@ -339,17 +339,33 @@ const SpeciesTab = {
             }
         } else {
             // For single-select, check if something is selected
+            const offered = new Set((config.options || []).map(o => o.id));
             const selectedBtn = document.querySelector('#suboption-modal-options .choice-option-btn.selected');
             if (!selectedBtn) {
                 if (config.required !== false) {
                     alert(`Please select a ${config.label.toLowerCase()}.`);
                     return;
                 }
-                // Optional sub-option — clear any existing selection
+                // Optional sub-option — clear the existing selection. A stored option that the data does not
+                // have is not in the window, so it stays. Its Unknown row has the Remove control.
                 const existing = State.getSpeciesSubOptionsByType(config.type);
                 for (const sel of existing) {
-                    State.removeSpeciesSubOption(config.type, sel.optionId);
+                    if (offered.has(sel.optionId)) {
+                        State.removeSpeciesSubOption(config.type, sel.optionId);
+                    }
                 }
+            } else if (State.getSpeciesSubOptionsByType(config.type).some(sel => !offered.has(sel.optionId))) {
+                // Save the selection. A stored option that the data does not have stays at its place:
+                // the pick replaces the first offered option of the type, or goes to the end.
+                const stored = State.getSpeciesSubOptions();
+                const pick = { type: config.type, optionId: selectedBtn.dataset.optionId };
+                const index = stored.findIndex(sel => sel.type === config.type && offered.has(sel.optionId));
+                if (index >= 0) {
+                    stored[index] = pick;
+                } else {
+                    stored.push(pick);
+                }
+                State.notifyListeners('speciesSubOption', pick);
             } else {
                 // Save the selection
                 State.setSpeciesSubOption(config.type, selectedBtn.dataset.optionId);

@@ -347,7 +347,8 @@ const OBJ_BAD = [EVIL, [], null, 5];
 const ARR_BAD = [EVIL, {}, null, 5];
 const BOOL_BAD = [EVIL, 1, null, {}];
 
-// Rows: path, bad values, expected value, optional read path (spec row numbers in the comments)
+// Rows: path, bad values, expected value, optional read path, optional override, optional warning path (spec row numbers in the comments)
+// The warning of a row holds its path: a number is [n] and a name is .name. A row that a dropped entry repairs gives the warning path of the entry.
 const HOSTILE = [
     [['name'], STR_BAD, ''], [['setting'], STR_BAD, ''], [['notes'], STR_BAD, ''],             // 1-3
     [['tier'], INT_BAD, 1], [['rank'], INT_NULL_BAD, 1], [['additionalXp'], INT_NULL_BAD, 0], [['corruption'], INT_NULL_BAD, 0], // 4-7
@@ -365,7 +366,7 @@ const HOSTILE = [
     // The row uses an unknown key that is not a phantom key: step X1 deletes skills.choice1.
     [['skills', 'zzSkill'], NUM_NULL_BAD, null], [['attributes', 'luck'], NUM_NULL_BAD, null],
     [['background'], OBJ_BAD, { origin: null, accomplishment: null, goal: null, bonusUsed: null }],
-    [['background', 'origin'], [EVIL, [], 5, true], null], [['background', 'origin', 'id'], STR_BAD, null, ['background', 'origin']],
+    [['background', 'origin'], [EVIL, [], 5, true], null], [['background', 'origin', 'id'], STR_BAD, null, ['background', 'origin'], undefined, 'background.origin'],
     [['background', 'accomplishment', 'bonusType'], STR_NULL_BAD, null], [['background', 'bonusUsed'], STR_NULL_BAD, null],
     // lists that are not arrays (spec §6.1)
     ...['species.subOptions', 'customArchetype.keywords', 'customArchetype.wargear', 'ascensions', 'talents', 'wargear',
@@ -373,7 +374,7 @@ const HOSTILE = [
         'followers', 'freeLanguages', 'customKeywords'].map(p => [p.split('.'), ARR_BAD, []]),
     [['languages'], ARR_BAD, ['low_gothic']],
     // ascension entry (spec §6.2); a dropped entry is read through the list length
-    [['ascensions', 0, 'targetTier'], INT_BAD, 2, ['ascensions', 'length']],
+    [['ascensions', 0, 'targetTier'], INT_BAD, 2, ['ascensions', 'length'], undefined, 'ascensions[0]'],
     [['ascensions', 0, 'type'], STR_BAD, ''], [['ascensions', 0, 'packageId'], STR_NULL_BAD, null],
     [['ascensions', 0, 'choices'], [EVIL, [], 5, null], undefined], [['ascensions', 0, 'choices', '[ANY]'], STR_BAD, ''],
     // the grant record of a package entry (spec §6.3, Q7)
@@ -381,7 +382,7 @@ const HOSTILE = [
     ...['powers', 'freePowers', 'talents'].map(k => [['ascensions', 0, 'granted', k], ARR_BAD, []]),
     // talent entry (spec §6.3)
     [['talents', 1, 'choice'], [{}, [], true, INF], null], [['talents', 5, 'choice'], [5, {}, true], null],
-    [['talents', 7, 'ascensionGranted'], BOOL_BAD, false], [['talents', 1, 'id'], STR_BAD, 7, ['talents', 'length']],
+    [['talents', 7, 'ascensionGranted'], BOOL_BAD, false], [['talents', 1, 'id'], STR_BAD, 7, ['talents', 'length'], undefined, 'talents[1]'],
     // wargear entry (spec §6.4): never dropped
     [['wargear', 1, 'isStarting'], BOOL_BAD, false], [['wargear', 1, 'equipped'], BOOL_BAD, false],
     [['wargear', 1, 'upgrades'], ARR_BAD, []], [['wargear', 1, 'id'], [5, {}, null], ''],
@@ -394,9 +395,9 @@ const HOSTILE = [
     // injuries and mutations
     [['memorableInjuries', 0, 'escalated'], BOOL_BAD, false], [['traumaticInjuries', 0, 'side'], STR_NULL_BAD, null],
     [['traumaticInjuries', 1, 'reconstructed'], BOOL_BAD, false], [['mutations', 0, 'subChoice'], STR_NULL_BAD, null],
-    [['memorableInjuries', 0, 'id'], STR_BAD, 1, ['memorableInjuries', 'length']],
+    [['memorableInjuries', 0, 'id'], STR_BAD, 1, ['memorableInjuries', 'length'], undefined, 'memorableInjuries[0]'],
     // follower entry (spec §6.5)
-    [['followers', 0, 'id'], STR_BAD, 2, ['followers', 'length']], [['followers', 0, 'threatId'], STR_BAD, ''],
+    [['followers', 0, 'id'], STR_BAD, 2, ['followers', 'length'], undefined, 'followers[0]'], [['followers', 0, 'threatId'], STR_BAD, ''],
     [['followers', 0, 'kind'], STR_BAD, 'individual'], [['followers', 1, 'count'], NUM_NULL_BAD, 1],
     [['followers', 1, 'livingCount'], NUM_NULL_BAD, 1], [['followers', 1, 'mobCount'], NUM_NULL_BAD, null],
     [['followers', 1, 'useAlternativeStats'], BOOL_BAD, false], [['followers', 1, 'currentWounds'], NUM_NULL_BAD, null],
@@ -413,8 +414,11 @@ const HOSTILE = [
     }]]
 ];
 
-for (const [rowPath, bads, expected, readPathArg, override] of HOSTILE) {
+// The path text that the warning of a row must hold.
+const warnPathText = keys => keys.map((k, i) => (typeof k === 'number' ? `[${k}]` : (i ? `.${k}` : k))).join('');
+for (const [rowPath, bads, expected, readPathArg, override, warnPathArg] of HOSTILE) {
     const readPath = readPathArg || rowPath;
+    const warnPath = warnPathArg || warnPathText(rowPath);
     for (const bad of bads) {
         const c = override ? override[1]() : rowPath[0] === 'customKeywords' ? CORPUS['pre-web shapes']() : CORPUS['full character']();
         setPath(c, rowPath, bad);
@@ -428,6 +432,7 @@ for (const [rowPath, bads, expected, readPathArg, override] of HOSTILE) {
             check(`hostile ${label}: repaired`, canon(getPath(r.character, readPath)), canon(expected));
         }
         check(`hostile ${label}: one warning`, r.warns.length, 1);
+        check(`hostile ${label}: the warning names ${warnPath}`, (r.warns[0] || '').replace('Character data was repaired on load: ', ''), warnPath);
     }
 }
 // True when parent is an object and key is absent from it.

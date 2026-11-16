@@ -228,19 +228,21 @@ vm.runInContext('var navigator = { clipboard: { writeText(t) { globalThis.__copi
 
     // Ascension, background, species sub-option and weapon upgrade
     loadCharacter({
-        ascensions: [{ type: 'package', packageId: 'zz_pkg', targetTier: 2 }, { type: 'archetype', archetypeId: HOSTILE, targetTier: 3 }],
-        background: { origin: { id: HOSTILE }, accomplishment: { id: 'zz_acc' }, goal: { id: 'zz_goal' }, bonusUsed: null, bonusType: null },
+        ascensions: [{ type: 'package', packageId: HOSTILE, targetTier: 2 }, { type: 'archetype', archetypeId: HOSTILE, targetTier: 3 }],
+        background: { origin: { id: HOSTILE }, accomplishment: { id: HOSTILE }, goal: { id: HOSTILE }, bonusUsed: null, bonusType: null },
         species: { id: 'human', xpCost: 0, subOptions: [{ type: 'zz_type', optionId: HOSTILE }] },
         wargear: [{ id: 'bolt_pistol', upgrades: ['zz_up'] }]
     });
     c = State.getCharacter();
     const asc = CharacterSheetTab.renderAscensions(c);
-    check('renderAscensions: "Unknown ascension package (zz_pkg)"', has(asc, 'Unknown ascension package (zz_pkg)'), true);
+    check('renderAscensions: "Unknown ascension package (<escaped id>)"', has(asc, `Unknown ascension package (${ESC})`), true);
+    check('renderAscensions: no raw "<i>"', has(asc, 'z<i>'), false);
     check('renderAscensions: "Unknown archetype (<escaped id>)"', has(asc, `Unknown archetype (${ESC})`), true);
     const bg = CharacterSheetTab.renderBackground(c);
     check('renderBackground: "Unknown origin (<escaped id>)"', has(bg, `Unknown origin (${ESC})`), true);
-    check('renderBackground: "Unknown accomplishment (zz_acc)"', has(bg, 'Unknown accomplishment (zz_acc)'), true);
-    check('renderBackground: "Unknown goal (zz_goal)"', has(bg, 'Unknown goal (zz_goal)'), true);
+    check('renderBackground: "Unknown accomplishment (<escaped id>)"', has(bg, `Unknown accomplishment (${ESC})`), true);
+    check('renderBackground: "Unknown goal (<escaped id>)"', has(bg, `Unknown goal (${ESC})`), true);
+    check('renderBackground: no raw "<i>"', has(bg, 'z<i>'), false);
     const speciesHtml = CharacterSheetTab.renderSpeciesAbilities(c, DataLoader.getSpecies('human'));
     check('renderSpeciesAbilities: "Unknown sub-option (<escaped id>)"', has(speciesHtml, `Unknown sub-option (${ESC})`), true);
     const weaponsHtml = CharacterSheetTab.renderWeapons(c);
@@ -259,14 +261,39 @@ vm.runInContext('var navigator = { clipboard: { writeText(t) { globalThis.__copi
     check('ganger with Smite: renderPsychicPowers is not empty', smite !== '', true);
     check('ganger with Smite: the output has "Smite"', has(smite, 'Smite'), true);
     check('ganger with Smite: the Powers tab shows', CharacterSheetTab.getVisibleSheetTabs(c).includes('powers'), true);
+    check('ganger with Smite: the section has no universal row (no "Psyniscience")', has(smite, 'Psyniscience'), false);
     vm.runInContext('globalThis.__copied = null', ctx);
     CharacterSheetTab.copySummary(makeElement());
     check('ganger with Smite: the copied text has PSYCHIC POWERS and Smite', /PSYCHIC POWERS[\s\S]*Smite/.test(String(get('__copied'))), true);
+    check('ganger with Smite: the copied text has no universal line (no "Psyniscience")', has(String(get('__copied')), 'Psyniscience'), false);
 
     loadCharacter({ archetype: { id: 'ganger', xpCost: 0 }, psychicPowers: [], unlockedDisciplines: ['Biomancy'] });
     c = State.getCharacter();
     check('ganger with a discipline: hasStoredPowers is true', CharacterSheetTab.hasStoredPowers(c), true);
     check('ganger with a discipline: the output has "Biomancy"', has(CharacterSheetTab.renderPsychicPowers(c), 'Biomancy'), true);
+
+    // The copied text of a ganger with an unknown power and a discipline
+    loadCharacter({ archetype: { id: 'ganger', xpCost: 0 }, psychicPowers: ['zz'], unlockedDisciplines: ['Biomancy'] });
+    vm.runInContext('globalThis.__copied = null', ctx);
+    CharacterSheetTab.copySummary(makeElement());
+    check('ganger: the copied text has "Unknown power (zz)"', has(String(get('__copied')), 'Unknown power (zz)'), true);
+    check('ganger: the copied text has "Disciplines: Biomancy"', has(String(get('__copied')), 'Disciplines: Biomancy'), true);
+
+    // A hostile discipline shows as escaped text
+    loadCharacter({ archetype: { id: 'ganger', xpCost: 0 }, psychicPowers: [], unlockedDisciplines: [HOSTILE] });
+    const hostileDiscipline = CharacterSheetTab.renderPsychicPowers(State.getCharacter());
+    check('hostile discipline: the line is escaped', has(hostileDiscipline, `<strong>Disciplines:</strong> ${ESC}`), true);
+    check('hostile discipline: no raw "<i>"', has(hostileDiscipline, 'z<i>'), false);
+
+    // A psyker has the universal rows, and its section has no "Disciplines:" line
+    loadCharacter({ archetype: { id: 'sanctioned_psyker', xpCost: 0 }, psychicPowers: ['smite'], unlockedDisciplines: ['Biomancy'] });
+    check('psyker with Biomancy: State.isPsyker() is true', State.isPsyker(), true);
+    const psykerHtml = CharacterSheetTab.renderPsychicPowers(State.getCharacter());
+    check('psyker with Biomancy: the section has the universal row ("Psyniscience")', has(psykerHtml, 'Psyniscience'), true);
+    check('psyker with Biomancy: the section has no "Disciplines:" line', has(psykerHtml, 'Disciplines:'), false);
+    vm.runInContext('globalThis.__copied = null', ctx);
+    CharacterSheetTab.copySummary(makeElement());
+    check('psyker with Biomancy: the copied text has the universal line and no "Disciplines:" line', [has(String(get('__copied')), 'Psyniscience'), has(String(get('__copied')), 'Disciplines:')], [true, false]);
 
     loadCharacter({ archetype: { id: 'ganger', xpCost: 0 }, psychicPowers: ['psyniscience'], unlockedDisciplines: [] });
     c = State.getCharacter();

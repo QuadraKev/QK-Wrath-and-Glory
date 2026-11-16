@@ -874,3 +874,242 @@ After Task 9, the controller runs, on the branch head:
 2. `… browser-bestiary.js --compare "$BASELINE"`. Expected: `All checks passed`. The differing keys are only `card:` and `mini:` keys of the 11 B6 ids.
 3. `… browser-bestiary.js`. Expected: `All checks passed`.
 4. `git diff 44084ae --stat -- creator shared data` is empty.
+
+---
+
+## Review record (2026-11-16)
+
+Branch `bug-pass-bestiary`, base `44084ae` (`main`), head `ccdbc1b`, 35 commits, 22 files. Commits, in sequence: `989441a` (spec and plan), `f10c400` (plan fix round 1), `e922f23` (plan fix round 2), `f0a0bce` (Task 1), `7d93959` (Task 2), `740e639` (Task 1 fix round), `0f9db36` (E4 text of the spec, TB1-3), `610377a` (Task 3), `3e7ddb4` (Task 4), `1bdbb65` (three autosave rules in spec §5.2), `36cdf17` (Task 3 fix round), `27c21d8` (Task 2 fix round 1), `95781cf` (Task 4 fix round 1), `578328a` (Task 2 fix round 2), `ad02d03` (Task 5a), `9f4b141` (Task 4 fix round 2), `110c92e` (Task 2 fix round 3), `9690fa3` (Task 5b), `d5cc24e` (Task 6), `cf8bf4d` (three rules in spec §6.2 and §6.4), `4c220fb` (Task 5a fix round 1), `53a9c0e` (Task 7), `c9e9986` (Task 5b fix round), `20603b4` (Task 5a fix round 2), `749de92` (Task 6 fix round), `243bcea` (Task 8), `896f257` (Task 9), `ecbd568` (Task 7 fix round), `903496e` (Task 8 fix round), `d68eb73` (Task 10 in the plan), `03850be` (Task 10), `8076b1b` (Task 10 fix round 1), `cbdb479` (Task 9 fix round), `a6b548b` (Task 10 fix round 2), `ccdbc1b` (Task 10 fix round 3), then the controller's commit with this record.
+
+### The owner's words
+
+- 2026-11-15: "Let's do an overall pass for any bugs like those and clean them up in one go."
+
+The owner gave no other word for this branch. Each other decision below is a Controller ruling.
+
+### How the wave ran
+
+Three read-only audits (general-purpose, opus, one dispatch each) found the defects: audit 2 found B6, and audit 3 found C1 to C11 of the bestiary. One opus author wrote the spec and the plan, and an opus reviewer found 17 items (1 Critical, 6 Important, 10 Minor) and then 6 more in a scoped re-review. The author did two fix rounds, and the plan had ten tasks: 1, 2, 3, 4, 5a, 5b, 6, 7, 8 and 9. Each task had one implementer, and a different agent (reviewer, opus, xhigh) reviewed each task in a second worktree while the next task started. Each fix round went back to the implementer of its task. After Task 9, the controller added Task 10 for the late findings that a normal user can meet and that have a small correction (TB10-0), because the owner asked for the pass "in one go".
+
+Incident: During fix round 3 of Task 10, the implementer removed `/dev/null` by mistake (`rm -f /dev/null`) and made the device node again. The controller checked the node (character device 1,3, mode 666). Nothing else was removed.
+
+### Rulings
+
+The rulings G1 to G11 and the ruling for each finding are in spec §2.1 and §2.2. The rulings below came from the ledger and from the review files.
+
+| Id | Decision | Reason | Cost if wrong |
+|---|---|---|---|
+| (no id) | The pass has two plans, one for each app, in two worktrees at the same time. | The apps share no file that the pass changes. | A merge conflict in a doc or a test, seen at the second merge. |
+| (no id) | The wave goes from the owner's request to the plan with no approval stop for the spec. | The owner asked for the cleanup "in one go", and the practice of this repo is rulings in the record. | A correction that the owner did not want. Each one is a separate commit and can go back. |
+| D1 default | Players above the player count stay stored, with a mark. The other option is a confirm dialog. | G2, and no new dialog (G5). | One mark that the owner does not want. |
+| CB1 | A page removes a stored key only when that page wrote the key or restored its state from it. TB3-3 and TB3-4 later made this rule narrower. | Under the first design, a second tab with an empty state deleted the work of the first tab (P1). | A removed item comes back in a tab that never wrote the key. |
+| CB2 | Under CB1, a user change that makes the state empty removes the key at once, when the page owns the key. | P10. | Not stated. |
+| CB3 | Each file gate requires one key of its own kind. A file of the wrong kind gives the existing error message and changes nothing. | With the new autosave rule, a file of the wrong kind made the stored encounter empty (P6). | A hand-made file with none of the keys gets the error message. |
+| CB4 | Task 5 is split into 5a and 5b, and 5b gets the four missing checks. | P7. | Not stated. |
+| CB5 | P2 to P5, P8, P9, P11 and P13 to P17 are accepted as the reviewer wrote them. | The reviewer's own corrections. | Not stated. |
+| CB6 | The parked glossary-tab selector item is proved or removed. A headless check of ten hash values gave no throw, so the item was removed (spec §12). | P12. | Not stated. |
+| CB7 | In each view, a custom name `A & "B" <C>` reads back as typed. This is also a check of the browser proof. | P15. | Not stated. |
+| CB8 | Q1 to Q6 go to the plan author as fix round 2, with no third review. Q5 is one `markDirty()` call in `handleLoadPlayers`, with a check in Task 3. | The corrections are the reviewer's own words, and the controller checks the diff against the list. | A wrong plan line reaches an implementer, and the task review finds it. |
+| TB1-1 | F1, F2, F3 and F6 (gaps of the fixture tables of the plan) go directly to the implementer. | The reviewer named each row and ran F1 and F2. | Not stated. |
+| TB1-2 | F4 and F5 are accepted as written (`Object.create(null)` in `sameThreatData`, a comment that names E1 and E4). | Reviewer's correction. | Not stated. |
+| TB1-3 | The controller amends the E4 sentence of the spec (commit `0f9db36`). | F7: `repairThreat` over 14 past versions of `threats.json` repairs only 8 threats of one old dataset. | Not stated. |
+| (no id) | The one open Minor check of the Task 1 re-review (key order inside the items of a list in `sameThreatData`) goes into the dispatch of Task 4. | Task 4 is the first user of `sameThreatData` (C8), and its review then has the check in scope. | None. |
+| TB2-1 | F1 to F9 of the Task 2 review are accepted as the reviewer wrote them, all in `scripts/browser-bestiary.js`. | Reviewer's corrections. | Not stated. |
+| TB2-2 | Three sinks stay with no hostile browser check: the count in the rename modal (B-6), the number fields N-1, N-2, N-3 and N-7, and "Part of: <mob name>". The fix round adds a step for the last one. | After the check, a file can carry only numbers in those fields, so the unit tests of `BestiaryCheck` are the proof. | Not stated. |
+| TB2-3 | Two "Before the task" items go into the list "Late findings" (`App.switchTab` and the picker index). | Older than the pass. | Not stated. |
+| (no id) | N1 (the compare check finds lost markup on a B6 key but not added markup) goes to the Task 2 implementer before Task 6, with no further re-review. | Task 6 is the first task that changes a B6 card, and the Task 6 review runs the compare. | Not stated. |
+| (no id) | Task 5a waits until the review of Task 2 or Task 3 is in. | Three open reviews are the limit, and the Task 2 review judges the scenarios of each later task. | Some minutes of wait. |
+| TB3-1 | The code order stays. Task 5a removes the delete loop of the player rows and gets one more check and one more browser line for 12 stored players. Task 5a closed it. | The branch ships as one deploy, so no user gets the state between Task 3 and Task 5a. | The merge waits for the check. |
+| TB3-2 | `App.init` does not start when `BestiaryCheck` does not exist, and shows one message. The creator gets the same test in its Task 18. | A browser can hold an old page with a new script. | A user with a broken cache sees the message and reloads. |
+| TB3-3 | `clearAutoSave()` removes the key only when the page owns it and the stored text is the text that the page last wrote or restored. Both keys. This makes CB1 narrower. | The newer work of a different tab stays. | A removed last item comes back in a tab whose key a different tab changed. |
+| TB3-4 | The page owns the key after a restore only when the restored state is not empty. Both keys. | F4 of the Task 3 review. | Not stated. |
+| TB3-5 | F5 and F6 of the Task 3 review are accepted as the reviewer wrote them. | Reviewer's corrections. | Not stated. |
+| TB4-1 | `injectIntoEncounter` writes the builder key at once after it gives the threat a new id. | F1: after a split, each reload and Add of an unchanged threat showed the prompt and added one more id. | Not stated. |
+| TB4-2 | F2 and F3 of the Task 4 review are accepted as the reviewer wrote them. | Three mutations stayed green. | Not stated. |
+| TB4-3 | The rename writes the builder key at once, and `customizeThreat` asks for a confirm when the builder is not pristine. | Both are a loss of builder work with no word to the user (G2). | One more confirm for a threat with no name. |
+| TB4-4 | One check for the half "no confirm for a pristine builder" of the Customize rule, with no further re-review. The owner flag in `app.js` stays as it is. | F4 of the re-review. The reviewer found no sequence where the flag lets a page remove a key that it must keep. | Not stated. |
+| (no id) | Task 7 waits until one of the three open reviews (5a, 5b, 6) is in. | The limit of three open reviews. | Some minutes of wait. |
+| TB5a-1 | `min-width: 0` on each `.pc-name-input`. TB5a-5 later added a second rule for the marked rows. | It also closes the old overflow of the normal rows from 1001 to 1024 px. | A short name input at a narrow sidebar. |
+| TB5a-2 | A player above the count is not in the encounter list and not in the initiative order. The player stays stored, with the mark, and the stored `encounterOrder` keeps its entries. | The count is the number of players who take part. | A GM who wants each stored player in the list raises the count. |
+| TB5a-3 | Each initiative handler tests `validity.badInput` first. A bad entry is a refused entry, not an empty one. | F3: an entry such as `e` cleared a stored initiative. | Not stated. |
+| TB5a-4 | F4 and F5 of the Task 5a review are accepted as the reviewer wrote them. | Reviewer's corrections. | Not stated. |
+| TB5a-5 | The mark of a marked row goes on its own line (`flex-wrap: wrap`, `order: 1`, `flex-basis: 100%`). | F1 stayed open for the marked rows from 1000 to 1024 px. | Not stated. |
+| TB5a-6 | `moveItemInOrder` gets a place in the visible list and puts the item before the visible item at that place in the stored order, or at the end. TB10-8 and TB10-10 later added a step before the move. | F6: a drag landed one place off for each player that was stored and not in the list. | Not stated. |
+| TB5b-1 | TB5a-3 for the player row and the player detail initiative boxes. Only a box that the user really emptied clears the initiative. | F1 of the Task 5b review. | Not stated. |
+| TB5b-2 | F2 to F5 of the Task 5b review are accepted. The skill dropdown handler reads the stored entry, not the value box. | Reviewer's corrections. | Not stated. |
+| TB6-1 | F1 to F3 of the Task 6 review (test script only), with no separate re-review. | Minor items with the reviewer's own fixtures. The controller reads the diff and runs the scripts. | Not stated. |
+| TB7-1 | F1 and F2 of the Task 7 review: one more fixture and view in the names check, and a "no script" claim from a run that clears the hit list at each step. | Reviewer's corrections. | Not stated. |
+| TB8-1 | F1 and F2 of the Task 8 review (test script only), with no separate re-review. | Reviewer's corrections. | Not stated. |
+| TB9-1 | F1 and F2 of the Task 9 review (test script only). | Reviewer's corrections. | Not stated. |
+| TB9-2 | The member line shows `Unknown` for a known threat with an empty name, as before the task. | The task changed a case that the brief did not name. | None. |
+| TB9-3 | The typed Compendium search text that goes raw into `innerHTML` becomes item 7 of Task 10 (TB10-7). | The creator copy of the tab already escapes it. | Not stated. |
+| TB10-0 | The late findings that a normal user can meet and that have a small correction go into one more task before the final review (items TB10-1 to TB10-5 of the plan). | The owner asked for "an overall pass for any bugs like those" in one go, and the final review then covers them at no more cost. | One task and one review more before the merge. |
+| TB10-1 to TB10-5 | Plan Task 10 items 1 to 5: the drag place, the picker index, the safe-integer guard, the Compendium text, the hits of each step in the proof script. | TB10-0. | As TB10-0. |
+| TB10-6 | A range band that is `null` prints `-` at the five sites that print the three bands. | Four weapons of `data/weapons.json` have `null` bands, and the creator review saw "6/null/null". | None seen. |
+| TB10-7 | The bestiary Compendium escapes the typed search text in its "No entries found" line, as the creator copy does. | TB9-3. | None. |
+| TB10-8 | Before a move, each shown entry with no stored entry goes into the stored order, in the shown order. TB10-10 later widened the step. | F1: a drop below the last entry missed the end when the user added threats after the first drag (3 of 20 drags). | Entries that the user added after the first drag are in the stored order after the next drag, at the places where they were shown. |
+| TB10-9 | F2 and F3 of the Task 10 review: range checks over the four null-band weapons and a band of 0, a check for the `markDirty` call, a picker check, a report line. | Four range checks stayed green for `||` in place of `??`. | Not stated. |
+| TB10-10 | The step stores each entry with no stored entry, the hidden players too, in the order that the list shows when each player counts. No more re-review. | A hidden player then keeps its place (TB5a-6). F4 of the re-review was a gap of TB10-8. | None seen. |
+
+### Plan text that no longer matches the code
+
+- Task 2: the plan names 18 scenarios. The script has a scenario `players12` (TB3-1, commit `110c92e`) and a scenario `drag` (Task 10). The full run has 175 checks.
+- Task 3: the plan says that `_ownsAutoSave` becomes `true` after each write and each restore, and that `clearAutoSave()` removes the key when the flag is `true`. The code also keeps the last text, removes the key only when the stored text is equal to it, and owns the key only after a restore that is not empty (TB3-3, TB3-4). `App.init` stops with a message when `BestiaryCheck` does not exist (TB3-2).
+- Task 4: the code has a helper `_isPristine()` that the plan does not name (report deviation 2). The rename modal and `injectIntoEncounter` write the builder key at once, and Customize asks for a confirm when the builder is not pristine (TB4-1, TB4-3). `loadThreatFromFile` returns `Invalid threat file` for a result with no data (report deviation 5). `app.js` still sets the builder owner flag after each restore, and the kept text stays `null` after a pristine restore (accepted by the Task 4 re-review, TB4-4).
+- Task 5a: the plan names one CSS rule. The code has `min-width: 0` on `.pc-name-input` and the own-line rules of the marked row (TB5a-1, TB5a-5). The mark is `<span class="pc-extra-mark">Above player count</span>`. The encounter list leaves out the players above the count (TB5a-2). The list initiative handler tests `validity.badInput` first (TB5a-3). `moveItemInOrder` changed in this task (TB5a-6), and the plan does not name it.
+- Task 5b: the player row and player detail initiative handlers test `validity.badInput` first (TB5b-1). The skill dropdown handler reads the stored entry (TB5b-2). A refused add quantity also calls `updateMobVisibility()`, and a builder number box falls back to `defaultValue` when the stored value is not a number (report deviations).
+- Task 7: the plan lists the text inputs of B-2. These inputs already had an escape at the base, so the task changed the number inputs, the dropdown, the preview, both pickers, the modal count and the three textarea line breaks (report deviation).
+- Task 9: the member line shows `Unknown` for a known threat with an empty name (TB9-2).
+- Task 10: the plan says "Correct the index at ONE place". The index correction is in `handleDragMove` only, but `moveItemInOrder` also got an own-place return (report deviation 3) and the step of TB10-8 and TB10-10. `getEncounterListItems` has a new optional argument `includeHiddenPlayers` (default `false`). Item 2 uses a version counter `DataLoader.threatsVersion`, not a clear at the writers, and `bestiary/js/data-loader.js` changed (report deviations 1 and 2). Items 6 and 7 (TB10-6, TB10-7) are not in the plan text, and they changed `data-loader.js`, `encounter-tab.js`, `vehicles-tab.js` and `references-tab.js`. The plan expects 163 checks and the `drag` scenario. The full run has 175.
+- Wave gate: the plan says "After Task 9". The gate ran after Task 10.
+
+### Evidence
+
+- Task 1: `test-bestiary-check.js` 90 checks at `740e639` (one more check came with Task 4 in `3e7ddb4`). Six mutations each fail a row. The review fuzzed 15,827 encounter cases and 74,404 threat cases with no throw and no wrong type.
+- Task 2: `scripts/browser-bestiary.js`, baseline of 3379 entries from the unchanged tree. At `7d93959`, 25 PASS and 123 FAIL of 148 checks, as expected. The re-review got 51 PASS and 108 FAIL in each of three full runs at `27c21d8`, and the B6 compare rule passes for the list form of spec §9 and fails for a break elsewhere.
+- Task 3: `test-bestiary-load.js` 40 checks, seven mutations each fail. The review: eleven mutations each fail, the real-page matrix matches spec §5.3, the scenarios are stable over three runs. The re-review: a page with no check module shows only the message, and both keys stay unchanged.
+- Task 4: `test-bestiary-builder.js` 27 checks, ten mutations each fail, and `if (true)` fails the F4 check. The review: after edit, reload and Add, all 7 old entries keep their stats and damage (the base showed wounds 12 against max 5).
+- Task 5a: `test-bestiary-inputs.js` 82 checks at `20603b4`, and the F6 mutation fails two checks. The review: 12 stored players stay in the key after the start, after Load Encounter and after Load Players (the base kept 10). A typed 20000 takes 32 ms (the base took 1569 ms). The re-review 2: at 390, 1000, 1010, 1024 and 1280 px, a real click on each of 6 remove buttons removes only its player.
+- Task 5b: 12 checks of `test-bestiary-inputs.js` failed before the change, and six mutations each fail at `c9e9986`. The review: each other input refuses each bad value in under 75 ms with no NaN and no `null`. The re-review: all 20 number boxes of a shipped template show their stored numbers.
+- Task 6: `test-bestiary-escapes.js` 26 checks (9 failed before), four mutations of the fix round each fail. The review probe: 83 PASS, 0 markers in the Threats tab, the sheet and the popups (9 script hits at the base). `--compare` passes against the reviewer's own baseline of `44084ae` (3379 keys).
+- Task 7: 14 new checks failed before the change. The review: 60 of 60 clean checks in the builder views (31 fail at the base), 46 of 46 round trips of typed text, the same editor DOM for all 844 shipped threats, 27 of 28 mutations fail.
+- Task 8: 20 new checks failed before the change, and the mutation fails 15 checks. The review: 0 markers and 0 script runs in the Task 8 views (the base ran script 54 times at load), the round trip of 6 names and 8 note texts is exact (76 mismatches at the base), 11 of 14 mutations fail.
+- Task 9: `test-bestiary-escapes.js` 119 checks at `cbdb479`. The review: three full runs at `896f257` end `All checks passed` with 163 PASS, and the gate goes red for each of nine breaks. A probe with a cleared hit counter gave 123 steps and 0 script hits (4828 at `44084ae`). 35 of 41 views of shipped threats are the same HTML, and the other 6 differ only in the B6 list blocks.
+- Task 10: `test-bestiary-late.js` 68 checks at `ccdbc1b` (3 failed before fix round 3), and two mutations each fail. The review: 156 of 156 mouse drags, 25 of 25 random drags with a reload and a Save and Load, 54 drags with hidden players, 12 of 12 touch drags. The re-review: 20 of 20 drags of part D, 30 of 30 with two unstored entries.
+
+Gate of the branch at `ccdbc1b`:
+
+- All 25 `scripts/test-*.js` scripts pass (the controller ran them).
+- The full run of `scripts/browser-bestiary.js` prints `All checks passed` with 175 checks. `--compare` against the baseline of the unchanged tree passes with the 22 known keys (the `card:` and `mini:` keys of the 11 B6 ids). The implementer and the reviewer of Task 10 ran both at the last commits.
+- Cache: all 17 tags of `bestiary/index.html` are at `?v=97`.
+- Nothing under `creator/`, `shared/` or `data/` changed.
+
+### Visible changes for a user
+
+- A name, a note or a text from a file shows as text and runs no script. Typed text with `&`, `<` or quotes comes back exactly as typed (Tasks 6 to 9).
+- A mob ability or a mob option that is a list shows as a list with names and texts. It showed "[object Object]" (Tasks 6 and 9).
+- Players above the player count stay stored, show the mark "Above player count" in the Players box and are not in the encounter list (Task 5a). The mark is on its own line, and the remove button of each row stays inside the sidebar at each width (Task 5a).
+- A number box accepts only a number inside its range. A bad entry such as `e` keeps the stored value, and the box shows it again (Tasks 5a and 5b).
+- An empty add count adds nothing and shows 1. Before the pass, it added 1 (Task 5b).
+- A loaded encounter is stored at once. A removed last item does not come back after a reload. A second tab does not delete the work of the first tab. A file of the wrong kind is refused with a message (Tasks 3 and 4).
+- A threat file with no data gives "Invalid threat file" (Task 4).
+- "Add to Encounter" keeps the data of a threat that is already in the encounter (Task 4).
+- A new name from the rename modal stays after a reload. Customize asks for a confirm when the builder holds work, also with no name (Task 4).
+- A mob whose threat is not in the data shows "Unknown threat (id)" and can be removed. It threw (Tasks 8 and 9).
+- An individual whose mob is not in a hand-made file shows as a free row with its Remove control (Task 3, D2).
+- A dragged entry lands at the place that the placeholder shows, the end of the list too. A drop at its own place changes nothing (Task 10).
+- The builder pickers show a custom threat that loads after the first Browse (Task 10).
+- 22 digits in a number box are refused. Before the pass, a skill Default stored 1 (Task 10).
+- The Compendium prints "Skill of your choice +4". A range band with no value prints "-" (Task 10).
+- A search text with markup in the Compendium shows as text in its "No entries found" line (Task 10).
+- The page shows "The app did not load completely. Reload the page." when a script is missing (Task 3).
+- In the Players box, the name box of each player row is 11 px narrower (198 px to 187 px at 1400 px and at 390 px), and the remove button now ends at the edge of the row. Before the pass, the button ended 11 px past the row at each width. The cause is `min-width: 0` on `.pc-name-input` (ruling TB5a-1, Task 5a). The final review found that this change was in no list for the user (finding X4).
+
+
+### Open decisions of the owner
+
+- D1, players above the count. Default in place: the players stay stored, with a mark and their `×`, and are not in the encounter list (TB5a-2). The other option is a confirm dialog that names the players before a lower count deletes them.
+
+The ledger names no other owner decision.
+
+### Late findings that are not corrected
+
+Rules of the game:
+
+- An ability whose type is not in `ABILITY_TYPES` is in the picker index but never in a picker list, and its editor select shows the first option (`threat-builder-tab.js`, near `:923` and `:415`).
+
+Stored data:
+
+- An edit or an add followed by a reload inside the 2-second autosave delay is lost (base and task). The browser's leave prompt shows each time. The final review measured it: a reload after 300, 1500 or 1900 ms loses the edit, and after 2300 ms the edit stays (finding X5; an earlier line of the ledger said 300 ms).
+- An old cached `app.js` with a new `encounter-state.js` still fails in the restore, and the next add writes over the key (a narrow cache mix).
+- A removed entry keeps its stored order entry (not shown).
+- The first drag stores only the shown entries, so hidden players come back at the end of the list, sorted by initiative (seen at `8076b1b`, before TB10-10).
+- The save code frees the file link 1 s after the click. In a long probe, the browser cancelled the Save download two times (older than the pass).
+
+Display:
+
+- `App.switchTab` empties a bottom sheet that opens within 320 ms of the switch (`bestiary/js/app.js:23-33`).
+- A custom threat stays in the Threats tab and the pickers after the user removes its entries, until a reload.
+
+Test and proof tooling:
+
+- `runCompare` passes a B6 key that is the same as the baseline (the `b6` scenario carries that proof).
+- The `c10` scenario does not read the member text (the unit check N-8 carries it).
+
+**From the final review ("Before the branch")**
+
+- A page with one tab script missing (`settings-tab`, `threats-tab`, `vehicles-tab`, `glossary-tab`, `references-tab`, `encounter-tab` or `threat-builder-tab`) stops in `App.init` before the restore. The next add, typed builder name or player then writes over both stored keys. The base does the same. Ruling TB3-2 covers only `bestiary-check.js`. This is the most serious open item of the list: it can replace stored work after a load that failed in part.
+- Old code deletes the players that this code keeps above the player count: a cached page of the code before the pass, or the old single-app site on the same origin, removes them from its state and from the key at its start (finding X1; spec section 5.2 names the limit).
+- The builder Shock text box stores -5 for "-5" and `Infinity` for 400 digits. The next load repairs the value to 1.
+- The template search and the builder Load from File replace the builder threat with no confirm. Customize asks.
+
+
+### Not checked
+
+- Firefox and WebKit. Each review ran in headless Chromium.
+- Touch on real hardware and on a real phone. Drags at 390 px and in a list that scrolls.
+- A real clipboard paste (the reviews used `execCommand('insertText')`). Mouse clicks on the spin buttons (the Task 5b review used the arrow keys).
+- A real `.encounter`, `.threat` or `.players` file from a user. None is on this machine.
+- Stored custom threats and the key shapes of the old single-app site.
+- The saves of the Electron wrappers (separate projects).
+- The mobile sidebar Load and Clear buttons, a real iOS picker and a storage quota failure.
+- Stored notes with CR LF.
+- A write from another browser process between the two storage reads of a restore.
+- Glossary popups in the builder preview and real pointer hover.
+- The weapon and ammo pickers of the encounter tab, by reading only.
+- The count in the rename modal (B-6) and the number fields N-1, N-2, N-3 and N-7 with a hostile file (TB2-2). After the check, a file can carry only numbers there, so the unit tests of `BestiaryCheck` are the proof.
+- The hidden-player case with unstored entries of TB10-10 has unit checks only. Fix round 3 of Task 10 had no re-review.
+
+### Wave table
+
+| Task | Model | Dispatches | Send-backs | Gate | Commits |
+|---|---|---|---|---|---|
+| Audits 1 to 3 | opus (general-purpose) | 3 | 0 | Read-only. Audit 3: C1 to C11 (3 S1, 5 S2, 3 S3) | none |
+| Spec and plan | opus (general-purpose) | 1 | 2 | Plan review: 1 Critical, 6 Important, 10 Minor, all closed. Re-review: Q1 to Q6 (2 Important, 4 Minor), applied in round 2 | `989441a`, `f10c400`, `e922f23` |
+| Task 1 The `BestiaryCheck` module and the cache bump | opus (implementer) | 1 | 1 | Review: spec PASS, 2 Important, 5 Minor, all closed (F7 by a spec text). APPROVED | `f0a0bce`, `740e639` (controller `0f9db36`) |
+| Task 2 The browser proof script and the DOM baseline | sonnet | 1 | 3 | Review: spec FAIL, 3 Important, 6 Minor, all closed. N1 Minor closed. APPROVED | `7d93959`, `27c21d8`, `578328a`, `110c92e` |
+| Task 3 Encounter loads, the encounter autosave and the player file | opus (implementer) | 1 | 1 | Review: spec PASS, 1 Critical (closed in Task 5a, TB3-1), 1 Important, 4 Minor. APPROVED | `610377a`, `36cdf17` (controller `1bdbb65`) |
+| Task 4 Threat files, the builder autosave and Add to Encounter | opus (implementer) | 1 | 2 | Review: spec PASS, 1 Important, 2 Minor. Re-review: 1 Minor (F4). All closed. APPROVED | `3e7ddb4`, `95781cf`, `9f4b141` |
+| Task 5a The encounter writers, the Players box, the list initiative and the player rows | sonnet | 1 | 2 | Review: spec PASS, 3 Important, 2 Minor. Re-review 1: F1 open, F6 Minor. Re-review 2: all closed. APPROVED | `ad02d03`, `4c220fb`, `20603b4` (controller `cf8bf4d`) |
+| Task 5b The add counts, the builder number fields and the other initiative boxes | sonnet | 1 | 1 | Review: spec PASS, 1 Important, 4 Minor, all closed. APPROVED | `9690fa3`, `c9e9986` |
+| Task 6 Escape the Threats tab, the Copy text and the mob ability lists | sonnet | 1 | 1 | Review: spec PASS, APPROVED, 3 Minor. Corrected | `d5cc24e`, `749de92` |
+| Task 7 Escape the threat builder | sonnet | 1 | 1 | Review: spec PASS, APPROVED, 2 Minor. Corrected | `53a9c0e`, `ecbd568` |
+| Task 8 Escape the encounter list, the player detail and the notes | sonnet | 1 | 1 | Review: spec PASS, APPROVED, 2 Minor. Corrected | `243bcea`, `903496e` |
+| Task 9 Escape the encounter details and the mini card | sonnet | 1 | 1 | Review: spec PASS, APPROVED, 3 Minor. Corrected | `896f257`, `cbdb479` |
+| Task 10 Late findings | sonnet | 1 | 3 (round 1: controller items 6 and 7, not review findings) | Review: spec FAIL (item 1), 1 Important, 2 Minor. Re-review: 1 Minor (F4), closed by TB10-10 with no re-review. APPROVED | `03850be`, `8076b1b`, `a6b548b`, `ccdbc1b` (controller `d68eb73`) |
+| Plan and task reviews | opus, xhigh (reviewer) | 12 | 0 | 9 scoped re-reviews through the same reviewers: plan, Tasks 1, 2, 3, 4, 5a (two), 5b, 10 | none |
+| Wave record draft | opus (ste-writer) | 1 | 0 | The controller added the final review part, one visible change and four late findings | none |
+| Final review | fable, xhigh | 1 (resumed three times after HTTP 529) | 1 fix dispatch (X2) to the Task 3 implementer | READY TO MERGE; X1 to X5 closed | `601f39a`, `b50c36d` |
+
+### Final review
+
+The final review of the full branch ran on a `general-purpose` agent with the model `fable` at effort `xhigh`, on the range `44084ae..ccdbc1b`. The run stopped three times with a server error (HTTP 529). The controller resumed it each time, and the agent kept its context and its result files.
+
+**Result: ready to merge.** No Critical finding and no Important finding. Five Minor findings: four in documents, one in a test.
+
+| Finding | Kind | What | Correction |
+|---|---|---|---|
+| X1 | doc | Old code deletes the players that the head keeps above the player count (a cached old page, or the old single-app site on the same origin). No correction is possible in this branch. | Spec sections 5.2 and 14 name the limit (commit `601f39a`). |
+| X2 | test | No check failed when the load of an empty encounter file by an owner stopped clearing the key. The product was correct. | Commit `b50c36d`: four checks in `scripts/test-bestiary-load.js` (44 checks). The reviewer's mutation fails two of them. |
+| X3 | doc | The spec did not hold Task 10, and one sentence of section 14 was false after it. | A new spec section 15 with the rules of Task 10, and the corrected sentence (commit `601f39a`). |
+| X4 | doc | The name box of each player row is 11 px narrower, and the remove button ends at the row edge. The change was in no list for the user. | The part "Visible changes for a user" of this record. |
+| X5 | doc | One line of the late findings said "within 300 ms" for a window that is the full 2-second autosave delay. | The ledger line and this record. |
+
+Controller ruling: commit `b50c36d` had no separate re-review. It changes one test script, and the controller ran all 25 scripts and the gate at that commit.
+
+Evidence of the review (the files are in the session scratch folder and are not in the repo):
+
+- **Base to head:** a full encounter built through the UI of `44084ae` restores at the head with the same state, the same list order and no warning. The start writes no key. Base and head in turn change nothing but the edit. The builder key round-trips in both directions. A state built through the UI of `74924bb` and older shapes load with no change.
+- **Start states:** no key; 17 wrong encounter shapes and 7 wrong builder shapes (0 page errors, each tab usable, the key unchanged); blocked storage in two modes; no `bestiary-check.js` (the message only, the keys unchanged).
+- **Imports:** the three files that the Save buttons of the base wrote load with the same data. 19 files of the wrong kind are each refused with no change to the state or the keys.
+- **Hostile probe:** a marker in each string field and id, through each import and both stored keys: 321 steps at 1400 px and 321 at 390 px give 0 script hits, 0 injected elements and 0 page errors. The same probe at the base is bad in 6 of 6 steps.
+- **Sink pass:** `glossary.js`, `glossary-tab.js`, `references-tab.js`, `vehicles-tab.js`, `settings-tab.js`, `app.js` and `data-loader.js` write no value from a file or the storage.
+- **Normal user:** base against head at 1400, 1010 and 390 px: the DOM and the values of 56 to 58 views are the same. The only DOM change is "6/null/null" to "6/-/-" for the four weapons with a null band.
+- **Moves:** 8017 state moves with random operations match a model, and 32 real mouse drags land where the placeholder shows.
+- **Mutations:** 44 of 47 product mutations fail a unit check. Two survivors are equivalent, and the third is X2.
+- **Audit findings:** C1 to C11, D1, D2 and B6 are each closed.
+- **Deploy checks:** 17 tags at `?v=97`, with the new tag after `data-loader.js`; nothing changed under `creator/`, `shared/`, `data/`, `feedback-worker/` or `.github/`; `git merge-tree` shows no conflict with `bug-pass-creator`; 38 of 38 scripts pass in the merged tree of both branches. The three wargear id corrections of the creator branch change three Starting Wargear lines of the bestiary Compendium (for example "Servo Harness" becomes "Astartes Servo Arm").
+
+Not checked by the final review: touch drags, Firefox and WebKit; the real cache behavior of GitHub Pages and the real key shapes of the old single-app site; real user files, a storage over its quota and the iOS file picker; the clipboard content after Copy.
+
+**Wave gate at the branch head `b50c36d`** (the controller ran it on 2026-11-16): all 25 `scripts/test-*.js` pass; the full run of `scripts/browser-bestiary.js` prints `All checks passed` with 175 PASS and 0 FAIL; `--compare` against the baseline of the unchanged tree prints `All checks passed` with 22 allowed keys; `git diff 44084ae..HEAD` is empty under `creator/`, `shared/` and `data/`.

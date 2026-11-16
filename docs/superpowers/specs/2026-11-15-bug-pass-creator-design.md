@@ -133,7 +133,7 @@ The clamp of CC2 and the increase limit (`state.js:608`) read `attributeMaximums
 | Ork (`ork`) | Toughness | 10 | 12 | Core p.25 |
 | Aeldari (`aeldari`) | Strength | 8 | 7 | Core p.25 |
 
-The table also has a Speed row; the data has no speed maximum, so that row was not compared. A stored Aeldari Strength 8 stays until the user edits it or changes the species (G1); the Stats tab then shows no "+" for it. The species of the other books were not compared (§17). Cost if wrong **[Controller ruling CC15]**: an erratum that the PDF does not hold; the change is three numbers in one data file.
+The table also has a Speed row; the data has no speed maximum, so that row was not compared. A stored Aeldari Strength 8 stays until the user edits it or changes the species (G1); the Stats tab then shows a disabled "+" for it, with the tip "Maximum rank", and "-" gives the XP back. The species of the other books were not compared (§17). Cost if wrong **[Controller ruling CC15]**: an erratum that the PDF does not hold; the change is three numbers in one data file.
 - A click on a selected card does nothing.
 - The Custom Archetype record (name, keywords, ability, starting wargear list) comes back when the user selects Custom Archetype again.
 

@@ -89,6 +89,7 @@ vm.runInContext('var ThreatCard = { render: () => "" }; var Glossary = { enhance
 
 const State = get('State');
 const DerivedStats = get('DerivedStats');
+const DataLoader = get('DataLoader');
 const CharacterSheetTab = get('CharacterSheetTab');
 
 const count = (html, re) => (html.match(re) || []).length;
@@ -181,6 +182,107 @@ check('Shock 9 of max: "+" stores the maximum', State.character.currentShock, ma
     check('render of the strip and of the sheet: the JSON of the character does not change', JSON.stringify(State.character) === before, true);
     check('strip: Wounds 7 of 3 shows 3 filled boxes', count(strip, /tracking-box filled" data-type="wounds"/g), 3);
     check('strip: Faith shows 1', /sheet-strip-faith[\s\S]*?tracker-value">1</.test(strip), true);
+}
+
+// === The sheet shows an id that the data does not have (bug pass, spec sections 9.4 and 13.3) ===
+// Each unknown entry is a visible row "Unknown <kind> (<id>)", escaped. The sheet has no controls.
+// A character with no PSYKER keyword that holds stored powers or disciplines sees them on the sheet.
+vm.runInContext('var navigator = { clipboard: { writeText(t) { globalThis.__copied = t; return { then() {} }; } } };', ctx);
+{
+    const HOSTILE = 'z<i>"q';
+    const ESC = 'z&lt;i&gt;&quot;q';
+    const has = (html, text) => html.includes(text);
+
+    loadCharacter({ talents: ['zz'], wargear: [{ id: 'zz_w' }], memorableInjuries: [{ id: 'zz' }], traumaticInjuries: [{ id: 'zy' }], mutations: [{ id: 'zz' }] });
+    let c = State.getCharacter();
+    check('renderTalents: an unknown talent shows "Unknown talent (zz)"', has(CharacterSheetTab.renderTalents(c), 'Unknown talent (zz)'), true);
+    check('renderEquipment: an unknown wargear id shows "Unknown wargear (zz_w)"', has(CharacterSheetTab.renderEquipment(c), 'Unknown wargear (zz_w)'), true);
+    const injuries = CharacterSheetTab.renderInjuriesCorruption(c);
+    check('renderInjuriesCorruption: "Unknown injury (zz)" for a memorable injury', has(injuries, 'Unknown injury (zz)'), true);
+    check('renderInjuriesCorruption: "Unknown injury (zy)" for a traumatic injury', has(injuries, 'Unknown injury (zy)'), true);
+    check('renderMutations: an unknown mutation shows "Unknown mutation (zz)"', has(CharacterSheetTab.renderMutations(c), 'Unknown mutation (zz)'), true);
+    vm.runInContext('globalThis.__copied = null', ctx);
+    CharacterSheetTab.copySummary(makeElement());
+    check('copySummary: the text has "Unknown wargear (zz_w)"', has(String(get('__copied')), 'Unknown wargear (zz_w)'), true);
+    check('copySummary: the text has "Unknown talent (zz)"', has(String(get('__copied')), 'Unknown talent (zz)'), true);
+
+    // A hostile id shows as escaped text
+    loadCharacter({
+        talents: [HOSTILE], wargear: [{ id: HOSTILE }], memorableInjuries: [{ id: HOSTILE }], mutations: [{ id: HOSTILE }],
+        psychicPowers: [HOSTILE], unlockedDisciplines: ['Biomancy']
+    });
+    c = State.getCharacter();
+    check('hostile id: the talent row is escaped', has(CharacterSheetTab.renderTalents(c), `Unknown talent (${ESC})`), true);
+    check('hostile id: the wargear row is escaped', has(CharacterSheetTab.renderEquipment(c), `Unknown wargear (${ESC})`), true);
+    check('hostile id: the injury row is escaped', has(CharacterSheetTab.renderInjuriesCorruption(c), `Unknown injury (${ESC})`), true);
+    check('hostile id: the mutation row is escaped', has(CharacterSheetTab.renderMutations(c), `Unknown mutation (${ESC})`), true);
+    check('hostile id: the power row is escaped', has(CharacterSheetTab.renderPsychicPowers(c), `Unknown power (${ESC})`), true);
+    check('hostile id: no raw "<i>" in the sheet rows', has(CharacterSheetTab.renderTalents(c) + CharacterSheetTab.renderEquipment(c) + CharacterSheetTab.renderPsychicPowers(c), 'z<i>'), false);
+
+    // Ascension, background, species sub-option and weapon upgrade
+    loadCharacter({
+        ascensions: [{ type: 'package', packageId: 'zz_pkg', targetTier: 2 }, { type: 'archetype', archetypeId: HOSTILE, targetTier: 3 }],
+        background: { origin: { id: HOSTILE }, accomplishment: { id: 'zz_acc' }, goal: { id: 'zz_goal' }, bonusUsed: null, bonusType: null },
+        species: { id: 'human', xpCost: 0, subOptions: [{ type: 'zz_type', optionId: HOSTILE }] },
+        wargear: [{ id: 'bolt_pistol', upgrades: ['zz_up'] }]
+    });
+    c = State.getCharacter();
+    const asc = CharacterSheetTab.renderAscensions(c);
+    check('renderAscensions: "Unknown ascension package (zz_pkg)"', has(asc, 'Unknown ascension package (zz_pkg)'), true);
+    check('renderAscensions: "Unknown archetype (<escaped id>)"', has(asc, `Unknown archetype (${ESC})`), true);
+    const bg = CharacterSheetTab.renderBackground(c);
+    check('renderBackground: "Unknown origin (<escaped id>)"', has(bg, `Unknown origin (${ESC})`), true);
+    check('renderBackground: "Unknown accomplishment (zz_acc)"', has(bg, 'Unknown accomplishment (zz_acc)'), true);
+    check('renderBackground: "Unknown goal (zz_goal)"', has(bg, 'Unknown goal (zz_goal)'), true);
+    const speciesHtml = CharacterSheetTab.renderSpeciesAbilities(c, DataLoader.getSpecies('human'));
+    check('renderSpeciesAbilities: "Unknown sub-option (<escaped id>)"', has(speciesHtml, `Unknown sub-option (${ESC})`), true);
+    const weaponsHtml = CharacterSheetTab.renderWeapons(c);
+    check('renderWeapons: "Unknown upgrade (zz_up)"', has(weaponsHtml, 'Unknown upgrade (zz_up)'), true);
+
+    // A book that the user turned off does not make an id unknown
+    loadCharacter({ wargear: [{ id: 'bolt_pistol' }] });
+    check('a known id shows no unknown row', has(CharacterSheetTab.renderWeapons(State.getCharacter()), 'Unknown'), false);
+
+    // Powers of a character with no PSYKER keyword
+    loadCharacter({ archetype: { id: 'ganger', xpCost: 0 }, psychicPowers: ['smite'] });
+    c = State.getCharacter();
+    check('ganger: State.isPsyker() is false', State.isPsyker(), false);
+    check('ganger with a stored power: hasStoredPowers is true', CharacterSheetTab.hasStoredPowers(c), true);
+    const smite = CharacterSheetTab.renderPsychicPowers(c);
+    check('ganger with Smite: renderPsychicPowers is not empty', smite !== '', true);
+    check('ganger with Smite: the output has "Smite"', has(smite, 'Smite'), true);
+    check('ganger with Smite: the Powers tab shows', CharacterSheetTab.getVisibleSheetTabs(c).includes('powers'), true);
+    vm.runInContext('globalThis.__copied = null', ctx);
+    CharacterSheetTab.copySummary(makeElement());
+    check('ganger with Smite: the copied text has PSYCHIC POWERS and Smite', /PSYCHIC POWERS[\s\S]*Smite/.test(String(get('__copied'))), true);
+
+    loadCharacter({ archetype: { id: 'ganger', xpCost: 0 }, psychicPowers: [], unlockedDisciplines: ['Biomancy'] });
+    c = State.getCharacter();
+    check('ganger with a discipline: hasStoredPowers is true', CharacterSheetTab.hasStoredPowers(c), true);
+    check('ganger with a discipline: the output has "Biomancy"', has(CharacterSheetTab.renderPsychicPowers(c), 'Biomancy'), true);
+
+    loadCharacter({ archetype: { id: 'ganger', xpCost: 0 }, psychicPowers: ['psyniscience'], unlockedDisciplines: [] });
+    c = State.getCharacter();
+    check('ganger with only a universal ability: hasStoredPowers is false', CharacterSheetTab.hasStoredPowers(c), false);
+    check('ganger with only a universal ability: renderPsychicPowers is empty', CharacterSheetTab.renderPsychicPowers(c), '');
+    check('ganger with only a universal ability: no Powers tab', CharacterSheetTab.getVisibleSheetTabs(c).includes('powers'), false);
+
+    // A render never writes into the character: one unknown entry of each kind
+    loadCharacter({
+        talents: ['zz'], wargear: [{ id: 'zz_w' }, { id: 'bolt_pistol', upgrades: ['zz_up'] }], memorableInjuries: [{ id: 'zz' }],
+        traumaticInjuries: [{ id: 'zy' }], mutations: [{ id: 'zz' }], psychicPowers: ['zz'], unlockedDisciplines: ['Biomancy'],
+        ascensions: [{ type: 'package', packageId: 'zz_pkg', targetTier: 2 }, { type: 'archetype', archetypeId: 'zz_arch', targetTier: 3 }],
+        background: { origin: { id: 'zz_o' }, accomplishment: { id: 'zz_acc' }, goal: { id: 'zz_goal' }, bonusUsed: null, bonusType: null },
+        species: { id: 'human', xpCost: 0, subOptions: [{ type: 'zz_type', optionId: 'zz_opt' }] }
+    });
+    const jsonBefore = JSON.stringify(State.character);
+    let renderThrew = false;
+    try { CharacterSheetTab.render(); } catch (e) { renderThrew = e.message; }
+    check('render with one unknown entry of each kind: no throw', renderThrew, false);
+    check('render with one unknown entry of each kind: the JSON of the character does not change', JSON.stringify(State.character) === jsonBefore, true);
+    const sheetHtml = byId['character-sheet-content'] ? byId['character-sheet-content'].innerHTML : '';
+    check('the sheet has no Remove control', /btn-remove|>Remove</.test(sheetHtml), false);
+    check('the full sheet shows the unknown rows and the stored power', ['Unknown talent (zz)', 'Unknown wargear (zz_w)', 'Unknown power (zz)', 'Unknown mutation (zz)', 'Unknown injury (zz)'].filter(t => !sheetHtml.includes(t)), []);
 }
 
 console.log(failures === 0 ? '\nAll checks passed' : `\n${failures} check(s) FAILED.`);

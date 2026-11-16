@@ -2098,14 +2098,23 @@ const EncounterTab = {
             return;
         }
 
+        // The file must be a plain object with one key of a threat (spec §4.2, CB3)
         const threat = result.data;
-        if (!threat) {
+        const threatKeys = ['name', 'abilities', 'attributes'];
+        if (!BestiaryCheck.isPlainObject(threat) || !threatKeys.some(key => Object.prototype.hasOwnProperty.call(threat, key))) {
             this.showNotification('Error: Invalid threat file');
             return;
         }
+        const paths = BestiaryCheck.repairThreat(threat, '');
+        if (paths.length > 0) {
+            console.warn('Threat data was repaired on load: ' + paths.join(', '));
+        }
 
-        // Ensure valid custom ID
-        if (!threat.id || !threat.id.startsWith('custom_')) {
+        // Ensure valid custom ID. If the cache holds other data with this id,
+        // the threat also gets a new ID, so the entries of the old data keep it (spec §7.2, C8).
+        const validId = typeof threat.id === 'string' && threat.id.startsWith('custom_');
+        const held = validId ? DataLoader.getThreat(threat.id) : null;
+        if (!validId || (held && !BestiaryCheck.sameThreatData(held, threat))) {
             threat.id = 'custom_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
         }
 

@@ -247,6 +247,15 @@ for (const [value, min, max, expected] of inputCases) {
     for (const key of Object.keys(record.attributes).reverse()) attributes[key] = record.attributes[key];
     nested.attributes = attributes;
     check('sameThreatData: a nested key order change is the same', BestiaryCheck.sameThreatData(record, nested), true);
+    // Review of Task 1: the keys inside the items of a list are sorted too
+    const itemKeys = rt(record);
+    itemKeys.abilities = record.abilities.map(ability => {
+        const out = {};
+        for (const key of Object.keys(ability).reverse()) out[key] = rt(ability[key]);
+        return out;
+    });
+    check('sameThreatData: a key order change inside the items of a list is the same',
+        { items: itemKeys.abilities.length > 0, same: BestiaryCheck.sameThreatData(record, itemKeys) }, { items: true, same: true });
     // Fix round 1 (F3): the order of an array is part of the JSON
     check('sameThreatData: a list in another order is different',
         BestiaryCheck.sameThreatData(record, { ...rt(record), abilities: rt(record.abilities).reverse() }), false);

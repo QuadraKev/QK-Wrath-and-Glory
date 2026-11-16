@@ -8,13 +8,10 @@ const SettingTab = {
         });
 
         // A number field commits on change, not on every keystroke, so a legal value is never
-        // refused half-way (the 1 of 12). A refused entry, or one that the browser cannot read
-        // as a number (badInput), keeps the stored value and the input shows it again.
+        // refused half-way (the 1 of 12). A refused entry keeps the stored value and the input
+        // shows it again. An entry that the browser cannot read as a number has the value ''.
+        // The setters refuse it, because no field of the creator treats an empty box as clear.
         const commit = (setter) => (e) => {
-            if (e.target.validity && e.target.validity.badInput) {
-                this.refresh();
-                return;
-            }
             if (!setter(e.target.value)) this.refresh();
         };
 

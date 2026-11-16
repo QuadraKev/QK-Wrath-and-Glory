@@ -219,12 +219,12 @@ const FollowersTab = {
                     let value;
                     if (input.type === 'checkbox') value = e.target.checked;
                     else if (input.type === 'number') {
-                        // Members is 1 or more. Living is 0 up to Members. A refused entry, or a bad
-                        // entry that the browser cannot read, keeps the stored value and re-renders.
+                        // Members is 1 or more. Living is 0 up to Members. A refused entry keeps the
+                        // stored value and re-renders. An entry that the browser cannot read has the
+                        // value '', and _intInRange refuses it.
                         const follower = State.getFollower(id);
                         const max = field === 'livingCount' && follower ? follower.count : Infinity;
-                        const badInput = e.target.validity && e.target.validity.badInput;
-                        value = badInput ? null : State._intInRange(e.target.value, field === 'count' ? 1 : 0, max);
+                        value = State._intInRange(e.target.value, field === 'count' ? 1 : 0, max);
                         if (value === null) {
                             this.render();
                             return;

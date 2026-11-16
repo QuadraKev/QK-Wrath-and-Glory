@@ -36,7 +36,8 @@ function makeElement() {
         classList: { add() {}, remove() {}, toggle() {}, contains() { return false; } },
         addEventListener(evt, fn) { (handlers[evt] = handlers[evt] || []).push(fn); },
         removeEventListener() {},
-        appendChild(child) { return child; },
+        children: [],
+        appendChild(child) { this.children.push(child); return child; },
         setAttribute() {},
         getAttribute() { return null; },
         focus() {},
@@ -87,7 +88,7 @@ get('DataLoader').cache = CACHE;
 for (const f of ['xp-calculator', 'derived-stats', 'prerequisite', 'character-check', 'state', 'improvised-builder',
     'custom-wargear', 'keyword-bonus', 'followers'])
     load(`creator/js/${f}.js`);
-for (const f of ['setting', 'injuries', 'followers', 'character-sheet'])
+for (const f of ['setting', 'injuries', 'followers', 'character-sheet', 'archetype'])
     load(`creator/tabs/${f}-tab.js`);
 vm.runInContext('var ThreatCard = { render: () => "" }; var Glossary = { enhanceElement() {} };', ctx);
 
@@ -97,6 +98,8 @@ const SettingTab = get('SettingTab');
 const InjuriesTab = get('InjuriesTab');
 const FollowersTab = get('FollowersTab');
 const CharacterSheetTab = get('CharacterSheetTab');
+const ArchetypeTab = get('ArchetypeTab');
+const DataLoader = get('DataLoader');
 
 const base = {
     name: 'H',
@@ -119,6 +122,10 @@ const ENTRIES = [
     ['abc', { value: 'abc' }],
     ['bad entry', { value: '', badInput: true }]
 ];
+
+// The expected stored value of a cell. A refused entry keeps the start value. The cells of an accepted
+// entry are listed: only 1e5 is a legal integer where the field has no upper bound.
+const expectedStored = (start, accepted, name) => (name in accepted ? accepted[name] : start);
 
 // Fires the handler of an event on an element with an entry.
 function fire(el, evt, entry) {
@@ -196,14 +203,20 @@ const settingTable = {};
     fire(rank, 'change', { value: '3' });
     check('Setting tab: Rank 3 stored', State.character.rank, 3);
 
+    // Each cell: the stored value and the text of the input. A refused entry shows the stored value again.
+    // An accepted entry leaves the typed text in the input.
     for (const [name, entry] of ENTRIES) {
         const out = {};
-        for (const [label, el, start, key] of [['rank', rank, 2, 'rank'], ['xp', xp, 7, 'additionalXp'], ['tier', tier, 3, 'tier']]) {
+        for (const [label, el, start, key, accepted] of [
+            ['rank', rank, 2, 'rank', {}],
+            ['xp', xp, 7, 'additionalXp', { '1e5': 100000 }],
+            ['tier', tier, 3, 'tier', {}]
+        ]) {
             loadCharacter({ rank: 2, additionalXp: 7, tier: 3 });
             fire(el, 'change', entry);
             out[label] = State.character[key];
-            // A refused entry shows the stored value again
-            if (out[label] === start) check(`Setting tab ${label} ${name}: the input shows the stored value`, el.value, String(start));
+            check(`Setting tab ${label} ${name}: stored value`, State.character[key], expectedStored(start, accepted, name));
+            check(`Setting tab ${label} ${name}: input text`, el.value, name in accepted ? entry.value : String(start));
         }
         settingTable[name] = out;
     }
@@ -233,9 +246,10 @@ const corruptionTable = {};
         renders = 0;
         fire(el, 'change', entry);
         corruptionTable[name] = State.character.corruption;
-        if (State.character.corruption === 5) {
-            check(`Corruption ${name}: the input shows the stored value`, el.value, '5');
-        }
+        const accepted = { '1e5': 100000 };
+        check(`Corruption ${name}: stored value`, State.character.corruption, expectedStored(5, accepted, name));
+        check(`Corruption ${name}: input text`, el.value, name in accepted ? entry.value : '5');
+        check(`Corruption ${name}: the tab renders only for a stored value`, renders, name in accepted ? 1 : 0);
     }
     loadCharacter({ corruption: 5 });
     fire(el, 'change', { value: '12' });
@@ -249,7 +263,13 @@ const membersTable = {}, livingTable = {};
     const mob = { id: 'flw_1', threatId: 'x', name: '', kind: 'mob', count: 4, livingCount: 2, notes: '', useAlternativeStats: false, currentWounds: null, currentShock: null };
     const makeInput = (field, type) => { const el = makeElement(); el.type = type; el.dataset.field = field; return el; };
     let renders = 0;
-    FollowersTab.render = () => { renders++; };
+    // A render builds each input again from the stored values, as the real render does.
+    FollowersTab.render = () => {
+        renders++;
+        const f = State.getFollower('flw_1');
+        members.value = f.count;
+        living.value = f.livingCount;
+    };
     FollowersTab.updateSidebarCount = () => {};
     const container = document.getElementById('section-followers');
     const members = makeInput('count', 'number');
@@ -267,18 +287,26 @@ const membersTable = {}, livingTable = {};
     check('Followers: Living uses the change event', Object.keys(living.handlers), ['change']);
 
     const stored = () => State.getFollower('flw_1');
+    // Each cell: the stored value and the text of the input after the re-render. Every entry re-renders once.
     for (const [name, entry] of ENTRIES) {
+        const acceptedMembers = { '1e5': 100000 };
         loadCharacter({ followers: [{ ...mob }] });
         renders = 0;
         fire(members, 'change', entry);
         membersTable[name] = stored().count;
-        const refused = stored().count === 4;
-        check(`Followers Members ${name}: ${refused ? 'refused, a re-render' : 'stored'}`, refused ? renders > 0 : renders > 0, true);
+        const wantMembers = expectedStored(4, acceptedMembers, name);
+        check(`Followers Members ${name}: stored value`, stored().count, wantMembers);
+        check(`Followers Members ${name}: input text`, members.value, String(wantMembers));
+        check(`Followers Members ${name}: one re-render`, renders, 1);
+        check(`Followers Members ${name}: Living is not changed`, stored().livingCount, 2);
         loadCharacter({ followers: [{ ...mob }] });
         renders = 0;
         fire(living, 'change', entry);
         livingTable[name] = stored().livingCount;
-        check(`Followers Living ${name}: ${stored().livingCount === 2 ? 'refused, a re-render' : 'stored'}`, renders > 0, true);
+        check(`Followers Living ${name}: stored value`, stored().livingCount, 2);
+        check(`Followers Living ${name}: input text`, living.value, '2');
+        check(`Followers Living ${name}: one re-render`, renders, 1);
+        check(`Followers Living ${name}: Members is not changed`, stored().count, 4);
     }
     loadCharacter({ followers: [{ ...mob }] });
     fire(members, 'change', { value: '2.5' });
@@ -312,10 +340,41 @@ const membersTable = {}, livingTable = {};
     check('G1: calculateMaxWounds of a Rank 5 character is finite', Number.isFinite(DerivedStats.calculateMaxWounds(State.character)), true);
 }
 
+// === Tier 5 (Vow of Absolution) ===
+{
+    const html = readSource('creator/index.html');
+    const options = [...html.matchAll(/<option value="(\d+)">(\d) - [^<]*\((\d+) XP\)<\/option>/g)].map(m => [m[1], m[3]]);
+    check('index.html: the Tier select offers 1 to 5 with 100 to 500 XP',
+        options.filter(o => /^[1-5]$/.test(o[0])).map(o => o.join(':')), ['1:100', '2:200', '3:300', '4:400', '5:500']);
+    const XPCalculator = get('XPCalculator');
+    check('XPCalculator: the starting XP of Tier 5 is 500', XPCalculator.TIER_STARTING_XP[5], 500);
+    loadCharacter({ tier: 5 });
+    SettingTab.refresh();
+    check('Tier 5: a stored Tier 5 shows in the select, and the select has that option',
+        [byId['tier-select'].value, options.some(o => o[0] === byId['tier-select'].value)], ['5', true]);
+    check('Tier 5: setTier(5) stores 5', [State.setTier(5), State.character.tier], [true, 5]);
+    const ids = tier => DataLoader.filterArchetypes('primaris', tier, null).map(a => a.id);
+    check('Tier 5: the archetype data holds terminator at tier 5', DataLoader.getAllArchetypes().find(a => a.id === 'terminator').tier, 5);
+    check('Tier 5: the filter lists terminator at Tier 5', ids(5).includes('terminator'), true);
+    check('Tier 5: the filter hides terminator at Tier 4', ids(4).includes('terminator'), false);
+    // The list of the Archetype tab
+    const text = el => (el.innerHTML || '') + el.children.map(text).join('');
+    loadCharacter({ tier: 5, species: { id: 'primaris', xpCost: 0, subOptions: [] }, archetype: null });
+    byId['archetype-list'] = makeElement();
+    ArchetypeTab.searchQuery = '';
+    ArchetypeTab.renderList();
+    check('Tier 5: the list of the Archetype tab shows Terminator', text(byId['archetype-list']).includes('Terminator'), true);
+    loadCharacter({ tier: 4, species: { id: 'primaris', xpCost: 0, subOptions: [] }, archetype: null });
+    byId['archetype-list'] = makeElement();
+    ArchetypeTab.renderList();
+    check('Tier 4: the list of the Archetype tab does not show Terminator', text(byId['archetype-list']).includes('Terminator'), false);
+}
+
 // === The Rank input of the page ===
 {
     const html = readSource('creator/index.html');
     check('index.html: the Rank input declares value 1, min 1, max 3', html.includes('id="character-rank" value="1" min="1" max="3"'), true);
+    check('index.html: the hint of the Rank input', html.includes('<span class="form-hint">Set your Character\'s Rank, between 1 and 3.</span>'), true);
 }
 
 console.log('\nTable (stored value after each entry; start Rank 2, XP 7, Tier 3, Corruption 5, Members 4, Living 2)');

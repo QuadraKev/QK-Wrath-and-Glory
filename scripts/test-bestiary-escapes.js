@@ -455,6 +455,139 @@ group('P5 (encounter)', () => {
     clearEncounterState();
 });
 
+// --- the encounter tab: the details and the mini card (spec sections 8 and 9, task 9) ---
+// The mini card prints its own <b>Str:</b> labels in code. RAW_B must not count them.
+const RAW_MINI = html => RAW_B(html.replace(/<b>[A-Za-z]+:<\/b>/g, ''));
+
+// The last detail render of the recording document, with or without a notes box
+function renderDetailPage(type, id) {
+    EncounterTab.selectedId = id;
+    EncounterTab.selectionType = type;
+    const container = rec.document.createElement('div');
+    written.length = 0;
+    EncounterTab._renderDetailContent(container);
+    return written.filter(h => h.includes('encounter-detail-content')).pop() || '';
+}
+
+function plainIndividual(id, threatId, extra) {
+    return Object.assign({ id, threatId, bonus: 'none', currentWounds: 0, currentShock: 0, maxWounds: 3, maxShock: 0, mobId: null, initiative: null }, extra || {});
+}
+
+group('N-5', () => {
+    clearEncounterState();
+    const threat = evilThreat();
+    threat.bonuses.push({ name: 'Champion', description: 'x' });
+    DataLoader.injectThreat(threat);
+    EncounterState.individuals = [plainIndividual('i1', threat.id, {
+        bonus: EVIL, currentWounds: EVIL, currentShock: EVIL, maxWounds: EVIL, maxShock: EVIL, personalRuin: EVIL, mobId: 'mob1', notes: EVIL
+    })];
+    EncounterState.mobs = [{ id: 'mob1', threatId: threat.id, name: EVIL, initiative: null }];
+    const html = renderDetailPage('individual', 'i1');
+    check('N-5: the detail page rendered', html.includes('Part of:'), true);
+    check('N-5: the individual detail holds no raw value', RAW_MINI(html), false);
+    check('N-5: the mob name of the membership line is escaped', html.includes('Part of: &lt;b&gt;&quot;Q7&#39;&lt;/b&gt;&amp;'), true);
+    clearEncounterState();
+    DataLoader.removeThreat(threat.id);
+});
+
+group('N-6', () => {
+    clearEncounterState();
+    const threat = evilThreat();
+    DataLoader.injectThreat(threat);
+    const members = ['m1', 'm2'].map(m => plainIndividual(m, threat.id, {
+        id: EVIL + m, currentWounds: EVIL, currentShock: EVIL, maxWounds: EVIL, maxShock: EVIL, mobId: 'mob1'
+    }));
+    const free = plainIndividual(EVIL + 'free', threat.id, { currentWounds: '0' + EVIL, maxWounds: '9' + EVIL });
+    EncounterState.individuals = members.concat([free]);
+    EncounterState.mobs = [{ id: 'mob1', threatId: threat.id, name: EVIL, initiative: null, notes: EVIL }];
+    const html = renderDetailPage('mob', 'mob1');
+    check('N-6: the mob detail rendered the members and the compatible list', html.includes('member-name') && html.includes('compatible-checkbox'), true);
+    check('N-6: the mob detail holds no raw value', RAW_MINI(html), false);
+    clearEncounterState();
+    DataLoader.removeThreat(threat.id);
+});
+
+group('C10 (details)', () => {
+    clearEncounterState();
+    const members = ['m1', 'm2'].map(m => plainIndividual(m, 'gone', { mobId: 'mob1' }));
+    EncounterState.individuals = members.concat([plainIndividual('free1', 'gone')]);
+    EncounterState.mobs = [{ id: 'mob1', threatId: 'gone', name: 'M', initiative: null }];
+    let html = '';
+    let threw = null;
+    try { html = renderDetailPage('mob', 'mob1'); } catch (e) { threw = e.message; }
+    check('C10: the mob detail of an unknown threat does not throw', threw, null);
+    check('C10: the mob detail shows Unknown threat (gone)', html.includes('Unknown threat (gone)'), true);
+    check('C10: the add-troops line shows Unknown threat (gone)', /compatible-item[\s\S]*Unknown threat \(gone\) \(W: 0\/3\)/.test(html), true);
+    clearEncounterState();
+});
+
+group('N-7', () => {
+    clearEncounterState();
+    DataLoader.cache['vehicles.json'] = [{ id: 'veh_test', name: 'Test Vehicle', wounds: 10 }];
+    EncounterState.vehicles = [{ id: 'v1', vehicleId: 'veh_test', wounds: EVIL, initiative: null }];
+    const html = renderDetailPage('vehicle', 'v1');
+    check('N-7: the vehicle detail rendered', html.includes('Test Vehicle'), true);
+    check('N-7: the vehicle wounds are escaped', RAW_B(html), false);
+    check('N-7: the vehicle wounds show as text', html.includes('&lt;b&gt;&quot;Q7&#39;&lt;/b&gt;&amp; / 10'), true);
+    delete DataLoader.cache['vehicles.json'];
+    clearEncounterState();
+});
+
+group('N-8', () => {
+    clearEncounterState();
+    const html = EncounterTab.renderMobMemberItem(plainIndividual('m9', 'gone'), undefined);
+    check('N-8: a member of an unknown threat shows Unknown threat (gone)', html.includes('>Unknown threat (gone)</span>'), true);
+    const evil = EncounterTab.renderMobMemberItem(plainIndividual(EVIL, EVIL, { currentWounds: EVIL, currentShock: EVIL, maxWounds: EVIL, maxShock: EVIL }), undefined);
+    check('N-8: a member with hostile values holds no raw value', RAW_B(evil), false);
+    clearEncounterState();
+});
+
+group('N-9', () => {
+    const html = EncounterTab.renderThreatCardMini(evilThreat(), null, false);
+    check('N-9: the mini card holds no raw value', RAW_MINI(html), false);
+    check('N-9: the mini card holds the keyword as text', html.includes('threat-keyword-mini">&lt;b&gt;'), true);
+});
+
+group('B6 (mini card)', () => {
+    for (const id of ['necron_warrior', 'fire_warrior']) {
+        const threat = DataLoader.getThreat(id);
+        const html = EncounterTab.renderThreatCardMini(threat, null, false);
+        const entries = [].concat(threat.mobAbilities || [], threat.mobOptions || []).filter(e => e && e.name);
+        check(`B6: the mini card of ${id} holds no [object Object]`, html.includes('[object Object]'), false);
+        check(`B6: the mini card of ${id} shows each entry name`, entries.map(e => html.includes(EncounterTab.escapeHtml(e.name))), entries.map(() => true));
+        check(`B6: the mini card of ${id} shows each entry as an ability-mini`, entries.length >= 1 && (html.match(/class="ability-name-mini"/g) || []).length >= entries.length, true);
+    }
+    check('B6: the mini card of necron_warrior shows Their Number Is Legion', EncounterTab.renderThreatCardMini(DataLoader.getThreat('necron_warrior'), null, false).includes('Their Number Is Legion'), true);
+    const fire = DataLoader.getThreat('fire_warrior');
+    check('B6: fire_warrior holds four entries', [].concat(fire.mobAbilities, fire.mobOptions).length, 4);
+    const none = EncounterTab.renderThreatCardMini(Object.assign({}, DataLoader.getThreat('necron_warrior'), { mobAbilities: [] }), null, false);
+    check('B6: an empty list prints no Mob Abilities section', none.includes('Mob Abilities'), false);
+    const text = EncounterTab.renderThreatCardMini(Object.assign({}, DataLoader.getThreat('necron_warrior'), { mobAbilities: 'A <i>b</i>' }), null, false);
+    check('B6: a string prints as text with its label', text.includes('Mob Abilities:</span>') && text.includes('A &lt;i&gt;b&lt;/i&gt;'), true);
+});
+
+group('names (encounter details)', () => {
+    const NAME = 'A & "B" <C>';
+    const ATTR = 'A &amp; &quot;B&quot; &lt;C&gt;';
+    clearEncounterState();
+    const threat = Object.assign(evilThreat(), { id: 'custom_names_d', name: NAME });
+    DataLoader.injectThreat(threat);
+    const members = ['m1', 'm2'].map(m => plainIndividual(m, threat.id, { mobId: 'mob1' }));
+    EncounterState.individuals = [plainIndividual('i1', threat.id), plainIndividual('i2', threat.id, { mobId: 'mob1' })].concat(members);
+    EncounterState.mobs = [{ id: 'mob1', threatId: threat.id, name: NAME, initiative: null }];
+    const pages = [['the individual detail', renderDetailPage('individual', 'i1')], ['the mob detail', renderDetailPage('mob', 'mob1')],
+        ['the member line', EncounterTab.renderMobMemberItem(members[0], threat)]];
+    for (const [label, html] of pages) {
+        check(`names: ${label} holds the name escaped one time`, html.includes(ATTR), true);
+        check(`names: ${label} holds no double escape`, html.includes('&amp;amp;'), false);
+    }
+    check('names: the add-troops line holds the name escaped one time', pages[1][1].includes(`<span>${ATTR} (W: 0/3)</span>`), true);
+    const inMob = renderDetailPage('individual', 'i2');
+    check('names: the membership line holds the mob name escaped one time', inMob.includes(`Part of: ${ATTR}`), true);
+    clearEncounterState();
+    DataLoader.removeThreat('custom_names_d');
+});
+
 // --- context 2: the real glossary, with no stub (P16) ---
 group('glossary', () => {
     const ctx2 = vm.createContext({ console, document: makeRecordingDocument().document });

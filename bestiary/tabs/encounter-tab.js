@@ -1025,8 +1025,8 @@ const EncounterTab = {
         container.innerHTML = `
             <div class="encounter-detail-content">
                 <div class="detail-header">
-                    <h3>${threat.name}</h3>
-                    ${individual.bonus !== 'none' ? `<span class="bonus-badge bonus-${individual.bonus}">${individual.bonus === 'elite' ? 'ELITE' : 'ADVERSARY'}</span>` : ''}
+                    <h3>${this.escapeHtml(threat.name)}</h3>
+                    ${individual.bonus !== 'none' ? `<span class="bonus-badge bonus-${this.escapeHtml(individual.bonus)}">${individual.bonus === 'elite' ? 'ELITE' : 'ADVERSARY'}</span>` : ''}
                     ${isDead ? '<span class="status-badge dead-badge">DEAD</span>' : ''}
                 </div>
 
@@ -1035,7 +1035,7 @@ const EncounterTab = {
                         <div class="tracker-label">Wounds</div>
                         <div class="tracker-controls">
                             <button class="tracker-btn" id="detail-wound-minus">-</button>
-                            <span class="tracker-value">${individual.currentWounds} / ${individual.maxWounds}</span>
+                            <span class="tracker-value">${this.escapeHtml(individual.currentWounds)} / ${this.escapeHtml(individual.maxWounds)}</span>
                             <button class="tracker-btn" id="detail-wound-plus">+</button>
                         </div>
                         <div class="tracker-bar">
@@ -1046,7 +1046,7 @@ const EncounterTab = {
                         <div class="tracker-label">Shock</div>
                         <div class="tracker-controls">
                             <button class="tracker-btn" id="detail-shock-minus">-</button>
-                            <span class="tracker-value">${individual.maxShock > 0 ? `${individual.currentShock} / ${individual.maxShock}` : '-'}</span>
+                            <span class="tracker-value">${individual.maxShock > 0 ? `${this.escapeHtml(individual.currentShock)} / ${this.escapeHtml(individual.maxShock)}` : '-'}</span>
                             <button class="tracker-btn" id="detail-shock-plus">+</button>
                         </div>
                         <div class="tracker-bar">
@@ -1058,7 +1058,7 @@ const EncounterTab = {
                         <div class="tracker-label ruin-label">Personal Ruin</div>
                         <div class="tracker-controls">
                             <button class="tracker-btn" id="detail-ruin-minus">-</button>
-                            <span class="tracker-value">${individual.personalRuin || 0}</span>
+                            <span class="tracker-value">${this.escapeHtml(individual.personalRuin || 0)}</span>
                             <button class="tracker-btn" id="detail-ruin-plus">+</button>
                         </div>
                     </div>
@@ -1067,7 +1067,7 @@ const EncounterTab = {
 
                 ${individual.mobId ? `
                     <div class="mob-membership">
-                        <span>Part of: ${EncounterState.getMob(individual.mobId)?.name || 'Unknown Mob'}</span>
+                        <span>Part of: ${this.escapeHtml(EncounterState.getMob(individual.mobId)?.name || 'Unknown Mob')}</span>
                         <button class="btn-secondary" id="btn-remove-from-mob">Remove from Mob</button>
                     </div>
                 ` : ''}
@@ -1102,6 +1102,8 @@ const EncounterTab = {
         }
 
         const threat = DataLoader.getThreat(mob.threatId);
+        // A threat that the data does not have gets a mark, so the page still renders
+        const threatName = threat ? threat.name : `Unknown threat (${mob.threatId})`;
         const members = EncounterState.getMobMembers(this.selectedId);
         const bonus = EncounterState.getMobAttackBonus(this.selectedId);
         const compatible = EncounterState.getCompatibleIndividualsForMob(mob.threatId);
@@ -1109,7 +1111,7 @@ const EncounterTab = {
         container.innerHTML = `
             <div class="encounter-detail-content">
                 <div class="detail-header">
-                    <h3>${mob.name}</h3>
+                    <h3>${this.escapeHtml(mob.name)}</h3>
                     <span class="mob-badge">MOB</span>
                 </div>
 
@@ -1139,8 +1141,8 @@ const EncounterTab = {
                         <div class="compatible-list">
                             ${compatible.map(c => `
                                 <label class="compatible-item">
-                                    <input type="checkbox" class="compatible-checkbox" data-id="${c.id}">
-                                    <span>${threat.name} (W: ${c.currentWounds}/${c.maxWounds})</span>
+                                    <input type="checkbox" class="compatible-checkbox" data-id="${this.escapeHtml(c.id)}">
+                                    <span>${this.escapeHtml(threatName)} (W: ${this.escapeHtml(c.currentWounds)}/${this.escapeHtml(c.maxWounds)})</span>
                                 </label>
                             `).join('')}
                         </div>
@@ -1209,7 +1211,7 @@ const EncounterTab = {
                         <div class="tracker-label">Wounds</div>
                         <div class="tracker-controls">
                             <button class="tracker-btn vehicle-detail-wound-btn" data-delta="-1">-</button>
-                            <span class="tracker-value">${entry.wounds} / ${vehicle.wounds}</span>
+                            <span class="tracker-value">${this.escapeHtml(entry.wounds)} / ${vehicle.wounds}</span>
                             <button class="tracker-btn vehicle-detail-wound-btn" data-delta="1">+</button>
                         </div>
                         <div class="tracker-bar">
@@ -1257,30 +1259,32 @@ const EncounterTab = {
         const isDead = EncounterState.isIndividualDead(individual.id);
         const isDeadFromWounds = individual.currentWounds >= individual.maxWounds;
         const isDeadFromShock = individual.currentShock >= individual.maxShock;
+        const id = this.escapeHtml(individual.id);
+        const name = threat ? threat.name : `Unknown threat (${individual.threatId})`;
 
         return `
-            <div class="mob-member ${isDead ? 'dead' : ''}" data-id="${individual.id}">
+            <div class="mob-member ${isDead ? 'dead' : ''}" data-id="${id}">
                 <div class="member-top-row">
-                    <span class="member-name">${threat?.name || 'Unknown'}</span>
+                    <span class="member-name">${this.escapeHtml(name)}</span>
                     ${isDead ? `
-                        <button class="member-revive-btn" data-id="${individual.id}" title="Revive">Revive</button>
+                        <button class="member-revive-btn" data-id="${id}" title="Revive">Revive</button>
                     ` : `
-                        <button class="member-kill-btn" data-id="${individual.id}" title="Mark as Dead">Kill</button>
+                        <button class="member-kill-btn" data-id="${id}" title="Mark as Dead">Kill</button>
                     `}
-                    <button class="member-remove-btn" data-id="${individual.id}" title="Remove from mob">×</button>
+                    <button class="member-remove-btn" data-id="${id}" title="Remove from mob">×</button>
                 </div>
                 <div class="member-trackers">
                     <div class="member-tracker ${isDeadFromWounds ? 'tracker-death' : ''}">
                         <span class="tracker-label-mini">W</span>
-                        <button class="member-stat-btn" data-id="${individual.id}" data-stat="wounds" data-delta="-1" ${isDead ? 'disabled' : ''}>-</button>
-                        <span class="tracker-value-mini">${individual.currentWounds}/${individual.maxWounds}</span>
-                        <button class="member-stat-btn" data-id="${individual.id}" data-stat="wounds" data-delta="1" ${isDead ? 'disabled' : ''}>+</button>
+                        <button class="member-stat-btn" data-id="${id}" data-stat="wounds" data-delta="-1" ${isDead ? 'disabled' : ''}>-</button>
+                        <span class="tracker-value-mini">${this.escapeHtml(individual.currentWounds)}/${this.escapeHtml(individual.maxWounds)}</span>
+                        <button class="member-stat-btn" data-id="${id}" data-stat="wounds" data-delta="1" ${isDead ? 'disabled' : ''}>+</button>
                     </div>
                     <div class="member-tracker ${isDeadFromShock ? 'tracker-death' : ''}">
                         <span class="tracker-label-mini">S</span>
-                        <button class="member-stat-btn" data-id="${individual.id}" data-stat="shock" data-delta="-1" ${isDead ? 'disabled' : ''}>-</button>
-                        <span class="tracker-value-mini">${individual.currentShock}/${individual.maxShock}</span>
-                        <button class="member-stat-btn" data-id="${individual.id}" data-stat="shock" data-delta="1" ${isDead ? 'disabled' : ''}>+</button>
+                        <button class="member-stat-btn" data-id="${id}" data-stat="shock" data-delta="-1" ${isDead ? 'disabled' : ''}>-</button>
+                        <span class="tracker-value-mini">${this.escapeHtml(individual.currentShock)}/${this.escapeHtml(individual.maxShock)}</span>
+                        <button class="member-stat-btn" data-id="${id}" data-stat="shock" data-delta="1" ${isDead ? 'disabled' : ''}>+</button>
                     </div>
                 </div>
             </div>
@@ -1290,15 +1294,15 @@ const EncounterTab = {
     renderThreatCardMini(threat, additionalWeaponId = null, showAdditionalWeapon = false) {
         // Full threat card for the detail panel
         const keywordsHtml = (threat.keywords || []).map(kw =>
-            `<span class="threat-keyword-mini">${kw}</span>`
+            `<span class="threat-keyword-mini">${this.escapeHtml(kw)}</span>`
         ).join('');
 
         // Render bonuses
         const bonusesHtml = (threat.bonuses || []).map(bonus => `
             <div class="ability-mini">
                 <span class="ability-type-mini">BONUS:</span>
-                <span class="ability-name-mini" data-glossary-enhance>${bonus.name}</span>
-                ${bonus.description ? `<div class="ability-desc-mini" data-glossary-enhance>${bonus.description}</div>` : ''}
+                <span class="ability-name-mini" data-glossary-enhance>${this.escapeHtml(bonus.name)}</span>
+                ${bonus.description ? `<div class="ability-desc-mini" data-glossary-enhance>${this.escapeHtml(bonus.description)}</div>` : ''}
             </div>
         `).join('');
 
@@ -1319,10 +1323,10 @@ const EncounterTab = {
 
             return `
                 <div class="ability-mini">
-                    <span class="ability-type-mini">${ability.type}:</span>
-                    <span class="ability-name-mini" data-glossary-enhance>${ability.name}</span>
-                    ${statsHtml ? `<span class="ability-stats-mini" data-glossary-enhance>${statsHtml}</span>` : ''}
-                    ${ability.description ? `<div class="ability-desc-mini" data-glossary-enhance>${ability.description}</div>` : ''}
+                    <span class="ability-type-mini">${this.escapeHtml(ability.type)}:</span>
+                    <span class="ability-name-mini" data-glossary-enhance>${this.escapeHtml(ability.name)}</span>
+                    ${statsHtml ? `<span class="ability-stats-mini" data-glossary-enhance>${this.escapeHtml(statsHtml)}</span>` : ''}
+                    ${ability.description ? `<div class="ability-desc-mini" data-glossary-enhance>${this.escapeHtml(ability.description)}</div>` : ''}
                 </div>
             `;
         }).join('');
@@ -1331,13 +1335,13 @@ const EncounterTab = {
         const attrs = threat.attributes || {};
         const attributesHtml = `
             <div class="mini-attributes">
-                <span class="mini-attr"><b>Str:</b> ${attrs.S ?? '-'}</span>
-                <span class="mini-attr"><b>Tou:</b> ${attrs.T ?? '-'}</span>
-                <span class="mini-attr"><b>Agi:</b> ${attrs.A ?? '-'}</span>
-                <span class="mini-attr"><b>Ini:</b> ${attrs.I ?? '-'}</span>
-                <span class="mini-attr"><b>Wil:</b> ${attrs.Wil ?? '-'}</span>
-                <span class="mini-attr"><b>Int:</b> ${attrs.Int ?? '-'}</span>
-                <span class="mini-attr"><b>Fel:</b> ${attrs.Fel ?? '-'}</span>
+                <span class="mini-attr"><b>Str:</b> ${this.escapeHtml(attrs.S ?? '-')}</span>
+                <span class="mini-attr"><b>Tou:</b> ${this.escapeHtml(attrs.T ?? '-')}</span>
+                <span class="mini-attr"><b>Agi:</b> ${this.escapeHtml(attrs.A ?? '-')}</span>
+                <span class="mini-attr"><b>Ini:</b> ${this.escapeHtml(attrs.I ?? '-')}</span>
+                <span class="mini-attr"><b>Wil:</b> ${this.escapeHtml(attrs.Wil ?? '-')}</span>
+                <span class="mini-attr"><b>Int:</b> ${this.escapeHtml(attrs.Int ?? '-')}</span>
+                <span class="mini-attr"><b>Fel:</b> ${this.escapeHtml(attrs.Fel ?? '-')}</span>
             </div>
         `;
 
@@ -1366,42 +1370,42 @@ const EncounterTab = {
                     <div class="mini-stats-grid">
                         <div class="mini-stat-box">
                             <span class="stat-box-label">Defence</span>
-                            <span class="stat-box-value">${defenceText}${defenceNote}</span>
+                            <span class="stat-box-value">${this.escapeHtml(defenceText + defenceNote)}</span>
                         </div>
                         <div class="mini-stat-box">
                             <span class="stat-box-label">Resilience</span>
-                            <span class="stat-box-value">${resilienceText}${resilienceNote}</span>
+                            <span class="stat-box-value">${this.escapeHtml(resilienceText + resilienceNote)}</span>
                         </div>
                         <div class="mini-stat-box">
                             <span class="stat-box-label">Wounds</span>
-                            <span class="stat-box-value">${threat.wounds || '-'}</span>
+                            <span class="stat-box-value">${this.escapeHtml(threat.wounds || '-')}</span>
                         </div>
                         <div class="mini-stat-box">
                             <span class="stat-box-label">Shock</span>
-                            <span class="stat-box-value">${threat.shock || '-'}</span>
+                            <span class="stat-box-value">${this.escapeHtml(threat.shock || '-')}</span>
                         </div>
                         <div class="mini-stat-box">
                             <span class="stat-box-label">Speed</span>
-                            <span class="stat-box-value">${speedText}${speedNote}</span>
+                            <span class="stat-box-value">${this.escapeHtml(speedText + speedNote)}</span>
                         </div>
                         <div class="mini-stat-box">
                             <span class="stat-box-label">Size</span>
-                            <span class="stat-box-value">${threat.size || '-'}</span>
+                            <span class="stat-box-value">${this.escapeHtml(threat.size || '-')}</span>
                         </div>
                         <div class="mini-stat-box">
                             <span class="stat-box-label">Conviction</span>
-                            <span class="stat-box-value">${threat.conviction ?? '-'}</span>
+                            <span class="stat-box-value">${this.escapeHtml(threat.conviction ?? '-')}</span>
                         </div>
                         <div class="mini-stat-box">
                             <span class="stat-box-label">Resolve</span>
-                            <span class="stat-box-value">${threat.resolve ?? '-'}</span>
+                            <span class="stat-box-value">${this.escapeHtml(threat.resolve ?? '-')}</span>
                         </div>
                     </div>
 
                     ${threat.skills ? `
                         <div class="mini-section">
                             <span class="mini-section-label">Skills:</span>
-                            <span class="mini-section-value" data-glossary-enhance>${threat.skills}</span>
+                            <span class="mini-section-value" data-glossary-enhance>${this.escapeHtml(threat.skills)}</span>
                         </div>
                     ` : ''}
 
@@ -1422,40 +1426,56 @@ const EncounterTab = {
                     ${threat.determination ? `
                         <div class="mini-section">
                             <span class="mini-section-label">Determination:</span>
-                            <span class="mini-section-value" data-glossary-enhance>${threat.determination}</span>
+                            <span class="mini-section-value" data-glossary-enhance>${this.escapeHtml(threat.determination)}</span>
                         </div>
                     ` : ''}
 
-                    ${threat.mobOptions ? `
-                        <div class="mini-section">
-                            <span class="mini-section-label">Mob Options:</span>
-                            <span class="mini-section-value" data-glossary-enhance>${threat.mobOptions}</span>
-                        </div>
-                    ` : ''}
+                    ${this.renderMiniTextSection('Mob Options', threat.mobOptions)}
 
-                    ${threat.mobAbilities ? `
-                        <div class="mini-section">
-                            <span class="mini-section-label">Mob Abilities:</span>
-                            <span class="mini-section-value" data-glossary-enhance>${threat.mobAbilities}</span>
-                        </div>
-                    ` : ''}
+                    ${this.renderMiniTextSection('Mob Abilities', threat.mobAbilities)}
 
                     ${threat.threatOptions ? `
                         <div class="mini-section">
                             <span class="mini-section-label">Threat Options:</span>
-                            <span class="mini-section-value" data-glossary-enhance>${threat.threatOptions}</span>
+                            <span class="mini-section-value" data-glossary-enhance>${this.escapeHtml(threat.threatOptions)}</span>
                         </div>
                     ` : ''}
 
                     ${threat.biomorphs ? `
                         <div class="mini-section">
                             <span class="mini-section-label">Biomorphs:</span>
-                            <span class="mini-section-value" data-glossary-enhance>${threat.biomorphs}</span>
+                            <span class="mini-section-value" data-glossary-enhance>${this.escapeHtml(threat.biomorphs)}</span>
                         </div>
                     ` : ''}
                 </div>
             </div>
         `;
+    },
+
+    // A string prints as one line. A list prints one ability-mini for each entry, as the mini card prints the bonuses.
+    renderMiniTextSection(label, value) {
+        if (!value || (Array.isArray(value) && value.length === 0)) return '';
+
+        if (Array.isArray(value)) {
+            return `
+                        <div class="mini-section">
+                            <div class="mini-section-label">${label}</div>
+                            <div class="mini-abilities">${value.map(entry => `
+                                <div class="ability-mini">
+                                    <span class="ability-name-mini" data-glossary-enhance>${this.escapeHtml(entry.name)}</span>
+                                    <div class="ability-desc-mini" data-glossary-enhance>${this.escapeHtml(entry.description)}</div>
+                                </div>
+                            `).join('')}</div>
+                        </div>
+                    `;
+        }
+
+        return `
+                        <div class="mini-section">
+                            <span class="mini-section-label">${label}:</span>
+                            <span class="mini-section-value" data-glossary-enhance>${this.escapeHtml(value)}</span>
+                        </div>
+                    `;
     },
 
     formatWeaponStats(weapon) {

@@ -42,6 +42,9 @@ const State = {
         }
     },
 
+    // The settings key. It keeps the sources and the house rule also for a blank character (bug pass spec §12).
+    _SETTINGS_KEY: 'wng-creator-settings',
+
     // The value that a skill had before a key of archetypeSkillChoices selected it: { key: { skill, value } }.
     // This is in memory only. It is not a field of the character and is never stored.
     _skillChoicePrior: {},
@@ -1733,6 +1736,7 @@ const State = {
     // Set enabled sources
     setEnabledSources(sources) {
         this.enabledSources = sources;
+        this.saveSettings();
         this.notifyListeners('sources');
     },
 
@@ -1744,6 +1748,7 @@ const State = {
     // Set the ignore-prerequisites house rule
     setIgnorePrerequisites(enabled) {
         this.ignorePrerequisites = !!enabled;
+        this.saveSettings();
         this.notifyListeners('houseRules');
     },
 
@@ -1820,6 +1825,32 @@ const State = {
     // Clear the auto-save
     clearAutoSave() {
         localStorage.removeItem(this._AUTO_SAVE_KEY);
+    },
+
+    // Write the settings to their own key. New Character does not clear this key.
+    saveSettings() {
+        try {
+            const data = {
+                enabledSources: this.enabledSources,
+                // The rule of _performAutoSave: every source the app offered at save time.
+                knownSources: (typeof SettingsTab !== 'undefined' ? SettingsTab.sourceButtons : []).map(b => b.id),
+                ignorePrerequisites: this.ignorePrerequisites
+            };
+            localStorage.setItem(this._SETTINGS_KEY, JSON.stringify(data));
+        } catch (e) {
+            console.warn('Settings save failed:', e);
+        }
+    },
+
+    // Get the stored settings, or null. A blocked storage or a bad value gives null.
+    getSavedSettings() {
+        try {
+            const raw = localStorage.getItem(this._SETTINGS_KEY);
+            return raw ? JSON.parse(raw) : null;
+        } catch (e) {
+            console.warn('Failed to read settings:', e);
+            return null;
+        }
     },
 
     // Get character keywords

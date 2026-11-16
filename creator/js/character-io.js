@@ -44,8 +44,9 @@ const CharacterIO = {
         }
     },
 
-    // Load a character - always prompts for file location
-    async load() {
+    // Load a character - always prompts for file location.
+    // confirmLoad(fileName) is optional. It runs after the file pick. On false the load stops with no change (CC6).
+    async load(confirmLoad = null) {
         try {
             const dialogResult = await window.api.showOpenDialog();
 
@@ -53,6 +54,11 @@ const CharacterIO = {
                 const result = await window.api.importCharacter(dialogResult.filePaths[0]);
 
                 if (result.success) {
+                    if (confirmLoad && !(await confirmLoad(dialogResult.filePaths[0]))) {
+                        // Put back the file handle of the last Save, so a Save does not write to the declined file (CC17).
+                        window.api.cancelOpen?.();
+                        return { success: false, error: 'Load cancelled.' };
+                    }
                     State.loadCharacter(result.character);
                     this.lastSavedPath = dialogResult.filePaths[0];
                     console.log(`Character loaded from: ${dialogResult.filePaths[0]}`);

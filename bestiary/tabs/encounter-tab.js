@@ -1261,7 +1261,7 @@ const EncounterTab = {
         const isDeadFromWounds = individual.currentWounds >= individual.maxWounds;
         const isDeadFromShock = individual.currentShock >= individual.maxShock;
         const id = this.escapeHtml(individual.id);
-        const name = threat ? threat.name : `Unknown threat (${individual.threatId})`;
+        const name = threat ? (threat.name || 'Unknown') : `Unknown threat (${individual.threatId})`;
 
         return `
             <div class="mob-member ${isDead ? 'dead' : ''}" data-id="${id}">

@@ -278,6 +278,12 @@ The old single-app site (`quadrakev.github.io/wrath-and-glory-bestiary-web/`) ha
 
 `clear()` of the builder gets its literal from a new method `_newThreat()`, so that the pristine test and `clear()` use one object shape.
 
+Three more rules came from the review of Task 3 (controller rulings TB3-2 to TB3-4). They hold for the encounter key and for the builder key.
+
+- **The stored text test (TB3-3).** Each page keeps the text that it last wrote to the key or restored from it. `clearAutoSave()` removes the key only when the page owns it AND the text in the storage is equal to that kept text. If a different tab wrote the key after that, the key stays: the work of the other tab is newer. Two tabs that both restored the same key still share one slot; the last write wins, as before this change.
+- **A restore that gives an empty state (TB3-4).** The page owns the key after a restore only when the restored state is not empty. A stored value that the check repairs to an empty state stays in the storage until the user makes a state that is not empty.
+- **A script that did not load (TB3-2).** `App.init` first makes sure that `BestiaryCheck` exists. If it does not, the app shows one visible message ("The app did not load completely. Reload the page.") and does not start: no restore, no listener that writes, no autosave. Why: a browser can hold an old page with a new script. Without the module, the start threw in the restore, the page showed an empty encounter, and the next add wrote over the stored encounter. This is a test of the load, not a catch for errors.
+
 ### 5.3 The stored keys after each case
 
 "Owner" means that the flag of §5.2 is `true` in this page.

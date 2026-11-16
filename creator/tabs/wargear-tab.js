@@ -436,16 +436,7 @@ const WargearTab = {
 
         if (document.getElementById('btn-add-starting')) {
             document.getElementById('btn-add-starting').addEventListener('click', () => {
-                for (const entry of archetype.startingWargear) {
-                    if (typeof entry === 'string') {
-                        State.addWargear(entry, true);
-                    } else if (typeof entry === 'object' && entry.id) {
-                        const qty = entry.qty || 1;
-                        for (let i = 0; i < qty; i++) {
-                            State.addWargear(entry.id, true);
-                        }
-                    }
-                }
+                this.addStartingWargear(archetype.startingWargear);
                 this.render();
             });
         }
@@ -456,16 +447,7 @@ const WargearTab = {
                 const ascArchetypeId = btn.dataset.archetypeId;
                 const ascArchetype = DataLoader.getArchetype(ascArchetypeId);
                 if (ascArchetype?.startingWargear) {
-                    for (const entry of ascArchetype.startingWargear) {
-                        if (typeof entry === 'string') {
-                            State.addWargear(entry, true);
-                        } else if (typeof entry === 'object' && entry.id) {
-                            const qty = entry.qty || 1;
-                            for (let i = 0; i < qty; i++) {
-                                State.addWargear(entry.id, true);
-                            }
-                        }
-                    }
+                    this.addStartingWargear(ascArchetype.startingWargear);
                     this.render();
                 }
             });
@@ -488,6 +470,31 @@ const WargearTab = {
         });
 
         this.bindBrowserItemEvents();
+    },
+
+    // Add the starting wargear of a list (strings and { id, qty } objects) once.
+    // An id that the data does not have is skipped. The wanted count of an id is its quantity over the whole list.
+    // The starting entries that the list already has count against it, less the ones that the kept custom archetype record lists.
+    addStartingWargear(entries) {
+        const wanted = new Map();
+        for (const entry of entries) {
+            if (typeof entry === 'string') {
+                wanted.set(entry, (wanted.get(entry) || 0) + 1);
+            } else if (entry && typeof entry === 'object' && entry.id) {
+                wanted.set(entry.id, (wanted.get(entry.id) || 0) + (entry.qty || 1));
+            }
+        }
+        const character = State.getCharacter();
+        const record = Array.isArray(character.customArchetype?.wargear) ? character.customArchetype.wargear : [];
+        for (const [id, qty] of wanted) {
+            if (!DataLoader.getWargearItem(id)) continue;
+            const present = character.wargear.filter(w => w.id === id && w.isStarting === true && !w.relic && !w.improvised && !w.custom).length;
+            const listed = record.filter(r => r === id).length;
+            const add = Math.max(0, qty - Math.max(0, present - listed));
+            for (let i = 0; i < add; i++) {
+                State.addWargear(id, true);
+            }
+        }
     },
 
     // Render browser items based on current category and search

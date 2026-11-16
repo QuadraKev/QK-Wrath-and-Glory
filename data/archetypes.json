@@ -1114,7 +1114,7 @@
         "id": "krak_grenades",
         "qty": 3
       },
-      "ballistic_autoreliquary"
+      "ballistic_appeasement_auto_reliquary"
     ],
     "source": "core",
     "page": 90
@@ -2398,7 +2398,7 @@
     ],
     "startingWargear": [
       "artificer_power_armour",
-      "servo_harness",
+      "astartes_servo_arm",
       "omnissian_axe",
       "plasma_pistol",
       {
@@ -2853,7 +2853,7 @@
     "startingWargear": [
       "heavy_aspect_armour",
       "scorpion_chainsword",
-      "mandiblaster",
+      "mandiblasters",
       "shuriken_pistol",
       "war_mask",
       "spirit_stone"

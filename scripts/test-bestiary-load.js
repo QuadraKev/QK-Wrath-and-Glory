@@ -409,6 +409,61 @@ const repairedPaths = (warns) => warns.filter(w => w.startsWith(ENC_REPAIR)).map
             { stored: expected, unsaved: false });
     });
 
+    // Final review round (X2): an empty encounter file removes the key only for an owner (spec §5.3, row 2)
+    await group('C4 empty file', async () => {
+        const stored = (store) => (KEY_ENC in store ? store[KEY_ENC] : null);
+        const loadEmpty = async (app) => {
+            app.window.api.loadEncounterFile = async () => ({ success: true, data: mkEnc(), fileName: 'Empty' });
+            await app.EncounterState.loadEncounterFromFile();
+        };
+
+        // The page wrote the key
+        const store1 = {};
+        const writer = makeApp(store1);
+        writer.EncounterState.addIndividual('sly_marbo_aaa', 1);
+        writer.flush();
+        const wrote = stored(store1) !== null;
+        await loadEmpty(writer);
+        check('C4: an owner that wrote the key loads an empty file: the key is removed', { wrote, key: stored(store1) }, { wrote: true, key: null });
+
+        // The page restored its state from the key
+        const store2 = {};
+        const first = makeApp(store2);
+        first.EncounterState.addIndividual('sly_marbo_aaa', 1);
+        first.flush();
+        const restorer = makeApp(store2);
+        restorer.App.checkAutoSave();
+        const restored = restorer.EncounterState.individuals.length;
+        await loadEmpty(restorer);
+        check('C4: an owner that restored the key loads an empty file: the key is removed', { restored, key: stored(store2) }, { restored: 1, key: null });
+
+        // The page did not write or restore the key: the key stays unchanged
+        const store3 = {};
+        const other = makeApp(store3);
+        other.EncounterState.addIndividual('sly_marbo_aaa', 1);
+        other.flush();
+        const kept = stored(store3);
+        const stranger = makeApp(store3);
+        await loadEmpty(stranger);
+        check('C4: a page that does not own the key loads an empty file: the key stays', { written: kept !== null, same: stored(store3) === kept }, { written: true, same: true });
+
+        // The page restored the key, but another tab wrote a newer text after that: the key stays (TB3-3)
+        const store4 = {};
+        const tabA = makeApp(store4);
+        tabA.EncounterState.addIndividual('sly_marbo_aaa', 1);
+        tabA.flush();
+        const tabB = makeApp(store4);
+        tabB.App.checkAutoSave();
+        const restoredB = tabB.EncounterState.individuals.length;
+        tabA.EncounterState.incrementRound();
+        tabA.flush();
+        const newer = stored(store4);
+        await loadEmpty(tabB);
+        check('C4: a page whose stored text is not its own loads an empty file: the newer key stays',
+            { restored: restoredB, newerRound: newer ? JSON.parse(newer).encounter.settings.round : null, same: stored(store4) === newer },
+            { restored: 1, newerRound: 2, same: true });
+    });
+
     // 13
     const badFiles = [
         ['gate: a file whose top level is an array gives an error', []],

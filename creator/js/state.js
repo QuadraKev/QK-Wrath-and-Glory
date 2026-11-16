@@ -1682,12 +1682,20 @@ const State = {
         this.notifyListeners('ascension', targetTier);
     },
 
+    // Remove the old ascensionPackages list of an older version
+    clearLegacyAscensionPackages() {
+        delete this.character.ascensionPackages;
+        this.notifyListeners('ascension');
+    },
+
     // Get the effective tier (starting tier + number of non-creation ascensions)
     // Creation ascension = slot where targetTier <= starting tier
     getEffectiveTier() {
         const startingTier = this.character.tier || 1;
         const ascensions = this.character.ascensions || [];
-        const earnedAscensions = ascensions.filter(a => a.targetTier > startingTier).length;
+        // An empty slot (no package and no archetype chosen) does not raise the tier
+        const earnedAscensions = ascensions.filter(a => a.targetTier > startingTier &&
+            ((a.type === 'package' && a.packageId) || (a.type === 'archetype' && a.archetypeId))).length;
         return Math.min(5, startingTier + earnedAscensions);
     },
 

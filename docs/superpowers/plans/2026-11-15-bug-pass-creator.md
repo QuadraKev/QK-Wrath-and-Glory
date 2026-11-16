@@ -10,7 +10,7 @@
 
 **Spec:** `docs/superpowers/specs/2026-11-15-bug-pass-creator-design.md`. Read it before each task. Each task names its spec sections.
 
-**Fix round 1 (plan review 1, controller rulings CC1-CC13).** The tasks have new numbers. Old to new:
+**Fix round 2 (re-review 1, controller rulings CC14-CC18).** The task numbers stay as in fix round 1. Fix round 1 (plan review 1, rulings CC1-CC13) gave the tasks new numbers. Old to new:
 
 | Old | New | Old | New |
 |---|---|---|---|
@@ -108,6 +108,7 @@ Spec: §5. Suggested dispatch: `implementer` with `model: opus` (it changes what
 
 **Files:**
 - Modify: `creator/js/state.js:234-259` (`setSpecies`), `:344-371` (`setArchetype`: all lines except the psyker block `:372-387`), `:397-404` (`clearArchetype`: lines `:398-399` and `:403`), `:423-425` and `:452` (`setCustomArchetype`: the guard, the write, the removal of the record reset at `:425`, the removal of `resetStats()` at `:452`); add `_withRebase` and `_clampToSpeciesMaximums` after `resetStats`
+- Modify: `creator/js/prerequisite.js:225` (the custom keywords count only when `character.archetype?.id === 'custom'`, CC14)
 - Modify: `scripts/test-load-check.js:219` (comment) and `:294` (setters: the `skillChoiceKey` check)
 - Modify: `scripts/test-custom-wargear.js:503` (the stub)
 - Test: `scripts/test-stat-baseline.js` (extend)
@@ -121,6 +122,7 @@ Spec: §5. Suggested dispatch: `implementer` with `model: opus` (it changes what
   - `setArchetype(id)`: no change and no notify when `id === character.archetype.id`. Else `_withRebase` around: the archetype write, `archetypeKeywordChoices = {}`, `archetypeSkillChoices = {}`. The `Math.max` loops `:355-367` go. The psyker block `:372-387` stays for Task 5.
   - `clearArchetype()`: `_withRebase` around `archetype = { id: null, xpCost: 0 }`. The record reset `:399` and `resetStats()` `:403` go (CC7). Lines `:400-402` stay for Task 5.
   - `setCustomArchetype()`: step 1 (guard) and step 4 (`_withRebase` around the archetype write; no reset of the stored record) of the final order of spec §5.2. Lines `:427-450` stay for Task 6. `resetStats()` at `:452` goes.
+  - `PrerequisiteChecker.getCharacterKeywords`: `customArchetype.keywords` count only when the archetype is `custom` (spec §5.2, CC14). The other readers of the record already test this.
 
 - [ ] **Step 1: Write the failing checks** in `scripts/test-stat-baseline.js` (full sandbox):
   - A6: `newCharacter`, `setSpecies('human')`, `setArchetype('imperial_guardsman')`, `increaseAttribute('strength')`. Snapshot `JSON.stringify(State.character)` and a listener call count. `setSpecies('human')`: the text is equal, and the count did not change. `setArchetype('imperial_guardsman')`: the same.
@@ -128,6 +130,7 @@ Spec: §5. Suggested dispatch: `implementer` with `model: opus` (it changes what
   - A4: character a = `newCharacter`, `setSpecies('human')`, `setArchetype('tech_adept')` (`intellect 2`, `scholar 2`, `tech 3`), `setArchetype('ganger')`. Character b = `newCharacter`, `setSpecies('human')`, `setArchetype('ganger')`. `XPCalculator.calculateSpentXP` of a equals that of b, and the attributes and skills of a and b are equal.
   - Raised value: `newCharacter`, Human, `tech_adept`, `increaseSkill('tech')` (3 to 4), `setArchetype('ganger')`: `skills.tech === 4`, `skills.scholar === 0`, `attributes.intellect === 1`.
   - P3: `newCharacter`, Human, `tech_adept`, `increaseSkill('tech')`, `setCustomArchetype()`: `attributes.intellect === 1`, `skills.scholar === 0`, `skills.tech === 4`.
+  - CC14 (Q1): `newCharacter`, Human, `setCustomArchetype()`, `addCustomKeyword('psyker')`: `State.isPsyker() === true`. `setArchetype('ganger')`: `State.isPsyker() === false`. `setSpecies('ogryn')`: `State.isPsyker() === false`. `setCustomArchetype()` again: `true`.
   - A5: `newCharacter`, `setSpecies('ogryn')` (`strength 5, toughness 5`), `setSpecies('human')`: `calculateAttributeXP === 0` and each attribute is `1`.
   - Species change keeps a raised value: `newCharacter`, Human, `increaseAttribute('agility')` two times (to 3), `setSpecies('ogryn')`: `attributes.agility === 3` (Ogryn agility maximum 7).
   - CC2 (P2): `newCharacter`, Human, `setArchetype('ganger')`, `increaseAttribute('intellect')` two times (to 3), `setSpecies('ogryn')`: `attributes.intellect === 1` (Ogryn intellect maximum 1).
@@ -173,7 +176,7 @@ Spec: §4.4 (state part). Suggested dispatch: `implementer` (Sonnet).
 Spec: §6. Suggested dispatch: `implementer` with `model: opus`.
 
 **Files:**
-- Modify: `creator/js/state.js:372-387` (`setArchetype` psyker block), `:400-402` (`clearArchetype` power lines), `:466-487` (`setCustomArchetypeAbility` body), `setCustomArchetype` (steps 2, 5 and 7 of the final order of spec §5.2, as new lines), `setAscension` (`:1291-1323`: the `granted` rule and one `_settleFreePicks()` call before the notify), `:1326-1379` (`_applyAscensionEffects`), `:1382-1431` (`_removeAscensionEffects`); add the five helpers after `_removeAscensionEffects`
+- Modify: `creator/js/state.js`: in `setArchetype`, one new first statement after the Task 3 guard (`const oldGrants = this._archetypeGrantIds();`, before the Task 3 `_withRebase` write) and the psyker block `:372-387`; in `clearArchetype`, one new first statement (the same read, before the Task 3 `_withRebase` write) and the power lines `:400-402` (Q4); `:466-487` (`setCustomArchetypeAbility` body); `setCustomArchetype` (steps 2, 5 and 7 of the final order of spec §5.2, as new lines); `:758-771` (`removePower`: also remove the id from each `granted` record, Q3); `setAscension` (`:1291-1323`: the `granted` rule and one `_settleFreePicks()` call before the notify), `:1326-1379` (`_applyAscensionEffects`), `:1382-1431` (`_removeAscensionEffects`); add the five helpers after `_removeAscensionEffects`
 - Modify: `creator/js/character-check.js:117-124` (`_ascension`: the `granted` row)
 - Modify: `scripts/test-load-check.js:133` (corpus: the first ascension gets a record), two new `HOSTILE` rows after `:367`
 - Modify: `scripts/test-custom-wargear.js`: one new stub line after `:503` only if its sandbox cannot run the new helpers (name the reason in the commit body)
@@ -190,6 +193,7 @@ Spec: §6. Suggested dispatch: `implementer` with `model: opus`.
   - Ascension entry field `granted: { powers: string[], freePowers: string[], talents: string[] }`, written by `_applyAscensionEffects` for each package entry whose package the data has; `setAscension` never copies it from `data`.
   - `_removeAscensionEffects(entry)`: with a record, release only the recorded ids; with no record, the no-record rule.
   - `setArchetype`, `setCustomArchetypeAbility`, `clearArchetype`, `setCustomArchetype`: read the old grant ids before the write, then `_releasePowerGrants(old)`, `_applyPowerGrants(new)`, `_settleFreePicks()`. No list is emptied. `setCustomArchetype` applies the grants of the kept ability archetype.
+  - `removePower(id)`: also removes `id` from `granted.powers` and `granted.freePowers` of each ascension entry that has a record (spec §6.3, Q3).
   - `CharacterCheck._ascension`: optional `granted`; a value that is not a plain object is deleted (path `ascensions[i].granted`); `powers`, `freePowers`, `talents` are each an optional list of strings (`this._list(granted, key, [], path, paths, is.string, true)`).
 
 - [ ] **Step 1: Write the failing test** `scripts/test-grants.js` (full sandbox). Use `State.setAscension(t, { type: 'package', packageId, archetypeId: null })` and `State.setAscension(t, null)`. Fixtures:
@@ -204,10 +208,11 @@ Spec: §6. Suggested dispatch: `implementer` with `model: opus`.
   - J (P8, CC3): `setSpecies('aeldari')`, `setArchetype('farseer')` (free picks: Divination, Runes of Fate, Runes of Fortune, count 2); `addFreePowerPick('prescience')`; add `lost_seer_path_aoa` at 2: the entry has `granted.powers` `['scriers_gaze']`. Clear 2: `prescience` is in both lists; `scriers_gaze` is in neither.
   - K (adoption): Human, tier 2, `wyrd_aoa`; add `psychic_revelations` at 3 (its record is empty); `setArchetype('ganger')`: `smite` stays in both lists and the entry's `granted.powers` holds `'smite'`. Clear 3: `smite` is in neither list.
   - L (CC4): Human, `sanctioned_psyker` (Minor free picks, count 1); `addFreePowerPick('chameleon')`; `setArchetype('ganger')`: `chameleon` is in `psychicPowers` and not in `freePowers`. Human, `wyrd_aoa` (Minor, count 2), `addFreePowerPick('chameleon')`, `setArchetype('sanctioned_psyker')`: `chameleon` stays in `freePowers`.
+  - Q3: `setSpecies('aeldari')`, `setArchetype('farseer')`; add `lost_seer_path_aoa` at 2 (record `granted.powers`: `['prescience', 'scriers_gaze']`); `removePower('prescience')`: the record holds `['scriers_gaze']` only; `addFreePowerPick('prescience')`; clear 2: `prescience` is in both lists and `scriers_gaze` is in neither.
   - No-record rule: Human, tier 1, `ganger`; write `ascensions: [{ targetTier: 2, type: 'package', packageId: 'psychic_revelations', archetypeId: null }]` and `psychicPowers: ['smite'], freePowers: ['smite']` directly (an old save); clear 2: `smite` is in neither list.
   - Round trip: the J character before the clear, `JSON.parse(JSON.stringify(...))`, `State.loadCharacter`: loads deep-equal, with no warning.
-  - `scripts/test-load-check.js`: corpus: the first ascension (`demanding_patron`, `:133`) gets `granted: { powers: [], freePowers: [], talents: [] }`. `HOSTILE` rows after `:367`: `[['ascensions', 0, 'granted'], OBJ_BAD, undefined]` and `[['ascensions', 0, 'granted', 'powers'], ARR_BAD, []]`.
-- [ ] **Step 2: Run** `node scripts/test-grants.js` and `node scripts/test-load-check.js`. Expected: FAIL for A, B, C, D, F, G, H, I, J, K, L and the two hostile rows.
+  - `scripts/test-load-check.js`: corpus: the first ascension (`demanding_patron`, `:133`) gets `granted: { powers: [], freePowers: [], talents: [] }`. `HOSTILE` rows after `:367`: `[['ascensions', 0, 'granted'], OBJ_BAD, undefined]`, `[['ascensions', 0, 'granted', 'powers'], ARR_BAD, []]`, `[['ascensions', 0, 'granted', 'freePowers'], ARR_BAD, []]` and `[['ascensions', 0, 'granted', 'talents'], ARR_BAD, []]` (Q7). A mixed-list check: the full character with `granted: { powers: ['a', 5], freePowers: [null, 'b'], talents: [{}, 'c'] }` loads as `{ powers: ['a'], freePowers: ['b'], talents: ['c'] }`, with one warning that names `ascensions[0].granted.powers[1]`, `ascensions[0].granted.freePowers[0]` and `ascensions[0].granted.talents[0]`.
+- [ ] **Step 2: Run** `node scripts/test-grants.js` and `node scripts/test-load-check.js`. Expected: FAIL for A, B, C, D, F, G, H, I, J, K, L, Q3, the four hostile rows and the mixed-list check.
 - [ ] **Step 3: Implement** the interface above.
 - [ ] **Step 4: Run** all test scripts. Expected: all PASS.
 - [ ] **Step 5: Mutation proof.** Make the remove of an entry with a record release the package's full grant list: fixture J gives FAIL. Remove the adoption: fixture K gives FAIL. Undo both.
@@ -228,7 +233,7 @@ Spec: §7.2, §7.3, §7.4 (state part). Suggested dispatch: `implementer` (Sonne
 - Consumes: the Task 3 and Task 5 lines of `setCustomArchetype` (do not change them).
 - Produces:
   - `State._remapWargearRefs(newIndexOf: (oldIndex: number) => number)`: spec §7.3. It holds the loop of `:439-450`, which then goes from `setCustomArchetype`.
-  - `State.getOldStartingEntries() -> number[]`: spec §7.4, with the quantity per id added up over the whole `startingWargear` list (a plain-text entry counts 1, P5). For a character whose archetype is `custom` or not in the data, `[]`.
+  - `State.getOldStartingEntries() -> number[]`: spec §7.4, with the quantity per id added up over the whole `startingWargear` list (a plain-text entry counts 1, P5). Before it takes the first `q` entries of an id, it leaves out as many of the first plain starting entries of that id as `customArchetype.wargear` lists (CC16). For a character whose archetype is `custom` or not in the data, `[]`.
   - `setCustomArchetype()` removes only the indices of `getOldStartingEntries()` (step 3 reads them before the write) and calls `_remapWargearRefs`.
   - The four remove and update setters call `_remapWargearRefs` after their splice. `updateRelicWargear` sets to `null` each owned-item choice on its index when `DataLoader.getWeapon` / `getArmor` of the new id no longer matches the talent's `choiceType`.
 
@@ -240,11 +245,13 @@ Spec: §7.2, §7.3, §7.4 (state part). Suggested dispatch: `implementer` (Sonne
   - Relic kind change: `flak_armour` at index 0 with Armour-Monger `'0'`; `updateRelicWargear(0, 'lasgun', relic)`: the choice is `null`. With `laspistol` at index 0 and Trademark `'0'`, `updateRelicWargear(0, 'lasgun', relic)`: the choice stays `'0'`.
   - A7: Human, `imperial_guardsman`; add each resolved starting id of that archetype with `addWargear(id, true)` (quantity respected); `addRelicWargear('laspistol', { name: 'Vow', form: 'weapon', originalOwner: null, anointment: null, power: null, oddities: [] })`; `addImprovisedWargear({ id: ImprovisedBuilder.BASE_IDS[0], improvised: { name: 'Leg', details: '', halfTime: 0, damageRank: false, removeUnwieldy: false, doubleRange: false, traits: [] } })`; `addWargear('chainsword')`; one custom item through `addCustomItem`. Trademark on the chainsword index. `getOldStartingEntries()` equals the starting indices. `setCustomArchetype()`: the wargear holds the relic, the improvised item, the chainsword and the custom item in that order, and the Trademark choice names the chainsword.
   - P5: Human, `setArchetype('death_cult_assassin')` (lists `death_cult_power_blade` two times); add two `death_cult_power_blade` with `addWargear(id, true)`: `getOldStartingEntries()` holds both indices.
+  - CC16, sequence 1: Human, `setCustomArchetype()`, `addCustomStartingWargear('knife')`, `setArchetype('imperial_guardsman')` (its list holds `knife`): `getOldStartingEntries()` is `[]`. `setCustomArchetype()`: one `knife` entry with `isStarting: true`, and `customArchetype.wargear` is `['knife']`. `removeCustomStartingWargear(0)`: no `knife` entry, and the record list is `[]`.
+  - CC16, sequence 2: Human, `setCustomArchetype()`, `addCustomStartingWargear('knife')`, `setSpecies('ogryn')`, `setCustomArchetype()`: one `knife` entry, and the record list is `['knife']`.
 - [ ] **Step 2: Change `scripts/test-custom-wargear.js:505-524`.** The character there has no archetype, and each entry is bought. New expectations: the wargear keeps all four entries in order (`chainsword`, Custom A, `flak_armour`, Custom B); Trademark `'3'` stays `'3'`; Armour-Monger `2` stays `2`; the other three checks stay. Second fixture: each choice stays.
 - [ ] **Step 3: Run** both scripts. Expected: FAIL for each new or changed check.
 - [ ] **Step 4: Implement** the interface above.
 - [ ] **Step 5: Run** all test scripts. Expected: all PASS.
-- [ ] **Step 6: Mutation proof.** Remove the `_remapWargearRefs` call from `removeWargearByIndex`: the B1 check gives FAIL. Count the quantity per entry, not per id: the P5 check gives FAIL. Undo both.
+- [ ] **Step 6: Mutation proof.** Remove the `_remapWargearRefs` call from `removeWargearByIndex`: the B1 check gives FAIL. Count the quantity per entry, not per id: the P5 check gives FAIL. Remove the CC16 exclusion: sequence 1 gives FAIL (the knife goes). Undo each.
 - [ ] **Step 7: Commit.** `git commit --author=... -m "Keep owned-item talent choices on their item when the wargear list changes"`
 
 ---
@@ -278,19 +285,20 @@ Spec: §7.3 (display), §7.4 (confirm), §13 (B10). Suggested dispatch: `impleme
 
 ---
 
-### Task 8: Add Starting Wargear (A10 / B2, P5, P13)
+### Task 8: Add Starting Wargear; data corrections (A10 / B2, P5, P13, CC15, CC16)
 
-Spec: §7.5. Suggested dispatch: `implementer` (Sonnet).
+Spec: §5.2a, §7.5. Suggested dispatch: `implementer` (Sonnet). The task reviewer reads Core p.25 as an image (`pdftoppm`) to check the three species values.
 
 **Files:**
 - Modify: `creator/tabs/wargear-tab.js:437-451` and `:454-470` (the two add handlers) and add `addStartingWargear` after `renderWargearBrowser`
 - Modify: `data/archetypes.json` (three entries, spec §7.5 table)
+- Modify: `data/species.json` (three values, spec §5.2a table: `ork` strength 10 to 12, `ork` toughness 10 to 12, `aeldari` strength 8 to 7)
 - Modify: `creator/js/web-api.js:20` (`?v=47` to `?v=48`)
 - Test: `scripts/test-starting-wargear.js` (new)
 
 **Interfaces:**
 - Consumes: nothing.
-- Produces: `WargearTab.addStartingWargear(entries: Array<string | { id, qty }>)`: it first adds up the quantity `q` of each id over the whole list (a string counts 1, an object counts `qty || 1`). For each id that `DataLoader.getWargearItem` resolves, it adds `max(0, q - n)` entries through `State.addWargear(id, true)`, where `n` is the count of entries with that id and `isStarting === true`. Both buttons call it, then `this.render()`. The shared count between the two buttons is the design call of spec §7.5 (P13).
+- Produces: `WargearTab.addStartingWargear(entries: Array<string | { id, qty }>)`: it first adds up the quantity `q` of each id over the whole list (a string counts 1, an object counts `qty || 1`). For each id that `DataLoader.getWargearItem` resolves, it adds `max(0, q - n)` entries through `State.addWargear(id, true)`, where `n` is the count of entries with that id, `isStarting === true` and no overlay, less the count of that id in `customArchetype.wargear` (never below 0; CC16). Both buttons call it, then `this.render()`. The shared count between the two buttons is the design call of spec §7.5 (P13).
 
 - [ ] **Step 1: Write the failing test** (full sandbox plus `creator/tabs/wargear-tab.js` with a recording DOM stub):
   - Data: `primaris_intercessor` holds `ballistic_appeasement_auto_reliquary`, `techmarine` holds `astartes_servo_arm`, `striking_scorpion` holds `mandiblasters`, and none holds the old id.
@@ -298,9 +306,11 @@ Spec: §7.5. Suggested dispatch: `implementer` (Sonnet).
   - Click: Human `rogue_trader`, `addStartingWargear(rogue_trader.startingWargear)`: 4 entries (no `fine_clothing`). A second call: still 4.
   - P5: Human `death_cult_assassin`: after one call, 2 `death_cult_power_blade` entries; after a second call, still 2.
   - Quantity: Human `incursor`: 3 `frag_grenades`; a second call adds none; `removeWargearByIndex` of one frag grenade, a third call adds one.
+  - CC16, sequence 3: Human, `setCustomArchetype()`, `addCustomStartingWargear('knife')`, `setArchetype('imperial_guardsman')`, `addStartingWargear(imperial_guardsman.startingWargear)`: two `knife` entries. `setCustomArchetype()`: one `knife` entry, and the record list is `['knife']`. `removeCustomStartingWargear(0)`: no `knife` entry.
+  - CC15: in `data/species.json`, `ork.attributeMaximums.strength === 12`, `ork.attributeMaximums.toughness === 12`, `aeldari.attributeMaximums.strength === 7`; each value of the five Core species equals the Core p.25 table (Human 8 for each; Ork 12, 12, 7, 7, 8, 7, 7; Aeldari 7, 7, 12, 12, 12, 10, 6; `astartes` 10, 10, 9, 9, 10, 10, 8; `primaris` 12, 12, 9, 9, 10, 10, 8, in the order Strength, Toughness, Agility, Initiative, Willpower, Intellect, Fellowship).
   - `creator/js/web-api.js` contains `'?v=48'` and not `'?v=47'`.
 - [ ] **Step 2: Run.** Expected: FAIL for each check.
-- [ ] **Step 3: Implement.** Change only the three ids in `data/archetypes.json`; keep the format of the file.
+- [ ] **Step 3: Implement.** Change only the three ids in `data/archetypes.json` and the three values in `data/species.json`; keep the format of each file.
 - [ ] **Step 4: Run** all test scripts. Expected: all PASS.
 - [ ] **Step 5: Mutation proof.** Remove the resolve test: the Rogue Trader check gives 5 and FAIL. Count per entry and not per id: the Death Cult check gives 1 blade and FAIL. Undo both.
 - [ ] **Step 6: Commit.** `git commit --author=... -m "Add only known starting wargear, once, and correct three starting ids"`
@@ -582,6 +592,7 @@ Spec: §12. Suggested dispatch: `implementer` (Sonnet).
 **Files:**
 - Modify: `creator/js/state.js:1467-1481` (`setEnabledSources`, `setIgnorePrerequisites`); add `_SETTINGS_KEY` after `ID_ALIASES` (Task 9 added it after `_AUTO_SAVE_KEY`) and `saveSettings`, `getSavedSettings` after `clearAutoSave`
 - Modify: `creator/js/character-io.js:48-70` (`load`)
+- Modify: `creator/js/web-api.js:5-7` (one new `let _previousSaveFileHandle`), `:58-101` (`showOpenDialog`: keep the handle that was there before the pick) and add `cancelOpen` after `showOpenDialog` (Task 8 changed line 20 of this file; CC17)
 - Modify: `creator/js/app.js:158-167` (Load handler), `:469-474` (`_mergeEnabledSources`), `:476-497` (`checkAutoSave`)
 - Test: `scripts/test-settings-persist.js` (new)
 
@@ -592,7 +603,8 @@ Spec: §12. Suggested dispatch: `implementer` (Sonnet).
   - `setEnabledSources` and `setIgnorePrerequisites` call `saveSettings()`.
   - `App._mergeEnabledSources(saved)`: uses only the string entries of `saved.enabledSources`.
   - `App.checkAutoSave()`: `const settings = State.getSavedSettings() || State.getAutoSave()`; `if (settings)` (P7a) it applies the sources only when `Array.isArray(settings.enabledSources)`, and `ignorePrerequisites` only when `=== true`. Then `const saved = State.getAutoSave()` and the character part as today with `saved?.character` (P7b). When no character loads, `State.markClean()` (P14a).
-  - `CharacterIO.load(confirmLoad = null)`: after `importCharacter` succeeds and before `State.loadCharacter`, `if (confirmLoad && !(await confirmLoad(dialogResult.filePaths[0]))) return { success: false, error: 'Load cancelled.' }` (CC6).
+  - `window.api.cancelOpen()`: puts back the file handle that was there before the last `showOpenDialog` and sets the pending file to `null` (CC17).
+  - `CharacterIO.load(confirmLoad = null)`: after `importCharacter` succeeds and before `State.loadCharacter`, `if (confirmLoad && !(await confirmLoad(dialogResult.filePaths[0]))) { window.api.cancelOpen?.(); return { success: false, error: 'Load cancelled.' }; }` (CC6, CC17).
   - Load handler: passes `confirmLoad` only when `character.name || character.species?.id || character.archetype?.id`; it asks `window.api.showConfirm('Load "<file name>"? Unsaved changes to the current character will be lost.', 'Load Character')`. No confirm before the file dialog.
 
 - [ ] **Step 1: Write the failing test.** A context with the full sandbox, `character-io.js`, `app.js`, a `localStorage` stub on a shared `Map`, `document` with `addEventListener() {}` and a `getElementById` that records `click` handlers, `SettingsTab: { sourceButtons: [{ id: 'core' }, { id: 'fspg' }], refresh() {} }`, `SettingTab: { refresh() {} }`, `window.api` with `showOpenDialog: async () => ({ canceled: false, filePaths: ['Vex.character'] })`, `importCharacter: async () => ({ success: true, character: <a valid character named Vex> })`, `showMessage: async () => {}`, and `App.switchTab` / `App.switchSection` replaced by no-ops. Checks:
@@ -603,11 +615,12 @@ Spec: §12. Suggested dispatch: `implementer` (Sonnet).
   - P7c: a `localStorage` whose `getItem` and `setItem` throw: `checkAutoSave()` and `setEnabledSources(['core'])` give no throw.
   - A17: autosave `enabledSources` of `{}`, `5`, `true`, `'core'`: no throw, and `State.enabledSources` is the default list. `['core', 5]` with `knownSources: ['core', 'fspg']`: `['core']`.
   - CC6: `CharacterIO.load(async name => { seen = name; return false; })`: `State.character` is unchanged, the result error is `'Load cancelled.'`, and `seen === 'Vex.character'`. `CharacterIO.load()` with no argument: the character is Vex.
+  - CC17: a second context loads the real `creator/js/web-api.js` with `window.showOpenFilePicker` returning fake handles `h1`, then `h2` (each `getFile()` gives a file object; each `createWritable()` records its writes), `navigator.userAgent: 'Node'`, and a `document` stub. `await api.showOpenDialog()` (h1), then `await api.showOpenDialog()` (h2), then `api.cancelOpen()`, then `await api.exportCharacter({ name: 'x' })`: `h1` has one write and `h2` has none.
   - CC6 through the button: `App.initHeaderButtons()`; a character named Kaelen and `showConfirm = async (text) => { asked = text; return false; }`: fire the Load handler; the character is still Kaelen and `asked` contains `Vex.character`. With `true`: the character is Vex. A blank character: `showConfirm` is not called and the character is Vex.
 - [ ] **Step 2: Run.** Expected: FAIL for each check (P7a and the blank-character check may already pass; Step 2 lists each FAIL).
 - [ ] **Step 3: Implement.**
 - [ ] **Step 4: Run** all test scripts, also `scripts/test-load-check.js:535-549` (`localStorage: {}`). Expected: all PASS.
-- [ ] **Step 5: Mutation proof.** Test truthiness again in `checkAutoSave`: the `{}` check throws and gives FAIL. Read the character from `settings.character`: the P7b check gives FAIL. Undo both.
+- [ ] **Step 5: Mutation proof.** Test truthiness again in `checkAutoSave`: the `{}` check throws and gives FAIL. Read the character from `settings.character`: the P7b check gives FAIL. Remove the handle restore from `cancelOpen`: the CC17 check gives FAIL (`h2` gets the write). Undo each.
 - [ ] **Step 6: Commit.** `git commit --author=... -m "Store the settings under their own key and confirm a Load after the file pick"`
 
 ---
@@ -646,6 +659,9 @@ Spec: §13. Suggested dispatch: `implementer` (Sonnet).
 | File | Tasks in order |
 |---|---|
 | `creator/index.html` | 1 (lines 12-13, 523-556), 17 (line 185) |
+| `creator/js/web-api.js` | 8 (line 20), 18 (lines 5-7, 58-101, new `cancelOpen`) |
+| `creator/js/prerequisite.js` | 3 (line 225) |
+| `data/species.json`, `data/archetypes.json` | 8 |
 | `creator/js/state.js` | 2, 3, 4, 5, 6, 9, 10, 15, 17, 18 |
 | `creator/js/character-check.js` | 4, 5, 9 |
 | `creator/tabs/character-sheet-tab.js` | 7, 14, 15, 16 |

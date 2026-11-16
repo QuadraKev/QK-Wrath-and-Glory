@@ -120,7 +120,13 @@ const ThreatBuilderTab = {
         });
 
         document.getElementById('btn-builder-inject').addEventListener('click', () => {
-            const count = parseInt(document.getElementById('builder-inject-count').value) || 1;
+            const countBox = document.getElementById('builder-inject-count');
+            const count = BestiaryCheck.readIntegerInput(countBox);
+            if (count === null) {
+                // Not a valid count: add nothing and show 1
+                countBox.value = '1';
+                return;
+            }
 
             if (ThreatBuilderState.wouldCauseNameCollision()) {
                 // Show rename modal for name collision
@@ -529,9 +535,10 @@ const ThreatBuilderTab = {
                 const field = e.target.dataset.field;
                 let value = e.target.value;
 
-                // Handle numeric fields
+                // Handle numeric fields: a value outside the declared range changes nothing
                 if (e.target.type === 'number') {
-                    value = parseInt(value) || 0;
+                    value = BestiaryCheck.readIntegerInput(e.target);
+                    if (value === null) return;
                 }
 
                 // Handle shock special case
@@ -542,6 +549,13 @@ const ThreatBuilderTab = {
                 ThreatBuilderState.updateField(field, value);
                 this._debouncePreview();
             });
+            // After the entry, the box shows the stored value
+            if (el.type === 'number') {
+                el.addEventListener('change', (e) => {
+                    const stored = e.target.dataset.field.split('.').reduce((obj, key) => (obj == null ? undefined : obj[key]), ThreatBuilderState.threat);
+                    e.target.value = typeof stored === 'number' ? String(stored) : e.target.defaultValue;
+                });
+            }
         });
 
         // Keyword add
@@ -657,7 +671,8 @@ const ThreatBuilderTab = {
         editor.querySelectorAll('[data-skill]').forEach(el => {
             el.addEventListener('input', (e) => {
                 const skill = e.target.dataset.skill;
-                const value = parseInt(e.target.value) || 0;
+                const value = BestiaryCheck.readIntegerInput(e.target);
+                if (value === null) return;
                 if (skill === 'default') {
                     ThreatBuilderState.updateDefaultSkill(value);
                 } else if (skill === 'awareness') {
@@ -666,6 +681,10 @@ const ThreatBuilderTab = {
                     ThreatBuilderState.updatePassiveAwareness(value);
                 }
                 this._debouncePreview();
+            });
+            // After the entry, the box shows the stored value
+            el.addEventListener('change', (e) => {
+                e.target.value = String(ThreatBuilderState.threat.parsedSkills[e.target.dataset.skill]);
             });
         });
 
@@ -686,8 +705,15 @@ const ThreatBuilderTab = {
                 const index = parseInt(e.target.dataset.skillIndex);
                 const selectEl = editor.querySelector(`.builder-skill-select[data-skill-index="${index}"]`);
                 const name = selectEl ? selectEl.value : '';
-                ThreatBuilderState.updateSkillEntry(index, name, parseInt(e.target.value) || 0);
+                const value = BestiaryCheck.readIntegerInput(e.target);
+                if (value === null) return;
+                ThreatBuilderState.updateSkillEntry(index, name, value);
                 this._debouncePreview();
+            });
+            // After the entry, the box shows the stored value
+            el.addEventListener('change', (e) => {
+                const entry = ThreatBuilderState.threat.parsedSkills.entries[parseInt(e.target.dataset.skillIndex)];
+                e.target.value = String(entry ? entry.value : 0);
             });
         });
 
@@ -1102,7 +1128,13 @@ const ThreatBuilderTab = {
 
         overlay.querySelector('#inject-modal-add').addEventListener('click', () => {
             const newName = document.getElementById('inject-modal-name').value.trim();
-            const count = parseInt(document.getElementById('inject-modal-count').value) || 1;
+            const countBox = document.getElementById('inject-modal-count');
+            const count = BestiaryCheck.readIntegerInput(countBox);
+            if (count === null) {
+                // Not a valid count: keep the modal open and show the opening count
+                countBox.value = String(defaultCount);
+                return;
+            }
             if (!newName) return;
 
             const result = ThreatBuilderState.injectIntoEncounter(count, newName);

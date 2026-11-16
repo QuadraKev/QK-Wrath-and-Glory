@@ -188,14 +188,25 @@ const EncounterTab = {
                 const existingId = e.target.dataset.id;
                 const index = parseInt(e.target.dataset.index);
 
+                // An empty box clears the initiative. A value outside 0-99 keeps the stored value and shows it.
+                let value = '';
+                if (e.target.value.trim() !== '') {
+                    value = BestiaryCheck.readIntegerInput(e.target);
+                    if (value === null) {
+                        const stored = existingId ? EncounterState.getPlayerCharacter(existingId) : null;
+                        e.target.value = stored && stored.initiative != null ? String(stored.initiative) : '';
+                        return;
+                    }
+                }
+
                 if (existingId) {
-                    EncounterState.setPlayerCharacterInitiative(existingId, e.target.value);
-                } else if (e.target.value !== '') {
+                    EncounterState.setPlayerCharacterInitiative(existingId, value);
+                } else if (value !== '') {
                     // Create player character if setting initiative on empty slot
                     const nameInput = container.querySelector(`.pc-name-input[data-index="${index}"]`);
                     const name = nameInput?.value.trim() || `Player ${index + 1}`;
                     const newId = EncounterState.addPlayerCharacter(name);
-                    EncounterState.setPlayerCharacterInitiative(newId, e.target.value);
+                    EncounterState.setPlayerCharacterInitiative(newId, value);
                     this.renderPlayerCharacterInputs();
                 }
                 this.renderEncounterList();
@@ -961,7 +972,17 @@ const EncounterTab = {
 
         // Bind events
         document.getElementById('player-detail-initiative')?.addEventListener('change', (e) => {
-            EncounterState.setPlayerCharacterInitiative(this.selectedId, e.target.value);
+            // An empty box clears the initiative. A value outside 0-99 keeps the stored value and shows it.
+            let value = '';
+            if (e.target.value.trim() !== '') {
+                value = BestiaryCheck.readIntegerInput(e.target);
+                if (value === null) {
+                    const stored = EncounterState.getPlayerCharacter(this.selectedId);
+                    e.target.value = stored && stored.initiative != null ? String(stored.initiative) : '';
+                    return;
+                }
+            }
+            EncounterState.setPlayerCharacterInitiative(this.selectedId, value);
             this.renderPlayerCharacterInputs();
             this.renderEncounterList();
         });

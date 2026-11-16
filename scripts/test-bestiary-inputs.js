@@ -37,19 +37,27 @@ const DATA = {
 };
 const SOURCES = {};
 for (const rel of ['bestiary/js/data-loader.js', 'bestiary/js/bestiary-check.js', 'bestiary/js/encounter-state.js',
-    'bestiary/js/threat-builder-state.js', 'bestiary/js/app.js', 'bestiary/tabs/encounter-tab.js']) SOURCES[rel] = readText(rel);
+    'bestiary/js/threat-builder-state.js', 'bestiary/js/app.js', 'bestiary/tabs/encounter-tab.js',
+    'bestiary/tabs/threats-tab.js', 'bestiary/tabs/threat-builder-tab.js']) SOURCES[rel] = readText(rel);
 
 const tabStub = () => ({ init() {}, refresh() {} });
 const classList = () => ({ add() {}, remove() {}, toggle() {}, contains() { return false; } });
 
 // The min and max that the real inputs declare (bestiary/index.html). Other boxes get them from their markup.
-const DECLARED = { 'encounter-players': { min: '1', max: '10' } };
+const DECLARED = {
+    'encounter-players': { min: '1', max: '10' },
+    'player-detail-initiative': { min: '0', max: '99' },
+    'threat-add-quantity': { min: '1', max: '20' },
+    'builder-inject-count': { min: '1', max: '20' },
+    'inject-modal-count': { min: '1', max: '20' }
+};
 
 // The recording document of scripts/test-tab-escapes.js, with one stable element for each id and selector.
 // An element keeps its handlers in _on. querySelectorAll('.class') reads the markup that the last innerHTML
 // set wrote, and returns one stable stub for each tag whose class list has the class. Its dataset, value,
 // min and max come from the attributes of the tag.
 function makeDocument() {
+    const created = [];
     const byId = {};
     const bySel = {};
     function attrsOf(tag) {
@@ -72,7 +80,13 @@ function makeDocument() {
             classList: classList(),
             addEventListener(type, fn) { el._on[type] = fn; },
             appendChild(child) { return child; },
-            querySelector(sel) { return bySel[sel] || (bySel[sel] = makeElement()); },
+            querySelector(sel) {
+                if (!bySel[sel]) {
+                    bySel[sel] = makeElement();
+                    if (sel[0] === '#') Object.assign(bySel[sel], DECLARED[sel.slice(1)] || {});
+                }
+                return bySel[sel];
+            },
             querySelectorAll(sel) {
                 const m = /^\.([\w-]+)$/.exec(sel);
                 if (!m) return [];
@@ -95,7 +109,7 @@ function makeDocument() {
             setAttribute() {},
             focus() {},
             select() {},
-            remove() {},
+            remove() { el._removed = (el._removed || 0) + 1; },
             set textContent(v) { text = String(v); html = ''; },
             get textContent() { return text === null ? html : text; },
             set innerHTML(v) { html = String(v); text = null; kids = {}; },
@@ -117,13 +131,15 @@ function makeDocument() {
         },
         querySelector() { return makeElement(); },
         querySelectorAll() { return []; },
-        createElement() { return makeElement(); },
+        createElement() { const el = makeElement(); created.push(el); return el; },
+        created,
         body: { classList: classList(), appendChild(child) { return child; } }
     };
 }
 
 // One page of the app, with the real encounter tab and a store for localStorage.
-function makeApp(store = {}) {
+// With realTabs, the real threats tab and builder tab load too, and App and Glossary are small stubs.
+function makeApp(store = {}, realTabs = false) {
     const timers = new Map();
     let nextTimer = 1;
     const warns = [];
@@ -141,14 +157,19 @@ function makeApp(store = {}) {
         history: { replaceState() {}, pushState() {} },
         location: { hash: '' },
         confirm: () => true,
-        Glossary: { init: async () => {} },
-        ThreatsTab: tabStub(), VehiclesTab: tabStub(), GlossaryTab: tabStub(), ReferencesTab: tabStub(),
-        ThreatBuilderTab: tabStub(), SettingsTab: tabStub()
+        Glossary: { init: async () => {}, enhanceDescriptions() {} },
+        VehiclesTab: tabStub(), GlossaryTab: tabStub(), ReferencesTab: tabStub(), SettingsTab: tabStub()
     };
+    if (realTabs) {
+        sandbox.App = { updateThreatCount() {} };
+    } else {
+        Object.assign(sandbox, { ThreatsTab: tabStub(), ThreatBuilderTab: tabStub() });
+    }
     vm.createContext(sandbox);
-    for (const rel of ['bestiary/js/data-loader.js', 'bestiary/js/bestiary-check.js', 'bestiary/js/encounter-state.js',
-        'bestiary/js/threat-builder-state.js', 'bestiary/js/app.js', 'bestiary/tabs/encounter-tab.js'])
-        vm.runInContext(SOURCES[rel], sandbox, { filename: rel });
+    const files = ['bestiary/js/data-loader.js', 'bestiary/js/bestiary-check.js', 'bestiary/js/encounter-state.js',
+        'bestiary/js/threat-builder-state.js', 'bestiary/tabs/encounter-tab.js'];
+    files.push(...(realTabs ? ['bestiary/tabs/threats-tab.js', 'bestiary/tabs/threat-builder-tab.js'] : ['bestiary/js/app.js']));
+    for (const rel of files) vm.runInContext(SOURCES[rel], sandbox, { filename: rel });
     const get = (name) => vm.runInContext(name, sandbox);
     const DataLoader = get('DataLoader');
     for (const f of Object.keys(DATA)) DataLoader.cache[f] = JSON.parse(DATA[f]);
@@ -162,6 +183,8 @@ function makeApp(store = {}) {
     };
     return {
         EncounterState: get('EncounterState'), EncounterTab: get('EncounterTab'), App: get('App'),
+        ThreatsTab: realTabs ? get('ThreatsTab') : null, ThreatBuilderTab: realTabs ? get('ThreatBuilderTab') : null,
+        ThreatBuilderState: get('ThreatBuilderState'),
         window: sandbox.window, document: sandbox.document, store, warns, flush
     };
 }
@@ -327,6 +350,83 @@ const rowsHtml = (app) => app.document.getElementById('player-character-inputs')
         app.window.api.loadPlayersFile = async () => ({ success: true, data: { version: 1, playerCount: 12, players: players(12).map(p => ({ name: p.name, notes: '' })) }, fileName: 'P' });
         await app.EncounterTab.handleLoadPlayers();
         verify12('TB3-1 Load Players', app, store);
+    });
+
+    // ----- The other inputs (Task 5b): the add counts, the rename modal, the player initiative boxes -----
+    await group('add quantity', () => {
+        const app = makeApp({}, true);
+        const container = app.document.getElementById('threat-card');
+        app.ThreatsTab.bindAddToEncounterEvents(container, 'sly_marbo_aaa');
+        const box = container.querySelector('#threat-add-quantity');
+        const btn = container.querySelector('#threat-add-to-encounter-btn');
+        const type = (v) => { box.value = v; btn._on.click(); return { entries: app.EncounterState.individuals.length, box: String(box.value) }; };
+        check('quantity: 25 adds nothing and shows 1', type('25'), { entries: 0, box: '1' });
+        check('quantity: abc adds nothing and shows 1', type('abc'), { entries: 0, box: '1' });
+        check('quantity: 3 adds 3 entries', type('3'), { entries: 3, box: '1' });
+    });
+
+    await group('inject count', () => {
+        const app = makeApp({}, true);
+        app.ThreatBuilderState.clear();
+        app.ThreatBuilderState.updateField('name', 'Q');
+        app.ThreatBuilderTab.bindEvents();
+        const box = app.document.getElementById('builder-inject-count');
+        box.value = '25';
+        app.document.getElementById('btn-builder-inject')._on.click();
+        check('inject count: 25 adds nothing and shows 1', { entries: app.EncounterState.individuals.length, box: String(box.value) }, { entries: 0, box: '1' });
+        box.value = '2';
+        app.document.getElementById('btn-builder-inject')._on.click();
+        check('inject count: 2 adds 2 entries', app.EncounterState.individuals.length, 2);
+    });
+
+    await group('modal count', () => {
+        const app = makeApp({}, true);
+        app.ThreatBuilderState.clear();
+        app.ThreatBuilderState.updateField('name', 'Q');
+        app.ThreatBuilderTab.showInjectModal('Q', 2);
+        const overlay = app.document.created.find(el => el.className === 'inject-modal-overlay');
+        app.document.getElementById('inject-modal-name').value = 'Q';
+        const box = app.document.getElementById('inject-modal-count');
+        box.value = '25';
+        overlay.querySelector('#inject-modal-add')._on.click();
+        check('modal count: 25 adds nothing and keeps the modal open',
+            { entries: app.EncounterState.individuals.length, removed: overlay._removed || 0, box: String(box.value) }, { entries: 0, removed: 0, box: '2' });
+        box.value = '2';
+        overlay.querySelector('#inject-modal-add')._on.click();
+        check('modal count: 2 adds 2 entries and closes the modal',
+            { entries: app.EncounterState.individuals.length, removed: overlay._removed || 0 }, { entries: 2, removed: 1 });
+    });
+
+    await group('player row initiative', () => {
+        const app = makeApp();
+        const S = app.EncounterState;
+        S.loadFromData(mkEnc({ settings: { tier: 1, playerCount: 2, name: 'x', round: 1 }, playerCharacters: players(1) }));
+        app.EncounterTab.renderPlayerCharacterInputs();
+        const boxes = app.document.getElementById('player-character-inputs').querySelectorAll('.pc-initiative-input');
+        const type = (box, v) => { box.value = v; box._on.change({ target: box }); return { stored: S.playerCharacters[0].initiative, box: String(box.value), pcs: S.playerCharacters.length }; };
+        check('player row initiative: 12 is stored', type(boxes[0], '12'), { stored: 12, box: '12', pcs: 1 });
+        check('player row initiative: 150 keeps 12 and the box shows 12', type(boxes[0], '150'), { stored: 12, box: '12', pcs: 1 });
+        check('player row initiative: abc keeps 12 and the box shows 12', type(boxes[0], 'abc'), { stored: 12, box: '12', pcs: 1 });
+        check('player row initiative: an empty value clears it', type(boxes[0], ''), { stored: null, box: '', pcs: 1 });
+        const empty = type(boxes[1], '150');
+        check('player row initiative: 150 on an empty row creates no player and shows an empty box', { pcs: empty.pcs, box: empty.box }, { pcs: 1, box: '' });
+        const none = type(boxes[1], '');
+        check('player row initiative: an empty value on an empty row creates no player', none.pcs, 1);
+    });
+
+    await group('player detail initiative', () => {
+        const app = makeApp();
+        const S = app.EncounterState;
+        S.loadFromData(mkEnc({ playerCharacters: players(1) }));
+        app.EncounterTab.selectedId = 'p0';
+        app.EncounterTab.selectionType = 'player';
+        app.EncounterTab.renderPlayerDetail(app.document.getElementById('encounter-detail'));
+        const box = app.document.getElementById('player-detail-initiative');
+        const type = (v) => { box.value = v; box._on.change({ target: box }); return { stored: S.playerCharacters[0].initiative, box: String(box.value) }; };
+        check('player detail initiative: 12 is stored', type('12'), { stored: 12, box: '12' });
+        check('player detail initiative: 150 keeps 12 and the box shows 12', type('150'), { stored: 12, box: '12' });
+        check('player detail initiative: abc keeps 12 and the box shows 12', type('abc'), { stored: 12, box: '12' });
+        check('player detail initiative: an empty value clears it', type(''), { stored: null, box: '' });
     });
 
     console.log(failures === 0 ? '\nAll checks passed' : `\n${failures} check(s) FAILED.`);

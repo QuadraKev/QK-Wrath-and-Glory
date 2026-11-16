@@ -311,7 +311,13 @@ const ThreatsTab = {
 
         // Add to encounter button
         addBtn.addEventListener('click', () => {
-            const quantity = parseInt(quantityInput.value) || 1;
+            const quantity = BestiaryCheck.readIntegerInput(quantityInput);
+            if (quantity === null) {
+                // Not a valid count: add nothing and show 1
+                quantityInput.value = '1';
+                updateMobVisibility();
+                return;
+            }
             const asMob = mobCheckbox.checked && canEverBeMob && quantity > 1;
 
             const ids = EncounterState.addIndividual(threatId, quantity, asMob);

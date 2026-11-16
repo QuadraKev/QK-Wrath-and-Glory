@@ -125,7 +125,7 @@ function evilThreat() {
         resolve: EVIL,
         abilities: [
             { type: EVIL, name: EVIL, stats: EVIL, description: EVIL },
-            { type: 'ACTION', name: EVIL, stats: EVIL, description: EVIL }
+            { type: 'ACTION', name: EVIL, stats: EVIL, description: EVIL, weaponId: EVIL }
         ],
         bonuses: [{ name: EVIL, description: EVIL }]
     };
@@ -168,6 +168,9 @@ group('B6', () => {
     const fire = ThreatsTab.renderThreatCard(THREATS.find(t => t.id === 'fire_warrior'));
     const names = ['Focused Fire', "Ta'lissera", 'Eight-Strong Strike Team', 'Sixteen-Strong Strike Team'];
     check('B6: fire_warrior shows the ability names and both strike teams', names.every(n => fire.includes(esc(n))), true);
+    const fireThreat = THREATS.find(t => t.id === 'fire_warrior');
+    const entries = fireThreat.mobAbilities.concat(fireThreat.mobOptions);
+    check('B6: fire_warrior shows the description of each entry', entries.every(e => fire.includes(esc(e.description))), true);
     check('B6: fire_warrior shows no [object Object]', fire.includes('[object Object]'), false);
     check('B6: the apostrophe is escaped one time', fire.includes('Ta&#39;lissera'), true);
     check('B6: an empty list prints nothing', ThreatsTab.renderTextSection('Mob Abilities', []), '');
@@ -186,7 +189,7 @@ group('names', () => {
     const NAME = 'A & "B" <C>';
     const ESC = 'A &amp; &quot;B&quot; &lt;C&gt;';
     const DOUBLE = ['&amp;amp;', '&amp;quot;', '&amp;lt;'];
-    const threat = Object.assign(evilThreat(), { id: 'custom_names', name: NAME, keywords: [NAME] });
+    const threat = Object.assign(evilThreat(), { id: 'custom_names', name: NAME });
     const card = ThreatsTab.renderThreatCard(threat);
     check('names: the card holds the name escaped one time', card.includes(ESC), true);
     check('names: the card holds no double escape', DOUBLE.some(d => card.includes(d)), false);

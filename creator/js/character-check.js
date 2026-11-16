@@ -57,6 +57,12 @@ const CharacterCheck = {
             this._stringValues(choices, 'archetypeKeywordChoices', paths);
         }
 
+        // The skill of each "any skill" key of the archetype: optional, so an absent key stays absent
+        if (this._has(c, 'archetypeSkillChoices')) {
+            const skillChoices = this._object(c, 'archetypeSkillChoices', {}, 'archetypeSkillChoices', paths);
+            this._stringValues(skillChoices, 'archetypeSkillChoices', paths);
+        }
+
         // Rows 23-26a
         this._numberMap(c, 'attributes', defaults.attributes, paths);
         this._numberMap(c, 'skills', defaults.skills, paths);

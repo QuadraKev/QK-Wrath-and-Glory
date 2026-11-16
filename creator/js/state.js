@@ -609,6 +609,31 @@ const State = {
         }
     },
 
+    // Store the skill of an "any skill" bonus key of the archetype (for example choice1 of the Inquisitor).
+    // A skill name that is empty clears the choice. A skill that another key holds is refused (Core p.116).
+    // Return true when the choice is stored.
+    setArchetypeSkillChoice(key, skill) {
+        const archetype = DataLoader.getArchetype(this.character.archetype?.id);
+        const skillBonus = archetype?.skillBonus || {};
+        if (typeof key !== 'string' || !Object.prototype.hasOwnProperty.call(skillBonus, key)) return false;
+        if (XPCalculator.SKILL_KEYS.includes(key)) return false;
+        if (skill !== '' && !XPCalculator.SKILL_KEYS.includes(skill)) return false;
+
+        const choices = this.character.archetypeSkillChoices || {};
+        if (skill !== '') {
+            for (const [otherKey, chosen] of Object.entries(choices)) {
+                if (otherKey !== key && chosen === skill) return false;
+            }
+        }
+
+        this._withRebase(() => {
+            if (!this.character.archetypeSkillChoices) this.character.archetypeSkillChoices = {};
+            this.character.archetypeSkillChoices[key] = skill;
+        });
+        this.notifyListeners('stats');
+        return true;
+    },
+
     // Lower each attribute above the maximum of the current species to that maximum (Core p.25)
     _clampToSpeciesMaximums() {
         const species = DataLoader.getSpecies(this.character.species?.id);

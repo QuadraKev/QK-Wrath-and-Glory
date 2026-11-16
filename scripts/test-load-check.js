@@ -129,6 +129,7 @@ const CORPUS = {
         archetype: { id: 'custom', xpCost: 0 },
         customArchetype: { name: 'Gun for hire', abilityArchetypeId: 'sanctioned_psyker', keywords: ['IMPERIUM', 'SCUM'], wargear: ['knife'] },
         archetypeKeywordChoices: { '[ORDO]': 'HERETICUS', '[FORGE WORLD]': '' },
+        archetypeSkillChoices: { choice1: 'insight' },
         ascensions: [
             { targetTier: 2, type: 'package', packageId: 'demanding_patron', archetypeId: null, choices: { patronBenefit: 'wealth', '[ANY]': 'ADEPTUS MINISTORUM', '[ANY]2': '' } },
             { targetTier: 3, type: 'archetype', packageId: null, archetypeId: 'tactical_space_marine' },
@@ -218,6 +219,7 @@ for (const [name, make] of Object.entries(CORPUS)) {
     B.setSpeciesSubOption('homeworld', 'death_world_aoa');
     // inquisitor has the skillBonus keys choice1 and choice2: setArchetype no longer writes the data keys choice1 / choice2
     B.setArchetype('inquisitor');
+    B.setArchetypeSkillChoice('choice1', 'insight');
     B.setArchetypeKeywordChoice('[ORDO]', 'HERETICUS');
     B.setArchetypeKeywordChoice('[ANY]', 'MY TYPED KEYWORD');
     B.increaseAttribute('strength'); B.increaseSkill('awareness');
@@ -291,19 +293,20 @@ for (const [name, make] of Object.entries(CORPUS)) {
         mob: built.followers.some(f => f.kind === 'mob' && f.count === 3 && f.livingCount === 2 && f.mobCount === 3),
         subOption: built.species.subOptions.length === 1,
         keywordChoice: built.archetypeKeywordChoices['[ORDO]'] === 'HERETICUS',
+        skillChoice: built.archetypeSkillChoices?.choice1 === 'insight',
         skillChoiceKey: !('choice1' in built.skills) && !('choice2' in built.skills),
         powers: built.psychicPowers.includes('smite') && built.psychicPowers.includes('psyniscience') && built.freePowers.includes('psyniscience'),
         discipline: built.unlockedDisciplines.includes('Biomancy')
     }, {
         ascensionChoice: true, talentChoice: true, talentString: true, equippedUpgrade: true, starting: true, relic: true,
         improvised: true, custom: true, background: true, languages: true, injuries: true, mutation: true, mob: true,
-        subOption: true, keywordChoice: true, skillChoiceKey: true, powers: true, discipline: true
+        subOption: true, keywordChoice: true, skillChoice: true, skillChoiceKey: true, powers: true, discipline: true
     });
     const r = loadJson(built);
     check('setters: a character built through the real writers loads deep-equal', canon(r.character), canon(built));
     check('setters: a character built through the real writers writes no warning', r.warns, []);
 
-    // A second build for the custom archetype: setCustomArchetype clears the wargear and the stats
+    // A second build for the custom archetype: setCustomArchetype keeps the custom wargear and moves the stats to the new baseline
     B.newCharacter();
     B.setTier('2'); B.setAdditionalXP('500');
     B.setSpecies('human');
@@ -348,6 +351,7 @@ const HOSTILE = [
     [['customArchetype'], OBJ_BAD, { name: '', abilityArchetypeId: null, keywords: [], wargear: [] }],
     [['customArchetype', 'name'], STR_BAD, ''], [['customArchetype', 'abilityArchetypeId'], STR_NULL_BAD, null],
     [['archetypeKeywordChoices'], OBJ_BAD, {}], [['archetypeKeywordChoices', '[ORDO]'], STR_BAD, ''],
+    [['archetypeSkillChoices'], OBJ_BAD, {}], [['archetypeSkillChoices', 'choice1'], STR_BAD, ''],
     [['attributes'], OBJ_BAD, { strength: 1, toughness: 1, agility: 1, initiative: 1, willpower: 1, intellect: 1, fellowship: 1 }],
     ...['strength', 'toughness', 'agility', 'initiative', 'willpower', 'intellect', 'fellowship'].map(k => [['attributes', k], INT_BAD, 1]),
     ...Object.keys(base().skills).map(k => [['skills', k], INT_BAD, 0]),

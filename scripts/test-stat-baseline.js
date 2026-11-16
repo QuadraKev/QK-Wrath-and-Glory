@@ -215,5 +215,29 @@ State.increaseAttribute('intellect');
 State.setSpecies('ogryn');
 check('CC2: intellect 3 goes to the Ogryn maximum 1', State.character.attributes.intellect, 1);
 
+// A2: the "any skill" choice of an archetype is stored, and the chosen skill gets the bonus value
+human('inquisitor');
+check('A2: the Inquisitor has no choice key in skills', Object.keys(State.character.skills).some(k => k.startsWith('choice')), false);
+let before = notifyCount;
+check('A2: choice1 to insight is accepted', State.setArchetypeSkillChoice('choice1', 'insight'), true);
+check('A2: an accepted choice notifies', notifyCount > before, true);
+check('A2: insight is 4', State.character.skills.insight, 4);
+before = notifyCount;
+check('A2: choice2 to insight is refused (choice1 holds it)', State.setArchetypeSkillChoice('choice2', 'insight'), false);
+check('A2: a refused choice does not notify', notifyCount, before);
+check('A2: choice2 to scholar is accepted', State.setArchetypeSkillChoice('choice2', 'scholar'), true);
+check('A2: scholar is 4', State.character.skills.scholar, 4);
+check('A2: the two chosen skills cost no skill XP', XP.calculateSkillXP(State.character), 0);
+check('A2: choice1 to medicae is accepted', State.setArchetypeSkillChoice('choice1', 'medicae'), true);
+check('A2: insight goes back to 0', State.character.skills.insight, 0);
+check('A2: medicae is 4', State.character.skills.medicae, 4);
+check('A2: the stored choices', State.character.archetypeSkillChoices, { choice1: 'medicae', choice2: 'scholar' });
+check('A2: weaponSkill is no choice key', State.setArchetypeSkillChoice('weaponSkill', 'insight'), false);
+check('A2: zz is no skill name', State.setArchetypeSkillChoice('choice1', 'zz'), false);
+check('A2: an empty string clears the choice', State.setArchetypeSkillChoice('choice1', ''), true);
+check('A2: medicae goes back to 0', State.character.skills.medicae, 0);
+human('ganger');
+check('A2: Ganger has no choice key', State.setArchetypeSkillChoice('choice1', 'insight'), false);
+
 console.log(failures ? `\n${failures} FAILED` : '\nAll passed');
 process.exit(failures ? 1 : 0);

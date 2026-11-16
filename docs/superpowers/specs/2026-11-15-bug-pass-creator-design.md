@@ -1,7 +1,7 @@
 # Bug pass of the creator — Design
 
 Date: 2026-11-15. Branch: `bug-pass-creator`. Base: `44084ae` (`main`).
-Status: design. Line references are to the tree at `44084ae`.
+Status: design, fix round 1 (plan review 1, controller rulings CC1-CC13, owner decisions on Rank and Tier). Line references are to the tree at `44084ae`.
 
 Marks used below:
 
@@ -21,9 +21,12 @@ Two read-only audits of the creator found the defects A1-A24 (stored data and wr
 
 - G1-G11 of the controller apply as written. This spec refers to them by number. The two that decide the most: **G1** (no harm to stored data; each exception is named) and **G2** (no silent delete through the UI).
 - The controller's ruling for each finding is in force. Each group below repeats the ruling in short form.
+- The controller's rulings CC1-CC13 on plan review 1 are in force. A sentence that a ruling decides is marked **[Controller ruling CCn]**.
+- **Rank 1 to 3 [Owner, 2026-11-15; Controller ruling CC11].** Owner's words: "To my knowledge, rank is only 1 to 3. If I'm incorrect, this is something we'll need to find proof for." Book: Core p.146: "Your Rank can't decrease, and can't go above the maximum of 3." A search of the official sourcebooks found no Rank above 3. §10.2 applies it.
+- **Tier 1 to 5 [Owner, 2026-11-15; Controller ruling CC12].** Owner's words: "Tier should be able to go up to 5. It's only up to 4 in the base book, but Vow of Absolution expands the tier to 5." Books: Core p.19 ("There are 4 Tiers of play"); Vow of Absolution p.125, "Introducing Tier 5", and its Tier 5 archetypes (pp.41, 42).
 - The rulings R1-R10 of the load check spec (`docs/superpowers/specs/2026-11-15-character-load-check-design.md` §3) stay in force. `CharacterCheck` stays the single place for type repair at load. This spec names two exceptions:
   - **E1 (R6, R10).** The load deletes `skills.choice`, `skills.choice1` and `skills.choice2` (§4.3).
-  - **E2 (R8).** This pass adds load steps that are migrations: the id aliases (§9.2) and the `bonusType` repair that moves from two renders into the load (§11.2). It also adds two stored fields (§4.4, §10.1).
+  - **E2 (R8).** This pass adds load steps that are migrations: the id aliases (§9.2) and the `bonusType` repair that moves from two renders into the load (§11.2). It also adds two optional stored fields: `archetypeSkillChoices` (§4.4) and `ascensions[i].granted` (§6.3).
 
 ### 2.1 Named exceptions to G1
 
@@ -32,7 +35,7 @@ A load step changes a stored value only in these cases:
 | # | Load step | Why G1 permits it |
 |---|---|---|
 | X1 | Delete `skills.choice`, `skills.choice1`, `skills.choice2` (§4.3) | Only a defect wrote them (A2). After §4.2, no reader needs them. |
-| X2 | Replace an old id with its new id through the alias table (§9.2) | A migration that restores what the user had. The commit that removed each old id names the new id. |
+| X2 | Replace an old id with its new id through the alias table (§9.2). For `aeldari_psychosensitive`, also add the sub-option `{ type: 'psychosensitive', optionId: 'psyker' }` when it is absent (CC1) | A migration that restores what the user had. The commit that removed each old id names the new id. The sub-option keeps the PSYKER keyword of the old species record. |
 | X3 | Fill a missing `bonusType` of a background entry from the data (§11.2) | It restores what the user had. The same value is written today by two renders. |
 
 No other load step changes a stored value. The old `ascensionPackages` key now stays (§8.1). A stored value outside a new limit stays (§12, §13).
@@ -40,12 +43,13 @@ No other load step changes a stored value. The old `ascensionPackages` key now s
 ## 3. Design summary
 
 - `XPCalculator` gets the known names of the attributes and the skills, and one function `getBaseline(character)` that returns the free value of each attribute and skill. Each XP sum, each decrease limit, Reset Stats and each change of a parent use it.
-- A change of the species or the archetype moves only the values at or under the old free value. A raised value stays (`State._rebaseStats`).
-- A grant of a power, a discipline or a talent is reference-aware. The remove of a source takes out only what no other current source grants and what the user did not select.
+- A change of the species or the archetype moves only the values at or under the old free value. A raised value stays (`State._withRebase(change)`). On a change of species, an attribute above the maximum of the new species goes down to that maximum (CC2).
+- A grant of a power, a discipline or a talent is reference-aware. A package ascension entry records the ids that its grant step added, and its remove releases only those (CC3). A source with no entry (the archetype) takes out only what no other current source grants and what the user did not select. A free pick that no current slot covers stops being free (CC4).
+- The stored Custom Archetype record survives a change to a standard archetype and a species change (CC7).
 - One helper `State._remapWargearRefs` keeps each owned-item talent choice on its item when the wargear list changes order or length.
 - `State.loadCharacter` gets three named load steps (§2.1). The old `ascensionPackages` key stays, and the Ascension tab shows it.
 - Each list of the character shows an id that the data does not have as a visible row "Unknown <kind> (<id>)" with a Remove control. The sheet shows the same text with no control.
-- Small guards: number setters, tracker getters, render loop bounds, the relic form, the threat Mob Abilities, the weapon range, the settings storage, a confirm before Load.
+- Small guards: number setters (Rank 1-3, CC11), tracker getters, render loop bounds, the relic form, the threat Mob Abilities, the weapon range, the settings storage, a confirm after the file pick of Load.
 - No new script file. No new CSS file. Task 1 of the plan bumps `?v=129` to `?v=130` on all 36 tags of `creator/index.html`. The data task bumps the creator data version from 47 to 48.
 
 ## 4. Group 1: skill and attribute baselines (A2, A3)
@@ -62,7 +66,7 @@ No other load step changes a stored value. The old `ascensionPackages` key now s
 - `XPCalculator.ATTRIBUTE_KEYS` (7 names) and `XPCalculator.SKILL_KEYS` (18 names), in the order of `State.createNewCharacter()`.
 - `XPCalculator.getBaseline(character) -> { attributes: {name: n}, skills: {name: n} }`. An attribute gets `max(1, species.baseAttributes[k], archetype.attributeBonus[k])`. A skill gets `max(0, archetype.skillBonus[k])` for a real skill name `k`. For each `skillBonus` key that is not a skill name, the skill that `character.archetypeSkillChoices[key]` names (§4.4) gets `max(current baseline, skillBonus[key])`. A choice value that is not a skill name has no effect (G3).
 - `calculateAttributeXP` and `calculateSkillXP` sum over the known names only. A value above the table (attribute 12, skill 8) costs as the table edge. A value at or under the baseline costs 0. Thus an unknown key has no effect on a total, and no total is NaN.
-- `resetStats` sets each known name to its baseline. It does not touch an unknown key. `decreaseAttribute` and `decreaseSkill` take their minimum from the baseline.
+- `resetStats` sets each known name to its baseline. It does not touch an unknown key. `decreaseAttribute` and `decreaseSkill` take their minimum from the baseline. The Stats tab computes its own decrease limits (`stats-tab.js:88-101` for attributes, `:186-201` for skills); they also take the minimum from `getBaseline`, so the "-" button of a chosen skill at its free value is disabled (P4).
 
 ### 4.3 Correction: the load deletes the phantom keys (X1, E1)
 
@@ -72,7 +76,7 @@ No other load step changes a stored value. The old `ascensionPackages` key now s
 
 - New optional top-level field `archetypeSkillChoices: { <skillBonus key>: <skill name> }`. Example for the Inquisitor: `{ choice1: 'insight', choice2: 'scholar' }`.
 - `setArchetype` sets it to `{}` together with `archetypeKeywordChoices` (`state.js:353`). It is absent in `createNewCharacter()`, so an old save loads with no change.
-- New setter `State.setArchetypeSkillChoice(key, skill)`. It accepts `key` only when the current archetype has that `skillBonus` key and the key is not a skill name. It accepts `skill` only when it is a skill name that no other key of the same archetype holds (Core p.116: "any two Skills"), or `''` to clear. It takes the baseline before the change, stores the choice, and calls `_rebaseStats` (§5.2). Thus the chosen skill rises to the bonus value, and a skill that loses the choice goes back to its free value when the user did not raise it.
+- New setter `State.setArchetypeSkillChoice(key, skill)`. It accepts `key` only when the current archetype has that `skillBonus` key and the key is not a skill name. It accepts `skill` only when it is a skill name that no other key of the same archetype holds (Core p.116: "any two Skills"), or `''` to clear. It stores the choice inside `_withRebase` (§5.2). Thus the chosen skill rises to the bonus value, and a skill that loses the choice goes back to its free value when the user did not raise it.
 - `CharacterCheck` row (G7): optional; a value that is not a plain object becomes `{}`; each value that is not a string becomes `''`. This is the rule of `archetypeKeywordChoices` (row 22).
 - The chosen skill is the free baseline for the XP cost and for the decrease limit (§4.2). With no choice, the character pays nothing extra and gets no free rank.
 - UI (G5): the archetype detail gets one select per "any skill" key, in the pattern of the sub-faction keyword select (`archetype-tab.js:273-341`). Label: "Skill of your choice (<value>)". The first option is "-- Select a skill --". `formatBonuses` writes a `choice*` key as "Skill of your choice <value>" instead of "Choice1 4".
@@ -95,21 +99,32 @@ None at load except X1. A character with a raised skill and an Inquisitor archet
 
 ### 5.2 Correction
 
-- New helper `State._rebaseStats(oldBaseline)`. It reads the new baseline with `XPCalculator.getBaseline(this.character)`. For each known attribute and skill: a value at or under the old free value goes to the new free value. A value above the old free value stays, but never under the new free value (`Math.max`). **[Design agent]** The ruling says a raised value "stays". A raised value under the new free value goes up to it, as `setArchetype` does today. Cost if wrong: none to XP; the user sees a higher free value.
-- `setArchetype(id)`: returns with no change and no notify when `id` is the current archetype id (A6 pattern, A7b). Else: old baseline, set the archetype, reset `archetypeKeywordChoices` and `archetypeSkillChoices` to `{}`, grants (§6), `_rebaseStats`.
-- `setSpecies(id)`: returns with no change when `id` is the current species id (A6). Else: when an archetype is set, `clearArchetype()` first (today's rule: a species change clears the archetype). Then old baseline, set the species, `_rebaseStats`. Two steps compose: a value at the old free value of species plus archetype ends at the free value of the new species; a raised value stays.
-- `clearArchetype()`: old baseline, clear the archetype fields, grants (§6), `_rebaseStats`. It no longer calls `resetStats`.
-- `setCustomArchetype()`: returns with no change when the archetype is already `custom` (A7b). It calls `_rebaseStats` in place of `resetStats` (`:452`).
+- One helper, one name in both documents: `State._withRebase(change: () => void)`. It reads `XPCalculator.getBaseline(this.character)` (the old baseline), calls `change()`, then reads the new baseline. For each known attribute and skill: a value at or under the old free value goes to the new free value. A value above the old free value stays, but never under the new free value (`Math.max`). **[Design agent]** The ruling says a raised value "stays". A raised value under the new free value goes up to it, as `setArchetype` does today. Cost if wrong: none to XP; the user sees a higher free value.
+- Species maximum **[Controller ruling CC2]**: on a change of species, after the rebase, each attribute above `attributeMaximums[k]` of the new species (default 8, the rule of `increaseAttribute`) goes down to that maximum, and the XP total follows. Book: Core Rulebook p.25, "Species Maximums": "Your base Attribute Rating, before bonuses, can not exceed the value listed in the Table." A value above the maximum is not a legal character, and today's code resets the full stat block in this case, so the clamp loses less than today. No mark and no new control. The species data has no skill maximum (each species uses the skill maximum 8 of Core p.25), so the clamp applies to attributes only. Cost if wrong: a user who selects a species by mistake and goes back buys the points above the other maximum again; the XP is free again, so the cost is some clicks.
+- `setArchetype(id)`: returns with no change and no notify when `id` is the current archetype id (A6 pattern, A7b). Else: the grant ids of the old archetype (§6), then `_withRebase` around the archetype write and the reset of `archetypeKeywordChoices` and `archetypeSkillChoices` to `{}`, then the grants (§6). The stored `customArchetype` record stays (CC7).
+- `setSpecies(id)`: returns with no change when `id` is the current species id (A6). Else: when an archetype is set, `clearArchetype()` first (today's rule: a species change clears the archetype selection, see D3). Then `_withRebase` around the species write, then the species maximum clamp. Two steps compose: a value at the old free value of species plus archetype ends at the free value of the new species; a raised value stays unless it is above the new maximum.
+- `clearArchetype()`: the old grant ids (§6), then `_withRebase` around the write `archetype = { id: null, xpCost: 0 }`, then the grants (§6). It no longer calls `resetStats`, and it no longer resets the `customArchetype` record **[Controller ruling CC7]**. The record does not depend on the species: the ability archetype list (`archetype-tab.js:360-363`) filters by source only, the keywords are free text, and the starting wargear budget depends on the tier (`state.js:412-418`). So a species change clears only the selection.
+- `setCustomArchetype()`, final statement order (Tasks 3, 5 and 6 write it together):
+  1. guard: return with no change and no notify when the archetype is already `custom` (A7b) [Task 3];
+  2. `const oldGrants = this._archetypeGrantIds()` [Task 5];
+  3. `const drop = this.getOldStartingEntries()` [Task 6];
+  4. `this._withRebase(() => { this.character.archetype = { id: 'custom', xpCost: 0 }; })` [Task 3]; no reset of the stored `customArchetype` record (CC7: Custom, then a standard archetype, then Custom again keeps the name, the keywords and the ability);
+  5. `this._releasePowerGrants(oldGrants)` and `this._applyPowerGrants(<grants of the kept ability archetype>)` [Task 5];
+  6. remove the `drop` indices and call `_remapWargearRefs` [Task 6];
+  7. `this._settleFreePicks()` [Task 5];
+  8. `this.notifyListeners('archetype')`.
 - Reset Stats (Stats tab) keeps its meaning: each known value goes to the baseline.
 
 ### 5.3 What changes for the user
 
-- A species change and an archetype change keep each value that the user bought. Today a species change and Custom Archetype reset them. A user who wants the old reset uses Reset Stats.
+- A species change and an archetype change keep each value that the user bought above the old free value. Today a species change and Custom Archetype reset them. A user who wants the old reset uses Reset Stats.
+- A species change lowers an attribute above the maximum of the new species to that maximum.
 - A click on a selected card does nothing.
+- The Custom Archetype record (name, keywords, ability, starting wargear list) comes back when the user selects Custom Archetype again.
 
 ### 5.4 Risk to stored data
 
-None at load. Only future clicks change. No value is lost: a bought value stays.
+None at load. Only future clicks change. A bought value above the old free value stays, except above a species maximum (CC2). A bought value equal to the old free value is lost (P17): for example, a Human buys Strength 3, selects an archetype with Strength 3, then selects Ganger; Strength goes to 1. The rule cannot tell a bought point from a free point at the same value. §17 lists this.
 
 ## 6. Group 3: reference-aware grants (A8, and the power part of A4)
 
@@ -118,6 +133,7 @@ None at load. Only future clicks change. No value is lost: a bought value stays.
 - **A8 (S1).** The remove of an ascension package removes the archetype's own Smite and a discipline that the user chose. Evidence: `_applyAscensionEffects` skips a power that the character has (`state.js:1345-1354`); `_removeAscensionEffects` removes it with no condition (`:1399-1413`), and the same for disciplines (`:1415-1423`). `ascpow2.js`: Wyrd plus add and remove Psychic Revelations leaves `powers [] free []`. `ascpow.js`: a chosen Runes of Fate goes after Lost Upon the Seer Path is added and removed.
 - **A4 (power part).** `switch.js`: Wyrd then Ganger keeps `["smite"]` free.
 - Found while designing (G2). `setArchetype` to a psyker archetype empties `psychicPowers`, `freePowers` and `unlockedDisciplines` (`state.js:373-376`). `setCustomArchetypeAbility` does the same (`:469-471`, `:484-486`). `clearArchetype` does the same (`:400-402`). Each one deletes powers that the user bought and disciplines that the user chose, with no notice.
+- Plan review P8: Farseer and Shadowseer free picks include Divination, and `lost_seer_path_aoa` grants `prescience` and `scriers_gaze` (Divination). Without a record, the remove of the package removes a free pick that the user selected.
 
 ### 6.2 The grant paths
 
@@ -131,28 +147,31 @@ None at load. Only future clicks change. No value is lost: a bought value stays.
 | P6 | Package `disciplinesUnlocked` (Lost Upon the Seer Path) | discipline | `state.js:1371-1378`; also read at render by `getUnlockedDisciplines` (`:1635-1644`) |
 | P7 | Archetype and package `psykerConfig.unlockedDisciplines`, talents `warped_mind` / `tormented_manifestation_aoa`, the universal abilities | read at render only | `getUnlockedDisciplines`, `UNIVERSAL_ABILITY_IDS` |
 
-An archetype ascension (type `archetype`) grants nothing to the stored lists. P7 stores nothing, so it needs no change.
+An archetype ascension (type `archetype`) grants nothing to the stored lists. P7 stores nothing, so it needs no change. Only a package ascension has an entry that can hold a record (P3, P4, P5). The archetype and the ability archetype (P1, P2) have no entry.
 
 ### 6.3 Correction
 
-- New helper `State._grantedPowerIds(excludeEntry) -> Set<string>`: the union of P1 (or P2 for a custom archetype) and P3 plus P4 of each package ascension, except the ascension entry `excludeEntry` (compare by identity).
-- New helper `State._applyPowerGrants(ids)`: for each id that is not in `psychicPowers`, push it to `psychicPowers` and to `freePowers`. An id that is in `psychicPowers` stays as it is.
-- New helper `State._releasePowerGrants(ids, excludeEntry)`: for each id that `_grantedPowerIds(excludeEntry)` does not hold and that is in `freePowers`, remove it from both lists. An id that is in `psychicPowers` but not in `freePowers` is a power that the user bought: it stays.
-- `setArchetype`, `setCustomArchetypeAbility`, `clearArchetype` and `setCustomArchetype` release the grants of the old source and apply the grants of the new source. They do not empty the three lists.
-- `_applyAscensionEffects`: P3 and P4 through `_applyPowerGrants`; P5 as today; P6 is not stored any more (the render already reads it).
-- `_removeAscensionEffects(entry)`: P3 and P4 through `_releasePowerGrants(ids, entry)`. P5: remove the `ascensionGranted` copy of a talent only when no other current package grants it. P6: no remove.
-- **[Design agent]** A power that the user bought before a source grants it stays paid. Today `_applyAscensionEffects` makes it free. The record-free rule above needs this to know, at remove time, that the user selected the power. Cost if wrong: the user pays the XP of a power that a package also grants. The user can remove and the grant is then free.
-- **[Design agent]** A free pick (in both lists) of a power that a package also grants is removed with the package. The free pick prompt then shows again, so the user sees it and picks again. Only Divination free picks plus Lost Upon the Seer Path can do this. Cost if wrong: one extra pick.
-- **[Design agent]** P6 disciplines that an old save holds in `unlockedDisciplines` stay after the package goes. They show as chosen chips with a remove control (§9.4). Cost if wrong: one extra discipline chip for such a save.
+- New optional stored field on a package ascension entry **[Controller ruling CC3]**: `granted: { powers: string[], freePowers: string[], talents: string[] }`. It holds the ids that the grant step of this entry really added to `psychicPowers`, to `freePowers` and (as an `ascensionGranted` talent) to `talents`. `_applyAscensionEffects` writes it for each package entry whose package the data has, also when the three lists are empty. `setAscension` never copies `granted` from its `data` argument. `CharacterCheck` row (G7): optional; a value that is not a plain object is deleted (path `ascensions[i].granted`); each of the three keys is an optional list of strings, and an entry that is not a string is dropped.
+- New helper `State._archetypeGrantIds() -> string[]`: P1, or P2 for a custom archetype.
+- New helper `State._grantedPowerIds(excludeEntry = null) -> Set<string>`: P1 or P2, plus P3 and P4 of each package ascension except `excludeEntry` (compare by identity).
+- New helper `State._applyPowerGrants(ids) -> string[]`: for each id that is not in `psychicPowers`, push it to `psychicPowers` and to `freePowers`. It returns the ids it added. An id that is in `psychicPowers` stays as it is.
+- New helper `State._releasePowerGrants(ids, excludeEntry = null)`: for each id that `_grantedPowerIds(excludeEntry)` does not hold and that is in `freePowers`, remove it from both lists. An id that another package entry still grants stays; **[Design agent]** the id then goes into the `granted` record of the first such entry that has a record ("adoption"), so the remove of that entry releases it later. Cost if wrong: without adoption, Wyrd plus Psychic Revelations, then Ganger, then the remove of the package leaves a free Smite with no source.
+- Remove of a package entry: with a `granted` record, `_releasePowerGrants(granted.powers ∪ granted.freePowers, entry)` and, for each id of `granted.talents` that no other current package grants, remove the first `ascensionGranted` copy (or adopt it as above). With no record (a save from before this change), the no-record rule: P3 and P4 ids through `_releasePowerGrants(ids, entry)`, and P5 as above with the package's `talentsGranted`.
+- `setArchetype`, `setCustomArchetypeAbility`, `clearArchetype` and `setCustomArchetype` release the grants of the old source and apply the grants of the new source. They do not empty the three lists. A source with no entry keeps the rule "no other current source grants it and the user did not select it".
+- `_applyAscensionEffects`: P3 and P4 through `_applyPowerGrants` (record the result); P5 as today (record a talent that it adds); P6 is not stored any more (the render already reads it).
+- New helper `State._settleFreePicks()` **[Controller ruling CC4]**: after each change of source (`setArchetype`, `clearArchetype`, `setCustomArchetype`, `setCustomArchetypeAbility`, `setAscension`), each id in `freePowers` that `_grantedPowerIds()` does not hold and that no `freePowerChoices` slot of `getPsykerConfig()` covers leaves `freePowers` and stays in `psychicPowers`. A slot covers the first `count` such ids, in the order of `freePowers`, whose discipline matches. The power stays visible and its XP is correct.
+- **[Design agent]** A power that the user bought before a source grants it stays paid. Today `_applyAscensionEffects` makes it free. The rule needs this for a source with no entry (the archetype). Cost if wrong (P9): the user pays the XP of a power that a source also grants. To get it free, the user removes the power and then removes and adds the source again; for an archetype the same-id guard blocks a second click on the same card, so the user selects a different archetype first.
+- **[Design agent]** P6 disciplines that an old save holds in `unlockedDisciplines` stay after the package goes. They show as chosen chips with a remove control (§9.3). Cost if wrong: one extra discipline chip for such a save.
 
 ### 6.4 What changes for the user
 
-- Free picks, bought powers and chosen disciplines stay after an archetype change. They stay visible: the Powers tab and the sheet show stored powers also for a character that is not a psyker (§9.4, §13.3).
-- A free pick that the new archetype does not offer stays free. **[Design agent]** Cost if wrong: an XP leak equal to the cost of that power. The user can remove it.
+- Free picks, bought powers and chosen disciplines stay after an archetype change. They stay visible: the Powers tab and the sheet show stored powers and disciplines also for a character that is not a psyker (§9.4, §13.3).
+- A free pick that no current slot covers stays as a paid power (CC4).
+- A free pick that the user made before a package grants the same power stays after the remove of the package (the record holds only what the package added).
 
 ### 6.5 Risk to stored data
 
-None at load. Only future clicks change, and they remove less than today.
+None at load. A save from before this change has no `granted` record; its packages keep the no-record rule. Only future clicks change, and they remove less than today.
 
 ## 7. Group 4: wargear index references and starting wargear (A7, A9 / B1, A10 / B2)
 
@@ -176,14 +195,15 @@ A search for each read of a wargear index in stored data (`_owned`, `wargearInde
 
 ### 7.4 Correction: Custom Archetype keeps the user's wargear (A7)
 
-- `setCustomArchetype` keeps each entry except the starting wargear of the old archetype. **[Design agent]** "Starting wargear of the old archetype" is: for each id of the old archetype's `startingWargear` with quantity `q`, the first `q` entries with that id, `isStarting === true` and no `relic`, `improvised` or `custom` overlay. Thus an ascension wargear entry, a relic, an improvised item, a custom item and a bought item stay. Cost if wrong: an entry that the user wants to keep goes, but only behind the confirm below.
+- `setCustomArchetype` keeps each entry except the starting wargear of the old archetype. **[Design agent]** "Starting wargear of the old archetype" is: for each id of the old archetype's `startingWargear`, the total quantity `q` of that id (a plain-text entry counts 1, an object counts its `qty`, and the counts of repeated entries add up, P5), then the first `q` entries with that id, `isStarting === true` and no `relic`, `improvised` or `custom` overlay. Thus an ascension wargear entry, a relic, an improvised item, a custom item and a bought item stay. Cost if wrong: an entry that the user wants to keep goes, but only behind the confirm below.
 - New pure function `State.getOldStartingEntries() -> number[]` gives those indices. The Archetype tab asks a confirm before Custom Archetype when the list is not empty (G2: the action names what it removes): "Custom Archetype removes the starting wargear of <archetype name>: <names>. Continue?". Cancel changes nothing.
 - A change between two standard archetypes keeps all wargear, as today (`state.js:369-370`).
 
 ### 7.5 Correction: Add Starting Wargear (A10 / B2)
 
 - Both add buttons (`wargear-tab.js:437-451` for the archetype, `:454-470` for an archetype ascension) store an entry only when `DataLoader.getWargearItem(id)` resolves.
-- Once-only rule: for an id with quantity `q`, the click adds `max(0, q - n)` entries, where `n` is the count of entries with that id and `isStarting === true`. A second click adds nothing.
+- Once-only rule: the click first adds up the quantity `q` of each id over the whole list (a plain-text entry counts 1, an object counts its `qty`; `death_cult_assassin` lists `death_cult_power_blade` twice, so `q = 2`, P5). Then it adds `max(0, q - n)` entries of that id, where `n` is the count of entries with that id and `isStarting === true`. A second click adds nothing.
+- **[Design agent]** `n` counts each starting entry, so the archetype button and the archetype-ascension button (`wargear-tab.js:454-470`) count against each other for a shared id (P13). Example: `ministorum_priest` and an ascension to `death_cult_assassin` both list `laspistol` and `knife`; the second button adds no second copy. 153 same-faction pairs share a known id. Cost if wrong: the user adds the second copy from the wargear browser (a bought item, not marked Starting).
 - The text of an entry that does not resolve stays visible in the archetype detail (`formatWargear`, unchanged) and in the starting wargear notice of the Wargear tab (unchanged).
 - Data (`data/archetypes.json`). Of the 16 official-book ids that do not resolve, three have a real item under a different id. Each is checked against the book and against `data/`:
 
@@ -193,7 +213,7 @@ A search for each read of a wargear index in stored data (`_owned`, `wargearInde
 | `techmarine` | `servo_harness` | `astartes_servo_arm` | Vow of Absolution p.39 wargear: "Astartes Servo Arm"; old commit `eebe974` removed `servo_harness` as a placeholder |
 | `striking_scorpion` | `mandiblaster` | `mandiblasters` | Old commit `eebe974`: "duplicate of mandiblasters; Aeldari p94 has only the plural" |
 
-- The other 13 have no item in the data: book prose such as "any 2 Augmetics" (Core p.109), items with no definition in any book (old commit `c278f59`), or items that the old commit `9864ec6` removed as fabricated. They stay as text. The Apocrypha prose entries are parked (§15).
+- The other 13 have no item in the data: book prose such as "any 2 Augmetics" (Core p.109), items with no definition in any book (old commit `c278f59`), or items that the old commit `9864ec6` removed as fabricated. They stay as text. The Apocrypha prose entries are parked (§16).
 
 ### 7.6 Risk to stored data
 
@@ -251,16 +271,16 @@ Renamed (the alias table maps the old id to the new id at load):
 | `embrace_the_gods_dh` | `eye_of_the_gods_dh` | talents | old `9864ec6`: "Embrace the God(s) -> Eye of the Gods" |
 | `forge_the_sword_dh` | `forge_of_souls_dh` | talents | old `9864ec6`: "Forge the Sword -> Forge of Souls" |
 | `one_or_more_allied_aeldari_or_drukhari_saga_of_majesty_aoa` | `saga_of_majesty_aoa` | talents | old `fad5e62`: "garbled ID/name ... Fixed ID, name" |
-| `forceshield` | `force_shield_aeldari` | wargear | this repo `5506a1a`: "repoint the Autarch and Corsair Prince archetypes to the verbatim book entries (force_shield_aeldari, mistshield)" |
-| `mist_shield` | `mistshield` | wargear | this repo `5506a1a` (same) |
+| `forceshield` | `force_shield_aeldari` | wargear | this repo `5506a1a`: "repoint the Autarch and Corsair Prince archetypes to the verbatim book entries (force_shield_aeldari, mistshield)". Stats change (P11): old `forceshield` AR 2, Power Field and Shield, Very Rare; `force_shield_aeldari` AR 3, Power Field, Unique |
+| `mist_shield` | `mistshield` | wargear | this repo `5506a1a` (same). Stats change (P11): the old record had the trait Shield; `mistshield` has only Power Field (AR 2, Very Rare in both) |
 | `mandiblaster` | `mandiblasters` | wargear | old `eebe974`: "duplicate of mandiblasters" |
-| `aeldari_psychosensitive` | `aeldari` | species id | old `9864ec6`: "Consolidated Aeldari (Psychosensitive) into main Aeldari species". Same cost (10) and base attributes |
+| `aeldari_psychosensitive` | `aeldari` | species id | old `9864ec6`: "Consolidated Aeldari (Psychosensitive) into main Aeldari species". Same cost (10) and base attributes. The old record had the keywords `AELDARI, PSYKER`; today's `aeldari` gives PSYKER only through the optional sub-option `psychosensitive` / `psyker` (Core p.29: "Psychosensitive: You may choose to take the PSYKER Keyword."). So the alias step also adds `{ type: 'psychosensitive', optionId: 'psyker' }` to `species.subOptions` when it is absent (CC1) |
 
 Removed (they show as unknown, §9.3): `precision_shooter`, `swift_attack` (fabricated, `9864ec6`); `skitarii_war_plate`, `tattered_robes`, `adept_robes`, `fine_clothing`, `disguise_kit`, `commissar_greatcoat` (fabricated, `9864ec6`); `ripped_clothes` (`87963b1`: not player equipment); `servo_harness`, `augmetics` (`eebe974`: placeholders); `company_standard`, `smoke_grenades`, `haywire_mine`, `ballistic_autoreliquary` (`c278f59`: no definition in any book); `heightened_senses` (`3350583`: not in the book); the sub-options `runes_of_battle`, `runes_of_fate`, `runes_of_fortune`, `bonesinging`, `phantasmancy` (`9864ec6`, removed with the psychosensitive species); `aeldari_craftworld`, `aeldari_outcast`, `aeldari_survivor` (`f23afe8`: fabricated origins); `minor_invocation`, `warpspeed` (see below).
 
 - **[Design agent]** `minor_invocation` and `warpspeed` are classed as removed. Old commit `685e6a8` replaced each record in place with `malefic_invitation` and `warptime`, and calls this "6 completely wrong powers corrected". The old power did not exist in the book, so the alias would guess what the user wanted. Cost if wrong: the user sees two "Unknown power" rows and selects again. Listed in §15 Owner decisions.
 - `ichor_injector` is not unknown: `data/weapons.json` still has it, and `getWargearItem` resolves it.
-- The alias table: `State.ID_ALIASES = { talents: {...}, wargear: {...}, species: {...} }`. The load step maps a talent entry (string or `{ id }`), `wargear[i].id`, `customArchetype.wargear[i]` and `species.id`. It maps in place and keeps the order (talent choices store wargear indices). **[Design agent]** It does not remove a duplicate that a map makes. Cost if wrong: in a corner case a talent shows twice, with a Remove control.
+- The alias table: `State.ID_ALIASES = { talents: {...}, wargear: {...}, species: {...} }`. The load step maps a talent entry (string or `{ id }`), `wargear[i].id`, `customArchetype.wargear[i]` and `species.id`. It maps in place and keeps the order (talent choices store wargear indices). **[Controller ruling CC5]** A talent entry is not mapped when the list already holds the new id: a talent list cannot hold a non-repeatable talent two times, and a map would charge its XP two times (`xp-calculator.js:116-129`). The old entry then stays as an "Unknown talent" row with Remove, and costs 0 as today. Wargear can hold an item two times, so a wargear id is always mapped: a save that holds the old hidden id and a copy that the user added again shows two items (shields or mandiblasters), each with Remove.
 - XP: an aliased entry costs what the new record costs, as it did when the user saved it. An unknown entry costs 0, as today (A11 (3)).
 
 ### 9.3 Correction: a visible row for each unknown id
@@ -273,7 +293,7 @@ Each list resolves against the full data: the getters of `DataLoader` do not fil
 | weapon upgrades | owned weapon line `:166-169`; upgrade modal `:866-867` | the existing modal remove (`removeWeaponUpgrade`) |
 | talents | Talents tab `talents-tab.js:308-309` | the existing REMOVE (`removeTalent` with the index), also for an `ascensionGranted` entry |
 | powers | Powers tab `powers-tab.js:270-271` | the existing chip × (`removePower`) |
-| disciplines | Powers tab setup `powers-tab.js:146-184`: chosen chips show whenever the stored list is not empty | the existing × (`removeDisciplineChoice`) |
+| disciplines | Powers tab setup `powers-tab.js:146-184`: chosen chips show whenever the stored list is not empty, also for a psyker archetype with `disciplineChoices: 0` (today `:146` hides them) and for a character with no PSYKER (§9.4) **[Controller ruling CC8]** | the existing × (`removeDisciplineChoice`) |
 | background entries | Background tab selects `background-tab.js:65-90`: a selected, disabled option "Unknown origin (<id>)" | the select itself: "Select an Origin..." clears the entry |
 | species sub-options | the selected species card `species-tab.js:81-100`: a row for a stored sub-option whose type or option the species does not have | a new Remove button (`removeSpeciesSubOption`) |
 | ascension packages, ascension archetypes | Ascension tab (§8.5) | Remove (`setAscension(t, null)`) |
@@ -284,7 +304,7 @@ Each list resolves against the full data: the getters of `DataLoader` do not fil
 
 ### 9.4 Powers of a character that is not a psyker
 
-Today the Powers tab shows only an info box for a character without PSYKER (`powers-tab.js:45-54`), and the sheet hides the Powers tab and section (`character-sheet-tab.js:348`, `:1721`, `:2086`). The stored powers still cost XP (`xp-calculator.js:132-143`). After §6 this happens more often. Correction (G2: nothing that costs XP is hidden): when the stored `psychicPowers` hold an id that is not a universal ability, or `unlockedDisciplines` is not empty, the Powers tab shows the info box and, under it, the selected powers and the chosen discipline chips with their remove controls. The sheet shows its Powers tab and section by the same test.
+Today the Powers tab shows only an info box for a character without PSYKER (`powers-tab.js:45-54`), and the sheet hides the Powers tab and section (`character-sheet-tab.js:348`, `:1721`, `:2086`). The stored powers still cost XP (`xp-calculator.js:132-143`). After §6 this happens more often. Correction (G2: nothing that costs XP is hidden): when the stored `psychicPowers` hold an id that is not a universal ability, or `unlockedDisciplines` is not empty, the Powers tab shows the info box and, under it, the selected powers and the chosen discipline chips with their remove controls. The sheet shows its Powers tab and section by the same test (`hasStoredPowers`: a stored power that is not a universal ability, or a stored discipline, P18).
 
 ### 9.5 B11 items that are fields of an entry
 
@@ -304,16 +324,17 @@ X2 only (eight aliases). The rows read the data and write nothing.
 ### 10.1 Findings
 
 - **B3 (S2).** `state.js:216-219` (`parseInt(rank) || 1`) and the box loops `character-sheet-tab.js:710-727` have no bound. `p3.log`: rank 30000 typed gives a sheet render of 3146 ms; 300000 gives 38998 ms.
-- **B4 (S2).** `numbers.log`: rank `-5` and Additional XP `-5` are stored. `creator/index.html:180,185` declare `min="0"` and `min="1" max="5"`; the browser does not enforce them on typed input.
+- **B4 (S2).** `numbers.log`: rank `-5` and Additional XP `-5` are stored. `creator/index.html:180,185` declare `min="0"` and `min="1" max="5"`; the browser does not enforce them on typed input. The `max="5"` was already in the first commit of the old creator repo (`3b17bac`); no book gives it.
 - **B5 (S2).** `p5-trackers.js`: Faith 2 with a max of 1 shows 2; "+" then gives 1. `getCurrentFaith` (`state.js:1256-1262`) has no clamp; `currentWounds` 7 stays when the max drops to 3.
-- Book check (G6): Core p.146: "Your Rank can't decrease, and can't go above the maximum of 3." The input declares 5. See §15.
+- Book check (G6): Core p.146: "Your Rank can't decrease, and can't go above the maximum of 3." The input declares 5. The owner decided Rank 1 to 3 (§2).
 
 ### 10.2 Correction
 
 - New helper `State._intInRange(value, min, max) -> number|null`: `Number(value)` when it is an integer with `min <= n <= max` (`max` may be `Infinity`), else `null`. The inputs have no `step`, so the browser default step is 1: an integer is the declared form.
-- `setRank` (1..5), `setAdditionalXP` (0..), `setCorruptionPoints` (0..), `setTier` (1..5, the select). A value outside the range keeps the stored value and does not notify. The tab writes the stored value back into the input (`SettingTab.refresh`, the corruption input, the follower inputs).
+- The Rank input (`creator/index.html:185`) declares `min="1" max="3"` (CC11). Nothing else in `creator/` or `data/` assumes a Rank above 3.
+- `setRank` (1..3), `setAdditionalXP` (0..), `setCorruptionPoints` (0..), `setTier` (1..5, the select; CC12). A value outside the range keeps the stored value and does not notify. The tab writes the stored value back into the input (`SettingTab.refresh`, the corruption input, the follower inputs).
 - Follower Members (`min="1"`) and Living (`min="0"`, `max` = Members) in `followers-tab.js:218-224`: an entry outside the range keeps the stored value and re-renders.
-- A stored value outside a range stays until the user edits that field (G1). The renders cope with it (§10.3).
+- A stored value outside a range stays until the user edits that field (G1). A stored Rank of 4 or 5 (written by the old `max="5"`) stays: the input shows it (the browser marks it invalid but keeps it), each "+Rank" and "Double Rank" bonus uses it as today, and the box bound of §10.3 covers each count that it raises.
 
 ### 10.3 Correction: render bounds and tracker getters
 
@@ -341,9 +362,13 @@ None at load. A typed value outside the range is refused, so nothing new is stor
 ## 12. Group 9: settings and Load (A16, A17, A18)
 
 - **A16 (S2).** `state.js:1522-1531`: the settings live only in the autosave; `_performAutoSave` skips a blank character (`:1518-1520`); `newCharacter` calls `clearAutoSave`. `sources.js`: a source change on a blank character is not stored.
-- Correction: a new key `wng-creator-settings` holds `{ enabledSources, knownSources, ignorePrerequisites }`. `setEnabledSources` and `setIgnorePrerequisites` write it (in a `try`). New `State.getSavedSettings()` reads it. `App.checkAutoSave` reads the new key first and falls back to the autosave object (the old place). It applies the settings before it looks for a character, so a blank autosave still gives the settings. New Character does not touch the new key. The autosave still writes the settings too. **[Design agent]** That keeps an older app version in another tab working. Cost if wrong: a few bytes.
+- Correction: a new key `wng-creator-settings` holds `{ enabledSources, knownSources, ignorePrerequisites }`. `setEnabledSources` and `setIgnorePrerequisites` write it (`setItem` in a `try`). New `State.getSavedSettings()` reads it, with `getItem` and the parse in one `try` (blocked storage gives `null`, P7c). `App.checkAutoSave`:
+  - `const settings = State.getSavedSettings() || State.getAutoSave()`; the settings part runs only `if (settings)` (empty storage, P7a);
+  - the character always comes from `State.getAutoSave()?.character`, never from the settings object (P7b: with both keys, the autosaved character still loads);
+  - when no character loads, `State.markClean()` after the settings part, so a blank character is not dirty and `beforeunload` does not warn (P14a).
+- New Character does not touch the new key. The autosave still writes the settings too. **[Design agent]** That keeps an older app version in another tab working. Cost if wrong: a few bytes; and once the new key exists, a settings change made in a cached v129 tab is not read by the new version (P14b).
 - **A17 (S3, F8).** `app.js:479-480` tests truthiness and `:471` spreads the value; `{}` throws `not iterable` and stops the start. Correction: the sources apply only when `Array.isArray`, and only the string entries. Else the default stays.
-- **A18 (S2).** `app.js:158-167` loads with no confirm. New Character (`:135-145`) asks a confirm with no condition. Correction: the Load button asks `window.api.showConfirm('Load a character? Unsaved changes will be lost.', 'Load Character')` before the file dialog. **[Design agent]** It asks only when the current character has content (a name, a species or an archetype: the test of `_performAutoSave`). The ruling says "when the current character has content" and "the same pattern as New Character". Cost if wrong: one more click for a blank character.
+- **A18 (S2).** `app.js:158-167` loads with no confirm. New Character (`:135-145`) asks a confirm with no condition. Correction **[Controller ruling CC6]**: the confirm comes after the file pick and before `State.loadCharacter`. A confirm before the file dialog can block Load: `showConfirm` is the browser's `confirm()` (`web-api.js:178`), the file picker needs recent user activation, and Chromium keeps it for about 5 seconds (plan review P6, headless Chromium). `CharacterIO.load(confirmLoad)` takes an optional function; after `importCharacter` succeeds it calls `await confirmLoad(fileName)`, and on `false` it returns `{ success: false, error: 'Load cancelled.' }` with no change. The App handler passes a function that asks `window.api.showConfirm('Load "<file name>"? Unsaved changes to the current character will be lost.', 'Load Character')`. **[Design agent]** It asks only when the current character has content (a name, a species or an archetype: the test of `_performAutoSave`). Cost if wrong: one more click for a blank character.
 
 ## 13. Group 10: render guards (B6, B7, B8, B10)
 
@@ -362,7 +387,7 @@ The sheet has no controls. It shows the text "Unknown <kind> (<id>)" at each sit
 |---|---|---|---|
 | 1 | Archetype tab, standard archetype detail | one select "Skill of your choice (<value>)" per "any skill" key | A2 |
 | 2 | Archetype tab, Custom Archetype item | a confirm that names the starting entries it removes (only when there are some) | A7 |
-| 3 | Header, Load button | a confirm before the file dialog (only when the character has content) | A18 |
+| 3 | Header, Load button | a confirm after the file pick that names the file (only when the character has content) | A18 |
 | 4 | Ascension tab | a notice with the button "Remove old package list" | A1 |
 | 5 | Ascension tab | a block "Ascensions with no slot", one Remove button per row | A12 |
 | 6 | Ascension tab, slot | a row "Unknown ascension package / archetype (<id>)" with a Remove button | A11 |
@@ -370,6 +395,7 @@ The sheet has no controls. It shows the text "Unknown <kind> (<id>)" at each sit
 | 8 | Wargear tab | a group "Unknown" whose rows use the existing Remove button; the upgrade modal lists an unknown upgrade with its existing remove | A11, B2 |
 | 9 | Talents, Powers, Injuries tabs | unknown rows with the existing remove controls | A11, B11 |
 | 10 | Powers tab, character with no PSYKER | the selected power chips and the chosen discipline chips under the info box | A8, A4 |
+| 10b | Powers tab, psyker archetype with `disciplineChoices: 0` and stored disciplines | the chosen discipline chips with × (today hidden) | A8, CC8 |
 | 11 | Background tab | a disabled option "Unknown <kind> (<id>)" in a select; a text that asks for one bonus | A11, A14 |
 
 No new CSS file. Each row uses the classes of its tab (`btn-remove`, `btn-small`, `info-box`, `selected-chip`, `card-suboption`, `text-muted`).
@@ -378,9 +404,11 @@ No new CSS file. Each row uses the classes of its tab (`btn-remove`, `btn-small`
 
 | # | Item | Book evidence | Default (the plan implements it) |
 |---|---|---|---|
-| D1 | Rank maximum | Core p.146: "can't go above the maximum of 3". The input declares `max="5"`. | Keep 1..5, the declared range. A save with rank 4 or 5 is not touched. |
-| D2 | Tier range | Core p.19: "There are 4 Tiers of play". Vow of Absolution has Tier 5 archetypes (p.41, p.42). The select offers 1..5. | Keep 1..5. |
-| D3 | A species change clears the archetype (`state.js:250-253`) | No book rule. G2 can read as "keep it with a mark". Not an audit finding. | No change in this pass. |
+D1 (Rank) and D2 (Tier) are decided by the owner: see §2.
+
+| # | Item | Book evidence | Default (the plan implements it) |
+|---|---|---|---|
+| D3 | A species change clears the archetype selection (`state.js:250-253`). After this pass it also loses: the archetype grants (§6), all species sub-options such as chapter, path and Kroot mutations (`state.js:240`), and the keyword and skill choices at the next archetype pick. It keeps: the stored Custom Archetype record (CC7), bought stats above the old free value and under the new maximums, talents, wargear, ascensions, free picks that a slot covers, bought powers and disciplines. No confirm. **[Controller ruling CC13]** | No book rule. G2 can read as "keep it with a mark". Not an audit finding. | No change in this pass. |
 | D4 | `minor_invocation` -> `malefic_invitation`, `warpspeed` -> `warptime` | Old commit `685e6a8` replaced the records in place as "wrong powers corrected". | No alias: unknown rows. |
 | D5 | `company_standard` (Company Ancient) -> `battle_standard`? | Vow of Absolution p.42 wargear: "Company Standard"; the data item `battle_standard` (VoA p.74) is named "Battle Standard". | No change: it stays text. |
 | D6 | `smoke_grenades` (Incursor, Bladeguard) -> `smoke_grenades_aoa`? | VoA p.41 lists "3 Smoke Grenades"; the data item is from An Abundance of Apocrypha (p.361). | No change. |
@@ -395,14 +423,17 @@ No new CSS file. Each row uses the classes of its tab (`btn-remove`, `btn-small`
 | A21-A24 (S4) | Listed only: `newCharacter` throws with blocked storage; `state.js:153-156` is dead (A22, not removed here); rank/XP negative (closed by §10.2); attribute maximums 13-16 not reachable. |
 | B S4 lines | Listed only: typed `1e5` and `2.5` (closed by §10.2); follower decimals (closed by §10.2); `references-tab.js:761-762` prints "Choice1 +4" (Compendium text, not character data). |
 | Glossary, Electron wrapper | **[Controller ruling]** Out of scope. |
+| Upgrades on a base item change (P19) | **[Controller ruling CC7]** A change of the base item in a relic or improvised edit clears `upgrades` (`state.js:813`, `:831`). An upgrade belongs to the base item, and the edit selects a new one. |
 
 Unrelated dead code seen and not removed: `State.removeWargear` has no caller (it gets the remap helper only); `CharacterIO.createCharacterSheet` iterates `Object.entries` of the stats (`character-io.js:198`, `:214`) and has no caller.
 
 ## 17. What this spec does not prove
 
-- The grant rule of §6 has no stored record. It cannot tell a free pick from a grant when both name the same power and the pick came first (§6.3). It cannot know if a power was bought before a grant when a save from before this change holds it in both lists.
+- A package entry from a save before this change has no `granted` record. For it, the no-record rule cannot tell a free pick from a grant when both name the same power and the pick came first, and cannot know if a power was bought before a grant. The archetype has no entry, so the same limit holds for its grants (§6.3).
+- The rebase cannot tell a bought point from a free point at the same value: a bought value equal to the old free value goes to the new free value (§5.4, P17).
+- The species maximum clamp uses `attributeMaximums` of `data/species.json`. Core p.25 was read for the rule and the Core table; the maximums of the species of other books (for example Ogryn, Forsaken System) were not compared with their book pages.
 - The alias table covers the ids that left the data since 2026-02-13 (`3b17bac`). It does not cover an Electron 1.0.0 save with ids that left the data before that commit.
 - The injury and mutation ids and the follower `threatId`s were not compared with older data (Audit 1 did not check them). An unknown one shows as a row; no alias exists for them.
 - The 50-box bound and the timing were not measured on a phone.
-- The book checks cover Core pp.19, 43, 94, 109, 116, 117, 146 and Vow of Absolution pp.39, 41, 42. Other books were not read for this pass.
+- The book checks cover Core pp.19, 25, 29, 43, 94, 109, 116, 117, 146 and Vow of Absolution pp.39, 41, 42, 125, 126. For the Rank search, the contents pages of each official sourcebook and the sections they point to were read; the adventure modules and the Apocrypha body were not read.
 - The audit evidence was re-read in the code at `44084ae`. The audit scripts were not run again; the line numbers in this spec match the code.

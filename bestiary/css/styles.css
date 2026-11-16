@@ -2700,6 +2700,13 @@ body {
     align-items: center;
 }
 
+/* A stored player above the player count (spec §6.4) */
+.player-character-row--extra .pc-extra-mark {
+    color: var(--text-muted);
+    font-size: 11px;
+    white-space: nowrap;
+}
+
 .pc-remove-btn {
     background: none;
     border: none;

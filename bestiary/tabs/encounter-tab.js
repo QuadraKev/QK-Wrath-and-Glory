@@ -27,7 +27,13 @@ const EncounterTab = {
         });
 
         document.getElementById('encounter-players').addEventListener('change', (e) => {
-            EncounterState.updateSettings({ playerCount: parseInt(e.target.value) });
+            const playerCount = BestiaryCheck.readIntegerInput(e.target);
+            if (playerCount === null) {
+                // Not a valid count: keep the stored count and show it
+                e.target.value = String(EncounterState.settings.playerCount);
+                return;
+            }
+            EncounterState.updateSettings({ playerCount });
             this.renderPlayerCharacterInputs();
             this.renderEncounterList();
         });
@@ -119,18 +125,23 @@ const EncounterTab = {
         const container = document.getElementById('player-character-inputs');
         const playerCount = EncounterState.settings.playerCount;
 
-        // Build input rows - show existing PCs first, then empty slots for remaining
+        // Build input rows - show existing PCs first, then empty slots for remaining.
+        // A player above the count keeps a row with a mark (spec §6.4).
         let html = '';
-        for (let i = 0; i < playerCount; i++) {
+        const rowCount = Math.max(playerCount, EncounterState.playerCharacters.length);
+        for (let i = 0; i < rowCount; i++) {
             const pc = EncounterState.playerCharacters[i];
             if (pc) {
+                const pcId = this.escapeHtml(String(pc.id));
+                const extra = i >= playerCount;
                 html += `
-                    <div class="player-character-row" data-index="${i}" data-id="${pc.id}">
+                    <div class="player-character-row${extra ? ' player-character-row--extra' : ''}" data-index="${i}" data-id="${pcId}">
                         <input type="text" class="pc-name-input" value="${this.escapeHtml(pc.name)}"
-                               data-index="${i}" data-id="${pc.id}" placeholder="Player ${i + 1}">
-                        <input type="number" class="pc-initiative-input" value="${pc.initiative ?? ''}"
-                               data-index="${i}" data-id="${pc.id}" placeholder="Init" min="0" max="99">
-                        <button class="pc-remove-btn" data-id="${pc.id}" title="Remove">&times;</button>
+                               data-index="${i}" data-id="${pcId}" placeholder="Player ${i + 1}">
+                        <input type="number" class="pc-initiative-input" value="${this.escapeHtml(String(pc.initiative ?? ''))}"
+                               data-index="${i}" data-id="${pcId}" placeholder="Init" min="0" max="99">
+                        ${extra ? '<span class="pc-extra-mark">Above player count</span>' : ''}
+                        <button class="pc-remove-btn" data-index="${i}" data-id="${pcId}" title="Remove">&times;</button>
                     </div>
                 `;
             } else {
@@ -146,12 +157,6 @@ const EncounterTab = {
             }
         }
         container.innerHTML = html;
-
-        // Remove excess player characters if player count was reduced
-        while (EncounterState.playerCharacters.length > playerCount) {
-            const lastPc = EncounterState.playerCharacters[EncounterState.playerCharacters.length - 1];
-            EncounterState.removePlayerCharacter(lastPc.id);
-        }
 
         // Bind events
         container.querySelectorAll('.pc-name-input').forEach(input => {
@@ -200,11 +205,15 @@ const EncounterTab = {
         container.querySelectorAll('.pc-remove-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const id = e.target.dataset.id;
+                const index = parseInt(e.target.dataset.index);
                 if (id) {
                     EncounterState.removePlayerCharacter(id);
                 }
-                const newCount = EncounterState.settings.playerCount - 1;
-                EncounterState.updateSettings({ playerCount: Math.max(1, newCount) });
+                // The × of a row above the count removes that player and keeps the count
+                if (index < EncounterState.settings.playerCount) {
+                    const newCount = EncounterState.settings.playerCount - 1;
+                    EncounterState.updateSettings({ playerCount: Math.max(1, newCount) });
+                }
                 document.getElementById('encounter-players').value = EncounterState.settings.playerCount;
                 this.renderPlayerCharacterInputs();
                 this.renderEncounterList();
@@ -278,16 +287,28 @@ const EncounterTab = {
             input.addEventListener('change', (e) => {
                 const id = e.target.dataset.id;
                 const type = e.target.dataset.type;
+                // An empty box clears the initiative. A value outside 0-99 keeps the stored value and shows it.
+                let value = '';
+                if (e.target.value.trim() !== '') {
+                    value = BestiaryCheck.readIntegerInput(e.target);
+                    if (value === null) {
+                        const items = { individual: EncounterState.individuals, mob: EncounterState.mobs,
+                            player: EncounterState.playerCharacters, vehicle: EncounterState.vehicles }[type] || [];
+                        const item = items.find(x => x.id === id);
+                        e.target.value = item && item.initiative != null ? String(item.initiative) : '';
+                        return;
+                    }
+                }
                 if (type === 'individual') {
-                    EncounterState.setInitiative(id, e.target.value);
+                    EncounterState.setInitiative(id, value);
                 } else if (type === 'mob') {
-                    EncounterState.setMobInitiative(id, e.target.value);
+                    EncounterState.setMobInitiative(id, value);
                 } else if (type === 'player') {
-                    EncounterState.setPlayerCharacterInitiative(id, e.target.value);
+                    EncounterState.setPlayerCharacterInitiative(id, value);
                     // Also update the sidebar input
                     this.renderPlayerCharacterInputs();
                 } else if (type === 'vehicle') {
-                    EncounterState.setVehicleInitiative(id, e.target.value);
+                    EncounterState.setVehicleInitiative(id, value);
                 }
                 this.renderEncounterList();
             });

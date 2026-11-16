@@ -79,6 +79,9 @@ const EncounterState = {
 
     // Add threat(s) as individuals
     addIndividual(threatId, quantity = 1, asMob = false) {
+        // A quantity that is not an integer in 1-20 adds nothing (spec §6.3)
+        if (!Number.isInteger(quantity) || quantity < 1 || quantity > BestiaryCheck.ADD_COUNT_MAX) return [];
+
         const threat = DataLoader.getThreat(threatId);
         if (!threat) return [];
 
@@ -142,11 +145,21 @@ const EncounterState = {
         }
     },
 
+    // Reads the value of an initiative box (spec §6.3). '' or null gives null, an integer
+    // in 0-99 gives that integer, and any other value gives undefined (the writers change nothing).
+    _readInitiative(value) {
+        if (value === '' || value === null) return null;
+        const number = parseInt(value, 10);
+        if (Number.isInteger(number) && number >= 0 && number <= BestiaryCheck.INITIATIVE_MAX) return number;
+        return undefined;
+    },
+
     // Set initiative for an individual
     setInitiative(id, value) {
         const individual = this.individuals.find(i => i.id === id);
-        if (individual) {
-            individual.initiative = value === '' || value === null ? null : parseInt(value);
+        const next = this._readInitiative(value);
+        if (individual && next !== undefined) {
+            individual.initiative = next;
             this.markDirty();
         }
     },
@@ -154,8 +167,9 @@ const EncounterState = {
     // Set initiative for a mob
     setMobInitiative(mobId, value) {
         const mob = this.mobs.find(m => m.id === mobId);
-        if (mob) {
-            mob.initiative = value === '' || value === null ? null : parseInt(value);
+        const next = this._readInitiative(value);
+        if (mob && next !== undefined) {
+            mob.initiative = next;
             this.markDirty();
         }
     },
@@ -548,8 +562,9 @@ const EncounterState = {
     // Set initiative for a player character
     setPlayerCharacterInitiative(id, value) {
         const pc = this.playerCharacters.find(p => p.id === id);
-        if (pc) {
-            pc.initiative = value === '' || value === null ? null : parseInt(value);
+        const next = this._readInitiative(value);
+        if (pc && next !== undefined) {
+            pc.initiative = next;
             this.markDirty();
         }
     },
@@ -606,8 +621,9 @@ const EncounterState = {
     // Set initiative for a vehicle
     setVehicleInitiative(id, value) {
         const entry = this.vehicles.find(v => v.id === id);
-        if (entry) {
-            entry.initiative = value === '' || value === null ? null : parseInt(value);
+        const next = this._readInitiative(value);
+        if (entry && next !== undefined) {
+            entry.initiative = next;
             this.markDirty();
         }
     },
@@ -744,6 +760,16 @@ const EncounterState = {
 
     // Update settings
     updateSettings(newSettings) {
+        // A player count outside 1-10 and a tier outside 1-5 are ignored. The other keys apply (spec §6.3).
+        newSettings = { ...newSettings };
+        const inRange = (v, min, max) => Number.isInteger(v) && v >= min && v <= max;
+        if ('playerCount' in newSettings && !inRange(newSettings.playerCount, BestiaryCheck.PLAYER_COUNT_MIN, BestiaryCheck.PLAYER_COUNT_MAX)) {
+            delete newSettings.playerCount;
+        }
+        if ('tier' in newSettings && !inRange(newSettings.tier, BestiaryCheck.TIER_MIN, BestiaryCheck.TIER_MAX)) {
+            delete newSettings.tier;
+        }
+
         const tierChanged = newSettings.tier !== undefined && newSettings.tier !== this.settings.tier;
         const playerCountChanged = newSettings.playerCount !== undefined && newSettings.playerCount !== this.settings.playerCount;
 

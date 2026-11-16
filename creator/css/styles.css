@@ -6329,7 +6329,7 @@ textarea {
     }
 }
 
-/* The count text of a tracker with more than 50 boxes starts a row of its own in the grid layout, on one line */
+/* The count text of a tracker with more boxes than the limit starts a row of its own in the grid layout, on one line */
 .sheet-strip-trackers .tracking-boxes .sheet-empty {
     grid-column-start: 1;
     white-space: nowrap;

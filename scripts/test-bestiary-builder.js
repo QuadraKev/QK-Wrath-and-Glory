@@ -248,6 +248,12 @@ const woundsOf = ({ EncounterState, DataLoader }) =>
         const ThreatsTab = app.load('bestiary/tabs/threats-tab.js', 'ThreatsTab');
         app.App.switchTab = () => {};
         const T = app.ThreatBuilderState;
+        // Fix round 2 (F4): a pristine builder gets the template with no confirm
+        T.clear();
+        app.setConfirm(false);
+        ThreatsTab.customizeThreat('sly_marbo_aaa');
+        check('TB4-3: Customize on a pristine builder asks nothing and loads the template',
+            { asked: app.confirms.length, name: T.threat.name }, { asked: 0, name: app.DataLoader.getThreat('sly_marbo_aaa').name });
         T.clear();
         T.addKeyword('ORK');
         const before = JSON.stringify(T.getThreatData());

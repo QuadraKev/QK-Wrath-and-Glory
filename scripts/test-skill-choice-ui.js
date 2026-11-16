@@ -184,24 +184,46 @@ ArchetypeTab.renderDetail = () => { renders++; };
 
 c = freshCharacter('inquisitor');
 let focused = [];
-let handlers = bindWith({ choice1: 'insight', choice2: 'insight' }, focused);
+let handlers = bindWith({ choice1: 'insight', choice2: '' }, focused);
 check('Two change handlers bound', handlers.length, 2);
+const freshOptions = key => optionValues(selectHtml(ArchetypeTab.renderSkillChoices(inquisitor, State.character), key));
+
+// An accepted change: no redraw, and the other select changes in place.
 renders = 0;
 handlers[0].fn({ target: handlers[0].s });
-check('Change: the choice is stored', State.character.archetypeSkillChoices, { choice1: 'insight' });
-check('Change: the skill rises to the bonus', State.character.skills.insight, 4);
-check('Change: one redraw', renders, 1);
-check('Change: the focus goes back to the select of choice1', focused, ['choice1']);
+check('Accepted change: the choice is stored', State.character.archetypeSkillChoices, { choice1: 'insight' });
+check('Accepted change: the skill rises to the bonus', State.character.skills.insight, 4);
+check('Accepted change: no redraw of the detail', renders, 0);
+check('Accepted change: no refocus (the select stays in the page)', focused, []);
+check('Accepted change: the changed select is not touched', handlers[0].s.innerHTML, '');
+let other = optionValues(handlers[1].s.innerHTML);
+check('Accepted change: the other select hides the new skill', other.includes('insight'), false);
+check('Accepted change: the other select has 18 options in the order of a fresh draw', other, freshOptions('choice2'));
 renders = 0;
+handlers[0].s.value = 'scholar';
+handlers[0].fn({ target: handlers[0].s });
+other = optionValues(handlers[1].s.innerHTML);
+check('Second accepted change: the freed skill shows again', other.includes('insight'), true);
+check('Second accepted change: the new skill is hidden', other.includes('scholar'), false);
+check('Second accepted change: the options are in the order of a fresh draw', other, freshOptions('choice2'));
+check('Second accepted change: no redraw', renders, 0);
+
+// A refused change: the detail is drawn again and the select has the focus.
+renders = 0;
+handlers[1].s.value = 'scholar';
 handlers[1].fn({ target: handlers[1].s });
-check('Refused change (skill held by the other key): the store stays', State.character.archetypeSkillChoices, { choice1: 'insight' });
-check('Refused change: the select is drawn again', renders, 1);
-check('Refused change: the focus goes back to the select of choice2', focused, ['choice1', 'choice2']);
+check('Refused change (skill held by the other key): the store stays', State.character.archetypeSkillChoices, { choice1: 'scholar' });
+check('Refused change: the detail is drawn again', renders, 1);
+check('Refused change: the focus goes back to the select of choice2', focused, ['choice2']);
+
+// A clear is an accepted change.
 handlers[0].s.value = '';
 renders = 0;
 handlers[0].fn({ target: handlers[0].s });
 check('Change to the first option: the choice clears', State.character.archetypeSkillChoices.choice1, '');
-check('Change to the first option: the skill goes back to 0', State.character.skills.insight, 0);
+check('Change to the first option: the skill goes back to 0', State.character.skills.scholar, 0);
+check('Change to the first option: the other select has 19 options again', optionValues(handlers[1].s.innerHTML).length, 19);
+check('Change to the first option: no redraw', renders, 0);
 
 // --- the prerequisite of an archetype ascension ---
 function prereq(skills, ignore) {

@@ -2750,7 +2750,7 @@ textarea {
     margin: 8px 0;
 }
 .keyword-choice-select,
-.archetype-keyword-choice .skill-choice-select,
+.skill-choice-select,
 .keyword-choice-text,
 .keyword-choice-custom,
 .keyword-extra-input {
@@ -2762,7 +2762,8 @@ textarea {
     border-radius: 4px;
     font-size: 0.9em;
 }
-.keyword-choice-select option {
+.keyword-choice-select option,
+.skill-choice-select option {
     background: var(--bg-card);
 }
 .ascension-keyword-extra {

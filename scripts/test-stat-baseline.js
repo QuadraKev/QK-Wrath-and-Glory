@@ -119,5 +119,101 @@ StatsTab.renderSkills();
 const insightRow = lists['skills-list'].children.map(r => r.innerHTML).find(h => h.includes('data-skill="insight"')) || '';
 check('Stats tab: the decrease button of the chosen skill is disabled', /btn-decrease" data-skill="insight"[^>]*disabled/.test(insightRow), true);
 
+// --- a change of a parent ---
+let notifyCount = 0;
+State.addListener(() => { notifyCount++; });
+// A new character with the given species and archetype, set through the real setters.
+function human(archetypeId) {
+    State.newCharacter();
+    State.setSpecies('human');
+    if (archetypeId) State.setArchetype(archetypeId);
+    return State.character;
+}
+const stats = c => JSON.parse(JSON.stringify({ attributes: c.attributes, skills: c.skills }));
+
+// A6: a click on the selected species or archetype changes nothing
+human('imperial_guardsman');
+State.increaseAttribute('strength');
+let snapshot = JSON.stringify(State.character);
+let countBefore = notifyCount;
+State.setSpecies('human');
+check('A6: setSpecies with the current species changes nothing', JSON.stringify(State.character) === snapshot, true);
+check('A6: setSpecies with the current species does not notify', notifyCount, countBefore);
+State.setArchetype('imperial_guardsman');
+check('A6: setArchetype with the current archetype changes nothing', JSON.stringify(State.character) === snapshot, true);
+check('A6: setArchetype with the current archetype does not notify', notifyCount, countBefore);
+
+// A7b and CC7: the custom archetype record stays
+human();
+State.setCustomArchetype();
+State.setCustomArchetypeName('X');
+State.addCustomKeyword('scum');
+State.setCustomArchetype();
+check('A7b: a second setCustomArchetype keeps the name', State.character.customArchetype.name, 'X');
+State.setArchetype('ganger');
+State.setCustomArchetype();
+check('CC7: Custom, Ganger, Custom keeps the name', State.character.customArchetype.name, 'X');
+check('CC7: Custom, Ganger, Custom keeps the keywords', State.character.customArchetype.keywords, ['SCUM']);
+State.setSpecies('ogryn');
+check('CC7: a species change clears the archetype', State.character.archetype.id, null);
+check('CC7: a species change keeps the custom record', State.character.customArchetype.name, 'X');
+
+// A4: a change of the archetype gives the free values of the new archetype only
+const a = human('tech_adept');
+State.setArchetype('ganger');
+const spentA = XP.calculateSpentXP(a), statsA = stats(a);
+const bChar = human('ganger');
+check('A4: tech_adept then Ganger costs the same XP as Ganger', spentA, XP.calculateSpentXP(bChar));
+check('A4: tech_adept then Ganger has the stats of Ganger', statsA, stats(bChar));
+
+// A raised value stays after a change of the archetype
+human('tech_adept');
+State.increaseSkill('tech');
+State.setArchetype('ganger');
+check('Raised value: tech 4 stays after Ganger', State.character.skills.tech, 4);
+check('Raised value: the free scholar goes to 0', State.character.skills.scholar, 0);
+check('Raised value: the free intellect goes to 1', State.character.attributes.intellect, 1);
+
+// P3: setCustomArchetype keeps a raised value
+human('tech_adept');
+State.increaseSkill('tech');
+State.setCustomArchetype();
+check('P3: Custom gives intellect 1', State.character.attributes.intellect, 1);
+check('P3: Custom gives scholar 0', State.character.skills.scholar, 0);
+check('P3: Custom keeps tech 4', State.character.skills.tech, 4);
+
+// CC14: the kept custom keywords count only while the archetype is custom
+human();
+State.setCustomArchetype();
+State.addCustomKeyword('psyker');
+check('CC14: Custom with the keyword PSYKER is a psyker', State.isPsyker(), true);
+State.setArchetype('ganger');
+check('CC14: Ganger with a kept PSYKER keyword is no psyker', State.isPsyker(), false);
+State.setSpecies('ogryn');
+check('CC14: no archetype with a kept PSYKER keyword is no psyker', State.isPsyker(), false);
+State.setCustomArchetype();
+check('CC14: Custom again is a psyker', State.isPsyker(), true);
+
+// A5: a change of the species gives the free values of the new species
+State.newCharacter();
+State.setSpecies('ogryn');
+State.setSpecies('human');
+check('A5: Ogryn then Human: the attribute XP is 0', XP.calculateAttributeXP(State.character), 0);
+check('A5: Ogryn then Human: each attribute is 1', Object.values(State.character.attributes).every(v => v === 1), true);
+
+// A species change keeps a raised value under the new maximum
+human();
+State.increaseAttribute('agility');
+State.increaseAttribute('agility');
+State.setSpecies('ogryn');
+check('Species change: agility 3 stays (Ogryn maximum 7)', State.character.attributes.agility, 3);
+
+// CC2: a species change lowers an attribute to the new maximum
+human('ganger');
+State.increaseAttribute('intellect');
+State.increaseAttribute('intellect');
+State.setSpecies('ogryn');
+check('CC2: intellect 3 goes to the Ogryn maximum 1', State.character.attributes.intellect, 1);
+
 console.log(failures ? `\n${failures} FAILED` : '\nAll passed');
 process.exit(failures ? 1 : 0);

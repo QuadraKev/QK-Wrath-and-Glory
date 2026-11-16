@@ -232,28 +232,29 @@ const State = {
 
     // Set species
     setSpecies(speciesId) {
+        // The current species: no change
+        if (speciesId === this.character.species?.id) return;
+
         const species = DataLoader.getSpecies(speciesId);
         if (species) {
-            this.character.species = {
-                id: speciesId,
-                xpCost: species.cost || 0,
-                subOptions: []  // Clear sub-options when species changes
-            };
-
-            // Apply species base attributes
-            if (species.baseAttributes) {
-                for (const [attr, value] of Object.entries(species.baseAttributes)) {
-                    this.character.attributes[attr] = Math.max(this.character.attributes[attr], value);
-                }
-            }
-
             // Always clear archetype when species changes (user must re-select)
             if (this.character.archetype.id) {
                 this.clearArchetype();
             }
+
+            this._withRebase(() => {
+                this.character.species = {
+                    id: speciesId,
+                    xpCost: species.cost || 0,
+                    subOptions: []  // Clear sub-options when species changes
+                };
+            });
         } else {
-            this.character.species = { id: null, xpCost: 0, subOptions: [] };
+            this._withRebase(() => {
+                this.character.species = { id: null, xpCost: 0, subOptions: [] };
+            });
         }
+        this._clampToSpeciesMaximums();
 
         this.notifyListeners('species');
     },
@@ -342,29 +343,21 @@ const State = {
 
     // Set archetype
     setArchetype(archetypeId) {
+        // The current archetype: no change
+        if (archetypeId === this.character.archetype?.id) return;
+
         const archetype = DataLoader.getArchetype(archetypeId);
         if (archetype) {
-            this.character.archetype = {
-                id: archetypeId,
-                xpCost: archetype.cost || 0
-            };
+            this._withRebase(() => {
+                this.character.archetype = {
+                    id: archetypeId,
+                    xpCost: archetype.cost || 0
+                };
 
-            // Reset sub-faction keyword picks from any previous archetype
-            this.character.archetypeKeywordChoices = {};
-
-            // Apply archetype attribute bonuses
-            if (archetype.attributeBonus) {
-                for (const [attr, value] of Object.entries(archetype.attributeBonus)) {
-                    this.character.attributes[attr] = Math.max(this.character.attributes[attr], value);
-                }
-            }
-
-            // Apply archetype skill bonuses
-            if (archetype.skillBonus) {
-                for (const [skill, value] of Object.entries(archetype.skillBonus)) {
-                    this.character.skills[skill] = Math.max(this.character.skills[skill], value);
-                }
-            }
+                // Reset sub-faction keyword picks and skill picks from any previous archetype
+                this.character.archetypeKeywordChoices = {};
+                this.character.archetypeSkillChoices = {};
+            });
 
             // Wargear is managed via the Wargear tab "Add Starting Wargear" button.
             // We do NOT clear or set wargear here to avoid losing manually added items.
@@ -395,12 +388,13 @@ const State = {
 
     // Clear archetype selection
     clearArchetype() {
-        this.character.archetype = { id: null, xpCost: 0 };
-        this.character.customArchetype = { name: '', abilityArchetypeId: null, keywords: [], wargear: [] };
+        // The stored custom archetype record stays (CC7)
+        this._withRebase(() => {
+            this.character.archetype = { id: null, xpCost: 0 };
+        });
         this.character.freePowers = [];
         this.character.unlockedDisciplines = [];
         this.character.psychicPowers = [];
-        this.resetStats();
     },
 
     // Check if character is using custom archetype
@@ -421,8 +415,13 @@ const State = {
 
     // Set custom archetype mode
     setCustomArchetype() {
-        this.character.archetype = { id: 'custom', xpCost: 0 };
-        this.character.customArchetype = { name: '', abilityArchetypeId: null, keywords: [], wargear: [] };
+        // Custom is already the archetype: no change
+        if (this.character.archetype?.id === 'custom') return;
+
+        // The stored custom archetype record stays (CC7)
+        this._withRebase(() => {
+            this.character.archetype = { id: 'custom', xpCost: 0 };
+        });
 
         // Keep the custom items in order, and move the owned-item talent choices to their new indices.
         // A choice on a removed entry becomes null, so the player picks again.
@@ -449,7 +448,6 @@ const State = {
             }
         }
 
-        this.resetStats();
         this.notifyListeners('archetype');
     },
 
@@ -586,6 +584,40 @@ const State = {
         }
 
         this.notifyListeners('stats');
+    },
+
+    // Run a change of the species or the archetype and move each known stat to the new baseline.
+    // A value at or under the old free value goes to the new free value.
+    // A value above the old free value stays, but never under the new free value.
+    _withRebase(change) {
+        const oldBase = XPCalculator.getBaseline(this.character);
+        change();
+        const newBase = XPCalculator.getBaseline(this.character);
+
+        for (const attr of XPCalculator.ATTRIBUTE_KEYS) {
+            const value = this.character.attributes[attr];
+            this.character.attributes[attr] = value <= oldBase.attributes[attr]
+                ? newBase.attributes[attr]
+                : Math.max(value, newBase.attributes[attr]);
+        }
+
+        for (const skill of XPCalculator.SKILL_KEYS) {
+            const value = this.character.skills[skill];
+            this.character.skills[skill] = value <= oldBase.skills[skill]
+                ? newBase.skills[skill]
+                : Math.max(value, newBase.skills[skill]);
+        }
+    },
+
+    // Lower each attribute above the maximum of the current species to that maximum (Core p.25)
+    _clampToSpeciesMaximums() {
+        const species = DataLoader.getSpecies(this.character.species?.id);
+        for (const attr of XPCalculator.ATTRIBUTE_KEYS) {
+            const max = species?.attributeMaximums?.[attr] || 8;
+            if (this.character.attributes[attr] > max) {
+                this.character.attributes[attr] = max;
+            }
+        }
     },
 
     // Increase an attribute

@@ -216,7 +216,7 @@ for (const [name, make] of Object.entries(CORPUS)) {
     B.setTier('3'); B.setRank('2'); B.setAdditionalXP('5000');
     B.setSpecies('human');
     B.setSpeciesSubOption('homeworld', 'death_world_aoa');
-    // inquisitor has the skillBonus keys choice1 and choice2: setArchetype writes NaN there, which JSON saves as null
+    // inquisitor has the skillBonus keys choice1 and choice2: setArchetype no longer writes the data keys choice1 / choice2
     B.setArchetype('inquisitor');
     B.setArchetypeKeywordChoice('[ORDO]', 'HERETICUS');
     B.setArchetypeKeywordChoice('[ANY]', 'MY TYPED KEYWORD');
@@ -291,7 +291,7 @@ for (const [name, make] of Object.entries(CORPUS)) {
         mob: built.followers.some(f => f.kind === 'mob' && f.count === 3 && f.livingCount === 2 && f.mobCount === 3),
         subOption: built.species.subOptions.length === 1,
         keywordChoice: built.archetypeKeywordChoices['[ORDO]'] === 'HERETICUS',
-        skillChoiceKey: built.skills.choice1 === null && built.skills.choice2 === null,
+        skillChoiceKey: !('choice1' in built.skills) && !('choice2' in built.skills),
         powers: built.psychicPowers.includes('smite') && built.psychicPowers.includes('psyniscience') && built.freePowers.includes('psyniscience'),
         discipline: built.unlockedDisciplines.includes('Biomancy')
     }, {

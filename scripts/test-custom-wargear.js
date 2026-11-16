@@ -500,7 +500,7 @@ const spineRecordWithId = { ...spineRecord, id: 'custom_p7d2m0zt' };
     }
 
     // setCustomArchetype keeps the custom items and remaps the owned-item talent choices
-    State.resetStats = () => {};
+    State._withRebase = change => change();
     const resetWith = talents => {
         State.character = State.createNewCharacter();
         State.addWargear('chainsword');

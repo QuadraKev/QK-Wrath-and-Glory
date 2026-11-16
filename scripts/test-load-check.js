@@ -187,6 +187,119 @@ for (const [name, make] of Object.entries(CORPUS)) {
     check('no-op: legacy ascensionPackages writes no warning', r.warns, []);
 }
 
+// --- no-op: a character built through the real writers (final review finding X1) ---
+// A second context holds the State setters, the data that they read, and the overlay writers
+// RelicWizard.finish, ImprovisedBuilder.save and CustomWargear.save. Only open() of these writers
+// needs a DOM, so the block sets their form state directly. Each value has the type that the UI passes.
+// The block does not render: a render writes bonusType into the character (spec finding F10).
+{
+    const BUILD_DATA = {};
+    for (const f of ['species.json', 'archetypes.json', 'talents.json', 'weapons.json', 'armor.json', 'equipment.json',
+        'psychic-powers.json', 'ascension-packages.json', 'backgrounds.json', 'weapon-upgrades.json',
+        'injuries-corruption.json', 'keyword-categories.json', 'holy-relics.json', 'glossary.json', 'threats.json'])
+        BUILD_DATA[f] = readJson(`data/${f}`);
+    const bctx = creatorSandbox({
+        window: { api: {} }, document: { getElementById: () => null },
+        localStorage: { getItem: () => null, setItem() {}, removeItem() {} }
+    });
+    get(bctx, 'DataLoader').cache = BUILD_DATA;
+    for (const f of ['xp-calculator.js', 'derived-stats.js', 'prerequisite.js', 'keyword-bonus.js', 'followers.js', 'relic-wizard.js', 'improvised-builder.js'])
+        load(bctx, `creator/js/${f}`);
+    const B = get(bctx, 'State'), DL = get(bctx, 'DataLoader');
+    const RW = get(bctx, 'RelicWizard'), IB = get(bctx, 'ImprovisedBuilder'), CW = get(bctx, 'CustomWargear');
+    const INJ = BUILD_DATA['injuries-corruption.json'], BG = BUILD_DATA['backgrounds.json'];
+
+    B.init({});
+    B.setIgnorePrerequisites(true);
+    B.newCharacter();
+    B.setName('Kaelen "the <b>Bold</b>"'); B.setSetting('Gilead'); B.setNotes('line 1\nline 2');
+    B.setTier('3'); B.setRank('2'); B.setAdditionalXP('5000');
+    B.setSpecies('human');
+    B.setSpeciesSubOption('homeworld', 'death_world_aoa');
+    // inquisitor has the skillBonus keys choice1 and choice2: setArchetype writes NaN there, which JSON saves as null
+    B.setArchetype('inquisitor');
+    B.setArchetypeKeywordChoice('[ORDO]', 'HERETICUS');
+    B.setArchetypeKeywordChoice('[ANY]', 'MY TYPED KEYWORD');
+    B.increaseAttribute('strength'); B.increaseSkill('awareness');
+    // ascension with a choice
+    B.setAscension(4, { type: 'package', packageId: 'demanding_patron', archetypeId: null });
+    B.setAscensionChoice(4, 'patronBenefit', 'wealth');
+    // wargear: add, a starting item, equip, an upgrade
+    B.addWargear('lasgun'); B.addWargear('knife', true);
+    B.toggleWeaponEquipped(0);
+    const upgrade = DL.getValidUpgradesForWeapon(DL.getWeapon('lasgun'), [])[0];
+    B.addWeaponUpgrade(0, upgrade.id);
+    // talents: a choice from a dataset value (a string), a typed choice, and no choice
+    B.addTalent('trademark_weapon', '0');
+    B.addTalent('acute_sense', 'Sight');
+    B.addTalent('angel_of_death');
+    // relic overlay through RelicWizard.finish, with a power that has a choice
+    RW.onSaved = null;
+    RW.wizard = { editIndex: null, step: 6, name: ' Vow of Iron ', formId: 'augmetic', baseItemId: 'flak_armour',
+        originalOwner: 'adeptus_mechanicus', anointment: 'heros_panoply', power: 'logic_of_hatred', powerChoice: 'Vehicle',
+        oddities: ['oathbound'], baseSearch: '', rollMessage: '', choiceRollMessage: '' };
+    RW.finish();
+    // improvised overlay through ImprovisedBuilder.save
+    IB.onSaved = null;
+    IB.form = { editIndex: null, baseId: IB.BASE_IDS[0], name: 'Table leg', details: ' notched ', halfTime: 2,
+        damageRank: true, removeUnwieldy: false, traits: [IB.TRAITS[0]], doubleRange: false };
+    IB.save();
+    // custom item through CustomWargear.save
+    CW.onSaved = null;
+    CW.form = { ...CW.emptyForm(), name: 'Xenotech Blade', damage: '4', ed: '4', ap: '-1', reach: '2', description: 'Old' };
+    CW.save();
+    // background, languages, injuries, mutation, corruption
+    B.setBackground('origin', BG.origins[0].id, BG.origins[0].bonusType || null);
+    B.setBackground('goal', BG.goals[0].id, BG.goals[0].bonusType || null);
+    B.useBackgroundBonus('origin');
+    B.addLanguage('High Gothic', true); B.addLanguage('Ork "Pidgin" <trade>');
+    B.addMemorableInjury(INJ.memorableInjuries[0].id); B.escalateMemorableInjury(0);
+    B.addTraumaticInjury(INJ.traumaticInjuries.find(x => x.hasSide).id, 'Left');
+    B.toggleTraumaticReconstruction(0);
+    const mutation = INJ.mutations.find(x => x.subChoices);
+    B.addMutation(mutation.id, mutation.subChoices[0].id);
+    B.setCorruptionPoints('12');
+    // followers: one with field patches, one with a mob round trip (mob, numbers, individual, mob)
+    const f1 = B.addFollower('imperial_citizen');
+    B.updateFollower(f1.id, { name: 'Bob', notes: 'n', useAlternativeStats: true, currentWounds: 2 });
+    const f2 = B.addFollower('imperial_citizen');
+    B.updateFollower(f2.id, { kind: 'mob' });
+    B.updateFollower(f2.id, { count: Number('3'), livingCount: Number('3') });
+    B.updateFollower(f2.id, { livingCount: Number('2') });
+    B.updateFollower(f2.id, { kind: 'individual' });
+    B.updateFollower(f2.id, { kind: 'mob' });
+    B.setCurrentWrath(4);
+
+    const built = JSON.parse(JSON.stringify(B.character));
+    const isObj = v => v !== null && typeof v === 'object';
+    check('setters: the built character holds each shape', {
+        // Optional chaining: a broken writer must give a FAIL line here, not a TypeError
+        ascensionChoice: built.ascensions.length === 1 && built.ascensions[0].choices?.patronBenefit === 'wealth',
+        talentChoice: built.talents.some(t => isObj(t) && t.choice === '0'),
+        talentString: built.talents.includes('angel_of_death'),
+        equippedUpgrade: built.wargear[0]?.equipped === true && built.wargear[0]?.upgrades?.length === 1,
+        starting: built.wargear[1]?.isStarting === true,
+        relic: built.wargear.some(w => w.relic?.powerChoice === 'Vehicle' && w.relic?.oddities?.length === 1),
+        improvised: built.wargear.some(w => w.improvised?.halfTime === 2),
+        custom: built.wargear.some(w => w.custom?.kind === 'weapon'),
+        background: isObj(built.background.origin) && isObj(built.background.goal) && built.background.bonusUsed === 'origin',
+        languages: built.languages.length === 3 && built.freeLanguages.length === 1,
+        injuries: built.memorableInjuries[0]?.escalated === true && built.traumaticInjuries[0]?.side === 'Left' && built.traumaticInjuries[0]?.reconstructed === true,
+        mutation: typeof built.mutations[0]?.subChoice === 'string',
+        mob: built.followers.some(f => f.kind === 'mob' && f.count === 3 && f.livingCount === 2 && f.mobCount === 3),
+        subOption: built.species.subOptions.length === 1,
+        keywordChoice: built.archetypeKeywordChoices['[ORDO]'] === 'HERETICUS',
+        skillChoiceKey: built.skills.choice1 === null && built.skills.choice2 === null
+    }, {
+        ascensionChoice: true, talentChoice: true, talentString: true, equippedUpgrade: true, starting: true, relic: true,
+        improvised: true, custom: true, background: true, languages: true, injuries: true, mutation: true, mob: true,
+        subOption: true, keywordChoice: true, skillChoiceKey: true
+    });
+    const r = loadJson(built);
+    check('setters: a character built through the real writers loads deep-equal', canon(r.character), canon(built));
+    check('setters: a character built through the real writers writes no warning', r.warns, []);
+}
+
 // --- hostile: a value of the wrong type gets the repair value of its row ---
 // Bad-value sets (spec §4.1 rule 8; null is not in a set where null is legal)
 const INT_BAD = [EVIL, '3', {}, [], null, true, INF, 2.5];

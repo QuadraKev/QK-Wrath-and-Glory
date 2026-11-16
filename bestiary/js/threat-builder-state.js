@@ -31,6 +31,8 @@ const ThreatBuilderState = {
     // True when this page wrote the key or restored its threat from it (spec §5.2, CB1).
     // Only an owner removes the key, so a second tab cannot delete the work of the first tab.
     _ownsAutoSave: false,
+    // The text that this page last wrote to the key or restored from it (TB3-3)
+    _autoSaveText: null,
 
     // Initialize with an empty threat
     init() {
@@ -402,10 +404,16 @@ const ThreatBuilderState = {
         // If the cache holds other data with this id, assign a new ID so previous copies keep their stats.
         // The test uses the cache, so it also works after a reload (spec §7.2, C8).
         const held = DataLoader.getThreat(data.id);
-        if (held && !BestiaryCheck.sameThreatData(held, data)) {
+        const split = held && !BestiaryCheck.sameThreatData(held, data);
+        if (split) {
             const newId = this._generateId();
             this.threat.id = newId;
             data.id = newId;
+        }
+        // A rename or a new id changes the builder threat.
+        // Write the key at once, so that a reload keeps the change (TB4-1, TB4-3).
+        if (newName || split) {
+            this._performAutoSave();
         }
 
         DataLoader.injectThreat(data);
@@ -551,8 +559,10 @@ const ThreatBuilderState = {
                 threat: this.getThreatData(),
                 timestamp: Date.now()
             };
-            localStorage.setItem(this._AUTO_SAVE_KEY, JSON.stringify(data));
+            const text = JSON.stringify(data);
+            localStorage.setItem(this._AUTO_SAVE_KEY, text);
             this._ownsAutoSave = true;
+            this._autoSaveText = text;
         } catch (e) {
             console.warn('Builder auto-save failed:', e);
         }
@@ -569,12 +579,14 @@ const ThreatBuilderState = {
         }
     },
 
-    // Clear the auto-save. Only an owner removes the key (CB1).
+    // Clear the auto-save. Only an owner removes the key (CB1), and only when the key still holds
+    // the text of this page. A newer text is the work of another tab (TB3-3).
     clearAutoSave() {
-        if (this._ownsAutoSave) {
+        if (this._ownsAutoSave && localStorage.getItem(this._AUTO_SAVE_KEY) === this._autoSaveText) {
             localStorage.removeItem(this._AUTO_SAVE_KEY);
         }
         this._ownsAutoSave = false;
+        this._autoSaveText = null;
     },
 
     // Load threat data from auto-save. The caller has tested that threatData is a plain object.
@@ -591,6 +603,9 @@ const ThreatBuilderState = {
         this._resolveWeaponIds();
         this._parseSkillsString(this.threat.skills);
         this._isDirty = true;
+        // The page keeps the restored text for the stored text test of clearAutoSave (TB3-3).
+        // A pristine restore keeps no text, so the page cannot remove the key (TB3-4).
+        this._autoSaveText = this._isPristine() ? null : localStorage.getItem(this._AUTO_SAVE_KEY);
     },
 
     // Remove weaponId references from abilities (stats text is already populated)

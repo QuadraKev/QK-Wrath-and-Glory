@@ -97,6 +97,9 @@ function makeRecordingDocument(notes) {
 function makeApp(store, withTab = false) {
     const warns = [];
     const notes = [];
+    // Each confirm text, and the answer of the next confirm
+    const confirms = [];
+    let confirmAnswer = true;
     const timers = new Map();
     let nextTimer = 1;
     const sandbox = {
@@ -112,7 +115,7 @@ function makeApp(store, withTab = false) {
         window: { innerWidth: 1400, api: {} },
         history: { replaceState() {}, pushState() {} },
         location: { hash: '' },
-        confirm: () => true,
+        confirm: (text) => { confirms.push(text); return confirmAnswer; },
         ThreatsTab: tabStub(), VehiclesTab: tabStub(), GlossaryTab: tabStub(), ReferencesTab: tabStub(),
         ThreatBuilderTab: tabStub(), SettingsTab: tabStub()
     };
@@ -135,7 +138,10 @@ function makeApp(store, withTab = false) {
     };
     const app = {
         EncounterState: get('EncounterState'), ThreatBuilderState: get('ThreatBuilderState'), DataLoader, App: get('App'),
-        window: sandbox.window, warns, notes, flush
+        window: sandbox.window, warns, notes, flush, confirms,
+        setConfirm: (answer) => { confirmAnswer = answer; },
+        // Loads one more real file into this page, and returns the named global
+        load: (rel, name) => { vm.runInContext(readText(rel), sandbox, { filename: rel }); return get(name); }
     };
     if (withTab) app.EncounterTab = get('EncounterTab');
     return app;
@@ -175,9 +181,80 @@ const woundsOf = ({ EncounterState, DataLoader }) =>
         T.clear();
         T.updateField('name', 'Twice');
         T.injectIntoEncounter(1);
+        // Fix round 1 (F2): no prompt for an unchanged threat
+        const prompt = T.wouldCauseNameCollision();
         T.injectIntoEncounter(1);
         check('C8: an unchanged threat added twice keeps one id',
-            new Set(app.EncounterState.individuals.map(i => i.threatId)).size, 1);
+            { prompt, ids: new Set(app.EncounterState.individuals.map(i => i.threatId)).size }, { prompt: false, ids: 1 });
+    });
+
+    // Fix round 1 (F2): the cache holds no record with the id of a new threat, so no prompt shows (spec §7.2)
+    await group('C8: a new threat with the name of an entry', () => {
+        const app = makeApp({});
+        const T = app.ThreatBuilderState;
+        T.clear();
+        T.updateField('name', 'Same');
+        T.injectIntoEncounter(1);
+        T.clear();
+        T.updateField('name', 'Same');
+        T.updateField('wounds', 7);
+        check('C8: a new threat with the name of an entry shows no prompt', T.wouldCauseNameCollision(), false);
+    });
+
+    // Fix round 1 (TB4-1): the new id goes to the key at once
+    await group('TB4-1', () => {
+        const store = {};
+        const app1 = makeApp(store);
+        const T1 = app1.ThreatBuilderState;
+        T1.clear();
+        T1.updateField('name', 'S');
+        T1.updateField('wounds', 5);
+        T1.injectIntoEncounter(1);
+        T1.updateField('wounds', 12);
+        app1.flush();
+        const prompt = T1.wouldCauseNameCollision();
+        T1.injectIntoEncounter(1);
+        const newId = T1.threat.id;
+        app1.flush();
+
+        const app3 = makeApp(store);
+        app3.App.checkAutoSave();
+        const T3 = app3.ThreatBuilderState;
+        const prompt3 = T3.wouldCauseNameCollision();
+        T3.injectIntoEncounter(1);
+        const ids = app3.EncounterState.individuals.map(i => i.threatId);
+        check('TB4-1: a new app adds the split threat again with its id and no prompt',
+            { prompt, prompt3, id: T3.threat.id === newId, ids: new Set(ids).size, last: ids[ids.length - 1] === newId },
+            { prompt: true, prompt3: false, id: true, ids: 2, last: true });
+    });
+
+    // Fix round 1 (TB4-3 a): the name of the rename prompt goes to the key at once
+    await group('TB4-3: rename', () => {
+        const store = {};
+        const app = makeApp(store);
+        const T = app.ThreatBuilderState;
+        T.clear();
+        T.updateField('name', 'R');
+        app.flush();
+        T.injectIntoEncounter(1, 'R2');
+        const next = makeApp(store);
+        next.App.checkAutoSave();
+        check('TB4-3: a rename is in the key at once', next.ThreatBuilderState.threat && next.ThreatBuilderState.threat.name, 'R2');
+    });
+
+    // Fix round 1 (TB4-3 b): Customize asks before it replaces a builder threat that is not pristine
+    await group('TB4-3: Customize', () => {
+        const app = makeApp({});
+        const ThreatsTab = app.load('bestiary/tabs/threats-tab.js', 'ThreatsTab');
+        app.App.switchTab = () => {};
+        const T = app.ThreatBuilderState;
+        T.clear();
+        T.addKeyword('ORK');
+        const before = JSON.stringify(T.getThreatData());
+        app.setConfirm(false);
+        ThreatsTab.customizeThreat('sly_marbo_aaa');
+        check('TB4-3: Customize asks before it replaces a nameless threat with a keyword, and Cancel keeps it',
+            { asked: app.confirms.length, same: JSON.stringify(T.getThreatData()) === before }, { asked: 1, same: true });
     });
 
     // 4
@@ -214,6 +291,15 @@ const woundsOf = ({ EncounterState, DataLoader }) =>
         check('import: an id of 7 gets a custom_ id',
             { custom: typeof id === 'string' && id.startsWith('custom_'), name: id && app.DataLoader.getThreat(id).name },
             { custom: true, name: 'I7' });
+    });
+    // Fix round 1 (F3)
+    await group('import: skills of 5', async () => {
+        const app = makeTabApp({});
+        app.window.api.loadThreatFile = async () => ({ success: true, data: { id: 'custom_s5', name: 'S5', skills: 5 } });
+        await app.EncounterTab.handleImportThreat();
+        check('import: skills of 5 is repaired with one warning',
+            { warns: app.warns, skills: app.DataLoader.getThreat('custom_s5') && app.DataLoader.getThreat('custom_s5').skills },
+            { warns: [THR_REPAIR + 'skills'], skills: '' });
     });
 
     // 6
@@ -265,6 +351,13 @@ const woundsOf = ({ EncounterState, DataLoader }) =>
         check('autosave: a stored threat with id 5 loads',
             { threw, name: T.threat && T.threat.name, custom: typeof id === 'string' && id.startsWith('custom_') },
             { threw: null, name: 'B5', custom: true });
+    });
+    // Fix round 1 (F3)
+    await group('autosave: skills of 5', () => {
+        const app = makeApp({});
+        let threw = null;
+        try { app.ThreatBuilderState.loadFromAutoSave({ name: 'S5', skills: 5 }); } catch (e) { threw = e.message; }
+        check('autosave: skills of 5 is repaired with one warning', { threw, warns: app.warns }, { threw: null, warns: [THR_REPAIR + 'skills'] });
     });
 
     // 8
@@ -324,6 +417,50 @@ const woundsOf = ({ EncounterState, DataLoader }) =>
         B.clearAutoSave();
         const kept = store[KEY_BLD] ? JSON.parse(store[KEY_BLD]).threat.name : null;
         check('CB1: a second tab with a pristine builder keeps the key of the first tab', kept, 'A1');
+    });
+
+    // Fix round 1 (TB3-3): a newer text of another tab stays
+    await group('TB3-3', () => {
+        const run = (aWrites) => {
+            const store = {};
+            const first = makeApp(store);
+            first.ThreatBuilderState.clear();
+            first.ThreatBuilderState.updateField('name', 'W');
+            first.flush();
+            const a = makeApp(store);
+            a.App.checkAutoSave();
+            const b = makeApp(store);
+            b.App.checkAutoSave();
+            if (aWrites) {
+                a.ThreatBuilderState.updateField('wounds', 9);
+                a.flush();
+            }
+            const newer = store[KEY_BLD];
+            b.ThreatBuilderState.updateField('name', '');
+            b.flush();
+            return { aName: a.ThreatBuilderState.threat.name, bName: b.ThreatBuilderState.threat.name, newer, now: store[KEY_BLD] };
+        };
+        const kept = run(true);
+        check('TB3-3: a builder made pristine in a tab that restored keeps the newer text of the other tab',
+            { restored: [kept.aName, kept.bName], wounds: kept.newer ? JSON.parse(kept.newer).threat.wounds : null, same: kept.now === kept.newer },
+            { restored: ['W', ''], wounds: 9, same: true });
+        const gone = run(false);
+        check('TB3-3: a builder made pristine in a tab that restored removes its own text',
+            { stored: gone.newer !== undefined, now: gone.now }, { stored: true });
+    });
+
+    // Fix round 1 (TB3-4): a restore that gives a pristine builder does not own the key
+    await group('TB3-4', () => {
+        const threat = makeApp({}).ThreatBuilderState._newThreatData();
+        threat.wounds = 'x';
+        const stored = JSON.stringify({ threat, timestamp: 1 });
+        const store = { [KEY_BLD]: stored };
+        const app = makeApp(store);
+        app.App.checkAutoSave();
+        const pristine = app.ThreatBuilderState._isPristine();
+        app.ThreatBuilderState.updateField('name', '');
+        app.flush();
+        check('TB3-4: a pristine restore keeps the stored text', { pristine, same: store[KEY_BLD] === stored }, { pristine: true, same: true });
     });
 
     // 12

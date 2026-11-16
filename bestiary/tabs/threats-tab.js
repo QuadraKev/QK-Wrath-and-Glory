@@ -351,7 +351,7 @@ const ThreatsTab = {
     },
 
     customizeThreat(threatId) {
-        if (!ThreatBuilderState.isEmpty()) {
+        if (!ThreatBuilderState._isPristine()) {
             if (!confirm('The Threat Builder already has content. Sending this threat to the builder will replace it. Continue?')) {
                 return;
             }

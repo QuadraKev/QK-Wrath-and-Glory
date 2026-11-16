@@ -124,44 +124,51 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
 
 (async () => {
     // --- Wargear ---
+    // The ids hold a tag and a quote. The unknown entry has a known item before and after it.
+    const WID = 'no_such<b>"w', UPID = 'zz_up<b>"u', WID_ESC = 'no_such&lt;b&gt;&quot;w', UPID_ESC = 'zz_up&lt;b&gt;&quot;u';
     human();
-    State.character.wargear = [{ id: 'no_such', isStarting: true }, { id: 'lasgun', isStarting: false, upgrades: ['zz_up'] }];
+    State.character.wargear = [{ id: 'lasgun', isStarting: false, upgrades: ['zz_keep', UPID] },
+        { id: WID, isStarting: true }, { id: 'laspistol', isStarting: false }];
     let snapshot = JSON.stringify(State.character);
     let html = recorded(() => WargearTab.renderCurrentWargear());
-    check('wargear: the unknown entry shows as Unknown wargear (no_such)', html.includes('Unknown wargear (no_such)'), true);
-    check('wargear: the unknown row has a btn-remove-wargear with data-index 0',
-        /class="[^"]*btn-remove-wargear[^"]*"[^>]*data-index="0"/.test(html), true);
+    check('wargear: the unknown entry shows as Unknown wargear (id), escaped', html.includes(`Unknown wargear (${WID_ESC})`), true);
+    check('wargear: no raw tag from the id', html.includes('<b>'), false);
+    {
+        const buttons = rec.found.filter(([sel]) => sel === '.btn-remove-wargear').map(([, b]) => b.dataset.index);
+        check('wargear: the unknown row is the last remove button, with data-index 1 (the known items are 0 and 2)', buttons, ['0', '2', '1']);
+    }
     check('wargear: the Unknown group has a heading', html.includes('<div class="wargear-group"><h4>Unknown</h4>'), true);
     check('wargear: the Unknown group comes after the Weapons group', html.indexOf('<h4>Weapons</h4>') < html.indexOf('<h4>Unknown</h4>'), true);
-    check('wargear: the owned line shows Unknown upgrade (zz_up)', html.includes('Unknown upgrade (zz_up)'), true);
+    check('wargear: the owned line shows Unknown upgrade (id), escaped', html.includes(`Unknown upgrade (${UPID_ESC})`), true);
     check('wargear: a render does not write into the character', JSON.stringify(State.character), snapshot);
 
-    html = recorded(() => WargearTab.showUpgradeModal(1));
-    check('upgrade modal: shows Unknown upgrade (zz_up)', html.includes('Unknown upgrade (zz_up)'), true);
-    check('upgrade modal: the remove button has data-id zz_up', /btn-remove-upgrade[^>]*data-id="zz_up"/.test(html), true);
-
+    html = recorded(() => WargearTab.showUpgradeModal(0));
+    check('upgrade modal: shows Unknown upgrade (id), escaped', html.includes(`Unknown upgrade (${UPID_ESC})`), true);
+    check('upgrade modal: no raw tag from the id', html.includes('<b>'), false);
     {
-        const bound = rec.found.find(([sel, b]) => sel === '.btn-remove-upgrade' && b.dataset.id === 'zz_up');
+        const ids = rec.found.filter(([sel]) => sel === '.btn-remove-upgrade').map(([, b]) => b.dataset.id);
+        check('upgrade modal: the data-id of each remove button reads back as the id', ids, ['zz_keep', UPID]);
+        const bound = rec.found.find(([sel, b]) => sel === '.btn-remove-upgrade' && b.dataset.id === UPID);
         check('upgrade modal: the remove control is bound', !!bound, true);
         if (bound) await bound[1].listeners.click[0]();
         await flush();
-        check('upgrade remove: the upgrade leaves the entry', State.character.wargear[1].upgrades, []);
+        check('upgrade remove: only the chosen upgrade leaves the entry', State.character.wargear[0].upgrades, ['zz_keep']);
     }
 
-    // Remove of the unknown wargear: the real handler of the tab, with a talent choice on the lasgun.
+    // Remove of the unknown wargear: the real handler of the tab, with a talent choice on the last item.
     human();
-    State.character.wargear = [{ id: 'no_such', isStarting: true }, { id: 'lasgun', isStarting: false }];
-    State.character.talents = [{ id: 'trademark_weapon', choice: '1' }];
+    State.character.wargear = [{ id: 'lasgun', isStarting: false }, { id: WID, isStarting: true }, { id: 'laspistol', isStarting: false }];
+    State.character.talents = [{ id: 'trademark_weapon', choice: '2' }];
     recorded(() => WargearTab.renderCurrentWargear());
     {
-        const removeBtn = rec.found.find(([sel, b]) => sel === '.btn-remove-wargear' && b.dataset.index === '0');
+        const removeBtn = rec.found.find(([sel, b]) => sel === '.btn-remove-wargear' && b.dataset.index === '1');
         check('wargear remove: the control for the unknown row is bound', !!removeBtn, true);
         confirmed = [];
         if (removeBtn) await removeBtn[1].listeners.click[0]();
         await flush();
-        check('wargear remove: the confirm names the id', confirmed, ['Remove Unknown wargear (no_such)?']);
-        check('wargear remove: the unknown entry is gone', State.character.wargear.map(w => w.id), ['lasgun']);
-        check('wargear remove: the talent choice moved with its item', State.character.talents[0].choice, '0');
+        check('wargear remove: the confirm names the id', confirmed, [`Remove Unknown wargear (${WID})?`]);
+        check('wargear remove: only the unknown entry is gone', State.character.wargear.map(w => w.id), ['lasgun', 'laspistol']);
+        check('wargear remove: the talent choice moved with its item', State.character.talents[0].choice, '1');
     }
 
     // --- Talents ---
@@ -177,44 +184,69 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
     {
         const items = rec.created.filter(e => e.children['.btn-remove']);
         check('talents: each unknown row binds a remove listener', items.map(e => (e.children['.btn-remove'].listeners.click || []).length), [1, 1]);
+    }
+    // Two entries with the same id: the remove of the second row takes the second entry.
+    human();
+    State.character.talents = ['zz_t', { id: 'zz_t', choice: 'x' }];
+    recorded(() => TalentsTab.renderSelected());
+    {
+        const items = rec.created.filter(e => e.children['.btn-remove']);
         confirmed = [];
-        await items[0].children['.btn-remove'].listeners.click[0]();
+        await items[1].children['.btn-remove'].listeners.click[0]();
         await flush();
         check('talents remove: the confirm names the id', confirmed, ['Remove talent zz_t?']);
-        check('talents remove: the entry is gone', State.character.talents.map(t => typeof t === 'string' ? t : t.id), ['zz<b>']);
+        check('talents remove: only the second entry is gone', State.character.talents, ['zz_t']);
     }
 
     // --- Powers ---
+    const PID = 'zz_p<b>"p', PID_ESC = 'zz_p&lt;b&gt;&quot;p';
     human('sanctioned_psyker');
-    State.character.psychicPowers = ['smite', 'zz_p'];
+    State.character.psychicPowers = ['smite', PID, 'zz_keep'];
     snapshot = JSON.stringify(State.character);
     html = recorded(() => PowersTab.renderSelected());
-    check('powers: Unknown power (zz_p) shows', html.includes('Unknown power (zz_p)'), true);
-    check('powers: the chip has a remove with data-id zz_p', html.includes('class="power-chip-remove" data-id="zz_p"'), true);
+    check('powers: Unknown power (id) shows, escaped', html.includes(`Unknown power (${PID_ESC})`), true);
+    check('powers: no raw tag from the id', html.includes('<b>'), false);
+    check('powers: the chip has a remove with the escaped data-id', html.includes(`class="power-chip-remove" data-id="${PID_ESC}"`), true);
     check('powers: a render does not write into the character', JSON.stringify(State.character), snapshot);
     {
         const chips = rec.created.filter(e => e.children['.power-chip-remove']);
-        const unknown = chips.find(e => e.innerHTML.includes('zz_p'));
+        const unknown = chips.find(e => e.innerHTML.includes(`Unknown power (${PID_ESC})`));
         check('powers: the unknown chip binds a remove listener', !!unknown, true);
-        State.character.freePowers = ['zz_p'];
+        check('powers: the data-id of the chip reads back as the id', unknown ? unknown.querySelectorAll('.power-chip-remove')[0].dataset.id : null, PID);
+        State.character.freePowers = [PID];
         confirmed = [];
         if (unknown) await unknown.children['.power-chip-remove'].listeners.click[0]();
         await flush();
-        check('powers remove: the confirm names the id', confirmed, ['Remove power zz_p?']);
-        check('powers remove: the power leaves the list and the free list',
-            [State.character.psychicPowers.includes('zz_p'), State.character.freePowers.includes('zz_p')], [false, false]);
+        check('powers remove: the confirm names the id', confirmed, [`Remove power ${PID}?`]);
+        check('powers remove: only the chosen power leaves the list, and it leaves the free list',
+            [State.character.psychicPowers, State.character.freePowers], [['smite', 'zz_keep'], []]);
     }
 
-    // A source turned off does not make a power unknown.
+    // A source that is turned off does not make an id unknown. The setter is the real one.
+    const allSources = State.enabledSources;
+    State.setEnabledSources(allSources.filter(s => s !== 'apocrypha'));
+    check('source: apocrypha is off', State.isSourceEnabled('apocrypha'), false);
     human('sanctioned_psyker');
-    State.character.psychicPowers = ['smite'];
+    State.character.psychicPowers = ['smite', 'bio_lightning_aoa'];
     html = recorded(() => PowersTab.renderSelected());
-    check('powers: a known power does not show as unknown', html.includes('Unknown power'), false);
+    check('powers: a power of a book that is off shows by name', html.includes('Bio-Lightning'), true);
+    check('powers: a power of a book that is off does not show as unknown', html.includes('Unknown power'), false);
+    human();
+    State.character.wargear = [{ id: 'axe_aoa', isStarting: false }];
+    html = recorded(() => WargearTab.renderCurrentWargear());
+    check('wargear: an item of a book that is off shows by name', html.includes('Axe'), true);
+    check('wargear: an item of a book that is off does not show as unknown', html.includes('Unknown wargear'), false);
+    human();
+    State.character.talents = ['a_taste_for_death_aoa'];
+    html = recorded(() => TalentsTab.renderSelected());
+    check('talents: a talent of a book that is off shows by name', html.includes('A Taste for Death'), true);
+    check('talents: a talent of a book that is off does not show as unknown', html.includes('Unknown talent'), false);
+    State.setEnabledSources(allSources);
 
     // No PSYKER keyword: the stored power and the stored discipline show, with a remove control.
     human('ganger');
     State.character.psychicPowers = ['smite'];
-    State.character.unlockedDisciplines = ['Biomancy'];
+    State.character.unlockedDisciplines = ['Telepathy', 'Biomancy'];
     State.ignorePrerequisites = false;
     snapshot = JSON.stringify(State.character);
     html = recorded(() => PowersTab.render());
@@ -229,21 +261,21 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
         const chosen = rec.found.find(([sel, b]) => sel === '.discipline-chosen-remove' && b.dataset.discipline === 'Biomancy');
         check('non-psyker: the discipline remove is bound', !!chosen && (chosen[1].listeners.click || []).length, 1);
         if (chosen) chosen[1].listeners.click[0]();
-        check('non-psyker: the discipline remove clears the stored discipline', State.character.unlockedDisciplines, []);
+        check('non-psyker: the discipline remove takes only the chosen discipline', State.character.unlockedDisciplines, ['Telepathy']);
     }
 
     // Stale free powers of a character with no PSYKER keyword show and can be removed.
     human('ganger');
-    State.character.psychicPowers = ['smite'];
-    State.character.freePowers = ['smite'];
+    State.character.psychicPowers = ['smite', 'bio_lightning_aoa'];
+    State.character.freePowers = ['bio_lightning_aoa'];
     recorded(() => PowersTab.render());
     {
-        const chip = rec.created.find(e => e.children['.power-chip-remove']);
+        const chip = rec.created.find(e => e.children['.power-chip-remove'] && e.innerHTML.includes('Bio-Lightning'));
         check('stale free power: the chip of a non-psyker has a remove control', !!chip, true);
         if (chip) await chip.children['.power-chip-remove'].listeners.click[0]();
         await flush();
-        check('stale free power: the remove clears both lists',
-            [State.character.psychicPowers, State.character.freePowers], [[], []]);
+        check('stale free power: the remove takes only that power from both lists',
+            [State.character.psychicPowers, State.character.freePowers], [['smite'], []]);
     }
 
     // --- CC8: a psyker archetype with disciplineChoices 0 shows the chosen disciplines ---

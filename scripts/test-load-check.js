@@ -233,9 +233,11 @@ for (const [name, make] of Object.entries(CORPUS)) {
     B.addTalent('trademark_weapon', '0');
     B.addTalent('acute_sense', 'Sight');
     B.addTalent('angel_of_death');
+    // psychic powers, a free power pick and a discipline
+    B.addPower('smite'); B.addFreePowerPick('psyniscience'); B.addDisciplineChoice('Biomancy');
     // relic overlay through RelicWizard.finish, with a power that has a choice
     RW.onSaved = null;
-    RW.wizard = { editIndex: null, step: 6, name: ' Vow of Iron ', formId: 'augmetic', baseItemId: 'flak_armour',
+    RW.wizard = { editIndex: null, step: 6, name: ' Vow of Iron ', formId: 'augmetic', baseItemId: RW.getBaseItemsForForm('augmetic')[0].id,
         originalOwner: 'adeptus_mechanicus', anointment: 'heros_panoply', power: 'logic_of_hatred', powerChoice: 'Vehicle',
         oddities: ['oathbound'], baseSearch: '', rollMessage: '', choiceRollMessage: '' };
     RW.finish();
@@ -289,15 +291,39 @@ for (const [name, make] of Object.entries(CORPUS)) {
         mob: built.followers.some(f => f.kind === 'mob' && f.count === 3 && f.livingCount === 2 && f.mobCount === 3),
         subOption: built.species.subOptions.length === 1,
         keywordChoice: built.archetypeKeywordChoices['[ORDO]'] === 'HERETICUS',
-        skillChoiceKey: built.skills.choice1 === null && built.skills.choice2 === null
+        skillChoiceKey: built.skills.choice1 === null && built.skills.choice2 === null,
+        powers: built.psychicPowers.includes('smite') && built.psychicPowers.includes('psyniscience') && built.freePowers.includes('psyniscience'),
+        discipline: built.unlockedDisciplines.includes('Biomancy')
     }, {
         ascensionChoice: true, talentChoice: true, talentString: true, equippedUpgrade: true, starting: true, relic: true,
         improvised: true, custom: true, background: true, languages: true, injuries: true, mutation: true, mob: true,
-        subOption: true, keywordChoice: true, skillChoiceKey: true
+        subOption: true, keywordChoice: true, skillChoiceKey: true, powers: true, discipline: true
     });
     const r = loadJson(built);
     check('setters: a character built through the real writers loads deep-equal', canon(r.character), canon(built));
     check('setters: a character built through the real writers writes no warning', r.warns, []);
+
+    // A second build for the custom archetype: setCustomArchetype clears the wargear and the stats
+    B.newCharacter();
+    B.setTier('2'); B.setAdditionalXP('500');
+    B.setSpecies('human');
+    B.setCustomArchetype();
+    B.setCustomArchetypeName('Gun <for> hire');
+    B.setCustomArchetypeAbility('sanctioned_psyker');
+    B.addCustomKeyword('scum');
+    B.addCustomStartingWargear('knife');
+    const builtCustom = JSON.parse(JSON.stringify(B.character));
+    check('setters: the custom archetype character holds each shape', {
+        archetype: builtCustom.archetype.id === 'custom',
+        name: builtCustom.customArchetype.name === 'Gun <for> hire',
+        ability: builtCustom.customArchetype.abilityArchetypeId === 'sanctioned_psyker',
+        keywords: builtCustom.customArchetype.keywords.length === 1 && builtCustom.customArchetype.keywords[0] === 'SCUM',
+        startingWargear: builtCustom.customArchetype.wargear.length === 1 && builtCustom.customArchetype.wargear[0] === 'knife',
+        wargearEntry: builtCustom.wargear.some(w => w?.id === 'knife' && w?.isStarting === true)
+    }, { archetype: true, name: true, ability: true, keywords: true, startingWargear: true, wargearEntry: true });
+    const rc = loadJson(builtCustom);
+    check('setters: a custom archetype character built through the real writers loads deep-equal', canon(rc.character), canon(builtCustom));
+    check('setters: a custom archetype character built through the real writers writes no warning', rc.warns, []);
 }
 
 // --- hostile: a value of the wrong type gets the repair value of its row ---

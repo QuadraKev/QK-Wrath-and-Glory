@@ -115,6 +115,14 @@ check('an entry with no bonusType gives 0',
     DerivedStats.getBackgroundBonus({ background: { origin: { id: 'o1' }, accomplishment: null, goal: null, bonusUsed: 'origin' } }, 'maxWounds'), 0);
 check('a character with no background gives 0', DerivedStats.getBackgroundBonus({}, 'maxWounds'), 0);
 
+// A key of the background object other than the three slots does not count, whatever it holds.
+check('bonusUsed names an extra key with a bonusType: gives 0',
+    DerivedStats.getBackgroundBonus({ background: { origin: null, accomplishment: null, goal: null, extra: { bonusType: 'maxWounds' }, bonusUsed: 'extra' } }, 'maxWounds'), 0);
+check('bonusUsed names a key of the prototype: gives 0',
+    DerivedStats.getBackgroundBonus({ background: { origin: null, accomplishment: null, goal: null, bonusUsed: 'constructor' } }, 'maxWounds'), 0);
+check('a selected entry with a bonusType outside the seven derived types gives 0',
+    DerivedStats.getBackgroundBonus({ background: { origin: { id: 'o1', bonusType: 'corruption' }, accomplishment: null, goal: null, bonusUsed: 'origin' } }, 'corruption'), 0);
+
 // The derived value follows the one bonus.
 function human() {
     State.newCharacter();
@@ -169,6 +177,82 @@ check('BackgroundTab.repairMissingBonusTypes is gone', typeof BackgroundTab.repa
     c.background = { origin: null, accomplishment: null, goal: null, bonusUsed: null };
     BackgroundTab.render();
     check('no entry and no selection: the bonus box is hidden', el.classList.contains('hidden'), true);
+}
+
+// --- the box tells the user what the stats do (spec 11.1; fix round 1) ---
+{
+    const NOTICE = 'Select one bonus with USE THIS BONUS';
+    const el = rec.document.getElementById('background-bonus');
+    const setUp = background => {
+        const c = human();
+        c.background = { origin: null, accomplishment: null, goal: null, bonusUsed: null, ...background };
+        return c;
+    };
+    const maxWounds = () => DerivedStats.calculateMaxWounds(State.character);
+    const state = () => ({ notice: el.innerHTML.includes(NOTICE), hidden: el.classList.contains('hidden') });
+
+    // (a) The selected slot is empty: no bonus, and the notice shows when another slot holds an entry.
+    const baseWounds = DerivedStats.calculateMaxWounds(setUp({}));
+    let c = setUp({ origin: { id: origin.id, bonusType: 'maxWounds' }, bonusUsed: 'goal' });
+    let snapshot = JSON.stringify(State.character);
+    BackgroundTab.render();
+    check('(a) empty selected slot: max wounds get no bonus', maxWounds(), baseWounds);
+    check('(a) empty selected slot, another slot set: the notice shows and the box is not hidden', state(), { notice: true, hidden: false });
+    check('(a) a render leaves the character as it was', JSON.stringify(State.character), snapshot);
+    check('(a) bonusUsed stays goal', State.character.background.bonusUsed, 'goal');
+    c = setUp({ bonusUsed: 'goal' });
+    BackgroundTab.render();
+    check('(a) empty selected slot, no entry at all: the box is hidden', state().hidden, true);
+
+    // (b) The selected entry has an id that the data does not have: the stored bonus applies and the box shows it.
+    c = setUp({ origin: { id: 'zz<b>', bonusType: 'maxWounds' }, bonusUsed: 'origin' });
+    snapshot = JSON.stringify(State.character);
+    BackgroundTab.render();
+    check('(b) unknown selected entry: the stored maxWounds bonus applies', maxWounds(), baseWounds + 1);
+    check('(b) unknown selected entry: the box is not hidden and shows no notice', state(), { notice: false, hidden: false });
+    check('(b) the box shows the entry and the bonus in the markup of a known entry',
+        el.innerHTML, '<strong>Selected Bonus:</strong> Unknown origin (zz&lt;b&gt;): +1 Max Wounds');
+    check('(b) a render leaves the character as it was', JSON.stringify(State.character), snapshot);
+    c = setUp({ goal: { id: 'zz_g', bonusType: 'wealth' }, bonusUsed: 'goal' });
+    BackgroundTab.render();
+    check('(b) unknown goal with a wealth bonus: the box names it',
+        el.innerHTML, '<strong>Selected Bonus:</strong> Unknown goal (zz_g): +1 Wealth');
+    check('(b) the derived values and the box use one test',
+        DerivedStats.BACKGROUND_BONUS_TYPES.map(t => DerivedStats.getBackgroundBonus(State.character, t)), [0, 0, 0, 0, 0, 0, 1]);
+
+    // (c) The selected entry is unknown and its stored bonusType is absent or not one of the seven: no bonus, the notice shows.
+    for (const bonusType of [undefined, null, '', 'corruption', 'keyword', 'zz']) {
+        const entry = bonusType === undefined ? { id: 'zz_a' } : { id: 'zz_a', bonusType };
+        c = setUp({ accomplishment: entry, bonusUsed: 'accomplishment' });
+        snapshot = JSON.stringify(State.character);
+        BackgroundTab.render();
+        check(`(c) unknown selected entry with bonusType ${JSON.stringify(bonusType)}: no bonus`,
+            DerivedStats.BACKGROUND_BONUS_TYPES.map(t => DerivedStats.getBackgroundBonus(State.character, t)), [0, 0, 0, 0, 0, 0, 0]);
+        check(`(c) unknown selected entry with bonusType ${JSON.stringify(bonusType)}: the notice shows`, state(), { notice: true, hidden: false });
+        check(`(c) unknown selected entry with bonusType ${JSON.stringify(bonusType)}: a render leaves the character as it was`, JSON.stringify(State.character), snapshot);
+    }
+}
+
+// --- the escapes of the selected bonus (a data fixture with markup in the name and the text) ---
+{
+    const el = rec.document.getElementById('background-bonus');
+    const DataLoader = get('DataLoader');
+    const saved = DataLoader.cache['backgrounds.json'];
+    const evil = id => ({ id, name: 'N<b>&x', bonusDescription: 'D<b>&y', bonusType: 'maxWounds' });
+    DataLoader.cache['backgrounds.json'] = { origins: [evil('eo')], accomplishments: [evil('ea')], goals: [evil('eg')] };
+    try {
+        for (const slot of ['origin', 'accomplishment', 'goal']) {
+            const c = human();
+            c.background = { origin: null, accomplishment: null, goal: null, bonusUsed: slot };
+            c.background[slot] = { id: 'e' + slot[0], bonusType: 'maxWounds' };
+            BackgroundTab.renderBonusDisplay();
+            check(`escape (${slot}): the box holds the name and the text escaped once`,
+                el.innerHTML, '<strong>Selected Bonus:</strong> N&lt;b&gt;&amp;x: D&lt;b&gt;&amp;y');
+            check(`escape (${slot}): no raw tag in the box`, /<b>/.test(el.innerHTML), false);
+        }
+    } finally {
+        DataLoader.cache['backgrounds.json'] = saved;
+    }
 }
 
 console.log(failures ? `\n${failures} check(s) FAILED` : '\nAll checks passed');

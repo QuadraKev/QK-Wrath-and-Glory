@@ -1,14 +1,24 @@
 // Derived Stats Calculator - Calculates all derived character stats
 
 const DerivedStats = {
-    // Get background bonus for a specific stat type.
+    // The stat types that a background bonus can raise.
+    BACKGROUND_BONUS_TYPES: ['determination', 'conviction', 'influence', 'resolve', 'maxShock', 'maxWounds', 'wealth'],
+
+    // The stat type of the one background bonus that applies, or null.
     // A character gets one Background bonus: the entry that USE THIS BONUS selected (Core p.43).
-    getBackgroundBonus(character, statType) {
+    // The Background tab and getBackgroundBonus both use this test, so they cannot disagree.
+    getAppliedBackgroundBonus(character) {
         const background = character.background;
         const selected = background?.bonusUsed;
 
-        if (selected !== 'origin' && selected !== 'accomplishment' && selected !== 'goal') return 0;
-        return background[selected]?.bonusType === statType ? 1 : 0;
+        if (selected !== 'origin' && selected !== 'accomplishment' && selected !== 'goal') return null;
+        const bonusType = background[selected]?.bonusType;
+        return this.BACKGROUND_BONUS_TYPES.includes(bonusType) ? bonusType : null;
+    },
+
+    // Get background bonus for a specific stat type
+    getBackgroundBonus(character, statType) {
+        return this.getAppliedBackgroundBonus(character) === statType ? 1 : 0;
     },
 
     // Get species sub-option bonus for a specific stat

@@ -181,41 +181,33 @@ const BackgroundTab = {
         const bonusDisplay = document.getElementById('background-bonus');
         const character = State.getCharacter();
         const backgrounds = DataLoader.getBackgrounds();
-
-        if (!character.background.bonusUsed) {
-            // An entry is set but no bonus is selected: tell the user to select one.
-            const hasEntry = ['origin', 'accomplishment', 'goal'].some(key => character.background[key]?.id);
-            if (hasEntry) {
-                bonusDisplay.innerHTML = 'Select one bonus with USE THIS BONUS. A character gets one Background bonus (Core Rulebook p.43).';
-                bonusDisplay.classList.remove('hidden');
-            } else {
-                bonusDisplay.classList.add('hidden');
-            }
-            return;
-        }
+        const lists = { origin: backgrounds.origins, accomplishment: backgrounds.accomplishments, goal: backgrounds.goals };
+        const labels = {
+            determination: 'Determination', conviction: 'Conviction', influence: 'Influence', resolve: 'Resolve',
+            maxShock: 'Max Shock', maxWounds: 'Max Wounds', wealth: 'Wealth'
+        };
 
         let bonusText = '';
         const type = character.background.bonusUsed;
+        const entry = lists[type] ? character.background[type] : null;
 
-        if (type === 'origin' && character.background.origin?.id) {
-            const origin = (backgrounds.origins || []).find(o => o.id === character.background.origin.id);
-            if (origin) {
-                bonusText = `${this.escapeHtml(origin.name)}: ${this.escapeHtml(origin.bonusDescription || origin.bonus || '')}`;
-            }
-        } else if (type === 'accomplishment' && character.background.accomplishment?.id) {
-            const acc = (backgrounds.accomplishments || []).find(a => a.id === character.background.accomplishment.id);
-            if (acc) {
-                bonusText = `${this.escapeHtml(acc.name)}: ${this.escapeHtml(acc.bonusDescription || acc.bonus || '')}`;
-            }
-        } else if (type === 'goal' && character.background.goal?.id) {
-            const goal = (backgrounds.goals || []).find(g => g.id === character.background.goal.id);
-            if (goal) {
-                bonusText = `${this.escapeHtml(goal.name)}: ${this.escapeHtml(goal.bonusDescription || goal.bonus || '')}`;
+        if (entry?.id) {
+            const record = (lists[type] || []).find(r => r.id === entry.id);
+            if (record) {
+                bonusText = `${this.escapeHtml(record.name)}: ${this.escapeHtml(record.bonusDescription || record.bonus || '')}`;
+            } else {
+                // An id that the data does not have: show it with the stored bonus that still applies.
+                const applied = DerivedStats.getAppliedBackgroundBonus(character);
+                if (applied) bonusText = `${this.escapeHtml(`Unknown ${type} (${entry.id})`)}: +1 ${this.escapeHtml(labels[applied])}`;
             }
         }
 
         if (bonusText) {
             bonusDisplay.innerHTML = `<strong>Selected Bonus:</strong> ${bonusText}`;
+            bonusDisplay.classList.remove('hidden');
+        } else if (['origin', 'accomplishment', 'goal'].some(key => character.background[key]?.id)) {
+            // An entry is set but no bonus applies: tell the user to select one.
+            bonusDisplay.innerHTML = 'Select one bonus with USE THIS BONUS. A character gets one Background bonus (Core Rulebook p.43).';
             bonusDisplay.classList.remove('hidden');
         } else {
             bonusDisplay.classList.add('hidden');

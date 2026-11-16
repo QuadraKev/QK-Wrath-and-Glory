@@ -122,6 +122,7 @@ None at load except X1. A character with a raised skill and an Inquisitor archet
 
 - A species change and an archetype change keep each value that the user bought above the old free value. Today a species change and Custom Archetype reset them. A user who wants the old reset uses Reset Stats.
 - A species change lowers an attribute above the maximum of the new species to that maximum.
+- A character that was a Custom Archetype with keywords and has a standard archetype now loses those keywords and each effect of them (for example the Psychic Powers rows of a custom `PSYKER` keyword), because a kept custom record has no effect while the archetype is not `custom` (CC14, section 5.2). Before the pass, the keywords of the kept record stayed active, which was a defect. The record stays stored, the XP does not change, and the keywords come back when the user selects Custom Archetype again. **[Added after the final review of the branch, finding X1.]**
 
 ### 5.2a Data values corrected from the book (CC15)
 
@@ -397,7 +398,7 @@ None at load. A typed value outside the range is refused, so nothing new is stor
 
 ## 13. Group 10: render guards (B6, B7, B8, B10)
 
-- **B6 (S2).** `threat-card.js:42,278-286` prints `threat.mobAbilities` as a string; 8 threats hold a list of `{ name, description }`. Walk: "Mob Abilities [object Object]". Correction: `renderTextSection` renders a list as one `<p>` per entry with the name in `<strong>`. A string renders as today. The bestiary copy belongs to the other author.
+- **B6 (S2).** `threat-card.js:42,278-286` prints `threat.mobAbilities` as a string; 11 threats hold a list of `{ name, description }` (8 in `mobAbilities`, 4 in `mobOptions`, 1 of them in both; the first text of this line said 8). Walk: "Mob Abilities [object Object]". Correction: `renderTextSection` renders a list as one `<p>` per entry with the name in `<strong>`. A string renders as today. The bestiary copy belongs to the other author.
 - **B7 (S2).** `wargear-tab.js:642` assumes an object range; 37 ranged weapons hold a string. Correction: a string prints as stored; an object as `short/medium/long`; no range as `-`.
 - **B8 (S3, F6).** `relic-wizard.js:295`, `:503`, `:770` read `relics.forms[formId].powersTable` with no guard. Correction: `open()` sets `formId` to `null` when the stored form is not a key of `relics.forms`, so step 1 asks for a form (`:630`). The three lookups get a guard. The stored relic does not change until the user saves.
 - **B10 (S3, F7).** `character-sheet-tab.js:1665` calls `escapeHtml(choice)`, which returns `''` for the number `0`. Correction: the site uses `escapeHtml(String(choice))` when the choice is not `null` or `undefined` (the pattern of R4 of the load check spec).
@@ -446,7 +447,7 @@ D1 (Rank) and D2 (Tier) are decided by the owner: see §2.
 | A10 Apocrypha prose | 548 Apocrypha `startingWargear` entries are display names or prose. A curation job against the book for the owner. The click skips them (§7.5). |
 | B11 sub-fields | Mutation sub-choice, keyword placeholder, ascension choice key: fields of an entry that is visible and removable (§9.5). |
 | A21-A24 (S4) | Listed only: `newCharacter` throws with blocked storage; `state.js:153-156` is dead (A22, not removed here); rank/XP negative (closed by §10.2); attribute maximums 13-16 not reachable. |
-| B S4 lines | Listed only: typed `1e5` and `2.5` (closed by §10.2); follower decimals (closed by §10.2); `references-tab.js:761-762` prints "Choice1 +4" (Compendium text, not character data). |
+| B S4 lines | Listed only: typed `2.5` is refused and typed `1e5` is the legal integer 100000 (§10.2); follower decimals (closed by §10.2); `references-tab.js:761-762` prints "Choice1 +4" (Compendium text, not character data). |
 | Glossary, Electron wrapper | **[Controller ruling]** Out of scope. |
 | Upgrades on a base item change (P19) | **[Controller ruling CC7]** A change of the base item in a relic or improvised edit clears `upgrades` (`state.js:813`, `:831`). An upgrade belongs to the base item, and the edit selects a new one. |
 
@@ -459,7 +460,7 @@ Unrelated dead code seen and not removed: `State.removeWargear` has no caller (i
 - The species maximum clamp uses `attributeMaximums` of `data/species.json`. The five species of the Core p.25 table were compared, and three values are corrected (§5.2a). The species of the other books (for example Ogryn and Ratling of the Forsaken System, the Kroot, the Apocrypha species) were not compared with their book pages. No erratum was checked.
 - The alias table covers the ids that left the data since 2026-02-13 (`3b17bac`). It does not cover an Electron 1.0.0 save with ids that left the data before that commit.
 - The injury and mutation ids and the follower `threatId`s were not compared with older data (Audit 1 did not check them). An unknown one shows as a row; no alias exists for them.
-- The 50-box bound and the timing were not measured on a phone.
+- The 100-box bound (ruling TC15-1; the first text of this spec said 50) and the timing were not measured on a phone.
 - The book checks cover Core pp.19, 25, 29, 43, 94, 109, 116, 117, 146 and Vow of Absolution pp.39, 41, 42, 125, 126. For the Rank search, the contents pages of each official sourcebook and the sections they point to were read; the adventure modules and the Apocrypha body were not read.
 - The audit evidence was re-read in the code at `44084ae`. The audit scripts were not run again; the line numbers in this spec match the code.
 - After a reload, the app does not know the value that a chosen "any skill" skill had before the choice (ruling TC4-1). A later change of the choice then puts a value at the bonus or under it to the free value. Ranks that the user bought before the choice are then gone, and the XP for them is free again.

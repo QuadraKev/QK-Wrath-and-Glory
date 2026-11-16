@@ -61,13 +61,13 @@ A different author writes the spec for the creator app. This work changes no fil
 |---|---|---|---|
 | A. The type check at each load | C9, C10, C11, C7 (load part), D2 | §4 | 1, 3, 4 |
 | B. The autosave | C4, C5 | §5 | 3, 4 |
-| C. Number inputs and the player rows | C6, C7 (input part), D1 | §6 | 5 |
+| C. Number inputs and the player rows | C6, C7 (input part), D1 | §6 | 5a, 5b |
 | D. Add to Encounter | C8 | §7 | 4 |
 | E. Escapes | C1, C2, C3, the three unchecked items | §8 | 6, 7, 8, 9 |
 | F. Mob ability lists | B6 | §9 | 6, 9 |
 
 - A new file `bestiary/js/bestiary-check.js` holds one global object, `BestiaryCheck`. It holds the field rules, the load clamp, the number input rule and a compare of two threat records. **[Design agent]** One file keeps the rules in one place, and a Node test can load it alone. This is the `CharacterCheck` pattern. Cost if wrong: one more script tag.
-- Plan Task 1 adds the module, its tag and the cache bump (`?v=96` to `?v=97` on all 16 tags, plus the new tag). Plan Task 2 adds a browser proof script that fails before the corrections. Tasks 3-9 make the corrections.
+- Plan Task 1 adds the module, its tag and the cache bump (`?v=96` to `?v=97` on all 16 tags, plus the new tag). Plan Task 2 adds a browser proof script that fails before the corrections. Tasks 3-9 (with 5a and 5b) make the corrections.
 
 ## 4. Group A: the type check at each load (C9, C10, C11, C7 load part, D2)
 
@@ -91,12 +91,16 @@ Each entry point tests the shape of the top level first. No `try`/`catch` goes a
 |---|---|---|---|
 | Encounter autosave, `App.checkAutoSave` (`app.js:237-249`) | `if (saved && saved.encounter)` | `saved` and `saved.encounter` are plain objects | `console.warn('The auto-save was not loaded: it does not contain an encounter.')`. The blank encounter stays. The stored key stays. |
 | Builder autosave, `App.checkAutoSave` (`app.js:252-255`) | `if (builderSave && builderSave.threat)` | `builderSave` and `builderSave.threat` are plain objects | `console.warn('The auto-save was not loaded: it does not contain a threat.')`. The empty builder stays. The stored key stays. |
-| `.encounter` file, `EncounterState.loadEncounterFromFile` (`encounter-state.js:975`) | `if (result.success && result.data)` | `result.data` is a plain object | Return `{ success: false, error: 'Invalid encounter file' }`. The existing handler shows "Error loading: Invalid encounter file" (`encounter-tab.js:2051`). The encounter does not change. |
-| `.threat` file into the builder, `ThreatBuilderState.loadThreatFromFile` (`threat-builder-state.js:324`) | `if (result.success && result.data)` | `result.data` is a plain object | Return `{ success: false, error: 'Invalid threat file' }`. The existing handler shows "Error: Invalid threat file" (`threat-builder-tab.js:68`). |
-| `.threat` file into the encounter, `EncounterTab.handleImportThreat` (`encounter-tab.js:2092`) | `if (!threat)` | `result.data` is a plain object | The existing message "Error: Invalid threat file" (`:2103`). |
-| `.players` file, `EncounterTab.handleLoadPlayers` (`encounter-tab.js:2140`) | `if (result.success && result.data)` | `result.data` is a plain object | `this.showNotification('Error loading: Invalid player file')`. |
+| `.encounter` file, `EncounterState.loadEncounterFromFile` (`encounter-state.js:975`) | `if (result.success && result.data)` | `result.data` is a plain object with at least one of the keys `settings`, `individuals`, `mobs`, `playerCharacters`, `vehicles` | Return `{ success: false, error: 'Invalid encounter file' }`. The existing handler shows "Error loading: Invalid encounter file" (`encounter-tab.js:2051`). |
+| `.threat` file into the builder, `ThreatBuilderState.loadThreatFromFile` (`threat-builder-state.js:324`) | `if (result.success && result.data)` | `result.data` is a plain object with at least one of the keys `name`, `abilities`, `attributes` | Return `{ success: false, error: 'Invalid threat file' }`. The existing handler shows "Error: Invalid threat file" (`threat-builder-tab.js:68`). |
+| `.threat` file into the encounter, `EncounterTab.handleImportThreat` (`encounter-tab.js:2092`) | `if (!threat)` | as the builder `.threat` gate | The existing message "Error: Invalid threat file" (`:2103`). |
+| `.players` file, `EncounterTab.handleLoadPlayers` (`encounter-tab.js:2140`) | `if (result.success && result.data)` | `result.data` is a plain object with the key `players` (the writer `handleSavePlayers`, `:2122-2129`, always writes it) | `this.showNotification('Error loading: Invalid player file')`. |
 
 "Plain object" means `value !== null && typeof value === 'object' && !Array.isArray(value)`.
+
+The two autosave gates apply only when the key holds a value. An absent key (`getAutoSave()` returns `null`) gives no gate and no warning, as today.
+
+**[Controller ruling, 2026-11-15, CB3]** A file gate also requires one key of its own kind. Why: on iOS the file picker shows all files (`web-api.js:91`), so a user can pick a `.threat` or a `.players` file in Load Encounter. Without the key test, the check repairs such a file to an empty encounter. A file that fails a gate changes nothing: not the state, not the storage, not the ownership flags of §5.2.
 
 ### 4.3 Rules that apply to each field
 
@@ -124,9 +128,9 @@ Each entry point tests the shape of the top level first. No `try`/`catch` goes a
 | `individuals` | array | `[]` |
 | `individuals[i]` | plain object with a string `id` and a string `threatId` (`addIndividual` `:77-90`) | drop |
 | `.bonus` | `'none'`, `'elite'` or `'adversary'` | `'none'` |
-| `.currentWounds`, `.currentShock` | finite number | `0` |
+| `.currentWounds`, `.currentShock` | finite number. The C6 defect wrote `null` (E4). | `0` |
 | `.maxWounds`, `.maxShock` | finite number, or `null` (the C6 defect wrote `null`) | `null`, then the load recomputes it (E2) |
-| `.mobId` | string or `null` | `null`. A string that names no mob in `mobs`: `null` (E3, D2). |
+| `.mobId` | string or `null` | `null`. A string that names no mob of the repaired `mobs` list: `null` (E3, D2). The check repairs `mobs` before it tests each `mobId`, so a member of a dropped mob also becomes a free row. |
 | `.initiative` | finite number or `null`; optional | `null` |
 | `.notes` | string; optional | `''` |
 | `.additionalWeaponId` | string or `null`; optional (added after the first saves) | `null` |
@@ -224,7 +228,7 @@ A `.players` file is not stored, so its repairs change no stored value.
 ### 4.7 Unknown threat ids (C10)
 
 - An individual whose threat does not resolve shows the row name `Unknown threat (<id>)` instead of `Unknown` (`encounter-state.js:822`). The row keeps its Remove control (`×`, `encounter-tab.js:629`).
-- A mob whose threat does not resolve shows its stored name followed by ` — Unknown threat (<id>)` (`encounter-state.js:846`). **[Design agent]** The mob keeps the name that the user knows, and the mark is added. Cost if wrong: a longer row name.
+- A mob whose threat does not resolve shows its stored name followed by ` — Unknown threat (<id>)` (`encounter-state.js:846`). The mob row prints `item.name`, not `mob.name` (`encounter-tab.js:651`, plan Task 8), so the mark shows in the row. **[Design agent]** The mob keeps the name that the user knows, and the mark is added. Cost if wrong: a longer row name.
 - In the mob detail, the "Add Troops to Mob" line and the member line use `Unknown threat (<id>)` when the threat does not resolve (`encounter-tab.js:1086`, `:1207`). This removes the throw of C10.
 - An unknown vehicle id and an unknown additional weapon id already render "Unknown vehicle" and "Unknown weapon" with their Remove controls (audit 3, "Checked and found correct").
 - D2: a dangling `mobId` becomes `null` at load (E3), so the individual shows as a free row with its Remove control.
@@ -234,9 +238,9 @@ A `.players` file is not stored, so its repairs change no stored value.
 | # | Stored value | Change at load | Why it is allowed |
 |---|---|---|---|
 | E1 | `settings.playerCount` outside 1-10 | the nearest limit | **[Controller ruling, 2026-11-15]** for C7: the count is work data, and a count that the UI cannot accept makes each start slow. One warning (the path is in the repair warning). |
-| E2 | `maxWounds` / `maxShock` that is `null` or not a finite number | recomputed from the threat and the settings | The C6 defect wrote `null` (`NaN` in JSON). The value then shows the threat as dead after each reload. The recompute restores what the user had. When the threat does not resolve, the value stays `null` and the row shows `-` (§8). |
+| E2 | `maxWounds` / `maxShock` that is `null` or not a finite number | recomputed from the threat and the settings | The C6 defect wrote `null` (`NaN` in JSON). The value then shows the threat as dead after each reload. The recompute restores what the user had. When the threat does not resolve, the value stays `null`. The row then prints the current value and an empty max (`0/`), and `isIndividualDead` treats it as dead (`0 >= null`). The row keeps its Remove control. |
 | E3 | `mobId` that names no mob | `null` | The value hides the entry (D2). `null` makes it visible again. No app writer makes it. |
-| E4 | a value of a wrong type | the repair value of its row (§4.4, §4.5) | No app version writes a wrong type, except `playerCount` / `maxWounds` / `maxShock` (`null`, a defect value that E1/E2 cover). |
+| E4 | a value of a wrong type | the repair value of its row (§4.4, §4.5) | No app version writes a wrong type, except the C6 defect. It wrote `NaN` (stored as `null`) into `playerCount` (E1 row: default `4`), `maxWounds` / `maxShock` (E2), and `currentWounds` / `currentShock` (`recalculateAllStats`, `encounter-state.js:727-728`: `Math.min(current, NaN)`; audit `p-playersEmpty.out` shows `[.., null, null, ..]`). A `null` current value becomes `0`, the value of a new entry. The real current value is lost since the defect wrote `NaN`; no load can restore it. |
 | E5 | an entry that cannot be used (§4.3 rule 4), a `customThreats` entry with a shipped id or a repeated id | dropped | No app version writes such an entry: `_collectCustomThreats` (`:929-942`) keeps only `custom_` ids, once each. |
 
 The check never writes the repaired data back at start. The stored autosave changes only at the next write (§5). Thus an unreadable or repaired autosave stays as stored until the user edits the encounter.
@@ -259,30 +263,42 @@ The repairs E1-E5 are the only changes at load. A save that the app writes passe
 
 ### 5.2 Correction
 
-- `EncounterState._performAutoSave`: when `isEmpty()` is true, call `clearAutoSave()` and return. Else write as today.
-- `EncounterState.loadEncounterFromFile`: after a successful load, `clearTimeout(this._autoSaveTimer)` and call `this._performAutoSave()` at once. The state stays clean (no unsaved-changes flag).
-- `ThreatBuilderState._performAutoSave`: when the threat is pristine, call `clearAutoSave()` and return. Else write, also when the name is empty. "Pristine" means that `getThreatData()` equals a new `clear()` threat, with `BestiaryCheck.sameThreatData` (the id is ignored). **[Design agent]** The builder's `isEmpty()` is true for a threat with keywords and stats but no name and no abilities. Removing the key in that case would lose work that the user has. Cost if wrong: a nameless partial threat now persists across a reload.
+**[Controller ruling, 2026-11-15, CB1, CB2]** A page removes a stored key only when that page owns it. Why: a second tab with an empty state must never delete the work of the first tab. The review proved the risk with two contexts on one origin: tab B changed the tier on its empty encounter, and the key of tab A was gone two seconds later.
+
+The old single-app site (`quadrakev.github.io/wrath-and-glory-bestiary-web/`) has the same origin as this site (`quadrakev.github.io`), so it can share `localStorage` and these two keys. The monorepo started as a copy of that app (`74924bb`). The ownership rule protects that case in the same way.
+
+- Each state object gets one flag: `EncounterState._ownsAutoSave` and `ThreatBuilderState._ownsAutoSave`, `false` at start.
+- The flag becomes `true` when the page writes its key (`_performAutoSave`) and when the page restores its state from the key (`App.checkAutoSave`, after a passed gate).
+- "Empty" is `isEmpty()` for the encounter. For the builder it is "pristine" (below).
+- `markDirty` / `_markDirty`: when the state is empty after the change, cancel the pending timer. If the flag is `true`, remove the key at once and set the flag to `false` (CB2). If the flag is `false`, do nothing to the storage. Else schedule the write as today.
+- `_performAutoSave`: an empty state writes nothing and removes nothing. This covers a timer that was pending before Clear.
+- `clearAutoSave()` of each state removes the key only when the flag is `true`, then sets the flag to `false`. Each removal goes through it: the empty rule above, `clearEncounter()` (`encounter-state.js:1022`), and the two builder Clear handlers (`threat-builder-tab.js:48`, `:103`). `clearEncounter()` and the builder `clear()` also cancel the pending timer. **[Design agent]** Clear follows the same rule as the other actions, so that Clear in a second tab cannot delete the work of the first tab. Cost if wrong: after Clear in a tab that never wrote the key, a reload of that tab shows the encounter of the other tab (the CB1 cost).
+- `EncounterState.loadEncounterFromFile`: after a load that passed its gate, `clearTimeout(this._autoSaveTimer)`, then write at once (`_performAutoSave()`, which sets the flag). The state stays clean (no unsaved-changes flag). An empty loaded encounter follows the empty rule: the key goes only when the flag is `true`.
+- Builder "pristine": `BestiaryCheck.sameThreatData(this.getThreatData(), this._newThreatData())` is `true`. `_newThreatData()` returns the `getThreatData()` form of a new threat: the literal of `_newThreat()` with `skills: 'Default 0'` (the `_serializeSkills` result for zero skills, `threat-builder-state.js:437-458`) and no `parsedSkills`. **[Design agent]** The builder's `isEmpty()` is true for a threat with keywords and stats but no name and no abilities. Removing the key in that case would lose work that the user has. Cost if wrong: a nameless partial threat now persists across a reload.
 
 `clear()` of the builder gets its literal from a new method `_newThreat()`, so that the pristine test and `clear()` use one object shape.
 
 ### 5.3 The stored keys after each case
 
+"Owner" means that the flag of §5.2 is `true` in this page.
+
 | Case | `wng-bestiary-autosave` | `wng-bestiary-builder-autosave` |
 |---|---|---|
-| Page start | read; never changed, also when the check repairs or refuses it | read; never changed |
-| Load of an `.encounter` file | written at once with the loaded encounter. An empty loaded encounter removes the key. | no change |
-| Load of a `.threat` file into the builder | no change | written 2 s after the load (existing `_markDirty`) |
+| Page start | read; never changed, also when the check repairs or refuses it. A restore makes the page the owner. | the same |
+| Load of an `.encounter` file | written at once; the page becomes the owner. An empty loaded encounter removes the key only for an owner. A file that fails its gate changes nothing. | no change |
+| Load of a `.threat` file into the builder | no change | written 2 s after the load (existing `_markDirty`). A file that fails its gate changes nothing. |
 | Import Threat into the encounter | written 2 s after (existing) | no change |
-| An edit | written 2 s after the last change (existing) | written 2 s after the last change; removed when the threat is pristine |
-| Remove of the last item (individual, mob, player, vehicle) | removed 2 s after | no change |
-| Clear | removed at once (existing). A pending timer later finds an empty state and removes the key again. | removed at once (existing) |
+| An edit | written 2 s after the last change (existing) | written 2 s after the last change |
+| A change that makes the state empty (remove of the last item; a builder made pristine) | removed at once by an owner; no change for another page | the same |
+| A change on a state that stays empty (tier, round, sort on an empty encounter) | no change | no change |
+| Clear | removed at once by an owner; no change for another page | the same |
 | New | The bestiary has no "New" action. Clear is the new encounter. A template (Customize, or the template search) replaces the builder threat: written 2 s after. | as left |
 
 The encounter `isEmpty()` ignores the settings (`encounter-state.js:58-60`). Thus a change of tier or name on an empty encounter is not stored. This is existing behavior.
 
 ### 5.4 Risk to stored data
 
-The autosave holds the loaded encounter instead of the previous one (intended, C4). An empty state removes the key, as Clear does today. The start writes nothing.
+The autosave holds the loaded encounter instead of the previous one (intended, C4). A page removes a key only when it wrote or restored that key. A page with an empty state that never wrote the key cannot delete the work of another tab or of the old site. The start writes nothing.
 
 ## 6. Group C: number inputs and the player rows (C6, C7, D1)
 
@@ -369,6 +385,8 @@ This design found more sinks of the same kind (probe `probe1.js` of the design s
 
 **C3 (S2). Notes with an entity change on the next edit.** Evidence (`p-notesEntity.out`): stored `HP &lt;5 then flee`, the box shows `HP <5 then flee`, and one key press stores `!HP <5 then flee`. Root cause: the notes go raw into a `<textarea>` (`:936`, `:1020`, `:1105`), and the box decodes the entity.
 
+**C3, second cause (found in plan review 1, P5).** The HTML parser drops one line feed directly after a `<textarea>` start tag. A note that starts with a line break (`"\nfirst line"`) thus reads back as `first line` after a redraw, and the next key press stores it so. The escape alone does not correct this. The builder textareas (`threat-builder-tab.js:226`, `:431`, `:470`) have the same defect. Correction: each template writes one `\n` directly after each `<textarea …>` start tag, before the escaped value. The parser drops that `\n`, so the box holds the stored value exactly. Sites: `encounter-tab.js:936`, `:1020`, `:1105` (plan Task 8) and `threat-builder-tab.js:226`, `:431`, `:470` (plan Task 7).
+
 ### 8.2 The shipped text holds no markup
 
 A scan of `data/threats.json` in this design session: 0 HTML tags, 0 entities and no stray `<` or `>` in any string field. 73 strings hold a bare `&` (for example the source "Threat Assessment: Daemons & Heretics"). Many hold `'` or `"`. The HTML parser makes the same text node from a raw `&` and from `&amp;`, and from a raw quote and from its entity. Thus an escape of each threat string in text context gives the same DOM for each shipped threat. **[Design agent]** All threats get the escape, not only custom threats. No shipped text depends on markup. Cost if wrong: none for the shipped data (the plan's DOM comparison proves it); a custom threat that holds markup now shows the markup as text, which is the C1 ruling.
@@ -378,6 +396,8 @@ The Copy text and the pickers no longer parse a description as HTML. They use th
 The glossary enhancement (`glossary.js:553-579`) reads the `innerHTML` of an element and adds term spans by a regular expression. After the escapes, that `innerHTML` holds only text, `&amp;`, `&lt;`, `&gt;` and `&nbsp;`. No glossary term is `amp`, `lt`, `gt` or `nbsp` (591 names checked; plan Task 6 tests the term map). A term span wraps only text. Thus `glossary.js` needs no change.
 
 ### 8.3 Helpers
+
+**[Controller ruling, 2026-11-15, CB7]** No value is escaped two times. In each view, a custom name `A & "B" <C>` reads back as typed (`textContent` in the browser; one escape level in the HTML string of a unit test). The DOM comparison finds a double escape only in shipped text, so the plan adds this check for custom values.
 
 - `ThreatsTab.escapeHtml(value)` (new, at the end of the object) and `EncounterTab.escapeHtml(value)` (new body for `:215-219`): `null` and `undefined` give `''`; another value is `String(value)` with `& < > " '` replaced by `&amp; &lt; &gt; &quot; &#39;`. A number such as `0` prints as `0`. The new body of the encounter helper corrects C2 at `:129` and keeps each existing caller.
 - `ThreatBuilderTab` keeps its `escapeHtml` (DOM, text and `<textarea>` context) and `escapeAttr` (`:1226-1228`, double-quoted attributes).
@@ -410,7 +430,7 @@ Covered: the four files whose renders take threat, encounter or input values (`t
 | B-6 | `:1084` | `showInjectModal` | count value | 7 |
 | B-7 | `:1230-1234` | `stripHtml` | removed (unused after B-4, B-5) | 7 |
 | N-0 | `encounter-tab.js:215-219` | `escapeHtml` | new body (C2) | 8 |
-| N-1 | `:128-143` | `renderPlayerCharacterInputs` | `data-id`, initiative value | 5 (with D1) |
+| N-1 | `:128-143` | `renderPlayerCharacterInputs` | `data-id`, initiative value | 5a (with D1) |
 | N-2 | `:549-694` | `renderPlayerItem`, `renderIndividualItem`, `renderMobItem`, `renderVehicleItem` | ids in `data-*`, initiative values, bonus class, wound, shock and ruin numbers | 8 |
 | N-3 | `:931`, `:936` | `renderPlayerDetail` | initiative value, notes (C3) | 8 |
 | N-4 | `:1020`, `:1105` | individual and mob notes | notes (C3) | 8 |
@@ -482,7 +502,8 @@ One product choice is put here for the owner:
 | A file with very many entries (for example 20000 individuals or players) renders slowly. | S3 | The input limits stop such a count from a typed value. A file can still hold it. A bound on the list render hides entries (G2), and paging is a feature (G5). |
 | The autosave fails above the `localStorage` quota with only a console warning (`encounter-state.js:1044`). | S3 | Not reproduced. With the input limits, only a very large file reaches the quota. A visible message is a new control. |
 | Two entries of one list with the same id (hand-made file). | S3 | No app writer makes it. Select and remove then act on the first entry. A repair needs a choice between the entries. |
-| `glossary-tab.js:309` builds a selector from the hash id with no `CSS.escape`. | S3 | Not in the audit scope. A `"` in the hash can make `querySelector` throw. No script runs. |
+
+The first version of this spec parked `glossary-tab.js:309` (a selector built from the hash id with no `CSS.escape`). **[Controller ruling, 2026-11-15, CB6]** Prove it or remove it. A headless check (`hashsel.js` of the design session) set ten hash values with `"`, `\`, `'`, `]`, `{}` and a line break. The URL encodes `"` as `%22` and drops the line break, and no `querySelector` call threw. The item is removed.
 
 S4 items (listed only):
 
@@ -505,4 +526,5 @@ S4 items (listed only):
 - The bestiary before the monorepo (the single-app repo) is not in this history. Older save shapes are known only from the readers that accept them (`round` absent, `vehicles` absent, `personalRuin` absent, the top-level `customThreats`). The check accepts each of them.
 - The sink inventory of §8.5 comes from greps and reads of the files named in §8.4. A sink that a browser API outside the grep list makes was not searched. The browser proof of plan Task 2 tests the result, not the inventory.
 - The DOM comparison covers the shipped threats, the Threats list and the Browse pickers. It does not cover the Glossary, Compendium and Vehicles tabs, which this work does not change.
+- The real key shapes of the old single-app site were not read (its repo is not on this machine). The check accepts each shape that today's readers accept, and the ownership rule (§5.2) keeps a page with an empty state from deleting its key.
 - The design session ran the audit scripts' cases only where §13 says so. The other evidence lines quote the audit files.

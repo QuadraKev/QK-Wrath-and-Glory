@@ -227,6 +227,8 @@ for (const [name, make] of Object.entries(CORPUS)) {
     // ascension with a choice
     B.setAscension(4, { type: 'package', packageId: 'demanding_patron', archetypeId: null });
     B.setAscensionChoice(4, 'patronBenefit', 'wealth');
+    // ascension that grants powers: its entry gets a grant record with ids
+    B.setAscension(5, { type: 'package', packageId: 'lost_seer_path_aoa', archetypeId: null });
     // wargear: add, a starting item, equip, an upgrade
     B.addWargear('lasgun'); B.addWargear('knife', true);
     B.toggleWeaponEquipped(0);
@@ -279,7 +281,7 @@ for (const [name, make] of Object.entries(CORPUS)) {
     const isObj = v => v !== null && typeof v === 'object';
     check('setters: the built character holds each shape', {
         // Optional chaining: a broken writer must give a FAIL line here, not a TypeError
-        ascensionChoice: built.ascensions.length === 1 && built.ascensions[0].choices?.patronBenefit === 'wealth',
+        ascensionChoice: built.ascensions.length === 2 && built.ascensions[0].choices?.patronBenefit === 'wealth',
         talentChoice: built.talents.some(t => isObj(t) && t.choice === '0'),
         talentString: built.talents.includes('angel_of_death'),
         equippedUpgrade: built.wargear[0]?.equipped === true && built.wargear[0]?.upgrades?.length === 1,
@@ -297,11 +299,13 @@ for (const [name, make] of Object.entries(CORPUS)) {
         skillChoice: built.archetypeSkillChoices?.choice1 === 'insight',
         skillChoiceKey: !('choice1' in built.skills) && !('choice2' in built.skills),
         powers: built.psychicPowers.includes('smite') && built.psychicPowers.includes('psyniscience') && built.freePowers.includes('psyniscience'),
-        discipline: built.unlockedDisciplines.includes('Biomancy')
+        discipline: built.unlockedDisciplines.includes('Biomancy'),
+        grantRecord: JSON.stringify(built.ascensions[1]?.granted) === JSON.stringify({ powers: ['prescience', 'scriers_gaze'], freePowers: ['prescience', 'scriers_gaze'], talents: [] })
     }, {
         ascensionChoice: true, talentChoice: true, talentString: true, equippedUpgrade: true, starting: true, relic: true,
         improvised: true, custom: true, background: true, languages: true, injuries: true, mutation: true, mob: true,
-        subOption: true, keywordChoice: true, skillChoice: true, skillChoiceKey: true, powers: true, discipline: true
+        subOption: true, keywordChoice: true, skillChoice: true, skillChoiceKey: true, powers: true, discipline: true,
+        grantRecord: true
     });
     const r = loadJson(built);
     check('setters: a character built through the real writers loads deep-equal', canon(r.character), canon(built));

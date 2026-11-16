@@ -1536,12 +1536,19 @@ const State = {
         return [...(archetype?.psykerConfig?.grantedPowers || [])];
     },
 
-    // The power ids that a current source grants: the archetype, and each package ascension except excludeEntry
+    // The power ids that a current source grants: the archetype, and each package ascension except excludeEntry.
+    // For an entry whose package the data does not have, the ids of its grant record count (TC5-2).
     _grantedPowerIds(excludeEntry = null) {
         const ids = new Set(this._archetypeGrantIds());
         for (const entry of this.character.ascensions || []) {
             if (entry === excludeEntry || entry.type !== 'package' || !entry.packageId) continue;
             const pkg = DataLoader.getAscensionPackages().find(p => p.id === entry.packageId);
+            if (!pkg && entry.granted) {
+                for (const key of ['powers', 'freePowers']) {
+                    for (const id of Array.isArray(entry.granted[key]) ? entry.granted[key] : []) ids.add(id);
+                }
+                continue;
+            }
             for (const id of pkg?.psykerConfig?.grantedPowers || []) ids.add(id);
             for (const id of pkg?.powersGranted || []) ids.add(id);
         }
@@ -1593,6 +1600,7 @@ const State = {
     // CC4: a free id that no current source grants stays free only while a free pick slot of getPsykerConfig covers it.
     // A slot covers the first `count` such ids, in the order of freePowers, whose discipline matches.
     // An id that no slot covers leaves freePowers and stays in psychicPowers as a paid power.
+    // A power id that the data does not have stays in freePowers (TC5-2).
     _settleFreePicks() {
         const free = this.character.freePowers;
         if (!Array.isArray(free) || free.length === 0) return;
@@ -1602,7 +1610,7 @@ const State = {
         const kept = free.filter(id => {
             if (granted.has(id)) return true;
             const power = DataLoader.getPsychicPower(id);
-            if (!power) return false;
+            if (!power) return true;
             const slot = slots.find(s => s.left > 0 && s.disciplines.some(d => d.toLowerCase() === power.discipline.toLowerCase()));
             if (!slot) return false;
             slot.left--;

@@ -43,17 +43,19 @@ const ctx = vm.createContext({
     setTimeout: () => 0, clearTimeout: () => {}
 });
 for (const f of ['data-loader.js', 'custom-wargear.js', 'character-check.js', 'state.js', 'xp-calculator.js',
-    'derived-stats.js', 'prerequisite.js', 'keyword-bonus.js', 'followers.js'])
+    'derived-stats.js', 'prerequisite.js', 'keyword-bonus.js', 'followers.js', 'relic-wizard.js', 'improvised-builder.js'])
     vm.runInContext(readSource(`creator/js/${f}`), ctx, { filename: f });
 const get = name => vm.runInContext(name, ctx);
-const DL = get('DataLoader'), State = get('State');
+const DL = get('DataLoader'), State = get('State'), XP = get('XPCalculator');
 DL.cache = DATA;
 State.init({});
+State.setIgnorePrerequisites(true);
 
 // A new character with the given tier, species and archetype, through the real setters.
 function build(tier, archetypeId, speciesId = 'human') {
     State.newCharacter();
     State.setTier(String(tier));
+    State.setAdditionalXP('2000');
     State.setSpecies(speciesId);
     if (archetypeId) State.setArchetype(archetypeId);
     return State.character;
@@ -181,6 +183,68 @@ State.character.psychicPowers = ['smite'];
 State.character.freePowers = ['smite'];
 clearSlot(2);
 check('no record: after the clear, smite is in neither list', lists('smite'), [false, false]);
+
+// --- fix round 1, F1: the release test, the release in setCustomArchetype and the apply of the kept ability ---
+build(1, 'ganger');
+check('F1: Ganger buys smite', State.addPower('smite'), true);
+State.setArchetype('sanctioned_psyker');
+State.setArchetype('ganger');
+check('F1: a bought smite stays and stays paid after Sanctioned Psyker and Ganger', lists('smite'), [true, false]);
+build(1, 'sanctioned_psyker');
+State.setCustomArchetype();
+check('F1: Sanctioned Psyker to Custom with no ability: smite is in neither list', lists('smite'), [false, false]);
+build(1, null);
+State.setCustomArchetype();
+State.setCustomArchetypeAbility('sanctioned_psyker');
+State.setArchetype('ganger');
+State.setCustomArchetype();
+check('F1: Custom (Sanctioned Psyker ability), Ganger, Custom: smite is in both lists', lists('smite'), [true, true]);
+
+// --- fix round 1, F2: each change of source settles the free picks ---
+build(1, 'sanctioned_psyker');
+State.addFreePowerPick('chameleon');
+State.setSpecies('ogryn');
+check('F2 clearArchetype: Sanctioned Psyker, a pick of chameleon, Ogryn: chameleon is paid', lists('chameleon'), [true, false]);
+build(1, 'sanctioned_psyker');
+State.addFreePowerPick('chameleon');
+State.setCustomArchetype();
+check('F2 setCustomArchetype: Sanctioned Psyker, a pick of chameleon, Custom: chameleon is paid', lists('chameleon'), [true, false]);
+build(1, null);
+State.setCustomArchetype();
+State.setCustomArchetypeAbility('sanctioned_psyker');
+State.addFreePowerPick('chameleon');
+State.setCustomArchetypeAbility(null);
+check('F2 setCustomArchetypeAbility: a pick of chameleon, then no ability: chameleon is paid', lists('chameleon'), [true, false]);
+build(1, 'ganger');
+addPackage(2, 'psychic_revelations');
+State.addFreePowerPick('chameleon');
+clearSlot(2);
+check('F2 setAscension: Ganger, Psychic Revelations, a pick of chameleon, clear: chameleon is paid', lists('chameleon'), [true, false]);
+
+// --- fix round 1, F2 (S16): setAscension never copies a grant record from its argument ---
+build(1, 'ganger');
+const foreign = () => ({ powers: ['smite'], freePowers: ['smite'], talents: ['devotees'] });
+State.setAscension(2, { type: 'package', packageId: null, archetypeId: null, granted: foreign() });
+check('F2 S16: an empty package slot has no grant record', 'granted' in entryAt(2), false);
+State.setAscension(2, { type: 'archetype', packageId: null, archetypeId: 'inquisitor', granted: foreign() });
+check('F2 S16: an archetype ascension has no grant record', 'granted' in entryAt(2), false);
+State.setAscension(2, { type: 'package', packageId: 'dauntless_reputation', archetypeId: null, granted: foreign() });
+check('F2 S16: a package entry holds only its own record', entryAt(2).granted, { powers: [], freePowers: [], talents: ['devotees'] });
+
+// --- fix round 1, F4 (TC5-2): ids that the data does not have ---
+build(1, 'ganger');
+addPackage(2, 'lost_seer_path_aoa');
+check('F4: the Lost Seer record holds its powers', grantedPowers(2), ['prescience', 'scriers_gaze']);
+entryAt(2).packageId = 'gone_package_x';
+const powerXpBefore = XP.calculatePowerXP(State.character);
+addPackage(3, 'dauntless_reputation');
+check('F4: an unknown package: the power XP does not change', XP.calculatePowerXP(State.character), powerXpBefore);
+check('F4: an unknown package: the recorded powers stay free', [lists('prescience'), lists('scriers_gaze')], [[true, true], [true, true]]);
+build(1, 'sanctioned_psyker');
+State.character.psychicPowers.push('gone_power_x');
+State.character.freePowers.push('gone_power_x');
+addPackage(2, 'dauntless_reputation');
+check('F4: an unknown power id stays in freePowers after a new ascension', lists('gone_power_x'), [true, true]);
 
 // --- round trip: the J character before the clear ---
 buildJ();

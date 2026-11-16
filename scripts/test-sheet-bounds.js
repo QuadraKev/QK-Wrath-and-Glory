@@ -354,18 +354,18 @@ vm.runInContext('var navigator = { clipboard: { writeText(t) { globalThis.__copi
     // A known entry of each kind
     loadCharacter({
         species: { id: 'astartes', xpCost: 0, subOptions: [{ type: 'chapter', optionId: 'imperial_fists' }] },
-        talents: ['acute_sense'], wargear: [{ id: 'medikit' }, { id: 'bolt_pistol', upgrades: ['autoloader'] }],
+        talents: ['acute_sense'], wargear: [{ id: 'medikit' }, { id: 'bolt_pistol', upgrades: ['autoloader'] }, { id: 'primitive_armour' }, { id: 'augmetic_arm' }],
         psychicPowers: ['smite'], memorableInjuries: [{ id: 'battle_scar', escalated: false }], traumaticInjuries: [{ id: 'hand', side: 'left' }],
         mutations: [{ id: 'hint_of_red_eyes' }],
         background: { origin: { id: 'holy_inspiration' }, accomplishment: { id: 'defended_enoch' }, goal: { id: 'reclaim_relic' }, bonusUsed: null, bonusType: null },
         ascensions: [{ type: 'package', packageId: 'dauntless_reputation', targetTier: 3 }]
     });
     c = State.getCharacter();
-    const knownHtml = [CharacterSheetTab.renderEquipment(c), CharacterSheetTab.renderWeapons(c), CharacterSheetTab.renderTalents(c),
-        CharacterSheetTab.renderInjuriesCorruption(c), CharacterSheetTab.renderMutations(c), CharacterSheetTab.renderAscensions(c),
+    const knownHtml = [CharacterSheetTab.renderEquipment(c), CharacterSheetTab.renderWeapons(c), CharacterSheetTab.renderArmor(c), CharacterSheetTab.renderAugmetics(c),
+        CharacterSheetTab.renderTalents(c), CharacterSheetTab.renderInjuriesCorruption(c), CharacterSheetTab.renderMutations(c), CharacterSheetTab.renderAscensions(c),
         CharacterSheetTab.renderBackground(c), CharacterSheetTab.renderSpeciesAbilities(c, DataLoader.getSpecies('astartes'))].join('');
     check('mark: the known rows of the sheet are not empty (a known name of each kind shows)',
-        ['Medikit', 'Acute Sense', 'Battle Scar', 'Hint of Red Eyes', 'Holy Inspiration'].filter(n => !knownHtml.includes(n)), []);
+        ['Medikit', 'Primitive Armour', 'Augmetic Arm', 'Acute Sense', 'Battle Scar', 'Hint of Red Eyes', 'Holy Inspiration'].filter(n => !knownHtml.includes(n)), []);
     check('mark: no known row of the sheet has the class', knownHtml.includes('unknown-entry-text'), false);
     // A character with no PSYKER keyword shows Smite in the section. The section has no mark.
     loadCharacter({ archetype: { id: 'ganger', xpCost: 0 }, psychicPowers: ['smite'] });

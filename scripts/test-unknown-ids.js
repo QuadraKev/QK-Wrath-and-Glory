@@ -129,24 +129,27 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
 (async () => {
     // --- Wargear ---
     // The ids hold a tag and a quote. The unknown entry has a known item before and after it.
+    // The last three entries are a known armor, a known augmetic and a known equipment item. They use the row of an owned non-weapon item.
     const WID = 'no_such<b>"w', UPID = 'zz_up<b>"u', WID_ESC = 'no_such&lt;b&gt;&quot;w', UPID_ESC = 'zz_up&lt;b&gt;&quot;u';
     human();
     State.character.wargear = [{ id: 'lasgun', isStarting: false, upgrades: ['zz_keep', UPID] },
-        { id: WID, isStarting: true }, { id: 'laspistol', isStarting: false }];
+        { id: WID, isStarting: true }, { id: 'laspistol', isStarting: false },
+        { id: 'primitive_armour', isStarting: false }, { id: 'augmetic_arm', isStarting: false }, { id: 'medikit', isStarting: false }];
     let snapshot = JSON.stringify(State.character);
     let html = recorded(() => WargearTab.renderCurrentWargear());
     check('wargear: the unknown entry shows as Unknown wargear (id), escaped', html.includes(`Unknown wargear (${WID_ESC})`), true);
     check('wargear: no raw tag from the id', html.includes('<b>'), false);
     {
         const buttons = rec.found.filter(([sel]) => sel === '.btn-remove-wargear').map(([, b]) => b.dataset.index);
-        check('wargear: the unknown row is the last remove button, with data-index 1 (the known items are 0 and 2)', buttons, ['0', '2', '1']);
+        check('wargear: the unknown row is the last remove button, with data-index 1 (the known items are 0, 2, 3, 4 and 5)', buttons, ['0', '2', '3', '4', '5', '1']);
     }
     check('wargear: the Unknown group has a heading', html.includes('<div class="wargear-group"><h4>Unknown</h4>'), true);
     check('wargear: the Unknown group comes after the Weapons group', html.indexOf('<h4>Weapons</h4>') < html.indexOf('<h4>Unknown</h4>'), true);
     check('wargear: the owned line shows Unknown upgrade (id), escaped', html.includes(`Unknown upgrade (${UPID_ESC})`), true);
     check('wargear: the Unknown wargear text has the mark', marked(html, `Unknown wargear (${WID_ESC})`), true);
     check('wargear: the Unknown upgrade text of the owned line has the mark', marked(html, `Unknown upgrade (${UPID_ESC})`), true);
-    check('wargear: three marks only (the unknown item and two unknown upgrades), the known item has none', (html.match(/unknown-entry-text/g) || []).length, 3);
+    check('wargear: the known weapons, armor, augmetic and equipment show by name', ['Lasgun', 'Laspistol', 'Primitive Armour', 'Augmetic Arm', 'Medikit'].filter(n => !html.includes(n)), []);
+    check('wargear: three marks only (the unknown item and two unknown upgrades), the known weapons, armor, augmetic and equipment have none', (html.match(/unknown-entry-text/g) || []).length, 3);
     check('wargear: a render does not write into the character', JSON.stringify(State.character), snapshot);
 
     html = recorded(() => WargearTab.showUpgradeModal(0));
@@ -208,15 +211,21 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
         check('talents remove: only the second entry is gone', State.character.talents, ['zz_t']);
     }
 
+    State.character.talents = ['zz_t', 'acute_sense'];
+    html = recorded(() => TalentsTab.renderSelected());
+    check('talents: the known talent shows by name', html.includes('Acute Sense'), true);
+    check('talents: one mark only (the unknown talent), the known talent has none', (html.match(/unknown-entry-text/g) || []).length, 1);
+
     // --- Powers ---
     const PID = 'zz_p<b>"p', PID_ESC = 'zz_p&lt;b&gt;&quot;p';
     human('sanctioned_psyker');
-    State.character.psychicPowers = ['smite', PID, 'zz_keep'];
+    State.character.psychicPowers = ['smite', PID, 'zz_keep', 'life_leech'];
     snapshot = JSON.stringify(State.character);
     html = recorded(() => PowersTab.renderSelected());
     check('powers: Unknown power (id) shows, escaped', html.includes(`Unknown power (${PID_ESC})`), true);
     check('powers: the Unknown power text has the mark', marked(html, `Unknown power (${PID_ESC})`), true);
-    check('powers: two marks only (the two unknown powers), Smite has none', (html.match(/unknown-entry-text/g) || []).length, 2);
+    check('powers: two marks only (the two unknown powers), Smite and Life Leech have none', (html.match(/unknown-entry-text/g) || []).length, 2);
+    check('powers: the known powers show by name', ['Smite', 'Life Leech'].filter(n => !html.includes(n)), []);
     check('powers: no raw tag from the id', html.includes('<b>'), false);
     check('powers: the chip has a remove with the escaped data-id', html.includes(`class="power-chip-remove" data-id="${PID_ESC}"`), true);
     check('powers: a render does not write into the character', JSON.stringify(State.character), snapshot);
@@ -231,7 +240,7 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
         await flush();
         check('powers remove: the confirm names the id', confirmed, [`Remove power ${PID}?`]);
         check('powers remove: only the chosen power leaves the list, and it leaves the free list',
-            [State.character.psychicPowers, State.character.freePowers], [['smite', 'zz_keep'], []]);
+            [State.character.psychicPowers, State.character.freePowers], [['smite', 'zz_keep', 'life_leech'], []]);
     }
 
     // A source that is turned off does not make an id unknown. The setter is the real one.
@@ -314,6 +323,18 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
     check('injuries: Unknown injury (zz_t) shows', html.includes('Unknown injury (zz_t)'), true);
     check('injuries: Unknown mutation (zz_mu) shows', html.includes('Unknown mutation (zz_mu)'), true);
     check('injuries: each Unknown text has the mark', [marked(html, 'Unknown injury (zz_m)'), marked(html, 'Unknown injury (zz_t)'), marked(html, 'Unknown mutation (zz_mu)')], [true, true, true]);
+    check('injuries: three marks only (the unknown rows)', (html.match(/unknown-entry-text/g) || []).length, 3);
+    {
+        // A known memorable injury, traumatic injury and mutation beside the unknown ones have no mark
+        const kept = JSON.stringify([State.character.memorableInjuries, State.character.traumaticInjuries, State.character.mutations]);
+        State.character.memorableInjuries.push({ id: 'battle_scar', escalated: false });
+        State.character.traumaticInjuries.push({ id: 'hand', side: 'left' });
+        State.character.mutations.push({ id: 'hint_of_red_eyes', subChoice: null });
+        const withKnown = recorded(() => InjuriesTab.render());
+        check('injuries: the known injuries and mutation show by name', ['Battle Scar', 'Hand', 'Hint of Red Eyes'].filter(n => !withKnown.includes(n)), []);
+        check('injuries: three marks only with known rows beside them', (withKnown.match(/unknown-entry-text/g) || []).length, 3);
+        [State.character.memorableInjuries, State.character.traumaticInjuries, State.character.mutations] = JSON.parse(kept);
+    }
     for (const cls of ['memorable-remove', 'traumatic-remove', 'mutation-remove'])
         check(`injuries: ${cls} has data-index 0`, new RegExp(`class="[^"]*${cls}[^"]*"[^>]*data-index="0"`).test(html), true);
     check('injuries: a render does not write into the character', JSON.stringify(State.character), snapshot);

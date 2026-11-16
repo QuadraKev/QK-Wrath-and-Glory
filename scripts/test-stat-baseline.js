@@ -382,5 +382,48 @@ State.setArchetypeSkillChoice('choice1', '');
 check('TC4-1: two keys: choice1 still gives awareness 3 back', State.character.skills.awareness, 3);
 check('TC4-1: two keys: the walk on choice2 leaves athletics at 0', State.character.skills.athletics, 0);
 
+// TC4-3: a change of the parent gives the kept value back, then empties the memory
+const parentChanges = {
+    'a new archetype (Ganger)': () => State.setArchetype('ganger'),
+    'a new archetype (Acolyte)': () => State.setArchetype('inquisitorial_acolyte'),
+    'Custom Archetype': () => State.setCustomArchetype(),
+    'a new species': () => State.setSpecies('ogryn')
+};
+for (const [name, change] of Object.entries(parentChanges)) {
+    buyAwareness3();
+    State.setArchetypeSkillChoice('choice1', 'awareness');
+    change();
+    check(`TC4-3: ${name}: awareness is 3`, State.character.skills.awareness, 3);
+    check(`TC4-3: ${name}: the memory is empty`, State._skillChoicePrior, {});
+}
+
+// TC4-4: Reset Stats empties the memory, so the reset ranks do not come back
+buyAwareness3();
+State.setArchetypeSkillChoice('choice1', 'awareness');
+State.resetStats();
+check('TC4-4: the memory is empty after Reset Stats', State._skillChoicePrior, {});
+State.setArchetypeSkillChoice('choice1', 'athletics');
+check('TC4-4: reset: awareness is at its free value', State.character.skills.awareness, 0);
+check('TC4-4: reset: the skill XP holds no cost for awareness', XP.calculateSkillXP(State.character), 0);
+
+// TC4-4: a value that the user decreased while the skill was chosen does not come back
+human('inquisitor');
+State.setAdditionalXP('5000');
+for (let i = 0; i < 5; i++) State.increaseSkill('awareness');
+State.setArchetypeSkillChoice('choice1', 'awareness');
+check('TC4-4: awareness 5 stays while chosen', State.character.skills.awareness, 5);
+State.decreaseSkill('awareness');
+check('TC4-4: awareness is 4 after one decrease', State.character.skills.awareness, 4);
+State.setArchetypeSkillChoice('choice1', 'athletics');
+check('TC4-4: decrease: awareness is 4 after the move', State.character.skills.awareness, 4);
+human('inquisitor');
+State.setAdditionalXP('5000');
+for (let i = 0; i < 6; i++) State.increaseSkill('awareness');
+State.setArchetypeSkillChoice('choice1', 'awareness');
+State.decreaseSkill('awareness'); State.decreaseSkill('awareness');
+check('TC4-4: awareness is 4 after two decreases', State.character.skills.awareness, 4);
+State.setArchetypeSkillChoice('choice1', '');
+check('TC4-4: decrease: a clear gives awareness 4', State.character.skills.awareness, 4);
+
 console.log(failures ? `\n${failures} FAILED` : '\nAll passed');
 process.exit(failures ? 1 : 0);

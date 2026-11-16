@@ -353,6 +353,7 @@ const State = {
         // The current archetype: no change
         if (archetypeId === this.character.archetype?.id) return;
         const oldGrants = this._archetypeGrantIds();
+        const keptChoices = this._keptSkillChoices();
 
         const archetype = DataLoader.getArchetype(archetypeId);
         if (archetype) {
@@ -365,8 +366,8 @@ const State = {
                 // Reset sub-faction keyword picks and skill picks from any previous archetype
                 this.character.archetypeKeywordChoices = {};
                 this.character.archetypeSkillChoices = {};
-                this._skillChoicePrior = {};
             });
+            this._restoreKeptSkillChoices(keptChoices);
 
             // Wargear is managed via the Wargear tab "Add Starting Wargear" button.
             // We do NOT clear or set wargear here to avoid losing manually added items.
@@ -387,11 +388,12 @@ const State = {
     // Clear archetype selection
     clearArchetype() {
         const oldGrants = this._archetypeGrantIds();
+        const keptChoices = this._keptSkillChoices();
         // The stored custom archetype record stays (CC7)
         this._withRebase(() => {
             this.character.archetype = { id: null, xpCost: 0 };
         });
-        this._skillChoicePrior = {};
+        this._restoreKeptSkillChoices(keptChoices);
         // Release the powers that only the old archetype granted. Bought powers and chosen disciplines stay.
         this._releasePowerGrants(oldGrants);
         this._settleFreePicks();
@@ -418,12 +420,13 @@ const State = {
         // Custom is already the archetype: no change
         if (this.character.archetype?.id === 'custom') return;
         const oldGrants = this._archetypeGrantIds();
+        const keptChoices = this._keptSkillChoices();
 
         // The stored custom archetype record stays (CC7)
         this._withRebase(() => {
             this.character.archetype = { id: 'custom', xpCost: 0 };
         });
-        this._skillChoicePrior = {};
+        this._restoreKeptSkillChoices(keptChoices);
 
         // Release the powers that only the old archetype granted, then add the grants of the kept ability archetype
         this._releasePowerGrants(oldGrants);
@@ -573,6 +576,7 @@ const State = {
         for (const skill of XPCalculator.SKILL_KEYS) {
             this.character.skills[skill] = baseline.skills[skill];
         }
+        this._skillChoicePrior = {};
 
         this.notifyListeners('stats');
     },
@@ -597,6 +601,32 @@ const State = {
             this.character.skills[skill] = value <= oldBase.skills[skill]
                 ? newBase.skills[skill]
                 : Math.max(value, newBase.skills[skill]);
+        }
+    },
+
+    // The chosen skills that have a kept value and stand at the bonus of their key or under it.
+    // Call this before a change of the parent. Each entry holds the value to give back, never above the bonus.
+    _keptSkillChoices() {
+        const skillBonus = DataLoader.getArchetype(this.character.archetype?.id)?.skillBonus || {};
+        const kept = [];
+        for (const [key, prior] of Object.entries(this._skillChoicePrior)) {
+            const bonus = skillBonus[key];
+            if (typeof bonus !== 'number' || this.character.archetypeSkillChoices?.[key] !== prior.skill) continue;
+            if (this.character.skills[prior.skill] <= bonus) {
+                kept.push({ skill: prior.skill, value: Math.min(prior.value, bonus) });
+            }
+        }
+        return kept;
+    },
+
+    // Call this after the rebase of a change of the parent. A kept skill gets the larger of the kept value
+    // and its new free value. Then the memory is empty (ruling TC4-3).
+    _restoreKeptSkillChoices(kept) {
+        this._skillChoicePrior = {};
+        if (kept.length === 0) return;
+        const free = XPCalculator.getBaseline(this.character).skills;
+        for (const { skill, value } of kept) {
+            this.character.skills[skill] = Math.max(value, free[skill]);
         }
     },
 
@@ -637,7 +667,7 @@ const State = {
         if (oldSkill !== skill) {
             if (prior && prior.skill === oldSkill && oldValue <= skillBonus[key]) {
                 const free = XPCalculator.getBaseline(this.character).skills[oldSkill];
-                this.character.skills[oldSkill] = Math.max(prior.value, free);
+                this.character.skills[oldSkill] = Math.max(Math.min(prior.value, skillBonus[key]), free);
             }
             if (skill === '') delete this._skillChoicePrior[key];
             else this._skillChoicePrior[key] = { skill, value: valueBefore };

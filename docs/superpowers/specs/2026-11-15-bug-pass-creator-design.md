@@ -189,6 +189,11 @@ An archetype ascension (type `archetype`) grants nothing to the stored lists. P7
 
 None at load. A save from before this change has no `granted` record; its packages keep the no-record rule. Only future clicks change, and they remove less than today.
 
+Two cases came from the review of Task 5 (rulings TC5-1, TC5-2).
+
+- **A stale free power in an old save (TC5-1).** The defect A4 left the free powers of an old archetype in `freePowers` when the archetype changed. Example: Wyrd, a pick of Chameleon, then Ganger, made on the old code: `freePowers` holds `smite` and `chameleon`, and no current source grants them. Such a save loads with no change. The first later change of a source (for example a new ascension) runs `_settleFreePicks`, and both powers become paid: the power XP of the example goes from 0 to 18. The powers stay stored. Tasks 12 and 16 show them with a remove control also for a character with no PSYKER keyword, so the user can remove them and the XP comes back. The app cannot tell a stale grant from a free pick whose slot went, so it does not remove the power on its own (G2).
+- **Ids that the data does not have (TC5-2).** `_grantedPowerIds` also counts the recorded ids of an ascension entry whose package the data does not have: the record says what the entry granted, and an unknown package must not make its powers paid. `_settleFreePicks` leaves a power id that the data does not have in `freePowers` (its XP cost is 0 in both cases).
+
 ## 7. Group 4: wargear index references and starting wargear (A7, A9 / B1, A10 / B2)
 
 ### 7.1 Findings
@@ -455,3 +460,4 @@ Unrelated dead code seen and not removed: `State.removeWargear` has no caller (i
 - The book checks cover Core pp.19, 25, 29, 43, 94, 109, 116, 117, 146 and Vow of Absolution pp.39, 41, 42, 125, 126. For the Rank search, the contents pages of each official sourcebook and the sections they point to were read; the adventure modules and the Apocrypha body were not read.
 - The audit evidence was re-read in the code at `44084ae`. The audit scripts were not run again; the line numbers in this spec match the code.
 - After a reload, the app does not know the value that a chosen "any skill" skill had before the choice (ruling TC4-1). A later change of the choice then puts a value at the bonus or under it to the free value. Ranks that the user bought before the choice are then gone, and the XP for them is free again.
+- A save that holds stale free powers of an old archetype (made by the defect A4) gets an XP cost for them at the first later change of a source (ruling TC5-1, §6.5). The powers stay stored and visible with a remove control. The XP total of such a character can go under 0 until the user removes them.

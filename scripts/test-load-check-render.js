@@ -1,6 +1,8 @@
 // Tests that a hostile number value cannot reach the page after the real character load (class (b) sites, spec section 8.5).
 // Each row puts a hostile value into one field, loads the character through the real State.loadCharacter, renders the site
-// and looks for the raw tag. The load check (CharacterCheck.repair) must turn the value into a number before the render.
+// and looks for the raw tag. The load check (CharacterCheck.repair) must keep the raw value out of the render.
+// For a number field, it turns the value into a number. For a bad targetTier, it drops the ascension entry.
+// The sheet reads rank only through a talent, so the rank rows of the sheet also load a talent.
 // Run: node scripts/test-load-check-render.js
 
 const fs = require('fs');
@@ -137,17 +139,17 @@ const noRawTag = html => !html.includes('<img');
 // [label, over, render]  render returns the HTML string (or the joined recorded innerHTML)
 const B_SINKS = [
     ['attributes on the sheet', { attributes: { strength: EVIL } }, () => CharacterSheetTab.renderAttributes(State.character)],
-    ['traits on the sheet', { attributes: { toughness: EVIL }, rank: EVIL }, () => CharacterSheetTab.renderTraits(DerivedStats.getAllDerivedStats(State.character))],
+    ['traits on the sheet', { attributes: { toughness: EVIL }, rank: EVIL, talents: ['codex_discipline_aoa'] }, () => CharacterSheetTab.renderTraits(DerivedStats.getAllDerivedStats(State.character))],
     ['skills on the sheet', { skills: { weaponSkill: EVIL } }, () => CharacterSheetTab.renderSkills(State.character)],
-    ['weapon cells on the sheet', { rank: EVIL, attributes: { strength: EVIL }, wargear: [{ id: 'chainsword', isStarting: false, equipped: true }] }, () => CharacterSheetTab.renderWeapons(State.character)],
-    ['Ascension card targetTier', { ascensions: [{ targetTier: EVIL, type: 'package', packageId: 'back_from_the_brink', archetypeId: null }] }, () => CharacterSheetTab.renderAscensions(State.character)],
+    ['weapon cells on the sheet', { rank: EVIL, attributes: { strength: EVIL }, skills: { weaponSkill: EVIL }, talents: ['angel_of_death'], wargear: [{ id: 'chainsword', isStarting: false, equipped: true }] }, () => CharacterSheetTab.renderWeapons(State.character)],
+    ['Ascension card targetTier', { ascensions: [{ targetTier: EVIL, type: 'package', packageId: 'back_from_the_brink', archetypeId: null }, { targetTier: 3, type: 'package', packageId: 'back_from_the_brink', archetypeId: null }] }, () => CharacterSheetTab.renderAscensions(State.character)],
     ['stats tab attributes', { attributes: { agility: EVIL } }, () => recorded(() => StatsTab.renderAttributes())],
     ['stats tab derived stats', { corruption: EVIL, attributes: { willpower: EVIL } }, () => recorded(() => StatsTab.renderDerivedStats())],
     ['stats tab skills', { skills: { awareness: EVIL } }, () => recorded(() => StatsTab.renderSkills())],
     // A string tier builds no slot (ascension-tab.js:27-39), so a tier row cannot fail: no tier row here.
     // The prerequisite text renders only for a slot with a package or an archetype type.
     ['ascension tab package prerequisites', { attributes: { willpower: EVIL }, skills: { persuasion: EVIL }, ascensions: [{ targetTier: 2, type: 'package', packageId: null, archetypeId: null }] }, () => recorded(() => AscensionTab.render())],
-    ['ascension tab archetype prerequisites', { attributes: { strength: EVIL }, skills: { athletics: EVIL }, rank: 3, ascensions: [{ targetTier: 4, type: 'archetype', packageId: null, archetypeId: null }] }, () => recorded(() => AscensionTab.render())],
+    ['ascension tab archetype prerequisites', { attributes: { strength: EVIL }, skills: { tech: EVIL }, rank: 3, ascensions: [{ targetTier: 4, type: 'archetype', packageId: null, archetypeId: null }] }, () => recorded(() => AscensionTab.render())],
     ['archetype tab tier', { tier: EVIL, archetype: { id: 'custom', xpCost: 0 } }, () => recorded(() => ArchetypeTab.renderCustomConfig())],
     ['injuries tab corruption', { corruption: EVIL }, () => InjuriesTab.renderCorruption(State.character, DataLoader.getInjuriesCorruptionData())],
     ['followers tab counts', { followers: [{ id: 'flw_a', threatId: 'x', name: '', kind: 'mob', count: EVIL, livingCount: EVIL, notes: '' }] }, () => FollowersTab.renderRosterItem(State.character.followers[0], State.character)],
@@ -160,6 +162,8 @@ for (const [label, over, render] of B_SINKS) {
     try { html = render(); } catch (e) { threw = e.message; }
     check(`(b) ${label}: no throw`, threw, false);
     check(`(b) ${label}: no raw tag`, noRawTag(html), true);
+    // The Ascension card row keeps a legal entry. The card of that entry must render, so the empty output is not the proof.
+    if (label === 'Ascension card targetTier') check(`(b) ${label}: legal entry renders`, html.includes('Tier 3'), true);
 }
 
 console.log(failures === 0 ? '\nAll checks passed' : `\n${failures} check(s) FAILED.`);

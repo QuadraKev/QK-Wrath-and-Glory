@@ -337,6 +337,8 @@ The autosave holds the loaded encounter instead of the previous one (intended, C
 
 **[Design agent]** The builder fields keep the `input` event, so the preview follows the typing. An invalid value during typing (for example an empty box) changes nothing; the `change` event then shows the stored value. Cost if wrong: one more listener per field.
 
+**A bad entry is not an empty entry (controller ruling TB5a-3, after the review of Task 5a).** For an entry that the browser cannot read as a number (`e`, `-`, a 309-digit number), a number input gives `value === ''` with `validity.badInput` true. Each handler tests `validity.badInput` first and treats it as a refused entry: the stored value stays and the box shows it again. Only a box that the user really emptied (`value === ''` with `badInput` false) clears a value that can be empty (an initiative).
+
 ### 6.3 The writers (G3)
 
 - `EncounterState.updateSettings`: a `playerCount` that is not an integer in 1-10, or a `tier` that is not an integer in 1-5 (the five options of `#encounter-tier`), is ignored. The other keys apply.
@@ -350,6 +352,10 @@ The ranges come from constants of `BestiaryCheck` (`PLAYER_COUNT_MIN`, `PLAYER_C
 `renderPlayerCharacterInputs` draws `Math.max(playerCount, playerCharacters.length)` rows. It no longer removes a player. A row whose index is not less than the count holds a stored player. It gets the class `player-character-row--extra` and the mark text "Above player count". Its `×` removes that player and does not change the count. The `×` of the other rows works as today. **[Design agent]** Cost if wrong: the user sees more rows than the count, and must remove the extra players with `×`. §11 asks the owner.
 
 The count still drives the Adversary bonus (`calculateMaxWounds`), as today.
+
+**Players above the count take no part in the encounter (controller ruling TB5a-2).** A player above the count stays stored and stays in the player rows with the mark. It is not in the encounter list and not in the initiative order, as before this change, when the list showed only the players inside the count. The stored order keeps its entries; the list leaves out each entry of a player above the count. When the count goes up again, the player shows in the list again.
+
+**The row must fit (TB5a-1).** The name input of a player row can shrink (`min-width: 0` on `.pc-name-input`), so that the mark and the remove button stay inside the sidebar at each width.
 
 ### 6.5 Risk to stored data
 

@@ -223,7 +223,7 @@ Evidence for the shipped shapes: a scan of `data/threats.json` in this design se
 | `players[i].name` | string | `'Player'` |
 | `players[i].notes` | string; optional | `''` |
 
-A `.players` file is not stored, so its repairs change no stored value.
+A `.players` file is not stored, so its repairs change no stored value. After it replaces the players, `handleLoadPlayers` calls `EncounterState.markDirty()`, so the autosave follows also when the file holds no players (plan review, Q5).
 
 ### 4.7 Unknown threat ids (C10)
 

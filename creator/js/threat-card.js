@@ -275,15 +275,31 @@ const ThreatCard = {
     },
 
     // Optional multi-line text sections (Threat Options, Mob Options, Mob Abilities, Biomorphs)
+    // The data holds a string, or a list of { name, description } entries (Mob Abilities, Mob Options).
     renderTextSection(label, text) {
-        if (!text) return '';
+        if (!text || (Array.isArray(text) && text.length === 0)) return '';
+
+        const body = Array.isArray(text)
+            ? text.map(entry => `<p><strong>${this.escapeHtml(entry.name)}</strong>: ${this.escapeHtml(entry.description)}</p>`).join('')
+            : text;
 
         return `
             <div class="bonuses-section">
                 <div class="bonuses-header">${label}</div>
-                <div class="threat-text-section" data-glossary-enhance>${text}</div>
+                <div class="threat-text-section" data-glossary-enhance>${body}</div>
             </div>
         `;
+    },
+
+    // Escape HTML for safe insertion of a value from the data
+    escapeHtml(text) {
+        if (!text) return '';
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     },
 
     renderBottomStatsTable(threat) {

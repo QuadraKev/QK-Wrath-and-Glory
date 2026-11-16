@@ -675,7 +675,9 @@ const WargearTab = {
 
         const cards = weapons.map(w => {
             const ownedCount = ownedCounts[w.id] || 0;
-            const range = w.range ? `${w.range.short}/${w.range.medium}/${w.range.long}` : '-';
+            // The data holds a range as text for some weapons (grenades, thrown weapons) and as short/medium/long for the others.
+            const range = typeof w.range === 'string' ? this.escapeHtml(w.range)
+                : w.range ? `${w.range.short}/${w.range.medium}/${w.range.long}` : '-';
             const rarityClass = this.getRarityClass(w.rarity);
             const reqDN = DataLoader.requisitionDN(w);
             const ownedBadge = ownedCount > 0 ? `<span class="owned-count">${ownedCount}</span>` : '';

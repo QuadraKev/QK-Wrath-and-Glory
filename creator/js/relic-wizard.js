@@ -64,7 +64,8 @@ const RelicWizard = {
                 const relic = entry.relic;
                 this.wizard.editIndex = wargearIndex;
                 this.wizard.name = relic.name || '';
-                this.wizard.formId = relic.form || null;
+                // A relic from a file can hold a form that is not a form id: the user selects a form again.
+                this.wizard.formId = this.getForm(relic.form) ? relic.form : null;
                 this.wizard.baseItemId = entry.id || null;
                 this.wizard.originalOwner = relic.originalOwner || null;
                 this.wizard.anointment = relic.anointment || null;
@@ -292,7 +293,8 @@ const RelicWizard = {
     // Step 5 - Relic Power
     renderPowerStep() {
         const relics = DataLoader.getHolyRelics();
-        const table = relics.powers[relics.forms[this.wizard.formId].powersTable];
+        const table = this.getPowerTable(this.wizard.formId);
+        if (!table) return '';
         let html = `<h4 class="relic-powers-heading">${table.name}</h4>`;
 
         // Sacred Shells note for grenade/missile ammunition relics
@@ -500,7 +502,8 @@ const RelicWizard = {
 
         if (step === 5) {
             const relics = DataLoader.getHolyRelics();
-            const table = relics.powers[relics.forms[this.wizard.formId].powersTable];
+            const table = this.getPowerTable(this.wizard.formId);
+            if (!table) return;
             this.bindEntryCards('power', (id) => this.selectPower(id));
             document.getElementById('relic-roll-power').addEventListener('click', () => {
                 this.rollEntry(table.entries, (e) => this.selectPower(e.id));
@@ -764,10 +767,22 @@ const RelicWizard = {
 
     // --- Misc helpers ---
 
+    // The form of the data for a form id, or null when the data has no such form
+    getForm(formId) {
+        const forms = DataLoader.getHolyRelics().forms;
+        return Object.prototype.hasOwnProperty.call(forms, formId) ? forms[formId] : null;
+    },
+
+    // The power table of a form id, or null when the data has no such form or table
+    getPowerTable(formId) {
+        const form = this.getForm(formId);
+        return (form && DataLoader.getHolyRelics().powers[form.powersTable]) || null;
+    },
+
     getSelectedPower() {
         if (!this.wizard || !this.wizard.formId || !this.wizard.power) return null;
-        const relics = DataLoader.getHolyRelics();
-        const table = relics.powers[relics.forms[this.wizard.formId].powersTable];
+        const table = this.getPowerTable(this.wizard.formId);
+        if (!table) return null;
         return table.entries.find(e => e.id === this.wizard.power) || null;
     },
 

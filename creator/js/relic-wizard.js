@@ -816,7 +816,7 @@ const RelicWizard = {
 
     formatRange(range) {
         if (!range) return '';
-        if (typeof range === 'object') return `${range.short}/${range.medium}/${range.long}`;
+        if (typeof range === 'object') return `${range.short ?? '-'}/${range.medium ?? '-'}/${range.long ?? '-'}`;
         return String(range);
     },
 

@@ -1,8 +1,9 @@
 // Tests for four late corrections of the bug pass (Task 20).
-// 1. Confirm in the optional sub-option window of the Species tab keeps a stored option that the data does not have.
+// 1. Confirm in the optional sub-option window of the Species tab does not clear a stored option that the data does not have.
 // 2. The sheet shows a talent name as the Talents tab shows it: [Any], [Skill] and the like give way to the choice.
 // 3. The sub-faction keyword select of the Archetype tab keeps its place in the page, so the keyboard works.
 // 4. The Compendium prints "Skill of your choice +4" for an "any skill" bonus.
+// 5. A range band that is null prints "-" in the Wargear tab, the relic wizard, the improvised builder and the custom wargear line.
 // Loads the real files with the real State and the real data.
 // Run: node scripts/test-creator-late.js
 
@@ -103,11 +104,12 @@ for (const f of ['xp-calculator', 'derived-stats', 'prerequisite', 'character-ch
     'custom-wargear', 'keyword-bonus', 'followers'])
     load(`creator/js/${f}.js`);
 vm.runInContext('var ThreatCard = { render: () => "" }; var Glossary = { enhanceElement() {} };', ctx);
-for (const f of ['species', 'archetype', 'talents', 'references', 'character-sheet']) load(`creator/tabs/${f}-tab.js`);
+for (const f of ['species', 'archetype', 'talents', 'references', 'character-sheet', 'wargear']) load(`creator/tabs/${f}-tab.js`);
 
 const State = get('State'), DataLoader = get('DataLoader'), KeywordBonus = get('KeywordBonus');
 const SpeciesTab = get('SpeciesTab'), ArchetypeTab = get('ArchetypeTab'), TalentsTab = get('TalentsTab');
-const ReferencesTab = get('ReferencesTab'), CharacterSheetTab = get('CharacterSheetTab');
+const ReferencesTab = get('ReferencesTab'), CharacterSheetTab = get('CharacterSheetTab'), WargearTab = get('WargearTab');
+const RelicWizard = get('RelicWizard'), ImprovisedBuilder = get('ImprovisedBuilder'), CustomWargear = get('CustomWargear');
 State.init({});
 
 const clone = v => JSON.parse(JSON.stringify(v));
@@ -122,6 +124,10 @@ const clone = v => JSON.parse(JSON.stringify(v));
     const homeworld = DataLoader.getSpecies('human').subOptions;
     check('the Human sub-option is the optional homeworld', [homeworld.type, homeworld.required], ['homeworld', false]);
 
+    // The listener calls that State makes during Confirm.
+    const calls = [];
+    State.listeners.push(type => calls.push(type));
+
     // Stores the list, opens the window, picks one button or none, presses Confirm. Gives the stored list.
     function confirmWith(stored, pickId) {
         State.newCharacter();
@@ -130,6 +136,7 @@ const clone = v => JSON.parse(JSON.stringify(v));
         SpeciesTab.pendingSubOptions = { configs: [homeworld], currentIndex: 0 };
         rec.document.querySelector = () => (pickId ? { dataset: { optionId: pickId } } : null);
         alerts.length = 0;
+        calls.length = 0;
         SpeciesTab.confirmSubOption();
         rec.document.querySelector = () => rec.makeElement();
         return State.character.species.subOptions;
@@ -144,19 +151,21 @@ const clone = v => JSON.parse(JSON.stringify(v));
     check('no unknown entry: a pick replaces the known entry after another type', confirmWith([O, K1], K2.optionId), [O, K2]);
     check('no unknown entry: a pick goes to the end after another type', confirmWith([O], K1.optionId), [O, K1]);
 
-    // With one unknown entry, it stays in each case, at its place.
+    // With one unknown entry. Nothing picked for the type: the unknown entry stays, and no listener call happens when
+    // the window offered nothing to clear. A pick goes through the State setter, as before the task (it replaces
+    // the first entry of the type, also an unknown one: the readers of the sub-options use the first entry of a type).
     check('unknown entry: nothing picked keeps it', confirmWith([U], null), [U]);
-    check('unknown entry: a pick is stored after it', confirmWith([U], K1.optionId), [U, K1]);
+    check('unknown entry: nothing picked makes no listener call', calls, []);
+    check('unknown entry: nothing picked keeps two unknown entries', confirmWith([U, { type: 'homeworld', optionId: 'zz_two' }], null),
+        [U, { type: 'homeworld', optionId: 'zz_two' }]);
+    check('unknown entry: nothing picked, other type before it', confirmWith([O, U], null), [O, U]);
     check('unknown entry: nothing picked clears only the known entry (known first)', confirmWith([K1, U], null), [U]);
     check('unknown entry: nothing picked clears only the known entry (unknown first)', confirmWith([U, K1], null), [U]);
-    check('unknown entry: a pick replaces the known entry in place (known first)', confirmWith([K1, U], K2.optionId), [K2, U]);
-    check('unknown entry: a pick replaces the known entry in place (unknown first)', confirmWith([U, K1], K2.optionId), [U, K2]);
-    check('unknown entry: a pick of the same known option changes nothing', confirmWith([U, K1], K1.optionId), [U, K1]);
-    check('unknown entry: the other type stays at its place (nothing picked)', confirmWith([O, U, K1], null), [O, U]);
-    check('unknown entry: the other type stays at its place (a pick)', confirmWith([O, U, K1], K2.optionId), [O, U, K2]);
-    check('unknown entry: a pick goes to the end after the other type and the unknown entry', confirmWith([O, U], K1.optionId), [O, U, K1]);
-    check('unknown entry: two unknown entries stay (nothing picked)', confirmWith([U, { type: 'homeworld', optionId: 'zz_two' }, K1], null),
-        [U, { type: 'homeworld', optionId: 'zz_two' }]);
+    check('unknown entry: a pick replaces the unknown entry, as before the task', confirmWith([U], K1.optionId), [K1]);
+    check('unknown entry: a pick replaces the first entry of the type (known first)', confirmWith([K1, U], K2.optionId), [K2, U]);
+    check('unknown entry: a pick replaces the first entry of the type (unknown first)', confirmWith([U, K1], K2.optionId), [K2, K1]);
+    check('unknown entry: a pick after another type replaces the unknown entry', confirmWith([O, U], K1.optionId), [O, K1]);
+    check('unknown entry: a pick makes one setter call', calls.length, 1);
     check('unknown entry: no alert for an optional window', alerts, []);
 
     // The unknown row keeps its Remove control, and the control still deletes the entry.
@@ -323,6 +332,44 @@ const clone = v => JSON.parse(JSON.stringify(v));
         check('Compendium: normal skills print as before', line(DataLoader.getArchetype('skitarius')), 'BallisticSkill +2, Tech +1');
         check('Compendium: a mixed bonus prints each key by its rule', line({ skillBonus: { cunning: 1, choice: 2 } }), 'Cunning +1, Skill of your choice +2');
         check('Compendium: a key that only starts with choice is not a choice key', line({ skillBonus: { choiceful: 1 } }), 'Choiceful +1');
+    }
+
+
+    // === Item 6: a range band that is null prints "-" ===
+    {
+        const weaponList = CACHE['weapons.json'];
+        const list = Array.isArray(weaponList) ? weaponList : weaponList.weapons;
+        const card = w => WargearTab.renderRangedWeaponsCards([clone(w)], {});
+        const incisor = DataLoader.getWeapon('incisor_shotgun_pistol');
+        check('range: the data has the weapon with one band', incisor.range, { short: 6, medium: null, long: null });
+        check('range: the Wargear tab shows 6/-/- for the incisor', [card(incisor).includes('<span>6/-/-</span>'), card(incisor).includes('null')], [true, false]);
+        const pulse = list.filter(w => /^pulse_blaster_.*_aoa$/.test(w.id));
+        check('range: the three pulse blasters show no null in the Wargear tab', [pulse.length, pulse.some(w => card(w).includes('null'))], [3, false]);
+
+        const NULL_BANDS = { short: 6, medium: null, long: null };
+        const UNDEF_BANDS = { short: 6 };
+        const sites = {
+            'relic wizard': r => RelicWizard.formatRange(r),
+            'improvised builder': r => ImprovisedBuilder.formatRange({ range: r }),
+            'custom wargear line': r => (/Range ([^ ]*)m/.exec(CustomWargear.formatStatLine({ kind: 'weapon', type: 'ranged', damage: { base: 1 }, ed: 1, ap: 0, salvo: 1, traits: [], range: r })) || [])[1]
+        };
+        for (const [name, fn] of Object.entries(sites)) {
+            check(`range: ${name} prints 6/-/-`, fn(NULL_BANDS), '6/-/-');
+            check(`range: ${name} prints - for an absent band`, fn(UNDEF_BANDS), '6/-/-');
+            check(`range: ${name} prints a zero band as 0`, fn({ short: 0, medium: 5, long: 10 }), '0/5/10');
+            check(`range: ${name} prints three numbers as before`, fn({ short: 6, medium: 12, long: 24 }), '6/12/24');
+        }
+        check('range: the Wargear tab line of three null bands', card({ ...incisor, range: { short: null, medium: null, long: null } }).includes('<span>-/-/-</span>'), true);
+        check('range: the Wargear tab prints a zero band as 0', card({ ...incisor, range: { short: 0, medium: 5, long: 10 } }).includes('<span>0/5/10</span>'), true);
+
+        // Each weapon of the data with three numbers gives the text of the old expression.
+        const numeric = list.filter(w => w.range && typeof w.range === 'object' && ['short', 'medium', 'long'].every(k => typeof w.range[k] === 'number'));
+        const bad = numeric.filter(w => !card(w).includes(`<span>${w.range.short}/${w.range.medium}/${w.range.long}</span>`)).map(w => w.id);
+        check(`range: each of the ${numeric.length} weapons with three numbers prints the old text`, [numeric.length > 400, bad], [true, []]);
+        // A text range keeps the text of Task 19, escaped.
+        const textW = list.find(w => w.type === 'ranged' && typeof w.range === 'string' && w.range !== '-');
+        check('range: a text range prints as before', card(textW).includes(`<span>${textW.range}</span>`), true);
+        check('range: a text range with a tag is escaped', card({ ...textW, range: 'S<b>"x' }).includes('S&lt;b&gt;&quot;x'), true);
     }
 
     console.log(failures ? `\n${failures} check(s) FAILED` : '\nAll checks passed');

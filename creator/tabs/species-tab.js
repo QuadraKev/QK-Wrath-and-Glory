@@ -354,18 +354,6 @@ const SpeciesTab = {
                         State.removeSpeciesSubOption(config.type, sel.optionId);
                     }
                 }
-            } else if (State.getSpeciesSubOptionsByType(config.type).some(sel => !offered.has(sel.optionId))) {
-                // Save the selection. A stored option that the data does not have stays at its place:
-                // the pick replaces the first offered option of the type, or goes to the end.
-                const stored = State.getSpeciesSubOptions();
-                const pick = { type: config.type, optionId: selectedBtn.dataset.optionId };
-                const index = stored.findIndex(sel => sel.type === config.type && offered.has(sel.optionId));
-                if (index >= 0) {
-                    stored[index] = pick;
-                } else {
-                    stored.push(pick);
-                }
-                State.notifyListeners('speciesSubOption', pick);
             } else {
                 // Save the selection
                 State.setSpeciesSubOption(config.type, selectedBtn.dataset.optionId);

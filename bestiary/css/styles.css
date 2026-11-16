@@ -2725,6 +2725,7 @@ body {
 
 .pc-name-input {
     flex: 1;
+    min-width: 0;
     padding: 8px 10px;
     background: var(--bg-card);
     color: var(--text-primary);

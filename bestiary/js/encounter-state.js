@@ -904,8 +904,8 @@ const EncounterState = {
             });
         });
 
-        // Add player characters
-        this.playerCharacters.forEach(pc => {
+        // Add player characters. A player above the player count stays stored but takes no part (spec §6.4).
+        this.playerCharacters.slice(0, this.settings.playerCount).forEach(pc => {
             items.push({
                 type: 'player',
                 id: pc.id,

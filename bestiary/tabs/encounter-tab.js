@@ -298,10 +298,12 @@ const EncounterTab = {
             input.addEventListener('change', (e) => {
                 const id = e.target.dataset.id;
                 const type = e.target.dataset.type;
-                // An empty box clears the initiative. A value outside 0-99 keeps the stored value and shows it.
+                // A box that the user emptied clears the initiative. A bad entry (the browser gives '' with
+                // badInput) and a value outside 0-99 keep the stored value and show it (spec §6.2).
+                const badInput = !!(e.target.validity && e.target.validity.badInput);
                 let value = '';
-                if (e.target.value.trim() !== '') {
-                    value = BestiaryCheck.readIntegerInput(e.target);
+                if (badInput || e.target.value.trim() !== '') {
+                    value = badInput ? null : BestiaryCheck.readIntegerInput(e.target);
                     if (value === null) {
                         const items = { individual: EncounterState.individuals, mob: EncounterState.mobs,
                             player: EncounterState.playerCharacters, vehicle: EncounterState.vehicles }[type] || [];

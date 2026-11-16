@@ -235,11 +235,13 @@ const rowsHtml = (app) => app.document.getElementById('player-character-inputs')
             const afterBig = read();
             set('abc');
             const afterText = read();
+            set('-5');
+            const afterNegative = read();
             set('');
             const afterEmpty = read();
             set('42');
-            check(`${kind} initiative: 150 and abc keep the value, an empty value clears it, 42 sets it`,
-                [afterBig, afterText, afterEmpty, read()], [7, 7, null, 42]);
+            check(`${kind} initiative: 150, abc and -5 keep the value, an empty value clears it, 42 sets it`,
+                [afterBig, afterText, afterNegative, afterEmpty, read()], [7, 7, 7, null, 42]);
         }
     });
 
@@ -282,6 +284,12 @@ const rowsHtml = (app) => app.document.getElementById('player-character-inputs')
             check(`list initiative ${kind}: 150 keeps 12 and the box shows 12`, type('150'), { stored: 12, box: '12' });
             check(`list initiative ${kind}: abc keeps 12 and the box shows 12`, type('abc'), { stored: 12, box: '12' });
             check(`list initiative ${kind}: an empty value clears it`, type(''), { stored: null, box: '' });
+            type('12');
+            box.validity = { badInput: true };
+            check(`list initiative ${kind}: a bad entry (value empty, badInput true) keeps 12 and the box shows 12`, type(''), { stored: 12, box: '12' });
+            box.validity = { badInput: false };
+            check(`list initiative ${kind}: an emptied box (badInput false) clears it`, type(''), { stored: null, box: '' });
+            box.validity = undefined;
         }
     });
 
@@ -310,9 +318,33 @@ const rowsHtml = (app) => app.document.getElementById('player-character-inputs')
         const app = makeApp();
         const S = app.EncounterState;
         S.loadFromData(mkEnc({ settings: { tier: 1, playerCount: 1, name: 'x', round: 1 },
-            playerCharacters: [{ id: '<b>id</b>', name: 'Ann', initiative: '<b>i</b>', notes: '' }] }));
+            playerCharacters: [{ id: '<b>id</b>', name: 'Ann', initiative: null, notes: '' }] }));
+        // The load repairs a hostile initiative to null, so the state gets it after the load
+        S.playerCharacters[0].initiative = '<b>i</b>';
         app.EncounterTab.renderPlayerCharacterInputs();
         check('D1: a player id and an initiative value are escaped in the rows', /<\/?b>/.test(rowsHtml(app)), false);
+    });
+
+    // ----- TB5a-2: a player above the count is not in the list and not in the order -----
+    await group('list leaves out the players above the count', () => {
+        const app = makeApp();
+        const S = app.EncounterState;
+        S.loadFromData(mkEnc({ settings: { tier: 1, playerCount: 4, name: 'x', round: 1 }, playerCharacters: players(6) }));
+        const ids = () => S.getEncounterListItems().filter(i => i.type === 'player').map(i => i.id);
+        check('list: count 4 and 6 players give 4 player items, and the two marked players are not in it',
+            { ids: ids(), stored: S.playerCharacters.length }, { ids: ['p0', 'p1', 'p2', 'p3'], stored: 6 });
+        S.updateSettings({ playerCount: 6 });
+        check('list: after the count goes to 6, all six are in it', ids(), ['p0', 'p1', 'p2', 'p3', 'p4', 'p5']);
+        S.updateSettings({ playerCount: 4 });
+        S.encounterOrder = [{ type: 'player', id: 'p5' }, { type: 'player', id: 'p2' }, { type: 'player', id: 'ghost' }, { type: 'player', id: 'p0' }];
+        let threw = null;
+        let items = [];
+        try { items = S.getEncounterListItems(); app.EncounterTab.renderEncounterList(); } catch (e) { threw = e.message; }
+        check('list: a stored order with an entry of a marked player gives no throw and no hole',
+            { threw, ids: items.map(i => i && i.id), order: S.encounterOrder.length }, { threw: null, ids: ['p2', 'p0', 'p1', 'p3'], order: 4 });
+        S.updateSettings({ playerCount: 6 });
+        check('list: when the count goes up, the player returns at the place of the stored order',
+            S.getEncounterListItems().map(i => i.id), ['p5', 'p2', 'p0', 'p1', 'p3', 'p4']);
     });
 
     // ----- TB3-1: a stored player above the count stays after each load -----

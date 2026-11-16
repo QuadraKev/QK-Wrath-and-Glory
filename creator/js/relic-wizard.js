@@ -379,7 +379,6 @@ const RelicWizard = {
     renderSummaryStep() {
         const w = this.wizard;
         const relics = DataLoader.getHolyRelics();
-        const forms = relics.forms;
         const item = DataLoader.getWargearItem(w.baseItemId);
         const owner = relics.origins.originalOwner.entries.find(e => e.id === w.originalOwner);
         const anoint = relics.origins.anointment.entries.find(e => e.id === w.anointment);
@@ -390,7 +389,8 @@ const RelicWizard = {
 
         let html = '<div class="relic-summary">';
         html += block('Name', this.escapeHtml(w.name));
-        html += block('Form', forms[w.formId] ? forms[w.formId].name : '-');
+        const form = this.getForm(w.formId);
+        html += block('Form', form ? form.name : '-');
         html += block('Base Item', item
             ? `${item.name} <span class="relic-summary-stat">${this.formatBaseItemStat(item)}</span>`
             : '-');

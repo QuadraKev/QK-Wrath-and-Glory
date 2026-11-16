@@ -46,8 +46,10 @@ function makeElement(written) {
 }
 const written = [];
 const byId = {};
+// An id in this set gives null from getElementById, as a page does for a control that the html does not hold.
+const missingIds = new Set();
 const document = {
-    getElementById(id) { return byId[id] || (byId[id] = makeElement(written)); },
+    getElementById(id) { return missingIds.has(id) ? null : (byId[id] || (byId[id] = makeElement(written))); },
     querySelector() { return makeElement(written); },
     querySelectorAll() { return []; },
     createElement() { return makeElement(written); },
@@ -100,6 +102,19 @@ const threatList = Array.isArray(threats) ? threats : (threats.threats || Object
     check('B6: a threat with a string in Mob Abilities shows the string as before',
         ThreatCard.render(stringThreat).includes(`<div class="threat-text-section" data-glossary-enhance>${stringThreat.mobAbilities}</div>`), true);
 
+    // A list of two or more entries: each entry shows, in the order of the data.
+    {
+        const fire = threatList.find(t => t.id === 'fire_warrior');
+        const fireHtml = ThreatCard.render(fire);
+        const esc = v => v.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        const entries = fire.mobOptions.concat(fire.mobAbilities);
+        check('B6: the Fire Warrior has 2 Mob Options and 2 Mob Abilities in the data', [fire.mobOptions.length, fire.mobAbilities.length], [2, 2]);
+        entries.forEach(e => check(`B6: the Fire Warrior card shows the entry ${e.name} with its text`,
+            fireHtml.includes(`<p><strong>${esc(e.name)}</strong>: ${esc(e.description)}</p>`), true));
+        check('B6: the Fire Warrior Mob Abilities entries keep the order of the data',
+            fireHtml.indexOf('Focused Fire') < fireHtml.indexOf('Ta&#39;lissera'), true);
+    }
+
     check('B6: renderTextSection gives an empty text for an empty list', ThreatCard.renderTextSection('Mob Abilities', []), '');
     check('B6: renderTextSection gives an empty text for no value', ThreatCard.renderTextSection('Mob Abilities', undefined), '');
     const custom = ThreatCard.renderTextSection('Mob Abilities', [{ name: 'A<b>"', description: 'D<i>&' }]);
@@ -142,6 +157,9 @@ const threatList = Array.isArray(threats) ? threats : (threats.threats || Object
     noThrow('B8: open(0) with form zz does not throw', () => RelicWizard.open(0));
     check('B8: the wizard holds no selected form', RelicWizard.wizard.formId, null);
     check('B8: the wizard keeps the relic name', RelicWizard.wizard.name, 'X');
+    RelicWizard.wizard.step = 1;
+    RelicWizard.render();
+    check('B8: the form step shows the form cards', byId['relic-wizard-body'].innerHTML.includes('relic-form-card'), true);
     check('B8: the form step shows no selected card', byId['relic-wizard-body'].innerHTML.includes(' selected'), false);
     check('B8: an open does not write into the character', JSON.stringify(State.character), snapshot);
 
@@ -153,11 +171,17 @@ const threatList = Array.isArray(threats) ? threats : (threats.threats || Object
     Object.assign(RelicWizard.wizard, { formId: 'zz', power: 'p', baseItemId: 'flak_armour', step: 5 });
     check('B8: getSelectedPower gives null for form zz', noThrow('B8: getSelectedPower does not throw', () => RelicWizard.getSelectedPower()), null);
     noThrow('B8: the Relic Power step renders for form zz', () => RelicWizard.renderStep(5));
-    noThrow('B8: the Relic Power step binds for form zz', () => RelicWizard.bindStep(5));
+    // The page has no Roll button when the step renders no table: the bind must stop before it reads that button.
+    missingIds.add('relic-roll-power');
+    noThrow('B8: the Relic Power step binds for form zz with no roll button', () => RelicWizard.bindStep(5));
+    missingIds.delete('relic-roll-power');
     noThrow('B8: the Summary step renders for form zz', () => RelicWizard.renderStep(7));
     RelicWizard.wizard.formId = 'constructor';
     check('B8: getSelectedPower gives null for form constructor', noThrow('B8: constructor does not throw', () => RelicWizard.getSelectedPower()), null);
     noThrow('B8: the Relic Power step renders for form constructor', () => RelicWizard.renderStep(5));
+    const summary = noThrow('B8: the Summary step renders for form constructor', () => RelicWizard.renderStep(7));
+    check('B8: the Summary step shows no form name for form constructor, and no Object text',
+        !!summary && summary.includes('<div class="relic-summary-label">Form</div><div class="relic-summary-value">-</div>') && !summary.includes('Object'), true);
     State.character.wargear[0].relic.form = 'constructor';
     noThrow('B8: open(0) with form constructor does not throw', () => RelicWizard.open(0));
     check('B8: form constructor gives no selected form', RelicWizard.wizard.formId, null);
@@ -174,15 +198,17 @@ const threatList = Array.isArray(threats) ? threats : (threats.threats || Object
     RelicWizard.wizard = { editIndex: null, step: 6, name: 'Vow', formId, baseItemId: base.id,
         originalOwner: 'adeptus_mechanicus', anointment: 'heros_panoply', power: null, powerChoice: null,
         oddities: ['oathbound'], baseSearch: '', rollMessage: '', choiceRollMessage: '' };
-    // Take the first power of the form, with its choice if it has one.
+    // Take a power of the form that has a choice, so that the powerChoice is stored and read back.
     const relics = CACHE['holy-relics.json'];
-    const entry = relics.powers[relics.forms[formId].powersTable].entries[0];
+    const entry = relics.powers[relics.forms[formId].powersTable].entries.find(e => e.id === 'countersmite');
+    check('known form: the power has a choice', entry.choice, 'condition');
     RelicWizard.wizard.power = entry.id;
-    if (entry.choice) RelicWizard.wizard.powerChoice = 'Vehicle';
+    RelicWizard.wizard.powerChoice = 'Bleeding';
     State.character.wargear = [];
     RelicWizard.finish();
     const before = JSON.stringify(State.character.wargear);
     check('known form: the wizard stored one relic with its form', JSON.parse(before)[0].relic.form, formId);
+    check('known form: the stored relic has the powerChoice', JSON.parse(before)[0].relic.powerChoice, 'Bleeding');
 
     noThrow('known form: open(0) does not throw', () => RelicWizard.open(0));
     check('known form: the wizard holds the stored form', RelicWizard.wizard.formId, formId);
@@ -190,6 +216,9 @@ const threatList = Array.isArray(threats) ? threats : (threats.threats || Object
         noThrow(`known form: step ${step} renders and binds`, () => { RelicWizard.wizard.step = step; RelicWizard.render(); });
     }
     check('known form: getSelectedPower gives the stored power', RelicWizard.getSelectedPower().id, entry.id);
+    check('known form: the wizard holds the stored powerChoice', RelicWizard.wizard.powerChoice, 'Bleeding');
+    check('known form: the Summary step shows the name of the form',
+        RelicWizard.renderStep(7).includes(`<div class="relic-summary-label">Form</div><div class="relic-summary-value">${relics.forms[formId].name}</div>`), true);
     RelicWizard.finish();
     check('known form: finish after open leaves the stored overlay as it was', JSON.stringify(State.character.wargear), before);
 }

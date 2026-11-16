@@ -331,6 +331,9 @@ const TalentsTab = {
                     // If no placeholder found, append the choice
                     displayName = `${talent.name} (${choiceDisplay})`;
                 }
+            } else if (talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned') {
+                // The item of the choice is gone, so the player must pick again
+                displayName = `${talent.name} (no item selected)`;
             }
 
             // Build flavor text (displayed under effect, escaped to prevent glossary enhancement)

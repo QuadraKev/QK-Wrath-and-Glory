@@ -94,10 +94,7 @@ const ArchetypeTab = {
                 </div>
             `;
 
-            customItem.addEventListener('click', () => {
-                State.setCustomArchetype();
-                this.renderCustomConfig();
-            });
+            customItem.addEventListener('click', () => this.selectCustomArchetype());
 
             customGroup.appendChild(customItem);
             container.appendChild(customGroup);
@@ -149,6 +146,25 @@ const ArchetypeTab = {
         if (sortedFactions.length === 0 && !showCustom) {
             container.innerHTML = '<p class="text-muted">No archetypes match your criteria. Try selecting a species or adjusting the tier.</p>';
         }
+    },
+
+    // Ask before Custom Archetype removes the starting wargear of the old archetype
+    async selectCustomArchetype() {
+        const removed = State.getOldStartingEntries();
+        if (removed.length > 0) {
+            const character = State.getCharacter();
+            const archetype = DataLoader.getArchetype(character.archetype.id);
+            const names = removed.map(index => {
+                const entry = character.wargear[index];
+                return DataLoader.getWargearItem(entry.id)?.name || entry.id;
+            });
+            const confirmed = await window.api.showConfirm(
+                `Custom Archetype removes the starting wargear of ${archetype.name}: ${names.join(', ')}. Continue?`
+            );
+            if (!confirmed) return;
+        }
+        State.setCustomArchetype();
+        this.renderCustomConfig();
     },
 
     renderDetail() {

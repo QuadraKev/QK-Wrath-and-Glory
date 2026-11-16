@@ -143,5 +143,70 @@ State.setCustomArchetype();
 check('CC16 seq 2: one knife entry', ids().filter(id => id === 'knife').length, 1);
 check('CC16 seq 2: the record lists the knife', State.character.customArchetype.wargear, ['knife']);
 
-console.log(failures ? `\n${failures} FAILED` : '\nAll passed');
-process.exit(failures ? 1 : 0);
+// --- A9 and B10: the display of an owned-item choice and of the number 0 ---
+// A recording DOM stub: each element that the tabs create keeps its innerHTML.
+const written = [];
+ctx.document = {
+    getElementById: () => ({ innerHTML: '', appendChild() {}, classList: { add() {}, remove() {} } }),
+    createElement: () => {
+        const el = { className: '', appendChild() {}, querySelector: () => ({ addEventListener() {} }), addEventListener() {} };
+        let html = '';
+        Object.defineProperty(el, 'innerHTML', { get: () => html, set: v => { html = v; written.push(v); } });
+        return el;
+    }
+};
+vm.runInContext('var Glossary = { enhanceElement() {} };', ctx);
+for (const f of ['talents-tab.js', 'archetype-tab.js', 'character-sheet-tab.js'])
+    vm.runInContext(readSource(`creator/tabs/${f}`), ctx, { filename: f });
+const TalentsTab = get('TalentsTab'), ArchetypeTab = get('ArchetypeTab'), SheetTab = get('CharacterSheetTab');
+
+human();
+State.character.talents = [{ id: 'trademark_weapon', choice: null }];
+written.length = 0;
+TalentsTab.renderSelected();
+check('A9: the talents tab shows a cleared choice', written.join('').includes('Trademark Weapon (no item selected)'), true);
+
+const sheetNull = SheetTab.renderTalents({ talents: [{ id: 'trademark_weapon', choice: null }], wargear: [] });
+check('A9: the sheet shows a cleared choice', sheetNull.includes('(no item selected)'), true);
+check('A9: the sheet writes no Chosen note for a cleared choice', sheetNull.includes('Chosen:'), false);
+const sheetAbsent = SheetTab.renderTalents({ talents: [{ id: 'trademark_weapon' }], wargear: [] });
+check('A9: the sheet shows an absent choice', sheetAbsent.includes('(no item selected)'), true);
+const sheetZero = SheetTab.renderTalents({ talents: [{ id: 'hatred', choice: 0 }], wargear: [] });
+check('B10: the sheet shows the number choice 0', sheetZero.includes('Chosen: 0'), true);
+
+// --- A7: the confirm of a select of Custom Archetype ---
+function guardsman() {
+    human();
+    State.setArchetype('imperial_guardsman');
+    for (const entry of DL.getArchetype('imperial_guardsman').startingWargear) {
+        const id = typeof entry === 'string' ? entry : entry.id;
+        const qty = typeof entry === 'string' ? 1 : (entry.qty || 1);
+        if (!DL.getWargearItem(id)) continue;
+        for (let i = 0; i < qty; i++) State.addWargear(id, true);
+    }
+}
+ArchetypeTab.renderCustomConfig = () => {};
+const asked = [];
+guardsman();
+const before = JSON.stringify(State.character.wargear);
+ctx.window.api.showConfirm = async message => { asked.push(message); return false; };
+(async () => {
+    await ArchetypeTab.selectCustomArchetype();
+    check('A7: a cancel keeps the archetype', State.character.archetype.id, 'imperial_guardsman');
+    check('A7: a cancel keeps the wargear', JSON.stringify(State.character.wargear), before);
+    check('A7: the confirm names the old archetype', (asked[0] || '').includes('Imperial Guardsman'), true);
+    check('A7: the confirm names a removed item', (asked[0] || '').includes(DL.getWargearItem(State.character.wargear[0].id).name), true);
+    ctx.window.api.showConfirm = async () => true;
+    await ArchetypeTab.selectCustomArchetype();
+    check('A7: an accept sets Custom Archetype', State.character.archetype.id, 'custom');
+    human();
+    State.addWargear('knife');
+    asked.length = 0;
+    ctx.window.api.showConfirm = async message => { asked.push(message); return true; };
+    await ArchetypeTab.selectCustomArchetype();
+    check('A7: no starting entries, no confirm', asked.length, 0);
+    check('A7: no starting entries, the archetype is custom', State.character.archetype.id, 'custom');
+
+    console.log(failures ? `\n${failures} FAILED` : '\nAll passed');
+    process.exit(failures ? 1 : 0);
+})();

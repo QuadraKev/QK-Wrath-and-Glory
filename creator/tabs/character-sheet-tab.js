@@ -1662,7 +1662,7 @@ const CharacterSheetTab = {
             if (!talent) return '';
 
             // For weapon_owned/armor_owned choices, convert wargear index to item name
-            let choiceDisplay = this.escapeHtml(choice);
+            let choiceDisplay = choice === null || choice === undefined ? '' : this.escapeHtml(String(choice));
             if (choice !== null && choice !== undefined && (talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned')) {
                 const wargearIndex = parseInt(choice, 10);
                 if (!isNaN(wargearIndex) && character.wargear[wargearIndex]) {
@@ -1676,9 +1676,10 @@ const CharacterSheetTab = {
             }
 
             const grantedLabel = isAscensionGranted ? ' <span class="sheet-talent-granted">(Ascension)</span>' : '';
+            const isOwnedItemTalent = talent.choiceType === 'weapon_owned' || talent.choiceType === 'armor_owned';
             const nameWithChoice = choiceDisplay
                 ? `${talent.name} (${choiceDisplay})`
-                : talent.name;
+                : (isOwnedItemTalent ? `${talent.name} (no item selected)` : talent.name);
 
             // Build effect description with choice highlighted
             let effectText = talent.effect || '-';

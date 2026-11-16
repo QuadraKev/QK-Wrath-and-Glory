@@ -234,10 +234,15 @@ const EncounterTab = {
         });
     },
 
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+    // Escapes text for an element and for a quoted attribute. null and undefined give ''. 0 stays 0.
+    escapeHtml(value) {
+        if (value === null || value === undefined) return '';
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     },
 
     // ===== Encounter List =====
@@ -580,14 +585,15 @@ const EncounterTab = {
     renderPlayerItem(item) {
         const pc = item.data;
         const isSelected = this.selectedId === item.id && this.selectionType === 'player';
+        const id = this.escapeHtml(item.id);
 
         return `
             <div class="encounter-item player-item ${isSelected ? 'selected' : ''}"
-                 data-id="${item.id}" data-type="player" draggable="true">
+                 data-id="${id}" data-type="player" draggable="true">
                 <div class="encounter-item-header">
                     <span class="drag-handle" title="Drag to reorder">&#x2630;</span>
-                    <input type="number" class="initiative-input" value="${item.initiative ?? ''}"
-                           data-id="${item.id}" data-type="player" placeholder="Init"
+                    <input type="number" class="initiative-input" value="${this.escapeHtml(item.initiative)}"
+                           data-id="${id}" data-type="player" placeholder="Init"
                            min="0" max="99">
                     <span class="encounter-item-name">${this.escapeHtml(pc.name)}</span>
                     <span class="player-badge">PC</span>
@@ -609,22 +615,23 @@ const EncounterTab = {
         // Show checkbox for individuals not in a mob
         const showCheckbox = !individual.mobId;
         const bonus = individual.bonus || 'none';
+        const id = this.escapeHtml(item.id);
 
         return `
             <div class="encounter-item ${isSelected ? 'selected' : ''} ${isMultiSelected ? 'multi-selected' : ''} ${deadClass}"
-                 data-id="${item.id}" data-type="individual" data-threat-id="${individual.threatId}" draggable="true">
+                 data-id="${id}" data-type="individual" data-threat-id="${this.escapeHtml(individual.threatId)}" draggable="true">
                 <div class="encounter-item-header">
                     <span class="drag-handle" title="Drag to reorder">&#x2630;</span>
                     ${showCheckbox ? `
                         <input type="checkbox" class="multi-select-checkbox"
-                               data-id="${item.id}" data-type="individual"
+                               data-id="${id}" data-type="individual"
                                ${isMultiSelected ? 'checked' : ''}>
                     ` : ''}
-                    <input type="number" class="initiative-input" value="${item.initiative ?? ''}"
-                           data-id="${item.id}" data-type="individual" placeholder="Init"
+                    <input type="number" class="initiative-input" value="${this.escapeHtml(item.initiative)}"
+                           data-id="${id}" data-type="individual" placeholder="Init"
                            min="0" max="99">
                     <span class="encounter-item-name">${this.escapeHtml(item.name)}</span>
-                    <select class="bonus-select bonus-${bonus}" data-id="${item.id}">
+                    <select class="bonus-select bonus-${this.escapeHtml(bonus)}" data-id="${id}">
                         <option value="none" ${bonus === 'none' ? 'selected' : ''}>No Bonus</option>
                         <option value="elite" ${bonus === 'elite' ? 'selected' : ''}>Elite</option>
                         <option value="adversary" ${bonus === 'adversary' ? 'selected' : ''}>Adversary</option>
@@ -633,18 +640,18 @@ const EncounterTab = {
                 <div class="encounter-item-stats">
                     <div class="stat-tracker wounds-tracker">
                         <span class="stat-label">W:</span>
-                        <button class="wound-btn" data-id="${item.id}" data-delta="-1">-</button>
-                        <span class="stat-value">${individual.currentWounds}/${individual.maxWounds}</span>
-                        <button class="wound-btn" data-id="${item.id}" data-delta="1">+</button>
+                        <button class="wound-btn" data-id="${id}" data-delta="-1">-</button>
+                        <span class="stat-value">${this.escapeHtml(individual.currentWounds)}/${this.escapeHtml(individual.maxWounds)}</span>
+                        <button class="wound-btn" data-id="${id}" data-delta="1">+</button>
                         <div class="stat-bar">
                             <div class="stat-bar-fill wounds-bar" style="width: ${woundPercent}%"></div>
                         </div>
                     </div>
                     <div class="stat-tracker shock-tracker">
                         <span class="stat-label">S:</span>
-                        <button class="shock-btn" data-id="${item.id}" data-delta="-1">-</button>
-                        <span class="stat-value">${individual.maxShock > 0 ? `${individual.currentShock}/${individual.maxShock}` : '-'}</span>
-                        <button class="shock-btn" data-id="${item.id}" data-delta="1">+</button>
+                        <button class="shock-btn" data-id="${id}" data-delta="-1">-</button>
+                        <span class="stat-value">${individual.maxShock > 0 ? `${this.escapeHtml(individual.currentShock)}/${this.escapeHtml(individual.maxShock)}` : '-'}</span>
+                        <button class="shock-btn" data-id="${id}" data-delta="1">+</button>
                         <div class="stat-bar">
                             <div class="stat-bar-fill shock-bar" style="width: ${shockPercent}%"></div>
                         </div>
@@ -652,17 +659,17 @@ const EncounterTab = {
                     ${EncounterState.threatHasChampion(threat) ? `
                     <div class="stat-tracker ruin-tracker">
                         <span class="stat-label ruin-label">R:</span>
-                        <button class="ruin-btn" data-id="${item.id}" data-delta="-1">-</button>
-                        <span class="stat-value">${individual.personalRuin || 0}</span>
-                        <button class="ruin-btn" data-id="${item.id}" data-delta="1">+</button>
+                        <button class="ruin-btn" data-id="${id}" data-delta="-1">-</button>
+                        <span class="stat-value">${this.escapeHtml(individual.personalRuin || 0)}</span>
+                        <button class="ruin-btn" data-id="${id}" data-delta="1">+</button>
                     </div>
                     ` : ''}
                 </div>
                 <div class="encounter-item-actions">
-                    <button class="duplicate-btn" data-id="${item.id}" data-type="individual" title="Duplicate">
+                    <button class="duplicate-btn" data-id="${id}" data-type="individual" title="Duplicate">
                         <span>+</span>
                     </button>
-                    <button class="delete-btn" data-id="${item.id}" data-type="individual" title="Remove">
+                    <button class="delete-btn" data-id="${id}" data-type="individual" title="Remove">
                         <span>&times;</span>
                     </button>
                 </div>
@@ -675,16 +682,17 @@ const EncounterTab = {
         const bonus = EncounterState.getMobAttackBonus(item.id);
         const isSelected = this.selectedId === item.id && this.selectionType === 'mob';
         const deadClass = item.isDead ? 'dead' : '';
+        const id = this.escapeHtml(item.id);
 
         return `
             <div class="encounter-item mob-item ${isSelected ? 'selected' : ''} ${deadClass}"
-                 data-id="${item.id}" data-type="mob" draggable="true">
+                 data-id="${id}" data-type="mob" draggable="true">
                 <div class="encounter-item-header">
                     <span class="drag-handle" title="Drag to reorder">&#x2630;</span>
-                    <input type="number" class="initiative-input" value="${item.initiative ?? ''}"
-                           data-id="${item.id}" data-type="mob" placeholder="Init"
+                    <input type="number" class="initiative-input" value="${this.escapeHtml(item.initiative)}"
+                           data-id="${id}" data-type="mob" placeholder="Init"
                            min="0" max="99">
-                    <span class="encounter-item-name">${this.escapeHtml(mob.name)}</span>
+                    <span class="encounter-item-name">${this.escapeHtml(item.name)}</span>
                     <span class="mob-badge">MOB</span>
                 </div>
                 <div class="mob-info">
@@ -692,10 +700,10 @@ const EncounterTab = {
                     <span class="mob-bonus">+${bonus.bonus} dice (max ${bonus.max})</span>
                 </div>
                 <div class="encounter-item-actions">
-                    <button class="duplicate-btn" data-id="${item.id}" data-type="mob" title="Duplicate Mob">
+                    <button class="duplicate-btn" data-id="${id}" data-type="mob" title="Duplicate Mob">
                         <span>+</span>
                     </button>
-                    <button class="delete-btn" data-id="${item.id}" data-type="mob" title="Remove Mob">
+                    <button class="delete-btn" data-id="${id}" data-type="mob" title="Remove Mob">
                         <span>&times;</span>
                     </button>
                 </div>
@@ -707,15 +715,16 @@ const EncounterTab = {
         const entry = item.data;
         const isSelected = this.selectedId === item.id && this.selectionType === 'vehicle';
         const deadClass = item.isDead ? 'dead' : '';
+        const id = this.escapeHtml(item.id);
         const woundPercent = item.maxWounds ? Math.min(100, (entry.wounds / item.maxWounds) * 100) : 0;
 
         return `
             <div class="encounter-item vehicle-item ${isSelected ? 'selected' : ''} ${deadClass}"
-                 data-id="${item.id}" data-type="vehicle" draggable="true">
+                 data-id="${id}" data-type="vehicle" draggable="true">
                 <div class="encounter-item-header">
                     <span class="drag-handle" title="Drag to reorder">&#x2630;</span>
-                    <input type="number" class="initiative-input" value="${item.initiative ?? ''}"
-                           data-id="${item.id}" data-type="vehicle" placeholder="Init"
+                    <input type="number" class="initiative-input" value="${this.escapeHtml(item.initiative)}"
+                           data-id="${id}" data-type="vehicle" placeholder="Init"
                            min="0" max="99">
                     <span class="encounter-item-name">${this.escapeHtml(item.name)}</span>
                     <span class="vehicle-badge">VEHICLE</span>
@@ -723,16 +732,16 @@ const EncounterTab = {
                 <div class="encounter-item-stats">
                     <div class="stat-tracker wounds-tracker">
                         <span class="stat-label">W:</span>
-                        <button class="vehicle-wound-btn" data-id="${item.id}" data-delta="-1">-</button>
-                        <span class="stat-value">${entry.wounds}/${item.maxWounds ?? '-'}</span>
-                        <button class="vehicle-wound-btn" data-id="${item.id}" data-delta="1">+</button>
+                        <button class="vehicle-wound-btn" data-id="${id}" data-delta="-1">-</button>
+                        <span class="stat-value">${this.escapeHtml(entry.wounds)}/${item.maxWounds ?? '-'}</span>
+                        <button class="vehicle-wound-btn" data-id="${id}" data-delta="1">+</button>
                         <div class="stat-bar">
                             <div class="stat-bar-fill wounds-bar" style="width: ${woundPercent}%"></div>
                         </div>
                     </div>
                 </div>
                 <div class="encounter-item-actions">
-                    <button class="delete-btn" data-id="${item.id}" data-type="vehicle" title="Remove">
+                    <button class="delete-btn" data-id="${id}" data-type="vehicle" title="Remove">
                         <span>&times;</span>
                     </button>
                 </div>
@@ -964,12 +973,12 @@ const EncounterTab = {
                 <div class="player-detail-initiative">
                     <label class="filter-label">Initiative</label>
                     <input type="number" id="player-detail-initiative" class="search-input"
-                           value="${pc.initiative ?? ''}" placeholder="Initiative" min="0" max="99">
+                           value="${this.escapeHtml(pc.initiative)}" placeholder="Initiative" min="0" max="99">
                 </div>
 
                 <div class="notes-section">
                     <label class="notes-label">Notes</label>
-                    <textarea id="player-notes" class="notes-textarea" placeholder="Add notes...">${pc.notes || ''}</textarea>
+                    <textarea id="player-notes" class="notes-textarea" placeholder="Add notes...">\n${this.escapeHtml(pc.notes)}</textarea>
                 </div>
             </div>
         `;
@@ -1065,7 +1074,7 @@ const EncounterTab = {
 
                 <div class="notes-section">
                     <label class="notes-label">Notes</label>
-                    <textarea id="individual-notes" class="notes-textarea" placeholder="Add notes...">${individual.notes || ''}</textarea>
+                    <textarea id="individual-notes" class="notes-textarea" placeholder="Add notes...">\n${this.escapeHtml(individual.notes)}</textarea>
                 </div>
 
                 <div class="detail-actions">
@@ -1150,7 +1159,7 @@ const EncounterTab = {
 
                 <div class="notes-section">
                     <label class="notes-label">Notes</label>
-                    <textarea id="mob-notes" class="notes-textarea" placeholder="Add notes...">${mob.notes || ''}</textarea>
+                    <textarea id="mob-notes" class="notes-textarea" placeholder="Add notes...">\n${this.escapeHtml(mob.notes)}</textarea>
                 </div>
 
                 <div class="detail-actions">

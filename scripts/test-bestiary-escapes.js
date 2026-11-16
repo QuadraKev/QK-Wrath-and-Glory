@@ -310,6 +310,151 @@ group('names (builder)', () => {
     ThreatBuilderState._abilityIndex = null;
 });
 
+// --- the encounter tab: the list, the player rows and the notes boxes (spec section 8, tasks 8) ---
+ctx.BottomSheet = { isOpen() { return false; }, open() {}, updateContent() {} };
+ctx.VehiclesTab = { renderVehicleCardMini: () => '', bindCardPopups() {} };
+for (const rel of ['bestiary/js/encounter-state.js', 'bestiary/tabs/encounter-tab.js']) load(ctx, rel);
+const EncounterState = vm.runInContext('EncounterState', ctx);
+const EncounterTab = vm.runInContext('EncounterTab', ctx);
+
+function clearEncounterState() {
+    EncounterState.individuals = [];
+    EncounterState.mobs = [];
+    EncounterState.playerCharacters = [];
+    EncounterState.vehicles = [];
+    EncounterState.encounterOrder = null;
+    EncounterState.settings.playerCount = 4;
+    EncounterTab.selectedId = null;
+    EncounterTab.selectionType = null;
+}
+
+// The detail render of one entry, read from the recording document
+function renderDetailHtml(type, id) {
+    EncounterTab.selectedId = id;
+    EncounterTab.selectionType = type;
+    const container = rec.document.createElement('div');
+    written.length = 0;
+    EncounterTab._renderDetailContent(container);
+    return written.filter(h => h.includes('notes-textarea')).pop() || '';
+}
+
+group('N-0', () => {
+    check('N-0: escapeHtml escapes the five characters', EncounterTab.escapeHtml('&<>"\''), '&amp;&lt;&gt;&quot;&#39;');
+    check('N-0: escapeHtml keeps 0', EncounterTab.escapeHtml(0), '0');
+    check('N-0: escapeHtml gives an empty string for null and undefined', [EncounterTab.escapeHtml(null), EncounterTab.escapeHtml(undefined)], ['', '']);
+});
+
+group('C2', () => {
+    clearEncounterState();
+    EncounterState.playerCharacters = [{ id: 'pc-1', name: 'Bob "Big" Smith', initiative: null }];
+    written.length = 0;
+    EncounterTab.renderPlayerCharacterInputs();
+    const html = written[written.length - 1];
+    check('C2: a player name with quotes stays whole in its value', html.includes('value="Bob &quot;Big&quot; Smith"'), true);
+    EncounterState.playerCharacters = [{ id: 'a"b', name: 'X" autofocus onfocus="window.__hit=1', initiative: '1" onfocus="z' }];
+    written.length = 0;
+    EncounterTab.renderPlayerCharacterInputs();
+    const hostile = written[written.length - 1];
+    check('C2: a hostile player name stays in its value', RAW_B(hostile) || /" autofocus|" onfocus/.test(hostile), false);
+    check('C2: a player id with a quote stays whole in each data-id', (hostile.match(/data-id="a&quot;b"/g) || []).length, 4);
+    clearEncounterState();
+});
+
+group('N-2', () => {
+    clearEncounterState();
+    const threat = evilThreat();
+    DataLoader.injectThreat(threat);
+    const individual = {
+        id: EVIL, threatId: threat.id, bonus: EVIL, currentWounds: EVIL, currentShock: EVIL, maxWounds: EVIL, maxShock: EVIL,
+        personalRuin: EVIL, mobId: null, initiative: EVIL, notes: EVIL
+    };
+    const member = { id: 'm1', threatId: threat.id, bonus: 'none', currentWounds: 0, currentShock: 0, maxWounds: 3, maxShock: 0, mobId: EVIL, initiative: null };
+    const second = Object.assign({}, member, { id: 'm2' });
+    EncounterState.individuals = [individual, member, second];
+    EncounterState.mobs = [{ id: EVIL, threatId: threat.id, name: EVIL, initiative: EVIL, notes: EVIL }];
+    EncounterState.playerCharacters = [{ id: EVIL, name: EVIL, initiative: EVIL, notes: EVIL }];
+    EncounterState.vehicles = [{ id: EVIL, vehicleId: EVIL, wounds: EVIL, initiative: EVIL }];
+    const items = EncounterState.getEncounterListItems();
+    const byType = {};
+    items.forEach(i => { byType[i.type] = i; });
+    check('N-2: the list holds the four row types', Object.keys(byType).sort(), ['individual', 'mob', 'player', 'vehicle']);
+    const rows = {
+        individual: EncounterTab.renderIndividualItem(byType.individual),
+        mob: EncounterTab.renderMobItem(byType.mob),
+        player: EncounterTab.renderPlayerItem(byType.player),
+        vehicle: EncounterTab.renderVehicleItem(byType.vehicle)
+    };
+    for (const type of Object.keys(rows)) {
+        check(`N-2: the ${type} row holds no raw value`, RAW_B(rows[type]), false);
+        check(`N-2: the ${type} row holds its data-id escaped`, rows[type].includes('data-id="&lt;b&gt;&quot;Q7&#39;&lt;/b&gt;&amp;"'), true);
+    }
+    clearEncounterState();
+    DataLoader.removeThreat(threat.id);
+});
+
+for (const [kind, threatId] of [['player', null], ['individual', 'sly_marbo_aaa'], ['mob', 'astra_militarum_trooper']]) {
+    group('C3 ' + kind, () => {
+        clearEncounterState();
+        const NOTES = '\nHP &lt;5 </textarea> x';
+        let id;
+        if (kind === 'player') {
+            EncounterState.playerCharacters = [{ id: 'pc-1', name: 'Bob', initiative: null, notes: NOTES }];
+            id = 'pc-1';
+        } else if (kind === 'individual') {
+            EncounterState.individuals = [{ id: 'i1', threatId, bonus: 'none', currentWounds: 0, currentShock: 0, maxWounds: 3, maxShock: 0, mobId: null, initiative: null, notes: NOTES }];
+            id = 'i1';
+        } else {
+            const members = ['m1', 'm2'].map(m => ({ id: m, threatId, bonus: 'none', currentWounds: 0, currentShock: 0, maxWounds: 3, maxShock: 0, mobId: 'mob1', initiative: null }));
+            EncounterState.individuals = members;
+            EncounterState.mobs = [{ id: 'mob1', threatId, name: 'Mob', initiative: null, notes: NOTES }];
+            id = 'mob1';
+        }
+        const html = renderDetailHtml(kind, id);
+        check(`C3: ${kind} notes keep their entity text`, html.includes('>\n\nHP &amp;lt;5 &lt;/textarea&gt; x</textarea>'), true);
+        clearEncounterState();
+    });
+}
+
+group('C10', () => {
+    clearEncounterState();
+    const members = ['m1', 'm2'].map(m => ({ id: m, threatId: 'gone', bonus: 'none', currentWounds: 0, currentShock: 0, maxWounds: 3, maxShock: 0, mobId: 'mob1', initiative: null }));
+    EncounterState.individuals = members;
+    EncounterState.mobs = [{ id: 'mob1', threatId: 'gone', name: 'M', initiative: null }];
+    const item = EncounterState.getEncounterListItems().find(i => i.type === 'mob');
+    check('C10: the mob row shows the unknown-threat mark', EncounterTab.renderMobItem(item).includes('M — Unknown threat (gone)'), true);
+    clearEncounterState();
+});
+
+group('names (encounter rows)', () => {
+    const NAME = 'A & "B" <C>';
+    const ATTR = 'A &amp; &quot;B&quot; &lt;C&gt;';
+    clearEncounterState();
+    const threat = Object.assign(evilThreat(), { id: 'custom_names_e', name: NAME });
+    DataLoader.injectThreat(threat);
+    const members = ['m1', 'm2'].map(m => ({ id: m, threatId: threat.id, bonus: 'none', currentWounds: 0, currentShock: 0, maxWounds: 3, maxShock: 0, mobId: 'mob1', initiative: null }));
+    EncounterState.individuals = [
+        { id: 'i1', threatId: threat.id, bonus: 'none', currentWounds: 0, currentShock: 0, maxWounds: 3, maxShock: 0, mobId: null, initiative: null }
+    ].concat(members);
+    EncounterState.mobs = [{ id: 'mob1', threatId: threat.id, name: NAME, initiative: null }];
+    const items = EncounterState.getEncounterListItems();
+    const rows = [['the individual row', EncounterTab.renderIndividualItem(items.find(i => i.type === 'individual'))],
+        ['the mob row', EncounterTab.renderMobItem(items.find(i => i.type === 'mob'))]];
+    for (const [label, html] of rows) {
+        check(`names: ${label} holds the name escaped one time`, html.includes(ATTR), true);
+        check(`names: ${label} holds no double escape`, html.includes('&amp;amp;'), false);
+    }
+    clearEncounterState();
+    DataLoader.removeThreat('custom_names_e');
+});
+
+group('P5 (encounter)', () => {
+    clearEncounterState();
+    EncounterState.playerCharacters = [{ id: 'pc-1', name: 'Bob', initiative: null, notes: 'plain' }];
+    const html = renderDetailHtml('player', 'pc-1');
+    check('P5: the player notes box starts with one line break', html.includes('placeholder="Add notes...">\nplain</textarea>'), true);
+    clearEncounterState();
+});
+
 // --- context 2: the real glossary, with no stub (P16) ---
 group('glossary', () => {
     const ctx2 = vm.createContext({ console, document: makeRecordingDocument().document });

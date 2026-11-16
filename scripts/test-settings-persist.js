@@ -3,6 +3,7 @@
 // and New Character keeps them. A start reads the old place in the autosave when the new key is missing.
 // A stored source list that is not a list does not stop the start (A17).
 // Load asks a confirm after the file pick, and a cancel puts back the file handle of web-api.js (CC6, CC17).
+// The confirm asks only for a file with a character, and a load that fails also puts the handle back (TC18-3, TC18-4).
 // App.init does not start when character-check.js did not load (TB3-2).
 // Run: node scripts/test-settings-persist.js
 
@@ -177,6 +178,26 @@ async function main() {
     check('P7b: the character comes from the autosave', State.character.name, 'Kaelen');
 }
 
+// TC18-2: a start with only the settings key refreshes the Settings tab; an empty storage does not
+for (const [label, stored, expected] of [['only the settings key', { enabledSources: ['core'] }, 1], ['an empty storage', null, 0]]) {
+    const map = new Map();
+    if (stored) map.set(SETTINGS_KEY, JSON.stringify(stored));
+    const { ctx, App } = appSandbox(storageOn(map));
+    let refreshes = 0;
+    ctx.SettingsTab.refresh = () => { refreshes++; };
+    App.checkAutoSave();
+    check(`TC18-2: a start with ${label} calls SettingsTab.refresh ${expected} time(s)`, refreshes, expected);
+}
+
+// TC18-2: only the value true turns Ignore Prerequisites on
+for (const value of [1, 'yes']) {
+    const map = new Map();
+    map.set(SETTINGS_KEY, JSON.stringify({ enabledSources: ['core'], ignorePrerequisites: value }));
+    const { State, App } = appSandbox(storageOn(map));
+    App.checkAutoSave();
+    check(`TC18-2: ignorePrerequisites ${JSON.stringify(value)} does not turn the house rule on`, State.ignorePrerequisites, false);
+}
+
 // P7c: a storage that throws
 {
     const { State, App } = appSandbox(throwingStorage);
@@ -206,7 +227,9 @@ for (const value of [{}, 5, true, 'core']) {
 
 // CC6: CharacterIO.load asks the confirm after the file pick
 {
-    const { State, CharacterIO } = appSandbox(storageOn(new Map()));
+    const { State, CharacterIO, api } = appSandbox(storageOn(new Map()));
+    let cancels = 0;
+    api.cancelOpen = () => { cancels++; };
     State.loadCharacter(character('Kaelen'));
     const before = State.character;
     let seen = null;
@@ -214,8 +237,40 @@ for (const value of [{}, 5, true, 'core']) {
     check('CC6: a declined confirm keeps the character', [State.character === before, State.character.name], [true, 'Kaelen']);
     check('CC6: a declined confirm gives "Load cancelled."', result.error, 'Load cancelled.');
     check('CC6: the confirm gets the file name', seen, 'Vex.character');
+    check('TC18-1: a declined confirm calls cancelOpen once', cancels, 1);
     await CharacterIO.load();
     check('CC6: a load with no confirm loads the file', State.character.name, 'Vex');
+    check('TC18-1: an accepted load does not call cancelOpen', cancels, 1);
+}
+
+// TC18-3, TC18-4: the confirm asks only for a file with a character, and a load that fails puts the file handle back
+{
+    const NO_CHARACTER = 'The file does not contain a character.';
+    // Runs one load with the import result that the caller gives. Returns the confirm calls, the cancelOpen calls,
+    // the result and the name of the character after the load.
+    async function loadWith(importResult, { canceledPick = false } = {}) {
+        const { State, CharacterIO, api } = appSandbox(storageOn(new Map()));
+        let cancels = 0, confirms = 0;
+        api.cancelOpen = () => { cancels++; };
+        if (canceledPick) api.showOpenDialog = async () => ({ canceled: true });
+        api.importCharacter = async () => importResult();
+        State.loadCharacter(character('Kaelen'));
+        const result = await CharacterIO.load(async () => { confirms++; return true; });
+        return { confirms, cancels, result, name: State.character.name };
+    }
+    const notJson = await loadWith(() => ({ success: false, error: 'Failed to read file: Unexpected token' }));
+    check('TC18-3: a file that is not JSON gets no confirm', notJson.confirms, 0);
+    check('TC18-4: a file that is not JSON calls cancelOpen once', notJson.cancels, 1);
+    check('TC18-4: a file that is not JSON keeps Kaelen', notJson.name, 'Kaelen');
+    const noCharacter = await loadWith(() => ({ success: true, character: null }));
+    check('TC18-3: a file with no character object gets no confirm', noCharacter.confirms, 0);
+    check('TC18-3: a file with no character object gives the error text of the gate', noCharacter.result, { success: false, error: NO_CHARACTER });
+    check('TC18-4: a file with no character object calls cancelOpen once', noCharacter.cancels, 1);
+    const canceled = await loadWith(() => ({ success: true, character: character('Vex') }), { canceledPick: true });
+    check('TC18-4: a cancelled picker does not call cancelOpen', [canceled.cancels, canceled.result.error], [0, 'Load cancelled.']);
+    const loaded = await loadWith(() => ({ success: true, character: character('Vex') }));
+    check('TC18-3: a file with a character gets one confirm', loaded.confirms, 1);
+    check('TC18-4: a load that succeeds does not call cancelOpen', [loaded.cancels, loaded.name], [0, 'Vex']);
 }
 
 // CC17: a cancel puts back the file handle that was there before the pick

@@ -45,17 +45,22 @@ const CharacterIO = {
     },
 
     // Load a character - always prompts for file location.
-    // confirmLoad(fileName) is optional. It runs after the file pick. On false the load stops with no change (CC6).
+    // confirmLoad(fileName) is optional. It runs after the file pick, and only for a file that holds a character
+    // (TC18-3). On false the load stops with no change (CC6).
+    // Each exit after a pick that does not load puts back the file handle of the last Save, so a Save does not
+    // write to the declined or refused file (CC17, TC18-4).
     async load(confirmLoad = null) {
+        let picked = false;
         try {
             const dialogResult = await window.api.showOpenDialog();
 
             if (!dialogResult.canceled && dialogResult.filePaths && dialogResult.filePaths.length > 0) {
+                picked = true;
                 const result = await window.api.importCharacter(dialogResult.filePaths[0]);
 
                 if (result.success) {
-                    if (confirmLoad && !(await confirmLoad(dialogResult.filePaths[0]))) {
-                        // Put back the file handle of the last Save, so a Save does not write to the declined file (CC17).
+                    if (confirmLoad && CharacterCheck.isPlainObject(result.character) &&
+                        !(await confirmLoad(dialogResult.filePaths[0]))) {
                         window.api.cancelOpen?.();
                         return { success: false, error: 'Load cancelled.' };
                     }
@@ -65,12 +70,14 @@ const CharacterIO = {
                     return { success: true };
                 }
 
+                window.api.cancelOpen?.();
                 return result;
             }
 
             return { success: false, error: 'Load cancelled.' };
         } catch (error) {
             console.error('Load error:', error);
+            if (picked) window.api.cancelOpen?.();
             return { success: false, error: error.message };
         }
     },

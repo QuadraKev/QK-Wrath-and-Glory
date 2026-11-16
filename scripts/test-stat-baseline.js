@@ -119,6 +119,32 @@ StatsTab.renderSkills();
 const insightRow = lists['skills-list'].children.map(r => r.innerHTML).find(h => h.includes('data-skill="insight"')) || '';
 check('Stats tab: the decrease button of the chosen skill is disabled', /btn-decrease" data-skill="insight"[^>]*disabled/.test(insightRow), true);
 
+// --- the attribute side of the baseline ---
+const ogryn = build('ganger', c => { c.species = { id: 'ogryn', xpCost: 0 }; c.archetype = { id: null, xpCost: 0 }; });
+check('Ogryn with no archetype: the baseline strength is 5', baseline(ogryn).attributes.strength, 5);
+
+const inqAttr = build('inquisitor', c => { c.attributes.intellect = 4; });
+check('Inquisitor with intellect 4: decreaseAttribute stops at the free value', State.decreaseAttribute('intellect'), false);
+check('Inquisitor with intellect 4: intellect stays 4', inqAttr.attributes.intellect, 4);
+lists['attributes-list'] = element();
+StatsTab.renderAttributes();
+const intellectRow = lists['attributes-list'].children.map(r => r.innerHTML).find(h => h.includes('data-attr="intellect"')) || '';
+check('Stats tab: the decrease button of intellect at the free value is disabled', /btn-decrease" data-attr="intellect"[^>]*disabled/.test(intellectRow), true);
+
+// --- the guards of the XP sum, getBaseline and resetStats ---
+const odd = build('ganger', c => { c.attributes.strength = Infinity; c.attributes.agility = '9'; c.skills.tech = Infinity; c.skills.pilot = '5'; });
+check('Infinity and a string cost no attribute XP', XP.calculateAttributeXP(odd), 0);
+check('Infinity and a string cost no skill XP', XP.calculateSkillXP(odd), 0);
+
+// The setter refuses a choice key that is a skill name, so the fixture writes the stored field directly.
+const keyIsSkill = build('tech_adept', c => { c.archetypeSkillChoices = { tech: 'insight' }; });
+check('A stored choice under a skill-name key gives insight no free value', baseline(keyIsSkill).skills.insight, 0);
+
+const unknownAttr = build('ganger', c => { c.attributes.foo = 3; });
+State.resetStats();
+check('resetStats keeps an unknown attribute key as stored', unknownAttr.attributes.foo, 3);
+check('resetStats leaves no attribute undefined', Object.values(unknownAttr.attributes).every(v => v !== undefined), true);
+
 // --- a change of a parent ---
 let notifyCount = 0;
 State.addListener(() => { notifyCount++; });

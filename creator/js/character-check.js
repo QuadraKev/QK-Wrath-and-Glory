@@ -128,6 +128,17 @@ const CharacterCheck = {
                 this._stringValues(entry.choices, `${path}.choices`, paths);
             }
         }
+        // The record of the ids that the grant step of a package added: optional
+        if (this._has(entry, 'granted')) {
+            if (!this.isPlainObject(entry.granted)) {
+                delete entry.granted;
+                paths.push(`${path}.granted`);
+            } else {
+                for (const key of ['powers', 'freePowers', 'talents']) {
+                    this._list(entry.granted, key, [], `${path}.granted.${key}`, paths, is.string, true);
+                }
+            }
+        }
         return true;
     },
 

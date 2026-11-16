@@ -131,7 +131,8 @@ const CORPUS = {
         archetypeKeywordChoices: { '[ORDO]': 'HERETICUS', '[FORGE WORLD]': '' },
         archetypeSkillChoices: { choice1: 'insight' },
         ascensions: [
-            { targetTier: 2, type: 'package', packageId: 'demanding_patron', archetypeId: null, choices: { patronBenefit: 'wealth', '[ANY]': 'ADEPTUS MINISTORUM', '[ANY]2': '' } },
+            { targetTier: 2, type: 'package', packageId: 'demanding_patron', archetypeId: null, choices: { patronBenefit: 'wealth', '[ANY]': 'ADEPTUS MINISTORUM', '[ANY]2': '' },
+                granted: { powers: [], freePowers: [], talents: [] } },
             { targetTier: 3, type: 'archetype', packageId: null, archetypeId: 'tactical_space_marine' },
             { targetTier: 4, type: 'package', packageId: null, archetypeId: null }
         ],
@@ -369,6 +370,9 @@ const HOSTILE = [
     [['ascensions', 0, 'targetTier'], INT_BAD, 2, ['ascensions', 'length']],
     [['ascensions', 0, 'type'], STR_BAD, ''], [['ascensions', 0, 'packageId'], STR_NULL_BAD, null],
     [['ascensions', 0, 'choices'], [EVIL, [], 5, null], undefined], [['ascensions', 0, 'choices', '[ANY]'], STR_BAD, ''],
+    // the grant record of a package entry (spec §6.3, Q7)
+    [['ascensions', 0, 'granted'], OBJ_BAD, undefined],
+    ...['powers', 'freePowers', 'talents'].map(k => [['ascensions', 0, 'granted', k], ARR_BAD, []]),
     // talent entry (spec §6.3)
     [['talents', 1, 'choice'], [{}, [], true, INF], null], [['talents', 5, 'choice'], [5, {}, true], null],
     [['talents', 7, 'ascensionGranted'], BOOL_BAD, false], [['talents', 1, 'id'], STR_BAD, 7, ['talents', 'length']],
@@ -426,6 +430,16 @@ function isAbsent(parent, key) {
 }
 
 // bad entries in lists that are not index-referenced are dropped; good entries stay in order
+// the grant record: a bad entry of each of its lists is dropped, and one warning names each path
+{
+    const c = CORPUS['full character']();
+    c.ascensions[0].granted = { powers: ['a', 5], freePowers: [null, 'b'], talents: [{}, 'c'] };
+    const r = loadJson(c);
+    check('hostile: bad entries of the grant record are dropped', r.character.ascensions[0].granted, { powers: ['a'], freePowers: ['b'], talents: ['c'] });
+    check('hostile: the grant record writes one warning that names each path', [r.warns.length,
+        ['ascensions[0].granted.powers[1]', 'ascensions[0].granted.freePowers[0]', 'ascensions[0].granted.talents[0]'].every(p => (r.warns[0] || '').includes(p))],
+        [1, true]);
+}
 check('hostile: bad entries of a string list are dropped', loadJson({ ...base(), psychicPowers: ['smite', 5, null, {}, 'psyniscience'] }).character.psychicPowers, ['smite', 'psyniscience']);
 check('hostile: a talent that is not a string or an object with a string id is dropped',
     loadJson({ ...base(), talents: ['a', 5, null, [], { id: 5 }, { id: 'b', choice: 'x' }] }).character.talents, ['a', { id: 'b', choice: 'x' }]);

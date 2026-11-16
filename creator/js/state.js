@@ -352,6 +352,7 @@ const State = {
     setArchetype(archetypeId) {
         // The current archetype: no change
         if (archetypeId === this.character.archetype?.id) return;
+        const oldGrants = this._archetypeGrantIds();
 
         const archetype = DataLoader.getArchetype(archetypeId);
         if (archetype) {
@@ -370,22 +371,11 @@ const State = {
             // Wargear is managed via the Wargear tab "Add Starting Wargear" button.
             // We do NOT clear or set wargear here to avoid losing manually added items.
 
-            // Set up psyker starting powers if archetype has psykerConfig
-            if (archetype.psykerConfig) {
-                this.character.freePowers = [];
-                this.character.unlockedDisciplines = [];
-                this.character.psychicPowers = [];
-
-                // Auto-add granted powers (e.g. Smite)
-                for (const powerId of archetype.psykerConfig.grantedPowers || []) {
-                    if (!this.character.psychicPowers.includes(powerId)) {
-                        this.character.psychicPowers.push(powerId);
-                    }
-                    if (!this.character.freePowers.includes(powerId)) {
-                        this.character.freePowers.push(powerId);
-                    }
-                }
-            }
+            // Release the powers that only the old archetype granted, then add the granted powers of the new one (e.g. Smite).
+            // Bought powers, picked powers and chosen disciplines stay in their lists.
+            this._releasePowerGrants(oldGrants);
+            this._applyPowerGrants(this._archetypeGrantIds());
+            this._settleFreePicks();
 
         } else {
             this.clearArchetype();
@@ -396,14 +386,15 @@ const State = {
 
     // Clear archetype selection
     clearArchetype() {
+        const oldGrants = this._archetypeGrantIds();
         // The stored custom archetype record stays (CC7)
         this._withRebase(() => {
             this.character.archetype = { id: null, xpCost: 0 };
         });
         this._skillChoicePrior = {};
-        this.character.freePowers = [];
-        this.character.unlockedDisciplines = [];
-        this.character.psychicPowers = [];
+        // Release the powers that only the old archetype granted. Bought powers and chosen disciplines stay.
+        this._releasePowerGrants(oldGrants);
+        this._settleFreePicks();
     },
 
     // Check if character is using custom archetype
@@ -426,12 +417,17 @@ const State = {
     setCustomArchetype() {
         // Custom is already the archetype: no change
         if (this.character.archetype?.id === 'custom') return;
+        const oldGrants = this._archetypeGrantIds();
 
         // The stored custom archetype record stays (CC7)
         this._withRebase(() => {
             this.character.archetype = { id: 'custom', xpCost: 0 };
         });
         this._skillChoicePrior = {};
+
+        // Release the powers that only the old archetype granted, then add the grants of the kept ability archetype
+        this._releasePowerGrants(oldGrants);
+        this._applyPowerGrants(this._archetypeGrantIds());
 
         // Keep the custom items in order, and move the owned-item talent choices to their new indices.
         // A choice on a removed entry becomes null, so the player picks again.
@@ -458,6 +454,7 @@ const State = {
             }
         }
 
+        this._settleFreePicks();
         this.notifyListeners('archetype');
     },
 
@@ -469,30 +466,14 @@ const State = {
 
     // Set custom archetype ability (archetypeId whose ability is purchased, or null)
     setCustomArchetypeAbility(archetypeId) {
+        const oldGrants = this._archetypeGrantIds();
         this.character.customArchetype.abilityArchetypeId = archetypeId || null;
 
-        // Set up psyker starting powers if the ability archetype has psykerConfig
-        const abilityArchetype = archetypeId ? DataLoader.getArchetype(archetypeId) : null;
-        if (abilityArchetype?.psykerConfig) {
-            this.character.freePowers = [];
-            this.character.unlockedDisciplines = [];
-            this.character.psychicPowers = [];
-
-            // Auto-add granted powers (e.g. Smite)
-            for (const powerId of abilityArchetype.psykerConfig.grantedPowers || []) {
-                if (!this.character.psychicPowers.includes(powerId)) {
-                    this.character.psychicPowers.push(powerId);
-                }
-                if (!this.character.freePowers.includes(powerId)) {
-                    this.character.freePowers.push(powerId);
-                }
-            }
-        } else {
-            // Clear psyker state when switching away from a psyker ability
-            this.character.freePowers = [];
-            this.character.unlockedDisciplines = [];
-            this.character.psychicPowers = [];
-        }
+        // Release the powers that only the old ability archetype granted, then add the granted powers of the new one (e.g. Smite).
+        // Bought powers, picked powers and chosen disciplines stay in their lists.
+        this._releasePowerGrants(oldGrants);
+        this._applyPowerGrants(this._archetypeGrantIds());
+        this._settleFreePicks();
 
         this.notifyListeners('customArchetype');
     },
@@ -826,6 +807,15 @@ const State = {
             const freeIndex = (this.character.freePowers || []).indexOf(powerId);
             if (freeIndex !== -1) {
                 this.character.freePowers.splice(freeIndex, 1);
+            }
+            // Also remove it from each grant record, so a later free pick of the same power does not go with the package
+            for (const entry of this.character.ascensions || []) {
+                if (!entry.granted) continue;
+                for (const key of ['powers', 'freePowers']) {
+                    if (Array.isArray(entry.granted[key])) {
+                        entry.granted[key] = entry.granted[key].filter(id => id !== powerId);
+                    }
+                }
             }
             this.notifyListeners('power', powerId);
             return true;
@@ -1374,6 +1364,7 @@ const State = {
             if (data.choices) {
                 entry.choices = data.choices;
             }
+            // The grant record is never copied from data: only the grant step below writes it
             this.character.ascensions.push(entry);
             // Sort by targetTier for consistency
             this.character.ascensions.sort((a, b) => a.targetTier - b.targetTier);
@@ -1382,14 +1373,16 @@ const State = {
             this._applyAscensionEffects(entry);
         }
 
+        this._settleFreePicks();
         this.notifyListeners('ascension', targetTier);
     },
 
-    // Apply mechanical effects from an ascension package
+    // Apply mechanical effects from an ascension package, and record what the grant step added
     _applyAscensionEffects(entry) {
         if (entry.type !== 'package' || !entry.packageId) return;
         const pkg = DataLoader.getAscensionPackages().find(p => p.id === entry.packageId);
         if (!pkg) return;
+        const granted = { powers: [], freePowers: [], talents: [] };
 
         // Auto-grant talents
         if (pkg.talentsGranted) {
@@ -1400,97 +1393,148 @@ const State = {
                 );
                 if (!hasTalent) {
                     this.character.talents.push({ id: talentId, ascensionGranted: true });
+                    granted.talents.push(talentId);
                 }
             }
         }
 
-        // Auto-grant psychic powers
-        if (pkg.psykerConfig?.grantedPowers) {
-            for (const powerId of pkg.psykerConfig.grantedPowers) {
-                if (!this.character.psychicPowers.includes(powerId)) {
-                    this.character.psychicPowers.push(powerId);
-                }
-                if (!this.character.freePowers) this.character.freePowers = [];
-                if (!this.character.freePowers.includes(powerId)) {
-                    this.character.freePowers.push(powerId);
-                }
-            }
-        }
+        // Auto-grant psychic powers (e.g. Smite) and specific powers (e.g. Lost Upon The Seer Path).
+        // A power that the character has stays as it is.
+        const added = this._applyPowerGrants([
+            ...(pkg.psykerConfig?.grantedPowers || []),
+            ...(pkg.powersGranted || [])
+        ]);
+        granted.powers = [...added];
+        granted.freePowers = [...added];
 
-        // Auto-grant specific powers (e.g., Lost Upon The Seer Path)
-        if (pkg.powersGranted) {
-            for (const powerId of pkg.powersGranted) {
-                if (!this.character.psychicPowers.includes(powerId)) {
-                    this.character.psychicPowers.push(powerId);
-                }
-                if (!this.character.freePowers) this.character.freePowers = [];
-                if (!this.character.freePowers.includes(powerId)) {
-                    this.character.freePowers.push(powerId);
-                }
-            }
-        }
-
-        // Auto-unlock disciplines
-        if (pkg.disciplinesUnlocked) {
-            if (!this.character.unlockedDisciplines) this.character.unlockedDisciplines = [];
-            for (const d of pkg.disciplinesUnlocked) {
-                if (!this.character.unlockedDisciplines.includes(d)) {
-                    this.character.unlockedDisciplines.push(d);
-                }
-            }
-        }
+        // The disciplines that the package unlocks are not stored: getUnlockedDisciplines reads them from the package
+        entry.granted = granted;
     },
 
-    // Remove mechanical effects from an ascension package
+    // Remove mechanical effects from an ascension package.
+    // With a grant record, only the recorded ids can go. With no record (a save from before the record),
+    // the grant lists of the package can go. An id that another current source grants stays, and a bought power stays.
     _removeAscensionEffects(entry) {
         if (entry.type !== 'package' || !entry.packageId) return;
         const pkg = DataLoader.getAscensionPackages().find(p => p.id === entry.packageId);
-        if (!pkg) return;
+        const record = entry.granted;
+        if (!record && !pkg) return;
 
-        // Remove ascension-granted talents
-        if (pkg.talentsGranted) {
-            for (const talentId of pkg.talentsGranted) {
-                const idx = this.character.talents.findIndex(t =>
-                    typeof t === 'object' && t.id === talentId && t.ascensionGranted
-                );
-                if (idx !== -1) {
-                    this.character.talents.splice(idx, 1);
+        // Release the granted psychic powers
+        const powerIds = record
+            ? [...(record.powers || []), ...(record.freePowers || [])]
+            : [...(pkg.psykerConfig?.grantedPowers || []), ...(pkg.powersGranted || [])];
+        this._releasePowerGrants([...new Set(powerIds)], entry);
+
+        // Remove the ascension-granted talents that no other current package grants
+        const talentIds = record ? (record.talents || []) : (pkg.talentsGranted || []);
+        for (const talentId of talentIds) {
+            const idx = this.character.talents.findIndex(t =>
+                typeof t === 'object' && t.id === talentId && t.ascensionGranted
+            );
+            if (idx === -1) continue;
+            const holders = (this.character.ascensions || []).filter(other => {
+                if (other === entry || other.type !== 'package' || !other.packageId) return false;
+                const otherPkg = DataLoader.getAscensionPackages().find(p => p.id === other.packageId);
+                return (otherPkg?.talentsGranted || []).includes(talentId);
+            });
+            if (holders.length === 0) {
+                this.character.talents.splice(idx, 1);
+                continue;
+            }
+            // Another package grants it: it stays, and it goes into the record of the first such entry that has a record
+            const holder = holders.find(other => other.granted);
+            if (holder) {
+                if (!Array.isArray(holder.granted.talents)) holder.granted.talents = [];
+                if (!holder.granted.talents.includes(talentId)) holder.granted.talents.push(talentId);
+            }
+        }
+
+        // Unlocked and chosen disciplines stay: getUnlockedDisciplines reads the disciplines of the current packages
+    },
+
+    // The power ids that the archetype grants (P1), or the ability archetype of a custom archetype (P2)
+    _archetypeGrantIds() {
+        const archetypeId = this.character.archetype?.id === 'custom'
+            ? this.character.customArchetype?.abilityArchetypeId
+            : this.character.archetype?.id;
+        const archetype = archetypeId ? DataLoader.getArchetype(archetypeId) : null;
+        return [...(archetype?.psykerConfig?.grantedPowers || [])];
+    },
+
+    // The power ids that a current source grants: the archetype, and each package ascension except excludeEntry
+    _grantedPowerIds(excludeEntry = null) {
+        const ids = new Set(this._archetypeGrantIds());
+        for (const entry of this.character.ascensions || []) {
+            if (entry === excludeEntry || entry.type !== 'package' || !entry.packageId) continue;
+            const pkg = DataLoader.getAscensionPackages().find(p => p.id === entry.packageId);
+            for (const id of pkg?.psykerConfig?.grantedPowers || []) ids.add(id);
+            for (const id of pkg?.powersGranted || []) ids.add(id);
+        }
+        return ids;
+    },
+
+    // Add each id that the character does not have to psychicPowers and freePowers. Returns the ids that it added.
+    // An id that the character has (bought or picked) stays as it is.
+    _applyPowerGrants(ids) {
+        if (!Array.isArray(this.character.freePowers)) this.character.freePowers = [];
+        const added = [];
+        for (const id of ids) {
+            if (this.character.psychicPowers.includes(id)) continue;
+            this.character.psychicPowers.push(id);
+            if (!this.character.freePowers.includes(id)) this.character.freePowers.push(id);
+            added.push(id);
+        }
+        return added;
+    },
+
+    // Remove from both lists each free id that no current source grants. A bought power is not free, so it stays.
+    // An id that another package entry still grants stays, and goes into the record of the first such entry
+    // that has a record (adoption), so the remove of that entry releases it later.
+    _releasePowerGrants(ids, excludeEntry = null) {
+        const free = Array.isArray(this.character.freePowers) ? this.character.freePowers : [];
+        const granted = this._grantedPowerIds(excludeEntry);
+        for (const id of ids) {
+            if (!free.includes(id)) continue;
+            if (granted.has(id)) {
+                const holder = (this.character.ascensions || []).find(entry => {
+                    if (entry === excludeEntry || !entry.granted || entry.type !== 'package' || !entry.packageId) return false;
+                    const pkg = DataLoader.getAscensionPackages().find(p => p.id === entry.packageId);
+                    return (pkg?.psykerConfig?.grantedPowers || []).includes(id) || (pkg?.powersGranted || []).includes(id);
+                });
+                if (holder) {
+                    for (const key of ['powers', 'freePowers']) {
+                        if (!Array.isArray(holder.granted[key])) holder.granted[key] = [];
+                        if (!holder.granted[key].includes(id)) holder.granted[key].push(id);
+                    }
                 }
+                continue;
             }
+            free.splice(free.indexOf(id), 1);
+            const index = this.character.psychicPowers.indexOf(id);
+            if (index !== -1) this.character.psychicPowers.splice(index, 1);
         }
+    },
 
-        // Remove auto-granted psychic powers
-        const powersToRemove = [
-            ...(pkg.psykerConfig?.grantedPowers || []),
-            ...(pkg.powersGranted || [])
-        ];
-        for (const powerId of powersToRemove) {
-            const powerIdx = this.character.psychicPowers.indexOf(powerId);
-            if (powerIdx !== -1) {
-                this.character.psychicPowers.splice(powerIdx, 1);
-            }
-            const freeIdx = (this.character.freePowers || []).indexOf(powerId);
-            if (freeIdx !== -1) {
-                this.character.freePowers.splice(freeIdx, 1);
-            }
-        }
-
-        // Remove auto-unlocked disciplines
-        if (pkg.disciplinesUnlocked) {
-            for (const d of pkg.disciplinesUnlocked) {
-                const idx = (this.character.unlockedDisciplines || []).indexOf(d);
-                if (idx !== -1) {
-                    this.character.unlockedDisciplines.splice(idx, 1);
-                }
-            }
-        }
-
-        // Remove discipline choices associated with this package's psykerConfig
-        if (pkg.psykerConfig?.disciplineChoices) {
-            // We can't know which specific discipline was chosen for this package,
-            // so we leave user-chosen disciplines intact. They'll be cleaned up
-            // by getRemainingDisciplineChoices() returning negative count.
-        }
+    // CC4: a free id that no current source grants stays free only while a free pick slot of getPsykerConfig covers it.
+    // A slot covers the first `count` such ids, in the order of freePowers, whose discipline matches.
+    // An id that no slot covers leaves freePowers and stays in psychicPowers as a paid power.
+    _settleFreePicks() {
+        const free = this.character.freePowers;
+        if (!Array.isArray(free) || free.length === 0) return;
+        const granted = this._grantedPowerIds();
+        const slots = (this.getPsykerConfig()?.freePowerChoices || [])
+            .map(slot => ({ disciplines: slot.disciplines || [], left: slot.count || 0 }));
+        const kept = free.filter(id => {
+            if (granted.has(id)) return true;
+            const power = DataLoader.getPsychicPower(id);
+            if (!power) return false;
+            const slot = slots.find(s => s.left > 0 && s.disciplines.some(d => d.toLowerCase() === power.discipline.toLowerCase()));
+            if (!slot) return false;
+            slot.left--;
+            return true;
+        });
+        free.splice(0, free.length, ...kept);
     },
 
     // Set a choice for an ascension package (e.g., Demanding Patron benefit)

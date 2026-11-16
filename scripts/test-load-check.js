@@ -553,9 +553,10 @@ function loadTwice(value) {
 
 // X1: the load deletes the phantom keys skills.choice, skills.choice1 and skills.choice2 (spec §4.3)
 {
-    const { first: r, second } = loadTwice({ ...base(), skills: { ...base().skills, choice: null, choice1: 4, choice2: 0 } });
-    check('X1: no key of skills starts with choice', Object.keys(r.character.skills).filter(k => k.startsWith('choice')), []);
-    check('X1: the 18 skills load deep-equal', canon(r.character.skills), canon(base().skills));
+    // choice3 is an unknown key that X1 does not name, so it stays (R10)
+    const { first: r, second } = loadTwice({ ...base(), skills: { ...base().skills, choice: null, choice1: 4, choice2: 0, choice3: 1 } });
+    check('X1: only choice3 of the choice keys stays', Object.keys(r.character.skills).filter(k => k.startsWith('choice')), ['choice3']);
+    check('X1: the 18 skills and choice3 load deep-equal', canon(r.character.skills), canon({ ...base().skills, choice3: 1 }));
     check('X1: no warning', r.warns, []);
     check('X1: the second load changes nothing and writes no warning', [canon(second.character), second.warns], [canon(r.character), []]);
 }
@@ -583,6 +584,24 @@ function loadTwice(value) {
     expected.species = { id: 'aeldari', xpCost: 10, subOptions: [{ type: 'path', optionId: 'path_of_the_artisan' }, { type: 'psychosensitive', optionId: 'psyker' }] };
     check('X2: each other value loads deep-equal', canon(c), canon(expected));
     check('X2: the second load changes nothing and writes no warning', [canon(second.character), second.warns], [canon(c), []]);
+}
+{
+    // Wargear can hold an item two times, so a wargear alias maps also onto an id that the list holds (spec §9.2)
+    const r = loadJson({ ...base(), wargear: [{ id: 'force_shield_aeldari', isStarting: true }, { id: 'forceshield', isStarting: true }] });
+    check('X2: a wargear alias maps onto an id that the wargear list holds', r.character.wargear,
+        [{ id: 'force_shield_aeldari', isStarting: true }, { id: 'force_shield_aeldari', isStarting: true }]);
+}
+{
+    // An id that is a key of Object.prototype is not an alias. Each such string stays, as at e976ca8 (review finding F1).
+    const r = loadJson({ ...base(), talents: ['constructor', { id: 'toString' }], wargear: [{ id: 'valueOf', isStarting: false }],
+        customArchetype: { ...base().customArchetype, wargear: ['hasOwnProperty'] }, species: { id: 'constructor', xpCost: 0, subOptions: [] } });
+    const c = r.character;
+    check('X2: a talent string constructor stays', c.talents[0], 'constructor');
+    check('X2: a talent object with the id toString stays', c.talents[1], { id: 'toString' });
+    check('X2: a wargear id valueOf stays', c.wargear[0], { id: 'valueOf', isStarting: false });
+    check('X2: a custom archetype wargear id hasOwnProperty stays', c.customArchetype.wargear, ['hasOwnProperty']);
+    check('X2: a species id constructor stays', c.species, { id: 'constructor', xpCost: 0, subOptions: [] });
+    check('X2: the prototype key ids write no warning', r.warns, []);
 }
 {
     const r = loadJson({ ...base(), species: { id: 'aeldari_psychosensitive', xpCost: 10, subOptions: [{ type: 'psychosensitive', optionId: 'psyker' }] } });

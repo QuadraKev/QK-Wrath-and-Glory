@@ -190,9 +190,11 @@ const State = {
 
         // X2: map each old id to its new id in place. The order stays, because talent choices store wargear indices.
         const aliases = this.ID_ALIASES;
+        // Only an own key is an alias, so an id such as constructor never gets a function of Object.prototype
+        const alias = (table, id) => (Object.prototype.hasOwnProperty.call(table, id) ? table[id] : null);
         const talentId = t => (typeof t === 'string' ? t : t.id);
         c.talents.forEach((talent, index) => {
-            const newId = aliases.talents[talentId(talent)];
+            const newId = alias(aliases.talents, talentId(talent));
             // A talent is not mapped onto an id that the list holds: the XP would count it two times (CC5)
             if (!newId || c.talents.some(t => talentId(t) === newId)) return;
             if (typeof talent === 'string') c.talents[index] = newId;
@@ -200,17 +202,17 @@ const State = {
         });
         // Wargear can hold an item two times, so a wargear id is always mapped
         c.wargear.forEach(entry => {
-            if (aliases.wargear[entry.id]) entry.id = aliases.wargear[entry.id];
+            if (alias(aliases.wargear, entry.id)) entry.id = alias(aliases.wargear, entry.id);
         });
         c.customArchetype.wargear.forEach((id, index) => {
-            if (aliases.wargear[id]) c.customArchetype.wargear[index] = aliases.wargear[id];
+            if (alias(aliases.wargear, id)) c.customArchetype.wargear[index] = alias(aliases.wargear, id);
         });
-        if (aliases.species[c.species.id]) {
+        if (alias(aliases.species, c.species.id)) {
             // The old species aeldari_psychosensitive had PSYKER. The new species gives it through a sub-option (CC1).
             if (c.species.id === 'aeldari_psychosensitive' && !c.species.subOptions.some(o => o.type === 'psychosensitive')) {
                 c.species.subOptions.push({ type: 'psychosensitive', optionId: 'psyker' });
             }
-            c.species.id = aliases.species[c.species.id];
+            c.species.id = alias(aliases.species, c.species.id);
         }
 
         // X3: fill a missing bonusType of a background entry from the data. Before, a render wrote it.

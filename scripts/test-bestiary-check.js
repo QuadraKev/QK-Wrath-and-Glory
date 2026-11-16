@@ -61,15 +61,21 @@ function buildEncounterCorpus() {
     EncounterState.setAdditionalWeapon(a, 'gone_weapon');
     const [champ] = EncounterState.addIndividual('tactical_space_marine', 1);
     EncounterState.updatePersonalRuin(champ, 2);
+    EncounterState.updateBonus(champ, 'elite');
     const [mob] = EncounterState.addIndividual('astra_militarum_trooper', 4, true);
     EncounterState.setMobInitiative(mob, '7'); EncounterState.updateMobNotes(mob, 'n & m');
-    EncounterState.splitOffFromMob(mob, 2);
+    const split = EncounterState.splitOffFromMob(mob, 2);
+    EncounterState.setMobInitiative(split, '');                // a mob with a null initiative
     const p = EncounterState.addPlayerCharacter('Bob "Big" Smith');
     EncounterState.setPlayerCharacterInitiative(p, '15');
     EncounterState.updatePlayerCharacterNotes(p, '&amp;');
     const v = EncounterState.addVehicle('chimera');
     EncounterState.updateVehicleWounds(v, 2); EncounterState.setVehicleInitiative(v, '3');
     EncounterState.moveItemInOrder('player', p, 0);
+    const p2 = EncounterState.addPlayerCharacter('Ann');
+    EncounterState.setPlayerCharacterInitiative(p2, '');      // a player with a null initiative
+    const v2 = EncounterState.addVehicle('chimera');
+    EncounterState.setVehicleInitiative(v2, '');              // a vehicle with a null initiative
     ThreatBuilderState.loadTemplate('fire_warrior');           // list-shaped mobAbilities and mobOptions
     ThreatBuilderState.updateField('name', 'Custom FW');
     ThreatBuilderState.injectIntoEncounter(2);
@@ -85,6 +91,9 @@ function buildEncounterCorpus() {
 }
 
 const saved = buildEncounterCorpus();
+// The same encounter after the real writer clearEncounterOrder (encounterOrder: null)
+EncounterState.clearEncounterOrder();
+const savedNoOrder = rt(EncounterState.getEncounterData());
 
 // The corpus without the keys that spec §4.4 marks optional
 function OLD_SHAPES() {
@@ -107,6 +116,13 @@ function OLD_SHAPES() {
 { const old = OLD_SHAPES(); const copy = rt(old);
   check('no-op: old shapes repair nothing', BestiaryCheck.repairEncounter(copy), []);
   check('no-op: old shapes stay deep-equal', copy, old); }
+check('no-op: the corpus has an Elite individual and a null mob, player and vehicle initiative',
+    [saved.individuals[1].bonus, saved.mobs[1].initiative, saved.playerCharacters[1].initiative, saved.vehicles[1].initiative],
+    ['elite', null, null, null]);
+{ const copy = rt(savedNoOrder);
+  check('no-op: the corpus has a null encounterOrder', savedNoOrder.encounterOrder, null);
+  check('no-op: a null encounterOrder repairs nothing', BestiaryCheck.repairEncounter(copy), []);
+  check('no-op: a null encounterOrder stays deep-equal', copy, savedNoOrder); }
 // each shipped record, and each shipped record as a builder template
 let bad = [];
 for (const t of readJson('data/threats.json')) {
@@ -145,7 +161,7 @@ const cases = [
     ['maxWounds string', withData(d => { d.individuals[0].maxWounds = 'x'; }), enc, ['individuals[0].maxWounds'], [d => d.individuals[0].maxWounds, null]],
     ['maxWounds null (legal)', withData(d => { d.individuals[0].maxWounds = null; }), enc, [], [d => d.individuals[0].maxWounds, null]],
     ['dangling mobId (E3)', withData(d => { d.individuals[0].mobId = 'nomob'; }), enc, ['individuals[0].mobId'], [d => d.individuals[0].mobId, null]],
-    ['member of a dropped mob (P9)', withData(d => { d.mobs[0].id = 5; }), enc,
+    ['member of a dropped mob (P9)', withData(d => { d.mobs[0].threatId = 5; }), enc,
         ['individuals[4].mobId', 'individuals[5].mobId', 'mobs[0]'],
         [d => [d.individuals[4].mobId, d.individuals[5].mobId], [null, null]]],
     ['currentWounds null (C6 defect, E4)', withData(d => { d.individuals[0].currentWounds = null; }), enc, ['individuals[0].currentWounds'], [d => d.individuals[0].currentWounds, 0]],
@@ -154,7 +170,17 @@ const cases = [
     ['mob name number', withData(d => { d.mobs[0].name = 5; }), enc, ['mobs[0].name'], [d => d.mobs[0].name, 'Mob']],
     ['player name object', withData(d => { d.playerCharacters[0].name = {}; }), enc, ['playerCharacters[0].name'], [d => d.playerCharacters[0].name, 'Player']],
     ['vehicle wounds string', withData(d => { d.vehicles[0].wounds = 'x'; }), enc, ['vehicles[0].wounds'], [d => d.vehicles[0].wounds, 0]],
-    ['vehicle with no vehicleId', withData(d => { delete d.vehicles[0].vehicleId; }), enc, ['vehicles[0]'], [d => d.vehicles, []]],
+    ['vehicle with no vehicleId', withData(d => { delete d.vehicles[0].vehicleId; }), enc, ['vehicles[0]'],
+        [d => d.vehicles.map(v => v.id), [saved.vehicles[1].id]]],
+    // Fix round 1 (F3): one row for each part that the first table did not reach
+    ['maxShock string', withData(d => { d.individuals[0].maxShock = 'x'; }), enc, ['individuals[0].maxShock'], [d => d.individuals[0].maxShock, null]],
+    ['mob with no threatId', withData(d => { delete d.mobs[0].threatId; }), enc,
+        ['individuals[4].mobId', 'individuals[5].mobId', 'mobs[0]'], [d => d.mobs.map(m => m.id), [saved.mobs[1].id]]],
+    ['mob initiative string', withData(d => { d.mobs[0].initiative = 'x'; }), enc, ['mobs[0].initiative'], [d => d.mobs[0].initiative, null]],
+    ['player initiative string', withData(d => { d.playerCharacters[0].initiative = 'x'; }), enc, ['playerCharacters[0].initiative'], [d => d.playerCharacters[0].initiative, null]],
+    ['vehicle initiative string', withData(d => { d.vehicles[0].initiative = 'x'; }), enc, ['vehicles[0].initiative'], [d => d.vehicles[0].initiative, null]],
+    ['order entry with no type', withData(d => { delete d.encounterOrder[0].type; }), enc, ['encounterOrder[0]'],
+        [d => d.encounterOrder, saved.encounterOrder.slice(1)]],
     ['encounterOrder string', withData(d => { d.encounterOrder = 'x'; }), enc, ['encounterOrder'], [d => d.encounterOrder, null]],
     ['customThreats object', withData(d => { d.customThreats = {}; }), enc, ['customThreats'], [d => d.customThreats, []]],
     ['C11 shipped id', withData(d => { d.customThreats[0].id = 'sly_marbo_aaa'; }), enc, ['customThreats[0]'],
@@ -177,11 +203,20 @@ const cases = [
         ['mobAbilities[0]', 'mobAbilities[1].name'], [t => t.mobAbilities, [{ name: '', description: 'd' }]]],
     ['threat: skills number', withThreat(t => { t.skills = 5; }), thr, ['skills'], [t => t.skills, '']],
     ['threat: unknown key stays', withThreat(t => { t.mobActions = 'kept'; }), thr, [], [t => t.mobActions, 'kept']],
+    // Fix round 1 (F3)
+    ['threat: tierThreat key outside 1-5', withThreat(t => { t.tierThreat['6'] = 5; }), thr, ['tierThreat.6'], [t => t.tierThreat['6'], '-']],
+    ['threat: size number', withThreat(t => { t.size = 5; }), thr, ['size'], [t => t.size, 'Average']],
+    ['threat: resilience values', withThreat(t => { t.resilience = { value: '4', note: 3 }; }), thr,
+        ['resilience.value', 'resilience.note'], [t => t.resilience, { value: 1, note: '' }]],
+    ['threat: bonuses entries', withThreat(t => { t.bonuses = [5, { name: 'B', description: 7 }]; }), thr,
+        ['bonuses[0]', 'bonuses[1].description'], [t => t.bonuses, [{ name: 'B', description: '' }]]],
 
     ['players: playerCount string', () => ({ playerCount: '3', players: [] }), ply, ['playerCount'], [d => 'playerCount' in d, false]],
     ['players: playerCount 50', () => ({ playerCount: 50 }), ply, ['playerCount'], [d => d.playerCount, 10]],
     ['players: wrong entries', () => ({ players: [5, { name: 'A', notes: 5 }, { name: 7 }] }), ply,
-        ['players[0]', 'players[1].notes', 'players[2].name'], [d => d.players, [{ name: 'A', notes: '' }, { name: 'Player' }]]]
+        ['players[0]', 'players[1].notes', 'players[2].name'], [d => d.players, [{ name: 'A', notes: '' }, { name: 'Player' }]]],
+    // Fix round 1 (F3)
+    ['players: playerCount 2.5', () => ({ playerCount: 2.5, players: [] }), ply, ['playerCount'], [d => 'playerCount' in d, false]]
 ];
 for (const [name, makeData, repairFn, expectedPaths, [readValue, expectedValue]] of cases) {
     const d = makeData();
@@ -212,6 +247,12 @@ for (const [value, min, max, expected] of inputCases) {
     for (const key of Object.keys(record.attributes).reverse()) attributes[key] = record.attributes[key];
     nested.attributes = attributes;
     check('sameThreatData: a nested key order change is the same', BestiaryCheck.sameThreatData(record, nested), true);
+    // Fix round 1 (F3): the order of an array is part of the JSON
+    check('sameThreatData: a list in another order is different',
+        BestiaryCheck.sameThreatData(record, { ...rt(record), abilities: rt(record.abilities).reverse() }), false);
+    // Fix round 1 (F4): an own __proto__ key is data, not the prototype
+    check('sameThreatData: records that differ only under an own __proto__ key are different',
+        BestiaryCheck.sameThreatData(JSON.parse('{"id":"a","__proto__":{"wounds":1}}'), JSON.parse('{"id":"a","__proto__":{"wounds":2}}')), false);
 }
 
 // --- Constants against the declared limits ---
@@ -243,6 +284,9 @@ for (const [value, min, max, expected] of inputCases) {
     check('cache: the bestiary-check.js tag comes after data-loader.js and before encounter-state.js',
         checkTag > at('data-loader.js') && at('data-loader.js') !== -1 && checkTag < at('encounter-state.js'), true);
 }
+
+// The module writes no warning: the loader of a later task writes the one warning of spec §4.3 rule 8
+check('no warning', warns, []);
 
 console.log(failures === 0 ? '\nAll checks passed' : `\n${failures} check(s) FAILED.`);
 process.exit(failures ? 1 : 0);

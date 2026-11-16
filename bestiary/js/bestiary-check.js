@@ -1,7 +1,9 @@
 // Bestiary Check - repairs the type of each known field of a loaded encounter, custom threat or player file
 // (spec docs/superpowers/specs/2026-11-15-bug-pass-bestiary-design.md, §4.3 to §4.6 and §6.2).
 // A value of the wrong type gets the repair value of its row, and its path goes into the returned list.
-// The check never changes a value that the app can write, and it keeps each unknown key.
+// The check never changes a value that the app can write, except the exceptions E1 and E4 of spec §4.8.
+// E1 clamps a player count outside 1-10. E4 repairs the null values that the C6 defect wrote.
+// The check keeps each unknown key.
 // It reads no data file, so node tests can load this file in a vm sandbox.
 
 const BestiaryCheck = {
@@ -200,7 +202,8 @@ const BestiaryCheck = {
         const canon = (value) => {
             if (Array.isArray(value)) return value.map(canon);
             if (this.isPlainObject(value)) {
-                const out = {};
+                // No prototype, so an own __proto__ key stays a data key
+                const out = Object.create(null);
                 for (const key of Object.keys(value).sort()) out[key] = canon(value[key]);
                 return out;
             }

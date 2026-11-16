@@ -220,6 +220,19 @@ const settingTable = {};
         }
         settingTable[name] = out;
     }
+    // The lowest and the highest legal value of each field, through the handlers
+    for (const [label, el, key, entries] of [
+        ['rank', rank, 'rank', [['1', 1], ['3', 3]]],
+        ['tier', tier, 'tier', [['1', 1], ['5', 5]]],
+        ['xp', xp, 'additionalXp', [['0', 0]]]
+    ]) {
+        for (const [text, want] of entries) {
+            loadCharacter({ rank: 2, additionalXp: 7, tier: 3 });
+            fire(el, 'change', { value: text });
+            check(`Setting tab ${label} ${text}: the lowest or highest legal value is stored`, State.character[key], want);
+            check(`Setting tab ${label} ${text}: input text`, el.value, text);
+        }
+    }
     // A stored value outside the range stays after a refused entry and shows again
     loadCharacter({ rank: 5, additionalXp: -3 });
     fire(rank, 'change', { value: '', badInput: true });
@@ -255,6 +268,12 @@ const corruptionTable = {};
     fire(el, 'change', { value: '12' });
     check('Corruption: 12 stored', State.character.corruption, 12);
     check('Corruption: a stored value renders the tab', renders > 0, true);
+    loadCharacter({ corruption: 5 });
+    renders = 0;
+    fire(el, 'change', { value: '0' });
+    check('Corruption: 0 (the lowest legal value) is stored', State.character.corruption, 0);
+    check('Corruption: 0 shows in the input', el.value, '0');
+    check('Corruption: 0 renders the tab', renders, 1);
 }
 
 // === The Followers inputs ===
@@ -321,6 +340,19 @@ const membersTable = {}, livingTable = {};
     check('Followers: Members 0 keeps 4', stored().count, 4);
     fire(members, 'change', { value: '6' });
     check('Followers: Members 6 is stored', stored().count, 6);
+    // The lowest legal value of Members. Living is cut to Members by updateFollower.
+    loadCharacter({ followers: [{ ...mob, count: 3, livingCount: 2 }] });
+    renders = 0;
+    fire(members, 'change', { value: '1' });
+    check('Followers: Members 1 (the lowest legal value) is stored', stored().count, 1);
+    check('Followers: Members 1 cuts Living 2 to 1', stored().livingCount, 1);
+    check('Followers: Members 1 shows in the input after one re-render', [members.value, renders], ['1', 1]);
+    // Living at its two limits
+    loadCharacter({ followers: [{ ...mob }] });
+    fire(living, 'change', { value: '0' });
+    check('Followers: Living 0 (the lowest legal value) shows in the input', [stored().livingCount, living.value], [0, '0']);
+    fire(living, 'change', { value: '4' });
+    check('Followers: Living 4 (equal to Members) shows in the input', [stored().livingCount, living.value], [4, '4']);
 }
 
 // === G1: a stored value outside the range stays at a load and at a render ===

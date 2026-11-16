@@ -312,7 +312,7 @@ group('names (builder)', () => {
     ThreatBuilderState._abilityIndex = null;
 });
 
-// --- the encounter tab: the list, the player rows and the notes boxes (spec section 8, tasks 8) ---
+// --- the encounter tab: the list, the player rows and the notes boxes (spec section 8, task 8) ---
 ctx.BottomSheet = { isOpen() { return false; }, open() {}, updateContent() {} };
 ctx.VehiclesTab = { renderVehicleCardMini: () => '', bindCardPopups() {} };
 for (const rel of ['bestiary/js/encounter-state.js', 'bestiary/tabs/encounter-tab.js']) load(ctx, rel);
@@ -365,9 +365,12 @@ group('C2', () => {
 group('N-2', () => {
     clearEncounterState();
     const threat = evilThreat();
+    // The Champion bonus makes the row draw the ruin tracker
+    threat.bonuses.push({ name: 'Champion', description: 'A champion.' });
     DataLoader.injectThreat(threat);
+    // A maxShock above 0 makes the row draw the shock value
     const individual = {
-        id: EVIL, threatId: threat.id, bonus: EVIL, currentWounds: EVIL, currentShock: EVIL, maxWounds: EVIL, maxShock: EVIL,
+        id: EVIL, threatId: threat.id, bonus: EVIL, currentWounds: EVIL, currentShock: EVIL, maxWounds: EVIL, maxShock: 4,
         personalRuin: EVIL, mobId: null, initiative: EVIL, notes: EVIL
     };
     const member = { id: 'm1', threatId: threat.id, bonus: 'none', currentWounds: 0, currentShock: 0, maxWounds: 3, maxShock: 0, mobId: EVIL, initiative: null };
@@ -390,6 +393,11 @@ group('N-2', () => {
         check(`N-2: the ${type} row holds no raw value`, RAW_B(rows[type]), false);
         check(`N-2: the ${type} row holds its data-id escaped`, rows[type].includes('data-id="&lt;b&gt;&quot;Q7&#39;&lt;/b&gt;&amp;"'), true);
     }
+    check('N-2: the individual row draws the shock value', rows.individual.includes('&amp;/4</span>'), true);
+    check('N-2: the individual row draws the ruin tracker', rows.individual.includes('class="stat-tracker ruin-tracker"'), true);
+    const playerDetail = renderDetailHtml('player', EVIL);
+    check('N-2: the player detail holds no raw value', RAW_B(playerDetail), false);
+    check('N-2: the player detail shows its initiative escaped', playerDetail.includes('id="player-detail-initiative" class="search-input"\n                           value="&lt;b&gt;&quot;Q7&#39;&lt;/b&gt;&amp;"'), true);
     clearEncounterState();
     DataLoader.removeThreat(threat.id);
 });

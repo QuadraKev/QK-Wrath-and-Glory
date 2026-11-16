@@ -1,16 +1,14 @@
 // Derived Stats Calculator - Calculates all derived character stats
 
 const DerivedStats = {
-    // Get background bonus for a specific stat type
+    // Get background bonus for a specific stat type.
+    // A character gets one Background bonus: the entry that USE THIS BONUS selected (Core p.43).
     getBackgroundBonus(character, statType) {
-        let bonus = 0;
         const background = character.background;
+        const selected = background?.bonusUsed;
 
-        if (background?.origin?.bonusType === statType) bonus += 1;
-        if (background?.accomplishment?.bonusType === statType) bonus += 1;
-        if (background?.goal?.bonusType === statType) bonus += 1;
-
-        return bonus;
+        if (selected !== 'origin' && selected !== 'accomplishment' && selected !== 'goal') return 0;
+        return background[selected]?.bonusType === statType ? 1 : 0;
     },
 
     // Get species sub-option bonus for a specific stat

@@ -73,9 +73,6 @@ const CharacterSheetTab = {
 
         const character = State.getCharacter();
 
-        // Repair any background selections missing bonusType
-        this.repairBackgroundBonusTypes(character);
-
         const species = DataLoader.getSpecies(character.species?.id);
         const archetype = DataLoader.getArchetype(character.archetype?.id);
         const keywords = State.getKeywords();
@@ -2801,35 +2798,5 @@ const CharacterSheetTab = {
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#39;');
-    },
-
-    // Repair any background selections that are missing bonusType
-    repairBackgroundBonusTypes(character) {
-        const backgrounds = DataLoader.getBackgrounds();
-        if (!backgrounds) return;
-
-        // Check origin
-        if (character.background?.origin?.id && !character.background.origin.bonusType) {
-            const origin = (backgrounds.origins || []).find(o => o.id === character.background.origin.id);
-            if (origin?.bonusType) {
-                character.background.origin.bonusType = origin.bonusType;
-            }
-        }
-
-        // Check accomplishment
-        if (character.background?.accomplishment?.id && !character.background.accomplishment.bonusType) {
-            const accomplishment = (backgrounds.accomplishments || []).find(a => a.id === character.background.accomplishment.id);
-            if (accomplishment?.bonusType) {
-                character.background.accomplishment.bonusType = accomplishment.bonusType;
-            }
-        }
-
-        // Check goal
-        if (character.background?.goal?.id && !character.background.goal.bonusType) {
-            const goal = (backgrounds.goals || []).find(g => g.id === character.background.goal.id);
-            if (goal?.bonusType) {
-                character.background.goal.bonusType = goal.bonusType;
-            }
-        }
     }
 };

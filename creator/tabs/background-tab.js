@@ -59,9 +59,6 @@ const BackgroundTab = {
         const backgrounds = DataLoader.getBackgrounds();
         const character = State.getCharacter();
 
-        // Repair any existing selections that are missing bonusType
-        this.repairMissingBonusTypes(character, backgrounds);
-
         // Populate origin select
         const originSelect = document.getElementById('origin-select');
         const origins = backgrounds.origins || [];
@@ -186,7 +183,14 @@ const BackgroundTab = {
         const backgrounds = DataLoader.getBackgrounds();
 
         if (!character.background.bonusUsed) {
-            bonusDisplay.classList.add('hidden');
+            // An entry is set but no bonus is selected: tell the user to select one.
+            const hasEntry = ['origin', 'accomplishment', 'goal'].some(key => character.background[key]?.id);
+            if (hasEntry) {
+                bonusDisplay.innerHTML = 'Select one bonus with USE THIS BONUS. A character gets one Background bonus (Core Rulebook p.43).';
+                bonusDisplay.classList.remove('hidden');
+            } else {
+                bonusDisplay.classList.add('hidden');
+            }
             return;
         }
 
@@ -196,17 +200,17 @@ const BackgroundTab = {
         if (type === 'origin' && character.background.origin?.id) {
             const origin = (backgrounds.origins || []).find(o => o.id === character.background.origin.id);
             if (origin) {
-                bonusText = `${origin.name}: ${origin.bonusDescription || origin.bonus || ''}`;
+                bonusText = `${this.escapeHtml(origin.name)}: ${this.escapeHtml(origin.bonusDescription || origin.bonus || '')}`;
             }
         } else if (type === 'accomplishment' && character.background.accomplishment?.id) {
             const acc = (backgrounds.accomplishments || []).find(a => a.id === character.background.accomplishment.id);
             if (acc) {
-                bonusText = `${acc.name}: ${acc.bonusDescription || acc.bonus || ''}`;
+                bonusText = `${this.escapeHtml(acc.name)}: ${this.escapeHtml(acc.bonusDescription || acc.bonus || '')}`;
             }
         } else if (type === 'goal' && character.background.goal?.id) {
             const goal = (backgrounds.goals || []).find(g => g.id === character.background.goal.id);
             if (goal) {
-                bonusText = `${goal.name}: ${goal.bonusDescription || goal.bonus || ''}`;
+                bonusText = `${this.escapeHtml(goal.name)}: ${this.escapeHtml(goal.bonusDescription || goal.bonus || '')}`;
             }
         }
 
@@ -256,33 +260,6 @@ const BackgroundTab = {
 
     refresh() {
         this.render();
-    },
-
-    // Repair any background selections that are missing bonusType
-    repairMissingBonusTypes(character, backgrounds) {
-        // Check origin
-        if (character.background.origin?.id && !character.background.origin.bonusType) {
-            const origin = (backgrounds.origins || []).find(o => o.id === character.background.origin.id);
-            if (origin?.bonusType) {
-                character.background.origin.bonusType = origin.bonusType;
-            }
-        }
-
-        // Check accomplishment
-        if (character.background.accomplishment?.id && !character.background.accomplishment.bonusType) {
-            const accomplishment = (backgrounds.accomplishments || []).find(a => a.id === character.background.accomplishment.id);
-            if (accomplishment?.bonusType) {
-                character.background.accomplishment.bonusType = accomplishment.bonusType;
-            }
-        }
-
-        // Check goal
-        if (character.background.goal?.id && !character.background.goal.bonusType) {
-            const goal = (backgrounds.goals || []).find(g => g.id === character.background.goal.id);
-            if (goal?.bonusType) {
-                character.background.goal.bonusType = goal.bonusType;
-            }
-        }
     },
 
     escapeHtml(text) {

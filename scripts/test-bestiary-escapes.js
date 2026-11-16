@@ -287,7 +287,8 @@ group('names (builder)', () => {
     const ATTR = 'A &amp; &quot;B&quot; &lt;C&gt;';
     const DOUBLE = ['&amp;amp;', '&amp;quot;', '&amp;lt;'];
     const threat = Object.assign(evilThreat(), {
-        id: 'custom_names_b', name: NAME, keywords: [NAME], abilities: [{ type: 'ACTION', name: NAME, description: NAME }]
+        id: 'custom_names_b', name: NAME, keywords: [NAME], abilities: [{ type: 'ACTION', name: NAME, description: NAME }],
+        bonuses: [{ name: NAME, description: NAME }]
     });
     DataLoader.injectThreat(threat);
     ThreatBuilderState._abilityIndex = null;
@@ -296,11 +297,12 @@ group('names (builder)', () => {
     ThreatBuilderTab.renderTemplateDropdown('', 'sidebar');
     const search = written[written.length - 1];
     const picker = ThreatBuilderTab.renderAbilityPickerContent();
+    const bonusPicker = ThreatBuilderTab.renderBonusPickerContent();
     ThreatBuilderState.threat = threat;
     written.length = 0;
     ThreatBuilderTab.renderEditor();
     const editor = written[written.length - 1];
-    for (const [label, html] of [['the preview', preview], ['the template search', search], ['the ability picker', picker]]) {
+    for (const [label, html] of [['the preview', preview], ['the template search', search], ['the ability picker', picker], ['the bonus picker', bonusPicker]]) {
         check(`names: ${label} holds the name escaped one time`, html.includes(TEXT), true);
         check(`names: ${label} holds no double escape`, DOUBLE.some(d => html.includes(d)), false);
     }

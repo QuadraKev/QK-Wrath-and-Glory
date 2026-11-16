@@ -236,22 +236,35 @@ const App = {
     // Check for auto-saved state on startup and auto-load it
     checkAutoSave() {
         // Restore encounter auto-save (including any custom threats)
+        // A stored value of the wrong shape is not loaded and stays stored (spec §4.2)
         const saved = EncounterState.getAutoSave();
-        if (saved && saved.encounter) {
-            // Inject top-level custom threats first (belt-and-suspenders with loadFromData)
-            if (saved.customThreats) {
-                saved.customThreats.forEach(t => DataLoader.injectThreat(t));
+        if (saved !== null) {
+            if (BestiaryCheck.isPlainObject(saved) && BestiaryCheck.isPlainObject(saved.encounter)) {
+                const paths = BestiaryCheck.repairCustomThreatList(saved, 'customThreats', 'autosave.customThreats');
+                // Inject top-level custom threats first (belt-and-suspenders with loadFromData)
+                if (saved.customThreats) {
+                    saved.customThreats.forEach(t => DataLoader.injectThreat(t));
+                }
+                EncounterState.loadFromData(saved.encounter, paths);
+                // The page restored its state from the key, so it owns the key (CB1)
+                EncounterState._ownsAutoSave = true;
+                this.updateThreatCount();
+                this.switchTab('encounter');
+                EncounterTab.refresh();
+            } else {
+                console.warn('The auto-save was not loaded: it does not contain an encounter.');
             }
-            EncounterState.loadFromData(saved.encounter);
-            this.updateThreatCount();
-            this.switchTab('encounter');
-            EncounterTab.refresh();
         }
 
         // Restore threat builder auto-save
         const builderSave = ThreatBuilderState.getAutoSave();
-        if (builderSave && builderSave.threat) {
-            ThreatBuilderState.loadFromAutoSave(builderSave.threat);
+        if (builderSave !== null) {
+            if (BestiaryCheck.isPlainObject(builderSave) && BestiaryCheck.isPlainObject(builderSave.threat)) {
+                ThreatBuilderState.loadFromAutoSave(builderSave.threat);
+                ThreatBuilderState._ownsAutoSave = true;
+            } else {
+                console.warn('The auto-save was not loaded: it does not contain a threat.');
+            }
         }
     }
 };

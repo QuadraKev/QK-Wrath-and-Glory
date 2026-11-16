@@ -31,6 +31,9 @@ const EncounterState = {
     // Auto-save support
     _autoSaveTimer: null,
     _AUTO_SAVE_KEY: 'wng-bestiary-autosave',
+    // True when this page wrote the key or restored its state from it (spec §5.2, CB1).
+    // Only an owner removes the key, so a second tab cannot delete the work of the first tab.
+    _ownsAutoSave: false,
 
     // Initialize the state
     init() {
@@ -41,6 +44,12 @@ const EncounterState = {
     // Mark encounter as having unsaved changes
     markDirty() {
         this._isDirty = true;
+        // An empty state is not stored: an owner removes the key at once (CB2)
+        if (this.isEmpty()) {
+            clearTimeout(this._autoSaveTimer);
+            this.clearAutoSave();
+            return;
+        }
         this._scheduleAutoSave();
     },
 
@@ -819,7 +828,7 @@ const EncounterState = {
         // Add standalone individuals
         this.getStandaloneIndividuals().forEach(individual => {
             const threat = DataLoader.getThreat(individual.threatId);
-            let name = threat ? threat.name : 'Unknown';
+            let name = threat ? threat.name : `Unknown threat (${individual.threatId})`;
             // Show source only when the same name maps to different threat IDs
             if (threat && nameToIds.get(threat.name)?.size > 1 && threat.source) {
                 name += ` (${threat.source})`;
@@ -843,7 +852,7 @@ const EncounterState = {
             items.push({
                 type: 'mob',
                 id: mob.id,
-                name: mob.name,
+                name: threat ? mob.name : `${mob.name} — Unknown threat (${mob.threatId})`,
                 bonus: 'none', // Mobs don't have bonus
                 initiative: mob.initiative,
                 isDead: livingCount === 0,
@@ -975,28 +984,33 @@ const EncounterState = {
     async loadEncounterFromFile() {
         const result = await window.api.loadEncounterFile();
 
-        if (result.success && result.data) {
-            const parsed = result.data;
-            // Re-inject custom threats before resolving encounter entries
-            if (parsed.customThreats) {
-                parsed.customThreats.forEach(t => DataLoader.injectThreat(t));
+        if (result.success) {
+            // The file must be a plain object with one key of an encounter (spec §4.2, CB3).
+            // A file that fails this test changes nothing.
+            const data = result.data;
+            const encounterKeys = ['settings', 'individuals', 'mobs', 'playerCharacters', 'vehicles'];
+            if (!BestiaryCheck.isPlainObject(data) || !encounterKeys.some(key => Object.prototype.hasOwnProperty.call(data, key))) {
+                return { success: false, error: 'Invalid encounter file' };
             }
-            this.settings = parsed.settings || { tier: 1, playerCount: 4, name: result.fileName, round: 1 };
+            this.loadFromData(data);
             this.settings.name = result.fileName; // Use filename as encounter name
-            if (this.settings.round === undefined) this.settings.round = 1;
-            this.individuals = parsed.individuals || [];
-            this.mobs = parsed.mobs || [];
-            this.playerCharacters = parsed.playerCharacters || [];
-            this.vehicles = parsed.vehicles || [];
-            this.encounterOrder = parsed.encounterOrder || null;
             this.markClean(); // Just loaded, so no unsaved changes
+            // Write the loaded encounter to the auto-save at once (C4)
+            clearTimeout(this._autoSaveTimer);
+            if (this.isEmpty()) {
+                this.clearAutoSave();
+            } else {
+                this._performAutoSave();
+            }
         }
 
         return result;
     },
 
-    // Load encounter from data object (used by close dialog save and auto-save restore)
-    loadFromData(data) {
+    // Load encounter from data object (used by the encounter file load and the auto-save restore).
+    // The caller has tested that data is a plain object. priorPaths are the paths that the caller repaired.
+    loadFromData(data, priorPaths = []) {
+        const paths = priorPaths.concat(BestiaryCheck.repairEncounter(data));
         // Re-inject custom threats before resolving encounter entries
         if (data.customThreats) {
             data.customThreats.forEach(t => DataLoader.injectThreat(t));
@@ -1008,6 +1022,23 @@ const EncounterState = {
         this.playerCharacters = data.playerCharacters || [];
         this.vehicles = data.vehicles || [];
         this.encounterOrder = data.encounterOrder || null;
+        // Recompute a null max value from the threat and the loaded settings (E2).
+        // The value stays null when the threat does not resolve.
+        this.individuals.forEach((individual, i) => {
+            const threat = DataLoader.getThreat(individual.threatId);
+            if (!threat) return;
+            if (individual.maxWounds === null) {
+                individual.maxWounds = this.calculateMaxWounds(threat, individual.bonus);
+                paths.push(`individuals[${i}].maxWounds`);
+            }
+            if (individual.maxShock === null) {
+                individual.maxShock = this.calculateMaxShock(threat, individual.bonus);
+                paths.push(`individuals[${i}].maxShock`);
+            }
+        });
+        if (paths.length > 0) {
+            console.warn('Encounter data was repaired on load: ' + paths.join(', '));
+        }
     },
 
     // Clear the current encounter
@@ -1019,6 +1050,7 @@ const EncounterState = {
         this.vehicles = [];
         this.encounterOrder = null;
         this.markClean(); // Fresh encounter has no unsaved changes
+        clearTimeout(this._autoSaveTimer);
         this.clearAutoSave();
     },
 
@@ -1030,7 +1062,7 @@ const EncounterState = {
         this._autoSaveTimer = setTimeout(() => this._performAutoSave(), 2000);
     },
 
-    // Perform the auto-save to localStorage
+    // Perform the auto-save to localStorage. An empty state writes nothing and removes nothing.
     _performAutoSave() {
         if (this.isEmpty()) return;
         try {
@@ -1040,6 +1072,7 @@ const EncounterState = {
                 timestamp: Date.now()
             };
             localStorage.setItem(this._AUTO_SAVE_KEY, JSON.stringify(data));
+            this._ownsAutoSave = true;
         } catch (e) {
             console.warn('Auto-save failed:', e);
         }
@@ -1061,8 +1094,11 @@ const EncounterState = {
         }
     },
 
-    // Clear the auto-save
+    // Clear the auto-save. Only an owner removes the key (CB1).
     clearAutoSave() {
-        localStorage.removeItem(this._AUTO_SAVE_KEY);
+        if (this._ownsAutoSave) {
+            localStorage.removeItem(this._AUTO_SAVE_KEY);
+        }
+        this._ownsAutoSave = false;
     }
 };

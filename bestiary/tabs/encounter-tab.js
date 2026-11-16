@@ -2140,8 +2140,17 @@ const EncounterTab = {
     async handleLoadPlayers() {
         const result = await window.api.loadPlayersFile();
 
-        if (result.success && result.data) {
+        if (result.success) {
             const data = result.data;
+            // The file must be a plain object with the key players (spec §4.2)
+            if (!BestiaryCheck.isPlainObject(data) || !Object.prototype.hasOwnProperty.call(data, 'players')) {
+                this.showNotification('Error loading: Invalid player file');
+                return;
+            }
+            const paths = BestiaryCheck.repairPlayers(data);
+            if (paths.length > 0) {
+                console.warn('Player data was repaired on load: ' + paths.join(', '));
+            }
 
             // Update player count
             if (data.playerCount) {
@@ -2161,6 +2170,8 @@ const EncounterTab = {
                     }
                 });
             }
+            // A file with no players adds nobody, so mark the change here (Q5)
+            EncounterState.markDirty();
 
             this.renderPlayerCharacterInputs();
             this.renderEncounterList();

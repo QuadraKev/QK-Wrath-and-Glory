@@ -35,6 +35,7 @@ vm.createContext(sandbox);
 const load = (rel) => vm.runInContext(readSource(rel), sandbox, { filename: rel });
 load('bestiary/js/data-loader.js');
 load('bestiary/tabs/settings-tab.js');
+load('bestiary/js/bestiary-check.js');
 load('bestiary/js/encounter-state.js');
 const DataLoader = vm.runInContext('DataLoader', sandbox);
 const EncounterState = vm.runInContext('EncounterState', sandbox);

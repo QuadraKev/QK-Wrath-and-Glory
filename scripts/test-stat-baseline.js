@@ -425,5 +425,32 @@ check('TC4-4: awareness is 4 after two decreases', State.character.skills.awaren
 State.setArchetypeSkillChoice('choice1', '');
 check('TC4-4: decrease: a clear gives awareness 4', State.character.skills.awareness, 4);
 
+// TC4-3: a value above the bonus stays on a parent change
+human('inquisitor');
+State.setAdditionalXP('5000');
+State.setArchetypeSkillChoice('choice1', 'awareness');
+State.increaseSkill('awareness');
+check('TC4-3: awareness is 5 while chosen', State.character.skills.awareness, 5);
+State.setArchetype('ganger');
+check('TC4-3: a value above the bonus stays on a new archetype', State.character.skills.awareness, 5);
+
+// TC4-3, TC4-4: a decreased value does not come back on a parent change
+human('inquisitor');
+State.setAdditionalXP('5000');
+for (let i = 0; i < 5; i++) State.increaseSkill('awareness');
+State.setArchetypeSkillChoice('choice1', 'awareness');
+State.decreaseSkill('awareness');
+check('TC4-3: awareness is 4 after one decrease', State.character.skills.awareness, 4);
+State.setArchetype('ganger');
+check('TC4-3: a decreased value does not come back on a new archetype', State.character.skills.awareness, 4);
+
+// TC4-3: the new free value is the floor of the restore (the Desperado gives awareness 2)
+human('inquisitor');
+State.setAdditionalXP('5000');
+State.increaseSkill('awareness');
+State.setArchetypeSkillChoice('choice1', 'awareness');
+State.setArchetype('desperado');
+check('TC4-3: the new free value is the floor of the restore', State.character.skills.awareness, 2);
+
 console.log(failures ? `\n${failures} FAILED` : '\nAll passed');
 process.exit(failures ? 1 : 0);

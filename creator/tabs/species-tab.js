@@ -354,8 +354,8 @@ const SpeciesTab = {
                         State.removeSpeciesSubOption(config.type, sel.optionId);
                     }
                 }
-            } else {
-                // Save the selection
+            } else if (!State.getSpeciesSubOptionsByType(config.type).some(sel => sel.optionId === selectedBtn.dataset.optionId)) {
+                // Save the selection. A button that the window showed as selected is not a pick.
                 State.setSpeciesSubOption(config.type, selectedBtn.dataset.optionId);
             }
         }

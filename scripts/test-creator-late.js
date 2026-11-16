@@ -26,6 +26,7 @@ function check(name, actual, expected) {
 // querySelectorAll('.cls') on the document or on an element gives one stub per tag of its html with that class.
 function makeRecordingDocument() {
     const created = [];
+    const found = [];
     const byId = {};
     function makeElement() {
         let html = '';
@@ -62,6 +63,7 @@ function makeRecordingDocument() {
                 stub.dataset[key] = d[2].replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
             }
             list.push(stub);
+            found.push([sel, stub]);
         }
         return list;
     }
@@ -73,7 +75,7 @@ function makeRecordingDocument() {
         addEventListener() {},
         body: { appendChild(child) { return child; } }
     };
-    return { document, created, makeElement };
+    return { document, created, found, makeElement };
 }
 const rec = makeRecordingDocument();
 
@@ -129,11 +131,11 @@ const clone = v => JSON.parse(JSON.stringify(v));
     State.listeners.push(type => calls.push(type));
 
     // Stores the list, opens the window, picks one button or none, presses Confirm. Gives the stored list.
-    function confirmWith(stored, pickId) {
+    function confirmWith(stored, pickId, speciesId = 'human', config = homeworld) {
         State.newCharacter();
-        State.setSpecies('human');
+        State.setSpecies(speciesId);
         State.character.species.subOptions = clone(stored);
-        SpeciesTab.pendingSubOptions = { configs: [homeworld], currentIndex: 0 };
+        SpeciesTab.pendingSubOptions = { configs: [config], currentIndex: 0 };
         rec.document.querySelector = () => (pickId ? { dataset: { optionId: pickId } } : null);
         alerts.length = 0;
         calls.length = 0;
@@ -166,11 +168,41 @@ const clone = v => JSON.parse(JSON.stringify(v));
     check('unknown entry: a pick replaces the first entry of the type (unknown first)', confirmWith([U, K1], K2.optionId), [K2, K1]);
     check('unknown entry: a pick after another type replaces the unknown entry', confirmWith([O, U], K1.optionId), [O, K1]);
     check('unknown entry: a pick makes one setter call', calls.length, 1);
+
+    // A button that the window showed as selected is not a pick (TC20-7). The setter runs only for a type
+    // that does not store the picked id.
+    check('shown pick: [U, K1] with K1 shown as selected stays as it is', confirmWith([U, K1], K1.optionId), [U, K1]);
+    check('shown pick: [U, K1] makes no listener call', calls, []);
+    check('shown pick: [K1] with K1 shown as selected stays as it is', confirmWith([K1], K1.optionId), [K1]);
+    check('shown pick: [K1] makes no listener call', calls, []);
+    // The user changes the pick to K2: the setter replaces the first entry of the type, as the old code did.
+    check('changed pick: [U, K1] and a change to K2 gives [K2, K1] (the first entry of the type is replaced)', confirmWith([U, K1], K2.optionId), [K2, K1]);
+    check('changed pick: the change makes one setter call', calls.length, 1);
+    // Each single-select config of the data, with no unknown entry: a pick of each option gives the list of the old code.
+    {
+        const bad = [];
+        let scenarios = 0;
+        for (const sp of DataLoader.getAllSpecies()) {
+            const configs = !sp.subOptions ? [] : (Array.isArray(sp.subOptions) ? sp.subOptions : [sp.subOptions]);
+            for (const config of configs.filter(c => !c.countByTier)) {
+                const ids = config.options.map(o => o.id);
+                for (const id of ids) {
+                    for (const stored of [[], ...ids.slice(0, 3).map(optionId => [{ type: config.type, optionId }])]) {
+                        scenarios++;
+                        const got = confirmWith(stored, id, sp.id, config);
+                        if (JSON.stringify(got) !== JSON.stringify([{ type: config.type, optionId: id }])) bad.push(`${sp.id}/${config.type}/${JSON.stringify(stored)}->${id}`);
+                    }
+                }
+            }
+        }
+        check(`single-select configs: ${scenarios} picks with no unknown entry give the list of the old code`, [scenarios > 100, bad], [true, []]);
+    }
     check('unknown entry: no alert for an optional window', alerts, []);
 
     // The unknown row keeps its Remove control, and the control still deletes the entry.
     confirmWith([U, K1], null);
     rec.created.length = 0;
+    rec.found.length = 0;
     SpeciesTab.render();
     {
         const card = rec.created.find(e => e.innerHTML.includes('Unknown sub-option'));
@@ -178,8 +210,13 @@ const clone = v => JSON.parse(JSON.stringify(v));
         const removeBtn = card && card.querySelectorAll('.btn-remove-suboption')[0];
         check('after Confirm the unknown row has the Remove control', !!removeBtn && removeBtn.dataset.optionId, 'zz_world');
     }
-    State.removeSpeciesSubOption('homeworld', 'zz_world');
-    check('the Remove of the unknown entry still deletes it', State.character.species.subOptions, []);
+    {
+        const removeStub = rec.found.filter(([sel]) => sel === '.btn-remove-suboption').map(([, b]) => b).find(b => b.dataset.optionId === 'zz_world');
+        const click = removeStub && removeStub.listeners.click && removeStub.listeners.click[0];
+        check('the Remove control of the unknown row has a click listener', typeof click, 'function');
+        if (click) click({ stopPropagation() {} });
+        check('the click of the Remove control still deletes the unknown entry', State.character.species.subOptions, []);
+    }
 
     // === Item 2: the sheet shows the name of a talent as the Talents tab shows it ===
     const HOSTILE_CHOICE = '<img src=x onerror=alert(1)>';
@@ -301,7 +338,7 @@ const clone = v => JSON.parse(JSON.stringify(v));
         h.fn({ target: h.select });
         check('keyword select: a change stores the value', State.getCharacter().archetypeKeywordChoices[placeholder], 'MARS');
         check('keyword select: a change does not draw the detail again', renders, 0);
-        check('keyword select: the panel follows the value, in place', div.panel, panelOf('MARS'));
+        check('keyword select: the panel follows the value, in place, at the end of the div', [div.panel, div.pos], [panelOf('MARS'), 'beforeend']);
         check('keyword select: the custom input is hidden and empty', [div.custom.style.display, div.custom.value], ['none', '']);
 
         div = makeDiv(panelOf('MARS'), false);

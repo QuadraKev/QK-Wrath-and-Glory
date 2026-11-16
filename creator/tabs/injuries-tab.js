@@ -262,7 +262,7 @@ const InjuriesTab = {
         return `
                 <div class="injury-item">
                     <div class="injury-item-header">
-                        <span class="injury-item-name">${label} (${this.escapeHtml(String(id))})</span>
+                        <span class="injury-item-name unknown-entry-text">${label} (${this.escapeHtml(String(id))})</span>
                         <div class="injury-item-actions">
                             <button class="btn-remove ${removeClass}" data-index="${index}">Remove</button>
                         </div>
@@ -275,7 +275,7 @@ const InjuriesTab = {
         return `
                 <div class="mutation-item">
                     <div class="mutation-item-header">
-                        <span class="mutation-item-name">Unknown mutation (${this.escapeHtml(String(id))})</span>
+                        <span class="mutation-item-name unknown-entry-text">Unknown mutation (${this.escapeHtml(String(id))})</span>
                         <button class="btn-remove mutation-remove" data-index="${index}">Remove</button>
                     </div>
                 </div>

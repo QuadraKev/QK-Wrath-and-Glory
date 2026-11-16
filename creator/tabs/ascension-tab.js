@@ -88,12 +88,12 @@ const AscensionTab = {
         if (entry.type === 'package') {
             if (!entry.packageId) return 'Ascension package (none chosen)';
             const pkg = DataLoader.getAscensionPackages().find(p => p.id === entry.packageId);
-            return pkg ? this.escapeHtml(pkg.name) : `Unknown ascension package (${this.escapeHtml(entry.packageId)})`;
+            return pkg ? this.escapeHtml(pkg.name) : `<span class="unknown-entry-text">Unknown ascension package (${this.escapeHtml(entry.packageId)})</span>`;
         }
         if (entry.type === 'archetype') {
             if (!entry.archetypeId) return 'Archetype ascension (none chosen)';
             const archetype = DataLoader.getArchetype(entry.archetypeId);
-            return archetype ? this.escapeHtml(archetype.name) : `Unknown archetype (${this.escapeHtml(entry.archetypeId)})`;
+            return archetype ? this.escapeHtml(archetype.name) : `<span class="unknown-entry-text">Unknown archetype (${this.escapeHtml(entry.archetypeId)})</span>`;
         }
         return this.escapeHtml(entry.type);
     },

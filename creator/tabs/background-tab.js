@@ -198,7 +198,7 @@ const BackgroundTab = {
             } else {
                 // An id that the data does not have: show it with the stored bonus that still applies.
                 const applied = DerivedStats.getAppliedBackgroundBonus(character);
-                if (applied) bonusText = `${this.escapeHtml(`Unknown ${type} (${entry.id})`)}: +1 ${this.escapeHtml(labels[applied])}`;
+                if (applied) bonusText = `<span class="unknown-entry-text">${this.escapeHtml(`Unknown ${type} (${entry.id})`)}</span>: +1 ${this.escapeHtml(labels[applied])}`;
             }
         }
 

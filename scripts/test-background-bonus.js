@@ -210,13 +210,13 @@ check('BackgroundTab.repairMissingBonusTypes is gone', typeof BackgroundTab.repa
     BackgroundTab.render();
     check('(b) unknown selected entry: the stored maxWounds bonus applies', maxWounds(), baseWounds + 1);
     check('(b) unknown selected entry: the box is not hidden and shows no notice', state(), { notice: false, hidden: false });
-    check('(b) the box shows the entry and the bonus in the markup of a known entry',
-        el.innerHTML, '<strong>Selected Bonus:</strong> Unknown origin (zz&lt;b&gt;): +1 Max Wounds');
+    check('(b) the box shows the entry, marked as unknown, and the bonus',
+        el.innerHTML, '<strong>Selected Bonus:</strong> <span class="unknown-entry-text">Unknown origin (zz&lt;b&gt;)</span>: +1 Max Wounds');
     check('(b) a render leaves the character as it was', JSON.stringify(State.character), snapshot);
     c = setUp({ goal: { id: 'zz_g', bonusType: 'wealth' }, bonusUsed: 'goal' });
     BackgroundTab.render();
     check('(b) unknown goal with a wealth bonus: the box names it',
-        el.innerHTML, '<strong>Selected Bonus:</strong> Unknown goal (zz_g): +1 Wealth');
+        el.innerHTML, '<strong>Selected Bonus:</strong> <span class="unknown-entry-text">Unknown goal (zz_g)</span>: +1 Wealth');
     check('(b) the derived values and the box use one test',
         DerivedStats.BACKGROUND_BONUS_TYPES.map(t => DerivedStats.getBackgroundBonus(State.character, t)), [0, 0, 0, 0, 0, 0, 1]);
 
@@ -265,13 +265,14 @@ check('BackgroundTab.repairMissingBonusTypes is gone', typeof BackgroundTab.repa
         const all = DerivedStats.getAllDerivedStats(c);
         check(`${type}: only ${statKey[fn]} changes in getAllDerivedStats`,
             Object.keys(all).filter(k => all[k] !== noneAll[k]), [statKey[fn]]);
+        check(`${type}: the box of a known entry has no unknown mark`, el.innerHTML.includes('unknown-entry-text'), false);
         check(`${type}: the box shows the entry of the data with its name`,
             el.innerHTML.startsWith('<strong>Selected Bonus:</strong> ' + record.name.replace(/&/g, '&amp;')), true);
         // The same entry as an unknown id: the box names the bonus that applies.
         c.background[slot] = { id: 'zz_unknown', bonusType: record.bonusType };
         BackgroundTab.render();
         check(`${type}: an unknown selected entry shows +1 ${WORDS[type]}`,
-            el.innerHTML, `<strong>Selected Bonus:</strong> Unknown ${slot} (zz_unknown): +1 ${WORDS[type]}`);
+            el.innerHTML, `<strong>Selected Bonus:</strong> <span class="unknown-entry-text">Unknown ${slot} (zz_unknown)</span>: +1 ${WORDS[type]}`);
     }
 }
 

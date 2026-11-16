@@ -312,7 +312,7 @@ const TalentsTab = {
                 unknownItem.className = 'selected-talent';
                 unknownItem.innerHTML = `
                 <div class="selected-talent-header">
-                    <span class="selected-talent-name">Unknown talent (${this.escapeHtml(String(talentId))})</span>
+                    <span class="selected-talent-name unknown-entry-text">Unknown talent (${this.escapeHtml(String(talentId))})</span>
                     <button class="btn-remove" data-id="${this.escapeHtml(String(talentId))}">REMOVE</button>
                 </div>
             `;

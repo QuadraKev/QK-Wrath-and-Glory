@@ -930,7 +930,7 @@ const CharacterSheetTab = {
             // Build upgrade names display (each name is a glossary term with a popout)
             const upgradeNames = weapon.upgradeDetails.map(u =>
                 `<span class="glossary-term" data-term-key="${this.escapeHtml(u.id)}" data-term-type="weaponUpgrade">${this.escapeHtml(u.name)}</span>`
-            ).concat(weapon.unknownUpgradeIds.map(id => `<span>${this.escapeHtml(`Unknown upgrade (${id})`)}</span>`)).join(', ');
+            ).concat(weapon.unknownUpgradeIds.map(id => `<span class="unknown-entry-text">${this.escapeHtml(`Unknown upgrade (${id})`)}</span>`)).join(', ');
             const upgradesDisplay = upgradeNames
                 ? `<div class="sheet-weapon-upgrades">${upgradeNames}</div>`
                 : '';
@@ -1290,7 +1290,7 @@ const CharacterSheetTab = {
                 return `
                 <tbody class="sheet-equip-group">
                     <tr>
-                        <td class="sheet-equip-name">Unknown wargear (${this.escapeHtml(String(equip.unknownId))})</td>
+                        <td class="sheet-equip-name unknown-entry-text">Unknown wargear (${this.escapeHtml(String(equip.unknownId))})</td>
                         <td class="sheet-equip-effect">-</td>
                     </tr>
                 </tbody>
@@ -1464,7 +1464,7 @@ const CharacterSheetTab = {
             const config = knownConfig.find(c => c.type === sel.type);
             if (!config || !config.options?.some(o => o.id === sel.optionId)) {
                 allAbilities.push({
-                    name: `Unknown sub-option (${this.escapeHtml(String(sel.optionId))})`,
+                    name: `<span class="unknown-entry-text">Unknown sub-option (${this.escapeHtml(String(sel.optionId))})</span>`,
                     flavor: null,
                     effect: '-',
                     source: species.name
@@ -1645,7 +1645,7 @@ const CharacterSheetTab = {
                         details += `<div class="sheet-ascension-keywords">Keywords: ${pkg.keywordsGained.join(', ')}</div>`;
                     }
                 } else {
-                    name = `Unknown ascension package (${this.escapeHtml(String(asc.packageId))})`;
+                    name = `<span class="unknown-entry-text">Unknown ascension package (${this.escapeHtml(String(asc.packageId))})</span>`;
                 }
             } else if (asc.type === 'archetype' && asc.archetypeId) {
                 const arch = DataLoader.getArchetype(asc.archetypeId);
@@ -1657,7 +1657,7 @@ const CharacterSheetTab = {
                         details += `<div>Abilities: ${abilityNames}</div>`;
                     }
                 } else {
-                    name = `Unknown archetype (${this.escapeHtml(String(asc.archetypeId))})`;
+                    name = `<span class="unknown-entry-text">Unknown archetype (${this.escapeHtml(String(asc.archetypeId))})</span>`;
                 }
             }
 
@@ -1739,7 +1739,7 @@ const CharacterSheetTab = {
                 return `
                 <div class="sheet-talent">
                     <div class="sheet-talent-header">
-                        <span class="sheet-talent-name">Unknown talent (${this.escapeHtml(String(talentId))})</span>
+                        <span class="sheet-talent-name unknown-entry-text">Unknown talent (${this.escapeHtml(String(talentId))})</span>
                     </div>
                 </div>
             `;
@@ -1812,7 +1812,7 @@ const CharacterSheetTab = {
             if (!power) {
                 return `
                 <tr>
-                    <td class="sheet-power-name">Unknown power (${this.escapeHtml(String(powerId))})</td>
+                    <td class="sheet-power-name unknown-entry-text">Unknown power (${this.escapeHtml(String(powerId))})</td>
                     <td class="sheet-power-dn">-</td>
                     <td class="sheet-power-range">-</td>
                     <td class="sheet-power-desc">-</td>
@@ -1861,7 +1861,7 @@ const CharacterSheetTab = {
     renderUnknownInjury(id) {
         return `
                     <div class="sheet-injury-item">
-                        <span class="sheet-injury-name">Unknown injury (${this.escapeHtml(String(id))})</span>
+                        <span class="sheet-injury-name unknown-entry-text">Unknown injury (${this.escapeHtml(String(id))})</span>
                     </div>
                 `;
     },
@@ -1966,7 +1966,7 @@ const CharacterSheetTab = {
                 return `
                 <div class="sheet-mutation-item">
                     <div class="sheet-mutation-header">
-                        <span class="sheet-mutation-name">Unknown mutation (${this.escapeHtml(String(entry.id))})</span>
+                        <span class="sheet-mutation-name unknown-entry-text">Unknown mutation (${this.escapeHtml(String(entry.id))})</span>
                     </div>
                 </div>
             `;
@@ -2036,17 +2036,17 @@ const CharacterSheetTab = {
 
         if (character.background?.origin?.id) {
             const origin = backgrounds.origins?.find(o => o.id === character.background.origin.id);
-            parts.push(`<strong>Origin:</strong> ${origin ? origin.name : this.escapeHtml(`Unknown origin (${character.background.origin.id})`)}`);
+            parts.push(`<strong>Origin:</strong> ${origin ? origin.name : `<span class="unknown-entry-text">${this.escapeHtml(`Unknown origin (${character.background.origin.id})`)}</span>`}`);
         }
 
         if (character.background?.accomplishment?.id) {
             const accomplishment = backgrounds.accomplishments?.find(a => a.id === character.background.accomplishment.id);
-            parts.push(`<strong>Accomplishment:</strong> ${accomplishment ? accomplishment.name : this.escapeHtml(`Unknown accomplishment (${character.background.accomplishment.id})`)}`);
+            parts.push(`<strong>Accomplishment:</strong> ${accomplishment ? accomplishment.name : `<span class="unknown-entry-text">${this.escapeHtml(`Unknown accomplishment (${character.background.accomplishment.id})`)}</span>`}`);
         }
 
         if (character.background?.goal?.id) {
             const goal = backgrounds.goals?.find(g => g.id === character.background.goal.id);
-            parts.push(`<strong>Goal:</strong> ${goal ? goal.name : this.escapeHtml(`Unknown goal (${character.background.goal.id})`)}`);
+            parts.push(`<strong>Goal:</strong> ${goal ? goal.name : `<span class="unknown-entry-text">${this.escapeHtml(`Unknown goal (${character.background.goal.id})`)}</span>`}`);
         }
 
         // Languages

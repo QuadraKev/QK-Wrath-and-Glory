@@ -87,7 +87,7 @@ const SpeciesTab = {
                 for (const sel of selectedSubOptions) {
                     const config = subOptionsConfig.find(c => c.type === sel.type);
                     if (!config || !config.options?.some(o => o.id === sel.optionId))
-                        extraRows += this.renderSubOptionRow(`Unknown sub-option (${this.escapeHtml(String(sel.optionId))})`, sel.type, sel.optionId);
+                        extraRows += this.renderSubOptionRow(`<span class="unknown-entry-text">Unknown sub-option (${this.escapeHtml(String(sel.optionId))})</span>`, sel.type, sel.optionId);
                 }
 
                 for (const config of subOptionsConfig) {

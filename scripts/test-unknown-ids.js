@@ -20,6 +20,10 @@ function check(name, actual, expected) {
     console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}\n        expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);
 }
 
+// The text of an unknown row has the class unknown-entry-text. The stylesheet wraps a long id through this class.
+// A known row never has it. `marked` is true when the tag that holds the text has the class.
+const marked = (html, text) => new RegExp('class="(?:[^"]* )?unknown-entry-text(?: [^"]*)?"[^>]*>' + text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).test(html);
+
 // A DOM stub. Each innerHTML write goes to `written`. A button in the html of an element is found by its class:
 // querySelectorAll('.cls') on an element or on the document gives one stub per tag with that class, with its data-* values and its listeners.
 // querySelector('.cls') on an element gives one stub for each selector, so a test can reach the listener.
@@ -140,10 +144,15 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
     check('wargear: the Unknown group has a heading', html.includes('<div class="wargear-group"><h4>Unknown</h4>'), true);
     check('wargear: the Unknown group comes after the Weapons group', html.indexOf('<h4>Weapons</h4>') < html.indexOf('<h4>Unknown</h4>'), true);
     check('wargear: the owned line shows Unknown upgrade (id), escaped', html.includes(`Unknown upgrade (${UPID_ESC})`), true);
+    check('wargear: the Unknown wargear text has the mark', marked(html, `Unknown wargear (${WID_ESC})`), true);
+    check('wargear: the Unknown upgrade text of the owned line has the mark', marked(html, `Unknown upgrade (${UPID_ESC})`), true);
+    check('wargear: three marks only (the unknown item and two unknown upgrades), the known item has none', (html.match(/unknown-entry-text/g) || []).length, 3);
     check('wargear: a render does not write into the character', JSON.stringify(State.character), snapshot);
 
     html = recorded(() => WargearTab.showUpgradeModal(0));
     check('upgrade modal: shows Unknown upgrade (id), escaped', html.includes(`Unknown upgrade (${UPID_ESC})`), true);
+    check('upgrade modal: the Unknown upgrade text has the mark', marked(html, `Unknown upgrade (${UPID_ESC})`), true);
+    check('upgrade modal: two marks only (the two unknown upgrades)', (html.match(/unknown-entry-text/g) || []).length, 2);
     check('upgrade modal: no raw tag from the id', html.includes('<b>'), false);
     {
         const ids = rec.found.filter(([sel]) => sel === '.btn-remove-upgrade').map(([, b]) => b.dataset.id);
@@ -178,6 +187,7 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
     html = recorded(() => TalentsTab.renderSelected());
     check('talents: Unknown talent (zz_t) shows', html.includes('Unknown talent (zz_t)'), true);
     check('talents: the id is escaped in Unknown talent (zz&lt;b&gt;)', html.includes('Unknown talent (zz&lt;b&gt;)'), true);
+    check('talents: each Unknown talent text has the mark', [marked(html, 'Unknown talent (zz_t)'), marked(html, 'Unknown talent (zz&lt;b&gt;)')], [true, true]);
     check('talents: no raw tag from the id', html.includes('zz<b>'), false);
     check('talents: two btn-remove buttons, also for the ascension-granted entry', (html.match(/btn-remove"/g) || []).length, 2);
     check('talents: a render does not write into the character', JSON.stringify(State.character), snapshot);
@@ -205,6 +215,8 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
     snapshot = JSON.stringify(State.character);
     html = recorded(() => PowersTab.renderSelected());
     check('powers: Unknown power (id) shows, escaped', html.includes(`Unknown power (${PID_ESC})`), true);
+    check('powers: the Unknown power text has the mark', marked(html, `Unknown power (${PID_ESC})`), true);
+    check('powers: two marks only (the two unknown powers), Smite has none', (html.match(/unknown-entry-text/g) || []).length, 2);
     check('powers: no raw tag from the id', html.includes('<b>'), false);
     check('powers: the chip has a remove with the escaped data-id', html.includes(`class="power-chip-remove" data-id="${PID_ESC}"`), true);
     check('powers: a render does not write into the character', JSON.stringify(State.character), snapshot);
@@ -231,16 +243,19 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
     html = recorded(() => PowersTab.renderSelected());
     check('powers: a power of a book that is off shows by name', html.includes('Bio-Lightning'), true);
     check('powers: a power of a book that is off does not show as unknown', html.includes('Unknown power'), false);
+    check('powers: a power of a book that is off has no mark', html.includes('unknown-entry-text'), false);
     human();
     State.character.wargear = [{ id: 'axe_aoa', isStarting: false }];
     html = recorded(() => WargearTab.renderCurrentWargear());
     check('wargear: an item of a book that is off shows by name', html.includes('Axe'), true);
     check('wargear: an item of a book that is off does not show as unknown', html.includes('Unknown wargear'), false);
+    check('wargear: an item of a book that is off has no mark', html.includes('unknown-entry-text'), false);
     human();
     State.character.talents = ['a_taste_for_death_aoa'];
     html = recorded(() => TalentsTab.renderSelected());
     check('talents: a talent of a book that is off shows by name', html.includes('A Taste for Death'), true);
     check('talents: a talent of a book that is off does not show as unknown', html.includes('Unknown talent'), false);
+    check('talents: a talent of a book that is off has no mark', html.includes('unknown-entry-text'), false);
     State.setEnabledSources(allSources);
 
     // No PSYKER keyword: the stored power and the stored discipline show, with a remove control.
@@ -298,6 +313,7 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
     check('injuries: Unknown injury (zz_m) shows', html.includes('Unknown injury (zz_m)'), true);
     check('injuries: Unknown injury (zz_t) shows', html.includes('Unknown injury (zz_t)'), true);
     check('injuries: Unknown mutation (zz_mu) shows', html.includes('Unknown mutation (zz_mu)'), true);
+    check('injuries: each Unknown text has the mark', [marked(html, 'Unknown injury (zz_m)'), marked(html, 'Unknown injury (zz_t)'), marked(html, 'Unknown mutation (zz_mu)')], [true, true, true]);
     for (const cls of ['memorable-remove', 'traumatic-remove', 'mutation-remove'])
         check(`injuries: ${cls} has data-index 0`, new RegExp(`class="[^"]*${cls}[^"]*"[^>]*data-index="0"`).test(html), true);
     check('injuries: a render does not write into the character', JSON.stringify(State.character), snapshot);
@@ -371,6 +387,7 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
         const btns = rec.found.filter(([sel]) => sel === '.btn-remove-suboption').map(([, b]) => b);
         const card = rec.created.find(e => e.innerHTML.includes('Unknown sub-option'));
         check('species: the Human card shows Unknown sub-option (runes_of_fate)', !!card && card.innerHTML.includes('Unknown sub-option (runes_of_fate)'), true);
+        check('species: the Unknown sub-option text has the mark', !!card && marked(card.innerHTML, 'Unknown sub-option (runes_of_fate)'), true);
         check('species: the card has data-option-id runes_of_fate', !!card && card.innerHTML.includes('data-option-id="runes_of_fate"'), true);
         check('species: a render does not write into the character', JSON.stringify(State.character), snapshot);
         check('species: the remove control has data-type discipline', btns.map(b => b.dataset.type), ['discipline']);
@@ -472,6 +489,7 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
         check('kroot: the first mutation has no mark', cardHtml.includes(`${krootConfig.options[0].name} (above`), false);
         check('kroot: the second mutation has the mark with its name', cardHtml.includes(`${krootConfig.options[1].name} (above the limit of Tier 1)`), true);
         check('kroot: no row shows as unknown', cardHtml.includes('Unknown sub-option'), false);
+        check('kroot: the rows above the limit have no mark', cardHtml.includes('unknown-entry-text'), false);
         check('kroot: a render does not write into the character', JSON.stringify(State.character), snapshot);
         check('kroot: each row above the limit has a remove control', btns.map(b => b.dataset.optionId), ids.slice(1));
         if (btns[0]) btns[0].listeners.click[0]({ stopPropagation() {} });

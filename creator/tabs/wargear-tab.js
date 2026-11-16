@@ -177,7 +177,7 @@ const WargearTab = {
     renderOwnedWeapon(weapon) {
         const upgradeNames = weapon.upgrades.map(id => {
             const upgrade = DataLoader.getWeaponUpgrade(id);
-            return this.escapeHtml(upgrade ? upgrade.name : `Unknown upgrade (${id})`);
+            return upgrade ? this.escapeHtml(upgrade.name) : `<span class="unknown-entry-text">${this.escapeHtml(`Unknown upgrade (${id})`)}</span>`;
         });
 
         const upgradeText = upgradeNames.length > 0
@@ -216,7 +216,7 @@ const WargearTab = {
         return `
             <div class="wargear-item wargear-item-owned">
                 <div class="wargear-info">
-                    <div class="wargear-name">Unknown wargear (${this.escapeHtml(String(entry.id))}) ${startingBadge}</div>
+                    <div class="wargear-name unknown-entry-text">Unknown wargear (${this.escapeHtml(String(entry.id))}) ${startingBadge}</div>
                     <div class="wargear-type">Not in the game data</div>
                 </div>
                 <div class="wargear-actions">
@@ -907,7 +907,7 @@ const WargearTab = {
                     html += `
                     <div class="upgrade-item upgrade-owned">
                         <div class="upgrade-info">
-                            <span class="upgrade-name">Unknown upgrade (${this.escapeHtml(String(upgradeId))})</span>
+                            <span class="upgrade-name unknown-entry-text">Unknown upgrade (${this.escapeHtml(String(upgradeId))})</span>
                         </div>
                         <button class="btn-small btn-remove-upgrade" data-id="${this.escapeHtml(String(upgradeId))}">Remove</button>
                     </div>

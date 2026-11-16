@@ -185,10 +185,10 @@ const clone = v => JSON.parse(JSON.stringify(v));
     const tabNames = () => {
         rec.created.length = 0;
         TalentsTab.renderSelected();
-        return rec.created.map(e => (/<span class="selected-talent-name">([\s\S]*?)<\/span>/.exec(e.innerHTML) || [])[1])
+        return rec.created.map(e => (/<span class="selected-talent-name(?: unknown-entry-text)?">([\s\S]*?)<\/span>/.exec(e.innerHTML) || [])[1])
             .filter(n => n !== undefined).map(n => n.trim());
     };
-    const sheetNames = character => [...CharacterSheetTab.renderTalents(character).matchAll(/<span class="sheet-talent-name">([\s\S]*?)<\/span>/g)].map(m => m[1].trim());
+    const sheetNames = character => [...CharacterSheetTab.renderTalents(character).matchAll(/<span class="sheet-talent-name(?: unknown-entry-text)?">([\s\S]*?)<\/span>/g)].map(m => m[1].trim());
     const copyTalentLines = () => {
         copied.length = 0;
         CharacterSheetTab.copySummary({ innerHTML: '' });

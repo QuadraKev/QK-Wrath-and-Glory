@@ -200,12 +200,17 @@ checkTrue('Unknown package: id escaped', html.includes('Unknown ascension packag
 loadChar({ tier: 2, ascensions: [pkgEntry(3, 'zz')] });
 html = renderHtml();
 checkTrue('Unknown package: row text', html.includes('Unknown ascension package (zz)'), html.slice(0, 500));
+checkTrue('Unknown package: the text has the mark unknown-entry-text', /class="unknown-entry-text">Unknown ascension package \(zz\)</.test(html), html.slice(0, 500));
 checkTrue('Unknown package: Remove button in the slot', /btn-remove-ascension[^>]*data-target-tier="3"/.test(html), '');
 loadChar({ tier: 2, ascensions: [{ targetTier: 3, type: 'archetype', packageId: null, archetypeId: 'zz<i>' }] });
 html = renderHtml();
 checkTrue('Unknown archetype: row text, escaped', html.includes('Unknown archetype (zz&lt;i&gt;)'), html.slice(0, 500));
+checkTrue('Unknown archetype: the text has the mark unknown-entry-text', /class="unknown-entry-text">Unknown archetype \(zz&lt;i&gt;\)</.test(html), html.slice(0, 500));
 content.querySelectorAll('.btn-remove-ascension')[0].click();
 check('Unknown archetype Remove: entry gone', State.character.ascensions.length, 0);
+loadChar({ tier: 2, ascensions: [pkgEntry(3, 'back_from_the_brink')] });
+html = renderHtml();
+checkTrue('Known package: the row has no mark', !html.includes('unknown-entry-text'), html.slice(0, 500));
 
 console.log(failures === 0 ? '\nAll checks passed' : `\n${failures} check(s) FAILED.`);
 process.exit(failures ? 1 : 0);

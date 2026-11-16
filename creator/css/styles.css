@@ -6379,26 +6379,7 @@ textarea {
 }
 
 /* An id that the data does not have shows in an "Unknown ..." row. The id has no spaces, so a long id
-   must wrap inside its card. A normal name has spaces or is short: the rule changes nothing for it. */
-.sheet-ascension-name,
-.sheet-injury-name,
-.sheet-background-item,
-.sheet-ability-name,
-.sheet-talent-name,
-.sheet-mutation-name,
-.sheet-equip-name,
-.sheet-power-name,
-.sheet-weapon-upgrades,
-.selected-talent-name,
-.wargear-name,
-.wargear-upgrades,
-.upgrade-name,
-.power-chip,
-.discipline-chosen-chip,
-.injury-item-name,
-.mutation-item-name,
-.ascension-orphan-row > span,
-.card-suboption,
-.background-bonus {
+   must wrap inside its card. Only the text of such a row has this class. */
+.unknown-entry-text {
     overflow-wrap: anywhere;
 }

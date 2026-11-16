@@ -319,5 +319,68 @@ vm.runInContext('var navigator = { clipboard: { writeText(t) { globalThis.__copi
     check('the full sheet shows the unknown rows and the stored power', ['Unknown talent (zz)', 'Unknown wargear (zz_w)', 'Unknown power (zz)', 'Unknown mutation (zz)', 'Unknown injury (zz)'].filter(t => !sheetHtml.includes(t)), []);
 }
 
+// === The mark of an unknown row (the wrap of a long id) ===
+// The text of each unknown row has the class unknown-entry-text. The stylesheet wraps a long id only through this class,
+// so a known name keeps its layout. A known row never has the class.
+{
+    const markedText = (html, text) => new RegExp('class="(?:[^"]* )?unknown-entry-text(?: [^"]*)?"[^>]*>' + text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).test(html);
+
+    loadCharacter({
+        species: { id: 'human', xpCost: 0, subOptions: [{ type: 'zz_type', optionId: 'zz_opt' }] },
+        talents: ['zz_t'], wargear: [{ id: 'zz_w' }, { id: 'bolt_pistol', upgrades: ['zz_up'] }],
+        psychicPowers: ['zz_p'], memorableInjuries: [{ id: 'zz_m' }], traumaticInjuries: [{ id: 'zz_tr' }], mutations: [{ id: 'zz_mu' }],
+        background: { origin: { id: 'zz_o' }, accomplishment: { id: 'zz_a' }, goal: { id: 'zz_g' }, bonusUsed: null, bonusType: null },
+        ascensions: [{ type: 'package', packageId: 'zz_pkg', targetTier: 2 }, { type: 'archetype', archetypeId: 'zz_arch', targetTier: 3 }]
+    });
+    let c = State.getCharacter();
+    const sheetKinds = [
+        ['wargear', CharacterSheetTab.renderEquipment(c), 'Unknown wargear (zz_w)'],
+        ['upgrade', CharacterSheetTab.renderWeapons(c), 'Unknown upgrade (zz_up)'],
+        ['talent', CharacterSheetTab.renderTalents(c), 'Unknown talent (zz_t)'],
+        ['power', CharacterSheetTab.renderPsychicPowers(c), 'Unknown power (zz_p)'],
+        ['memorable injury', CharacterSheetTab.renderInjuriesCorruption(c), 'Unknown injury (zz_m)'],
+        ['traumatic injury', CharacterSheetTab.renderInjuriesCorruption(c), 'Unknown injury (zz_tr)'],
+        ['mutation', CharacterSheetTab.renderMutations(c), 'Unknown mutation (zz_mu)'],
+        ['ascension package', CharacterSheetTab.renderAscensions(c), 'Unknown ascension package (zz_pkg)'],
+        ['ascension archetype', CharacterSheetTab.renderAscensions(c), 'Unknown archetype (zz_arch)'],
+        ['origin', CharacterSheetTab.renderBackground(c), 'Unknown origin (zz_o)'],
+        ['accomplishment', CharacterSheetTab.renderBackground(c), 'Unknown accomplishment (zz_a)'],
+        ['goal', CharacterSheetTab.renderBackground(c), 'Unknown goal (zz_g)'],
+        ['sub-option', CharacterSheetTab.renderSpeciesAbilities(c, DataLoader.getSpecies('human')), 'Unknown sub-option (zz_opt)']
+    ];
+    for (const [kind, html, text] of sheetKinds)
+        check(`mark: the unknown ${kind} text of the sheet has the class`, markedText(html, text), true);
+
+    // A known entry of each kind
+    loadCharacter({
+        species: { id: 'astartes', xpCost: 0, subOptions: [{ type: 'chapter', optionId: 'imperial_fists' }] },
+        talents: ['acute_sense'], wargear: [{ id: 'medikit' }, { id: 'bolt_pistol', upgrades: ['autoloader'] }],
+        psychicPowers: ['smite'], memorableInjuries: [{ id: 'battle_scar', escalated: false }], traumaticInjuries: [{ id: 'hand', side: 'left' }],
+        mutations: [{ id: 'hint_of_red_eyes' }],
+        background: { origin: { id: 'holy_inspiration' }, accomplishment: { id: 'defended_enoch' }, goal: { id: 'reclaim_relic' }, bonusUsed: null, bonusType: null },
+        ascensions: [{ type: 'package', packageId: 'dauntless_reputation', targetTier: 3 }]
+    });
+    c = State.getCharacter();
+    const knownHtml = [CharacterSheetTab.renderEquipment(c), CharacterSheetTab.renderWeapons(c), CharacterSheetTab.renderTalents(c),
+        CharacterSheetTab.renderInjuriesCorruption(c), CharacterSheetTab.renderMutations(c), CharacterSheetTab.renderAscensions(c),
+        CharacterSheetTab.renderBackground(c), CharacterSheetTab.renderSpeciesAbilities(c, DataLoader.getSpecies('astartes'))].join('');
+    check('mark: the known rows of the sheet are not empty (a known name of each kind shows)',
+        ['Medikit', 'Acute Sense', 'Battle Scar', 'Hint of Red Eyes', 'Holy Inspiration'].filter(n => !knownHtml.includes(n)), []);
+    check('mark: no known row of the sheet has the class', knownHtml.includes('unknown-entry-text'), false);
+    // A character with no PSYKER keyword shows Smite in the section. The section has no mark.
+    loadCharacter({ archetype: { id: 'ganger', xpCost: 0 }, psychicPowers: ['smite'] });
+    check('mark: a known power row has no class', CharacterSheetTab.renderPsychicPowers(State.getCharacter()).includes('unknown-entry-text'), false);
+
+    // The stylesheet: each rule with overflow-wrap anywhere has the mark in its selector
+    const css = readSource('creator/css/styles.css').replace(/\/\*[\s\S]*?\*\//g, '');
+    const wrapRules = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].filter(m => /overflow-wrap\s*:\s*anywhere/.test(m[2])).map(m => m[1].trim());
+    check('css: a rule with overflow-wrap anywhere exists', wrapRules.length > 0, true);
+    // Two rules of other tasks (the custom wargear chip and the character name) have it too. No other rule can have it.
+    const OTHER_WRAP_RULES = ['.custom-item-chip', '.sheet-strip .sheet-character-name'];
+    check('css: a rule with overflow-wrap anywhere has the selector .unknown-entry-text, or it is one of two rules of other tasks',
+        wrapRules.filter(sel => sel !== '.unknown-entry-text' && !OTHER_WRAP_RULES.includes(sel)), []);
+    check('css: the rule of .unknown-entry-text exists', wrapRules.includes('.unknown-entry-text'), true);
+}
+
 console.log(failures === 0 ? '\nAll checks passed' : `\n${failures} check(s) FAILED.`);
 process.exit(failures ? 1 : 0);

@@ -279,7 +279,7 @@ const PowersTab = {
             // A power that the data does not have always has the Remove control
             const isGranted = power && grantedPowers.includes(powerId);
             const freeLabel = isFree ? ' <span class="power-free-label">(Free)</span>' : '';
-            const powerName = power ? power.name : `Unknown power (${this.escapeHtml(String(powerId))})`;
+            const powerName = power ? power.name : `<span class="unknown-entry-text">Unknown power (${this.escapeHtml(String(powerId))})</span>`;
 
             const chip = document.createElement('span');
             chip.className = 'power-chip';

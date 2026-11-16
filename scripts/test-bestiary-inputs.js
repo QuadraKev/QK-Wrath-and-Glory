@@ -351,6 +351,62 @@ const rowsHtml = (app) => app.document.getElementById('player-character-inputs')
             S.getEncounterListItems().map(i => i.id), ['p5', 'p2', 'p0', 'p1', 'p3', 'p4']);
     });
 
+    // ----- TB5a-6: a drop gives a place in the visible list, and the stored order holds hidden entries -----
+    await group('moveItemInOrder with hidden entries', () => {
+        const app = makeApp();
+        const S = app.EncounterState;
+        S.loadFromData(mkEnc({ settings: { tier: 1, playerCount: 4, name: 'x', round: 1 }, playerCharacters: players(6) }));
+        const T = S.addVehicle('chimera');
+        const entry = (id) => ({ type: id === T ? 'vehicle' : 'player', id });
+        const setOrder = () => { S.encounterOrder = ['p4', 'p3', 'p2', 'p1', 'p0', 'p5', T].map(entry); };
+        const shown = () => S.getEncounterListItems().map(i => i.id === T ? 'T' : i.id);
+        const stored = () => S.encounterOrder.map(e => e.id === T ? 'T' : e.id);
+        setOrder();
+        check('move: the list shows p3 p2 p1 p0 T before the move', shown(), ['p3', 'p2', 'p1', 'p0', 'T']);
+        S.moveItemInOrder('vehicle', T, 1);
+        check('move: T dropped between p3 and p2 gives p3 T p2 p1 p0, and p4 and p5 stay stored',
+            { list: shown(), p4: stored().includes('p4'), p5: stored().includes('p5'), length: stored().length },
+            { list: ['p3', 'T', 'p2', 'p1', 'p0'], p4: true, p5: true, length: 7 });
+        setOrder();
+        S.moveItemInOrder('vehicle', T, 0);
+        check('move: a drop at the first place gives T p3 p2 p1 p0', shown(), ['T', 'p3', 'p2', 'p1', 'p0']);
+        setOrder();
+        S.moveItemInOrder('player', 'p3', 5);
+        check('move: a drop of p3 at the last place gives p2 p1 p0 T p3',
+            { list: shown(), length: stored().length }, { list: ['p2', 'p1', 'p0', 'T', 'p3'], length: 7 });
+        setOrder();
+        S.moveItemInOrder('vehicle', T, 5);
+        check('move: a drop of T at the last place keeps the list', shown(), ['p3', 'p2', 'p1', 'p0', 'T']);
+    });
+
+    await group('moveItemInOrder with no hidden entry', () => {
+        const app = makeApp();
+        const S = app.EncounterState;
+        S.loadFromData(mkEnc({ settings: { tier: 1, playerCount: 4, name: 'x', round: 1 }, playerCharacters: players(3) }));
+        const [ind] = S.addIndividual('sly_marbo_aaa', 1);
+        const veh = S.addVehicle('chimera');
+        const base = [{ type: 'player', id: 'p2' }, { type: 'individual', id: ind }, { type: 'player', id: 'p0' },
+            { type: 'vehicle', id: veh }, { type: 'player', id: 'p1' }];
+        // The move of the code before TB5a-6, on a copy of the order
+        const oldMove = (order, type, id, newIndex) => {
+            const cur = order.findIndex(e => e.type === type && e.id === id);
+            const [moved] = order.splice(cur, 1);
+            const adjusted = newIndex > cur ? newIndex - 1 : newIndex;
+            order.splice(Math.max(0, Math.min(adjusted, order.length)), 0, moved);
+            return order.map(e => e.id);
+        };
+        const diffs = [];
+        for (let cur = 0; cur < base.length; cur++) {
+            for (let t = 0; t <= base.length; t++) {
+                S.encounterOrder = base.map(e => ({ ...e }));
+                S.moveItemInOrder(base[cur].type, base[cur].id, t);
+                const want = oldMove(base.map(e => ({ ...e })), base[cur].type, base[cur].id, t);
+                if (JSON.stringify(S.encounterOrder.map(e => e.id)) !== JSON.stringify(want)) diffs.push([cur, t]);
+            }
+        }
+        check('move: with no hidden entry each move gives the same order as before TB5a-6', diffs, []);
+    });
+
     // ----- TB3-1: a stored player above the count stays after each load -----
     function verify12(label, app, store) {
         const S = app.EncounterState;

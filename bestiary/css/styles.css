@@ -2700,8 +2700,14 @@ body {
     align-items: center;
 }
 
-/* A stored player above the player count (spec §6.4) */
+/* A stored player above the player count (spec §6.4). The mark has its own line under the name. */
+.player-character-row--extra {
+    flex-wrap: wrap;
+}
+
 .player-character-row--extra .pc-extra-mark {
+    order: 1;
+    flex-basis: 100%;
     color: var(--text-muted);
     font-size: 11px;
     white-space: nowrap;

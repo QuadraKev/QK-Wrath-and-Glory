@@ -659,7 +659,9 @@ const EncounterState = {
         this.markDirty();
     },
 
-    // Move an item to a new position in the order
+    // Move an item to a new position in the order.
+    // newIndex is a place in the visible list. The stored order also holds the entries of players
+    // above the player count, so the item goes directly before the visible item at that place (TB5a-6).
     moveItemInOrder(itemType, itemId, newIndex) {
         // First, ensure we have a current order to work with
         if (!this.encounterOrder) {
@@ -670,6 +672,8 @@ const EncounterState = {
                 id: item.id
             }));
         }
+
+        const visibleItems = this.getEncounterListItems();
 
         // Find and remove the item from its current position
         const currentIndex = this.encounterOrder.findIndex(
@@ -686,9 +690,18 @@ const EncounterState = {
             [movedItem] = this.encounterOrder.splice(currentIndex, 1);
         }
 
-        // Insert at new position
-        const adjustedIndex = currentIndex !== -1 && newIndex > currentIndex ? newIndex - 1 : newIndex;
-        this.encounterOrder.splice(Math.max(0, Math.min(adjustedIndex, this.encounterOrder.length)), 0, movedItem);
+        // Insert before the first visible item from that place on that has an entry. With none, insert at the end.
+        let insertAt = this.encounterOrder.length;
+        for (let i = Math.max(0, newIndex); i < visibleItems.length; i++) {
+            const visible = visibleItems[i];
+            if (visible.type === itemType && visible.id === itemId) continue;
+            const at = this.encounterOrder.findIndex(entry => entry.type === visible.type && entry.id === visible.id);
+            if (at !== -1) {
+                insertAt = at;
+                break;
+            }
+        }
+        this.encounterOrder.splice(insertAt, 0, movedItem);
 
         this.markDirty();
     },

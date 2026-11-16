@@ -682,11 +682,13 @@ const EncounterState = {
             return;
         }
 
-        // The list shows the entries with no stored entry after the stored ones. Store them, in the shown
-        // order, so that the index of the caller is a place in the stored order (TB10-8).
-        for (const visible of visibleItems) {
-            if (!this.encounterOrder.some(entry => entry.type === visible.type && entry.id === visible.id)) {
-                this.encounterOrder.push({ type: visible.type, id: visible.id });
+        // The list shows the entries with no stored entry after the stored ones. Store them, in the order
+        // that the list shows when each player counts, so that the index of the caller is a place in the
+        // stored order (TB10-8). The players above the player count are stored too, so they keep their
+        // place when the count goes up (TB10-10).
+        for (const entry of this.getEncounterListItems(true)) {
+            if (!this.encounterOrder.some(stored => stored.type === entry.type && stored.id === entry.id)) {
+                this.encounterOrder.push({ type: entry.type, id: entry.id });
             }
         }
 
@@ -866,8 +868,9 @@ const EncounterState = {
         return this.individuals.filter(i => !i.mobId);
     },
 
-    // Get encounter list items sorted by initiative or manual order
-    getEncounterListItems() {
+    // Get encounter list items sorted by initiative or manual order.
+    // With includeHiddenPlayers, the players above the player count are in the list too (TB10-10).
+    getEncounterListItems(includeHiddenPlayers = false) {
         const items = [];
 
         // Build a set of threat names that appear under multiple distinct threat IDs,
@@ -933,7 +936,7 @@ const EncounterState = {
         });
 
         // Add player characters. A player above the player count stays stored but takes no part (spec §6.4).
-        this.playerCharacters.slice(0, this.settings.playerCount).forEach(pc => {
+        this.playerCharacters.slice(0, includeHiddenPlayers ? undefined : this.settings.playerCount).forEach(pc => {
             items.push({
                 type: 'player',
                 id: pc.id,

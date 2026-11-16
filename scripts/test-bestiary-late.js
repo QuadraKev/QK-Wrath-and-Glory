@@ -139,18 +139,22 @@ group('move: shown entries that are not stored (TB10-8)', () => {
     // p3 and p4 are shown after the stored entries and have no stored entry.
     const stored = ['p0', 'p5', 'p1', 'p2', 'p6'];
     const visible = ['p0', 'p1', 'p2', 'p3', 'p4'];
-    const setup = (withHidden) => {
-        EncounterState.loadFromData(mkEnc({ settings: { tier: 1, playerCount: 5, name: 'x', round: 1 }, playerCharacters: players(withHidden ? 7 : 5) }));
-        EncounterState.encounterOrder = (withHidden ? stored : ['p0', 'p1', 'p2']).map(id => ({ type: 'player', id }));
+    // mode 'none': no hidden player. 'stored': p5 and p6 are hidden and stored. 'unstored': p5 and p6 are hidden and have no stored entry (TB10-10).
+    const setup = (mode) => {
+        EncounterState.loadFromData(mkEnc({ settings: { tier: 1, playerCount: 5, name: 'x', round: 1 }, playerCharacters: players(mode === 'none' ? 5 : 7) }));
+        EncounterState.encounterOrder = (mode === 'stored' ? stored : ['p0', 'p1', 'p2']).map(id => ({ type: 'player', id }));
     };
-    for (const withHidden of [false, true]) {
-        const tag = withHidden ? 'with hidden players' : 'no hidden player';
-        setup(withHidden);
+    for (const mode of ['none', 'stored', 'unstored']) {
+        const withHidden = mode !== 'none';
+        const tag = { none: 'no hidden player', stored: 'with hidden players', unstored: 'with hidden players that have no stored entry' }[mode];
+        const before0 = mode === 'stored' ? 5 : 3;
+        const full = mode === 'none' ? 5 : 7;
+        setup(mode);
         check(`unstored: ${tag}, the list shows p0 p1 p2 p3 p4 before the move`, shown(), visible);
         const diffs = [];
         for (let from = 0; from < 5; from++) {
             for (let place = 0; place <= 5; place++) {
-                setup(withHidden);
+                setup(mode);
                 EncounterState.moveItemInOrder('player', visible[from], place);
                 const want = visible.filter((_, k) => k !== from);
                 want.splice(place <= from ? place : place - 1, 0, visible[from]);
@@ -159,27 +163,63 @@ group('move: shown entries that are not stored (TB10-8)', () => {
                 // An own-place drop changes nothing. Any other move stores each shown entry one time, in the shown order.
                 const storedShown = order.filter(id => visible.includes(id));
                 const ok = JSON.stringify(shown()) === JSON.stringify(want)
-                    && (own ? order.length === (withHidden ? 5 : 3) : JSON.stringify(storedShown) === JSON.stringify(want) && order.length === (withHidden ? 7 : 5))
-                    && (!withHidden || JSON.stringify(order.filter(id => id === 'p5' || id === 'p6')) === JSON.stringify(['p5', 'p6']));
+                    && (own ? order.length === before0 : JSON.stringify(storedShown) === JSON.stringify(want) && order.length === full)
+                    && new Set(order).size === order.length
+                    && (!withHidden || own && mode === 'unstored' || JSON.stringify(order.filter(id => id === 'p5' || id === 'p6')) === JSON.stringify(['p5', 'p6']));
                 if (!ok) diffs.push({ from, place, got: shown(), order, want });
             }
         }
-        check(`unstored: ${tag}, each of the 30 moves lands at the place and stores each shown entry once, in the shown order`, diffs, []);
-        setup(withHidden);
+        check(`unstored: ${tag}, each of the 30 moves lands at the place and stores each entry once, in the shown order`, diffs, []);
+        setup(mode);
         EncounterState.moveItemInOrder('player', 'p0', 5);
         check(`unstored: ${tag}, a stored entry dropped at the end lands last`, shown(), ['p1', 'p2', 'p3', 'p4', 'p0']);
-        setup(withHidden);
+        setup(mode);
         EncounterState.moveItemInOrder('player', 'p0', 4);
         check(`unstored: ${tag}, a stored entry dropped between the two unstored entries lands between them`, shown(), ['p1', 'p2', 'p3', 'p0', 'p4']);
-        setup(withHidden);
+        setup(mode);
         EncounterState.moveItemInOrder('player', 'p4', 0);
         check(`unstored: ${tag}, an unstored entry dragged to the top lands first`, shown(), ['p4', 'p0', 'p1', 'p2', 'p3']);
-        setup(withHidden);
+        setup(mode);
         const before = JSON.stringify(EncounterState.encounterOrder);
         EncounterState.moveItemInOrder('player', 'p2', 2);
         EncounterState.moveItemInOrder('player', 'p2', 3);
         check(`unstored: ${tag}, an own-place drop leaves encounterOrder equal and adds no entry`, JSON.stringify(EncounterState.encounterOrder), before);
     }
+});
+
+group('move: a hidden player with no stored entry keeps its place (TB10-10)', () => {
+    // Count 8: the list shows p0 to p6, ORK9, p7, CUL3. ORK9, p7 and CUL3 have no stored entry (initiative 9, 5, 3).
+    const setup = () => {
+        EncounterState.loadFromData(mkEnc({ settings: { tier: 1, playerCount: 8, name: 'x', round: 1 }, playerCharacters: players(8) }));
+        const [ork] = EncounterState.addIndividual('sly_marbo_aaa', 1);
+        const [cul] = EncounterState.addIndividual('sly_marbo_aaa', 1);
+        EncounterState.setInitiative(ork, '9');
+        EncounterState.setPlayerCharacterInitiative('p7', '5');
+        EncounterState.setInitiative(cul, '3');
+        EncounterState.encounterOrder = ['p0', 'p1', 'p2', 'p3', 'p4', 'p5', 'p6'].map(id => ({ type: 'player', id }));
+        return { ork, cul };
+    };
+    const names = (ids, ork, cul) => ids.map(id => (id === ork ? 'ORK9' : id === cul ? 'CUL3' : id));
+    let { ork, cul } = setup();
+    check('hidden unstored: the list shows p0 to p6, ORK9, p7, CUL3 at the count 8',
+        names(shown(), ork, cul), ['p0', 'p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'ORK9', 'p7', 'CUL3']);
+    EncounterState.updateSettings({ playerCount: 5 });
+    check('hidden unstored: at the count 5 the list shows p0 to p4, ORK9, CUL3',
+        names(shown(), ork, cul), ['p0', 'p1', 'p2', 'p3', 'p4', 'ORK9', 'CUL3']);
+    EncounterState.moveItemInOrder('player', 'p0', 7);
+    check('hidden unstored: after the drag of p0 to the end the list shows p1 to p4, ORK9, CUL3, p0',
+        names(shown(), ork, cul), ['p1', 'p2', 'p3', 'p4', 'ORK9', 'CUL3', 'p0']);
+    const order = EncounterState.encounterOrder.map(e => e.id);
+    check('hidden unstored: encounterOrder holds each entry, shown or hidden, one time', { length: order.length, unique: new Set(order).size }, { length: 10, unique: 10 });
+    EncounterState.updateSettings({ playerCount: 8 });
+    check('hidden unstored: at the count 8 the list shows p1 to p6, ORK9, p7, CUL3, p0',
+        names(shown(), ork, cul), ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'ORK9', 'p7', 'CUL3', 'p0']);
+    // An own-place drop adds no entry.
+    ({ ork, cul } = setup());
+    EncounterState.updateSettings({ playerCount: 5 });
+    const before = JSON.stringify(EncounterState.encounterOrder);
+    EncounterState.moveItemInOrder('player', 'p2', 2);
+    check('hidden unstored: an own-place drop adds no entry', JSON.stringify(EncounterState.encounterOrder), before);
 });
 
 group('move: the own-place drop marks the state dirty', () => {

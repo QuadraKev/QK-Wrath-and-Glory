@@ -310,24 +310,92 @@ async function runSnapshot(file) {
     console.log(`Snapshot written: ${Object.keys(entries).length} entries`);
 }
 
-// A B6 key may change at each list. The markup outside the lists must stay, in order.
-// The block that holds a list (the section of the card, the section of the mini card) may change its own wrapper.
-function keepsOutside(base, now) {
-    // A list of two entries prints as "[object Object],[object Object]".
-    const parts = base.replace(/\[object Object\](?:,\[object Object\])*/g, '[object Object]').split('[object Object]');
-    let pos = 0;
-    for (let i = 0; i < parts.length; i++) {
-        let part = parts[i];
-        if (i > 0) part = part.replace(/^(?:<\/span>|<\/div>)<\/div>/, '');
-        if (i < parts.length - 1) {
-            const open = Math.max(part.lastIndexOf('<div class="bonuses-section">'), part.lastIndexOf('<div class="mini-section">'));
-            if (open >= 0) part = part.slice(0, open);
-        }
-        if (part === '') continue;
-        const at = now.indexOf(part, pos);
-        if (at < 0) return part;
-        pos = at + part.length;
+// A B6 key may change only in its list blocks (spec section 9). The rest of the key must be the same, character for character.
+// A list block is the section of the card ("Mob Abilities" or "Mob Options") or the section of the mini card.
+function divEnd(html, start) {
+    const re = /<div\b|<\/div>/g;
+    re.lastIndex = start;
+    let depth = 0;
+    let m;
+    while ((m = re.exec(html))) {
+        if (m[0] === '</div>') { depth--; if (depth === 0) return re.lastIndex; } else depth++;
     }
+    return -1;
+}
+
+const LIST_STARTS = [
+    { kind: 'card', re: /<div class="bonuses-section"><div class="bonuses-header">(Mob Abilities|Mob Options)<\/div>/g },
+    { kind: 'mini', re: /<div class="mini-section"><(?:span|div) class="mini-section-label">(Mob Abilities|Mob Options):?<\/(?:span|div)>/g }
+];
+
+// The list blocks of a string, in order, and the string without them.
+function splitLists(html) {
+    const blocks = [];
+    for (const { kind, re } of LIST_STARTS) {
+        re.lastIndex = 0;
+        let m;
+        while ((m = re.exec(html))) {
+            const end = divEnd(html, m.index);
+            if (end < 0) continue;
+            blocks.push({ kind, label: m[1], start: m.index, end, text: html.slice(m.index, end) });
+            re.lastIndex = end;
+        }
+    }
+    blocks.sort((a, b) => a.start - b.start);
+    let rest = '';
+    let pos = 0;
+    blocks.forEach(b => { rest += html.slice(pos, b.start); pos = b.end; });
+    return { blocks, rest: rest + html.slice(pos) };
+}
+
+// The count of entries that a new block holds, or -1 when the block is not the list form of spec section 9.
+function listEntries(block) {
+    const t = block.text;
+    if (t.includes('[object Object]')) return -1;
+    if (block.kind === 'card') {
+        // The header, then one bonus-item for each entry. An item holds a name and a description and no div.
+        let pos = t.indexOf('</div>') + '</div>'.length;
+        let n = 0;
+        while (t.startsWith('<div class="bonus-item">', pos)) {
+            const end = divEnd(t, pos);
+            const item = t.slice(pos, end);
+            if (end < 0 || item.indexOf('<div', 5) >= 0 || !item.includes('class="bonus-name"') || !item.includes('class="bonus-description"')) return -1;
+            pos = end;
+            n++;
+        }
+        return t.slice(pos) === '</div>' ? n : -1;
+    }
+    // The mini card: the label, then a mini-abilities div that holds one ability-mini for each entry.
+    const open = '<div class="mini-abilities">';
+    let pos = t.indexOf(open);
+    if (pos < 0) return -1;
+    const container = divEnd(t, pos);
+    pos += open.length;
+    let n = 0;
+    while (t.startsWith('<div class="ability-mini">', pos)) {
+        const end = divEnd(t, pos);
+        const item = t.slice(pos, end);
+        if (end < 0 || !item.includes('class="ability-name-mini"')) return -1;
+        pos = end;
+        n++;
+    }
+    return container === t.length - '</div>'.length && pos === container - '</div>'.length ? n : -1;
+}
+
+// The problem of a B6 key, or null. The key may differ from the baseline only in its list blocks.
+function listProblem(base, now) {
+    const a = splitLists(base);
+    const b = splitLists(now);
+    if (a.blocks.length === 0) return 'the baseline has no list block';
+    if (a.blocks.length !== b.blocks.length) return `${a.blocks.length} list blocks in the baseline, ${b.blocks.length} now`;
+    for (let i = 0; i < a.blocks.length; i++) {
+        const was = a.blocks[i];
+        const is = b.blocks[i];
+        const wanted = was.text.split('[object Object]').length - 1;
+        if (was.kind !== is.kind || was.label !== is.label) return `list block ${i + 1} is ${is.kind} ${is.label}, not ${was.kind} ${was.label}`;
+        if (listEntries(is) !== wanted) return `list block ${i + 1} (${is.label}) is not a list of ${wanted} entries in the form of spec section 9`;
+    }
+    if (a.rest !== b.rest) return 'the markup outside the list blocks differs: ' + around(a.rest, b.rest);
     return null;
 }
 
@@ -350,15 +418,12 @@ async function runCompare(file) {
     const extra = Object.keys(now).filter(k => !(k in base.entries));
     const unexpected = differ.filter(k => !allowed.has(k)).concat(extra);
     check('dom: no unexpected difference', unexpected.length, 0);
-    const lost = {};
+    const problems = [];
     differ.filter(k => allowed.has(k) && k in now).forEach(k => {
-        const part = keepsOutside(base.entries[k], now[k]);
-        if (part !== null) lost[k] = part.slice(0, 160);
+        const problem = listProblem(base.entries[k], now[k]);
+        if (problem !== null) problems.push(`${k}: ${problem}`);
     });
-    check('dom: a B6 key keeps the baseline markup outside each list', Object.keys(lost).slice(0, 10).map(k => `${k}: ${lost[k]}`), []);
-    unexpected.slice(0, 10).forEach(k => {
-        console.log(`        ${k}: ${k in base.entries ? around(base.entries[k], now[k]) : 'a key that the baseline does not have'}`);
-    });
+    check('dom: a B6 key differs from the baseline only in its list blocks', problems.slice(0, 10), []);
     console.log(`        keys that differ and are allowed (B6): ${differ.filter(k => allowed.has(k)).length}`);
 }
 

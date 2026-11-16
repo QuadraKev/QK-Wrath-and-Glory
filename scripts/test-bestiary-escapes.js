@@ -44,6 +44,9 @@ function makeRecordingDocument() {
             className: '',
             classList: { add() {}, remove() {}, toggle() {}, contains() { return false; } },
             addEventListener() {},
+            remove() {},
+            focus() {},
+            select() {},
             appendChild(child) { return child; },
             querySelector() { return makeElement(); },
             querySelectorAll() { return []; },
@@ -194,6 +197,114 @@ group('names', () => {
     check('names: the list holds the name escaped one time', list.includes(ESC), true);
     check('names: the list holds no double escape', DOUBLE.some(d => list.includes(d)), false);
     DataLoader.removeThreat('custom_names');
+});
+
+// --- the threat builder (spec section 8, group B) ---
+// The builder escapes text with its own DOM helper (it leaves the double quote raw) and each attribute value with escapeAttr.
+// A raw value is a raw tag, or a double quote that ends an attribute value.
+const RAW_B = html => /<\/?b>/i.test(html) || /="[^"<>]*"Q7/.test(html);
+
+ctx.App = { updateThreatCount() {} };
+for (const rel of ['bestiary/js/threat-builder-state.js', 'bestiary/tabs/threat-builder-tab.js']) load(ctx, rel);
+const ThreatBuilderState = vm.runInContext('ThreatBuilderState', ctx);
+const ThreatBuilderTab = vm.runInContext('ThreatBuilderTab', ctx);
+
+group('B-1', () => {
+    DataLoader.injectThreat(evilThreat());
+    written.length = 0;
+    ThreatBuilderTab.renderTemplateDropdown('', 'sidebar');
+    const html = written[written.length - 1];
+    check('B-1: the template search holds no raw value', RAW_B(html), false);
+    check('B-1: the template search shows the threat', html.includes('class="builder-dropdown-item"'), true);
+    DataLoader.removeThreat('custom_' + EVIL);
+});
+
+group('B-2', () => {
+    ThreatBuilderState.threat = evilThreat();
+    ThreatBuilderState.threat.parsedSkills = {
+        default: EVIL, awareness: EVIL, passiveAwareness: EVIL, entries: [{ name: 'Athletics', value: EVIL }]
+    };
+    written.length = 0;
+    ThreatBuilderTab.renderEditor();
+    const html = written[written.length - 1];
+    check('B-2: the editor holds no raw value', RAW_B(html), false);
+    check('B-2: the editor shows the skill entry', html.includes('builder-skill-entry'), true);
+});
+
+group('B-3', () => {
+    const html = ThreatBuilderTab.renderPreviewCard(evilThreat());
+    check('B-3: the preview holds no raw value', RAW_B(html), false);
+    check('B-3: the preview shows the name', html.includes(ThreatBuilderTab.escapeHtml(EVIL)), true);
+});
+
+group('B-4, B-5', () => {
+    DataLoader.injectThreat(evilThreat());
+    ThreatBuilderState._abilityIndex = null;
+    written.length = 0;
+    const abilities = ThreatBuilderTab.renderAbilityPickerContent();
+    const evilType = ThreatBuilderTab.renderAbilityPickerItems(EVIL, '');
+    const bonuses = ThreatBuilderTab.renderBonusPickerContent();
+    check('B-4: the ability picker holds no raw value', RAW_B(abilities), false);
+    check('B-4: the ability picker shows the ability', abilities.includes('class="ability-picker-item"'), true);
+    check('B-4: the ability picker holds no raw type', RAW_B(evilType), false);
+    check('B-4: the picker of an odd type shows the ability', evilType.includes('class="ability-picker-item"'), true);
+    check('B-5: the bonus picker holds no raw value', RAW_B(bonuses), false);
+    check('B-5: the bonus picker shows the bonus', bonuses.includes('class="ability-picker-item"'), true);
+    check('B-4, B-5: no description is parsed as HTML', written.some(h => h.includes('<b>"Q7')), false);
+    check('B-4, B-5: stripHtml is gone', vm.runInContext('typeof ThreatBuilderTab.stripHtml', ctx), 'undefined');
+    DataLoader.removeThreat('custom_' + EVIL);
+    ThreatBuilderState._abilityIndex = null;
+});
+
+group('B-6', () => {
+    written.length = 0;
+    ThreatBuilderTab.showInjectModal(EVIL, EVIL);
+    const html = written[written.length - 1];
+    check('B-6: the modal count is escaped', RAW_B(html), false);
+    check('B-6: the modal shows the name', html.includes('inject-modal-name'), true);
+});
+
+group('P5', () => {
+    ThreatBuilderState.threat = Object.assign(evilThreat(), {
+        description: '\nfirst',
+        abilities: [{ type: 'ABILITY', name: 'n', description: '\nfirst' }],
+        bonuses: [{ name: 'n', description: '\nfirst' }]
+    });
+    written.length = 0;
+    ThreatBuilderTab.renderEditor();
+    const html = written[written.length - 1];
+    const lines = html.match(/rows="\d+">\n\nfirst<\/textarea>/g) || [];
+    check('P5: each builder textarea starts with one line break', lines.length, 3);
+    check('P5: the builder has three textareas', (html.match(/<textarea/g) || []).length, 3);
+});
+
+group('names (builder)', () => {
+    const NAME = 'A & "B" <C>';
+    const TEXT = 'A &amp; "B" &lt;C&gt;';
+    const ATTR = 'A &amp; &quot;B&quot; &lt;C&gt;';
+    const DOUBLE = ['&amp;amp;', '&amp;quot;', '&amp;lt;'];
+    const threat = Object.assign(evilThreat(), {
+        id: 'custom_names_b', name: NAME, keywords: [NAME], abilities: [{ type: 'ACTION', name: NAME, description: NAME }]
+    });
+    DataLoader.injectThreat(threat);
+    ThreatBuilderState._abilityIndex = null;
+    const preview = ThreatBuilderTab.renderPreviewCard(threat);
+    written.length = 0;
+    ThreatBuilderTab.renderTemplateDropdown('', 'sidebar');
+    const search = written[written.length - 1];
+    const picker = ThreatBuilderTab.renderAbilityPickerContent();
+    ThreatBuilderState.threat = threat;
+    written.length = 0;
+    ThreatBuilderTab.renderEditor();
+    const editor = written[written.length - 1];
+    for (const [label, html] of [['the preview', preview], ['the template search', search], ['the ability picker', picker]]) {
+        check(`names: ${label} holds the name escaped one time`, html.includes(TEXT), true);
+        check(`names: ${label} holds no double escape`, DOUBLE.some(d => html.includes(d)), false);
+    }
+    check('names: the name input holds the name as an attribute', editor.includes(`data-field="name" value="${ATTR}"`), true);
+    check('names: the editor holds no double escape', DOUBLE.some(d => editor.includes(d)), false);
+    DataLoader.removeThreat('custom_names_b');
+    ThreatBuilderState._abilityIndex = null;
 });
 
 // --- context 2: the real glossary, with no stub (P16) ---

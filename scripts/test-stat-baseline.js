@@ -241,6 +241,38 @@ State.increaseAttribute('intellect');
 State.setSpecies('ogryn');
 check('CC2: intellect 3 goes to the Ogryn maximum 1', State.character.attributes.intellect, 1);
 
+// F1: a species change clears the archetype through the rebase
+human('tech_adept');
+State.setSpecies('ogryn');
+check('F1: tech_adept then Ogryn: tech is 0', State.character.skills.tech, 0);
+check('F1: tech_adept then Ogryn: scholar is 0', State.character.skills.scholar, 0);
+check('F1: tech_adept then Ogryn: the skill XP is 0', XP.calculateSkillXP(State.character), 0);
+
+// F1: a second setCustomArchetype changes nothing
+human();
+State.setCustomArchetype();
+State.addWargear('lasgun');
+State.addCustomStartingWargear('knife');
+snapshot = JSON.stringify(State.character);
+countBefore = notifyCount;
+State.setCustomArchetype();
+check('F1: a second setCustomArchetype changes nothing', JSON.stringify(State.character) === snapshot, true);
+check('F1: a second setCustomArchetype does not notify', notifyCount, countBefore);
+
+// F2: a raised value under the new free value goes up to it
+human();
+State.increaseAttribute('strength');
+State.increaseAttribute('strength');
+State.setSpecies('ogryn');
+check('F2: Human strength 3 then Ogryn: strength is 5', State.character.attributes.strength, 5);
+check('F2: Human strength 3 then Ogryn: the attribute XP is 0', XP.calculateAttributeXP(State.character), 0);
+
+// F2: setArchetype clears the stored skill choices
+human('inquisitor');
+State.character.archetypeSkillChoices = { choice1: 'insight' };
+State.setArchetype('ganger');
+check('F2: setArchetype clears archetypeSkillChoices', State.character.archetypeSkillChoices, {});
+
 // A2: the "any skill" choice of an archetype is stored, and the chosen skill gets the bonus value
 human('inquisitor');
 check('A2: the Inquisitor has no choice key in skills', Object.keys(State.character.skills).some(k => k.startsWith('choice')), false);

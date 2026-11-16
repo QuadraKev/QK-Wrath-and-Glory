@@ -123,7 +123,7 @@ const CORPUS = {
         skills: Object.fromEntries(Object.keys(base().skills).map(k => [k, 0])) }),
     'full character': () => ({ ...base(),
         rank: -3, additionalXp: -10, corruption: 7,
-        // Real shape (spec §5 row 26a): setArchetype writes NaN (saved as null) for the data keys choice1/choice2; resetStats can write a number.
+        // Real shape (spec §5 row 26a): setArchetype wrote NaN (saved as null) for the data keys choice1/choice2, and old saves still hold the null; resetStats can write a number.
         skills: { ...base().skills, choice1: null, choice2: 4 },
         species: { id: 'kroot', xpCost: 10, subOptions: [{ type: 'mutation', optionId: 'a' }, { type: 'mutation', optionId: 'b' }] },
         archetype: { id: 'custom', xpCost: 0 },

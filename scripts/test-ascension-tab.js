@@ -114,11 +114,16 @@ check('A13 chosen package: effective tier 2', State.getEffectiveTier(), 2);
 loadChar({ tier: 1, ascensions: [{ targetTier: 2, type: 'archetype', packageId: null, archetypeId: null }] });
 check('A13 empty archetype slot: effective tier 1', State.getEffectiveTier(), 1);
 
+// A13: a type that does not match its id does not count.
+loadChar({ tier: 1, ascensions: [{ targetTier: 2, type: 'package', packageId: null, archetypeId: 'imperial_guardsman' }] });
+check('A13 package type with only an archetype id: effective tier 1', State.getEffectiveTier(), 1);
+
 // A12: an ascension that no slot shows has a row with a Remove control.
 loadChar({ tier: 4, ascensions: [pkgEntry(3, 'back_from_the_brink')] });
 let html = renderHtml();
 checkTrue('A12 tier 4: block title', html.includes('Ascensions with no slot'), html.slice(0, 300));
 checkTrue('A12 tier 4: package name', html.includes(BFTB), html.slice(0, 300));
+checkTrue('A12 tier 4: spec sentence on the row', html.includes('Tier 3. This ascension has no slot at the current Tier. Its XP cost and its effects stay until you remove it.'), html.slice(0, 600));
 checkTrue('A12 tier 4: Remove button with tier', /class="[^"]*btn-remove-ascension[^"]*"[^>]*data-target-tier="3"/.test(html), html.slice(0, 600));
 checkTrue('A12 tier 4: the slot for tier 5 still shows', html.includes('class="ascension-slot" data-target-tier="5"'), '');
 // A custom archetype has the starting tier, so tier 5 has no creation slot.
@@ -131,6 +136,19 @@ loadChar({ tier: 5, archetype: CUSTOM, ascensions: [] });
 html = renderHtml();
 checkTrue('A12 tier 5 with no entry: no block', !html.includes('Ascensions with no slot'), '');
 checkTrue('A12 tier 5 with no entry: message shows', html.includes('No ascension slots available'), '');
+
+// A12: a normal entry in a slot gives no block.
+loadChar({ tier: 1, ascensions: [pkgEntry(2, 'back_from_the_brink')] });
+html = renderHtml();
+checkTrue('A12 tier 1 with an entry at 2: no block', !html.includes('Ascensions with no slot'), html.slice(0, 300));
+
+// A12: the Remove control at tier 5 reaches its handler (the tier 5 branch binds the events).
+loadChar({ tier: 5, archetype: CUSTOM, ascensions: [pkgEntry(3, 'back_from_the_brink')] });
+renderHtml();
+const t5btns = content.querySelectorAll('.btn-remove-ascension');
+check('A12 tier 5: one Remove button', t5btns.length, 1);
+if (t5btns[0]) t5btns[0].click();
+check('A12 tier 5 Remove: entry gone', State.character.ascensions.length, 0);
 
 // A12: the Remove control goes through State.setAscension and releases the grants.
 loadChar({ tier: 4, ascensions: [] });
@@ -151,6 +169,7 @@ html = renderHtml();
 checkTrue('A1 notice: package name', html.includes(BFTB), html.slice(0, 400));
 checkTrue('A1 notice: escaped unknown id', html.includes('zz&lt;b&gt;'), html.slice(0, 400));
 checkTrue('A1 notice: no raw markup', !html.includes('zz<b>'), '');
+checkTrue('A1 notice: spec sentence', html.includes('These ascension packages come from an older version of the app. Select them again in the slots below.'), html.slice(0, 400));
 checkTrue('A1 notice: Remove text', html.includes('Remove old package list'), html.slice(0, 400));
 checkTrue('A1 notice: class info-box', html.includes('class="info-box"'), '');
 checkTrue('A1 render does not write: the list stays', Array.isArray(State.character.ascensionPackages) && State.character.ascensionPackages.length === 2, '');
@@ -170,11 +189,14 @@ State.character.tier = -300000;
 const t0 = Date.now();
 html = renderHtml();
 const ms = Date.now() - t0;
-checkTrue('B9 render under 500 ms', ms < 500, `${ms} ms`);
+checkTrue('B9 render under 100 ms', ms < 100, `${ms} ms`);
 const slotCount = (html.match(/class="ascension-slot"/g) || []).length;
 checkTrue('B9 at most 6 slots', slotCount <= 6, `${slotCount} slots`);
 
 // Unknown ids: a row with a Remove control.
+loadChar({ tier: 2, ascensions: [pkgEntry(3, 'zz<b>')] });
+html = renderHtml();
+checkTrue('Unknown package: id escaped', html.includes('Unknown ascension package (zz&lt;b&gt;)') && !html.includes('zz<b>'), html.slice(0, 500));
 loadChar({ tier: 2, ascensions: [pkgEntry(3, 'zz')] });
 html = renderHtml();
 checkTrue('Unknown package: row text', html.includes('Unknown ascension package (zz)'), html.slice(0, 500));

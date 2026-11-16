@@ -69,7 +69,8 @@ const AscensionTab = {
             return this.escapeHtml(pkg ? pkg.name : String(id));
         });
         return `<div class="info-box" style="margin-bottom: 15px; padding: 10px; background: var(--bg-tertiary); border-radius: var(--radius-sm); font-size: 13px; color: var(--text-secondary);">
-            <p>This character has an old list of ascension packages from an earlier version. The app no longer uses this list: choose a package in a slot below. Old list: ${names.join(', ')}</p>
+            <p>These ascension packages come from an older version of the app. Select them again in the slots below.</p>
+            <p>${names.join(', ')}</p>
             <button id="btn-clear-legacy-packages" class="btn-small">Remove old package list</button>
         </div>`;
     },
@@ -105,7 +106,7 @@ const AscensionTab = {
         let html = `<div class="ascension-orphans" style="margin-bottom: 15px;">
             <h3 class="ascension-slot-title">Ascensions with no slot</h3>`;
         for (const entry of orphans) {
-            html += this.renderAscensionRow(entry.targetTier, `Tier ${this.escapeHtml(entry.targetTier)}: ${this.describeAscension(entry)}`);
+            html += this.renderAscensionRow(entry.targetTier, `<strong>${this.describeAscension(entry)}</strong> Tier ${this.escapeHtml(entry.targetTier)}. This ascension has no slot at the current Tier. Its XP cost and its effects stay until you remove it.`);
         }
         return html + '</div>';
     },

@@ -75,37 +75,79 @@ const XPCalculator = {
         return this.SKILL_COSTS[current + 1] - this.SKILL_COSTS[current];
     },
 
-    // Calculate XP spent on attributes beyond archetype baseline
+    // The known stat names, in the order of State.createNewCharacter()
+    ATTRIBUTE_KEYS: ['strength', 'toughness', 'agility', 'initiative', 'willpower', 'intellect', 'fellowship'],
+    SKILL_KEYS: [
+        'athletics', 'awareness', 'ballisticSkill', 'cunning', 'deception', 'insight',
+        'intimidation', 'investigation', 'leadership', 'medicae', 'persuasion', 'pilot',
+        'psychicMastery', 'scholar', 'stealth', 'survival', 'tech', 'weaponSkill'
+    ],
+
+    // The free value of each known stat from the species and the archetype.
+    // An archetype skill bonus under a key that is not a skill name ("any skill")
+    // goes to the skill that archetypeSkillChoices names for that key.
+    getBaseline(character) {
+        const speciesBase = DataLoader.getSpecies(character.species?.id)?.baseAttributes || {};
+        const archetype = DataLoader.getArchetype(character.archetype?.id);
+        const attrBonus = archetype?.attributeBonus || {};
+        const skillBonus = archetype?.skillBonus || {};
+        const choices = character.archetypeSkillChoices;
+        const hasChoices = !!choices && typeof choices === 'object' && !Array.isArray(choices);
+
+        const attributes = {};
+        for (const attr of this.ATTRIBUTE_KEYS) {
+            attributes[attr] = Math.max(1, speciesBase[attr] || 1, attrBonus[attr] || 1);
+        }
+
+        const skills = {};
+        for (const skill of this.SKILL_KEYS) {
+            skills[skill] = Math.max(0, skillBonus[skill] || 0);
+        }
+        if (hasChoices) {
+            for (const [key, bonus] of Object.entries(skillBonus)) {
+                if (this.SKILL_KEYS.includes(key)) continue;
+                const chosen = choices[key];
+                if (this.SKILL_KEYS.includes(chosen)) {
+                    skills[chosen] = Math.max(skills[chosen], bonus);
+                }
+            }
+        }
+
+        return { attributes, skills };
+    },
+
+    // Calculate XP spent on attributes beyond the baseline
     calculateAttributeXP(character, archetype) {
         let xp = 0;
-        const baseAttributes = archetype?.attributeBonus || {};
-        const speciesBase = DataLoader.getSpecies(character.species?.id)?.baseAttributes || {};
+        const baseline = this.getBaseline(character).attributes;
 
-        for (const [attr, value] of Object.entries(character.attributes)) {
-            // Get the baseline from species + archetype
-            const baseline = Math.max(
-                speciesBase[attr] || 1,
-                baseAttributes[attr] || 1
-            );
+        for (const attr of this.ATTRIBUTE_KEYS) {
+            const value = character.attributes?.[attr];
+            if (!Number.isFinite(value)) continue;
+            // A value above the table costs as the table edge
+            const capped = Math.min(value, 12);
 
-            if (value > baseline) {
-                xp += this.getAttributeIncreaseCost(baseline, value);
+            if (capped > baseline[attr]) {
+                xp += this.getAttributeIncreaseCost(baseline[attr], capped);
             }
         }
 
         return xp;
     },
 
-    // Calculate XP spent on skills beyond archetype baseline
+    // Calculate XP spent on skills beyond the baseline
     calculateSkillXP(character, archetype) {
         let xp = 0;
-        const baseSkills = archetype?.skillBonus || {};
+        const baseline = this.getBaseline(character).skills;
 
-        for (const [skill, value] of Object.entries(character.skills)) {
-            const baseline = baseSkills[skill] || 0;
+        for (const skill of this.SKILL_KEYS) {
+            const value = character.skills?.[skill];
+            if (!Number.isFinite(value)) continue;
+            // A value above the table costs as the table edge
+            const capped = Math.min(value, 8);
 
-            if (value > baseline) {
-                xp += this.getSkillIncreaseCost(baseline, value);
+            if (capped > baseline[skill]) {
+                xp += this.getSkillIncreaseCost(baseline[skill], capped);
             }
         }
 

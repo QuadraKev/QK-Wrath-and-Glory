@@ -573,30 +573,16 @@ const State = {
         }
     },
 
-    // Reset attributes and skills to species baseline
+    // Reset attributes and skills to the baseline. A key that is not a known stat name stays as it is.
     resetStats() {
-        const species = DataLoader.getSpecies(this.character.species?.id);
-        const archetype = DataLoader.getArchetype(this.character.archetype?.id);
+        const baseline = XPCalculator.getBaseline(this.character);
 
-        // Reset attributes
-        for (const attr of Object.keys(this.character.attributes)) {
-            let value = 1;
-            if (species?.baseAttributes?.[attr]) {
-                value = Math.max(value, species.baseAttributes[attr]);
-            }
-            if (archetype?.attributeBonus?.[attr]) {
-                value = Math.max(value, archetype.attributeBonus[attr]);
-            }
-            this.character.attributes[attr] = value;
+        for (const attr of XPCalculator.ATTRIBUTE_KEYS) {
+            this.character.attributes[attr] = baseline.attributes[attr];
         }
 
-        // Reset skills
-        for (const skill of Object.keys(this.character.skills)) {
-            let value = 0;
-            if (archetype?.skillBonus?.[skill]) {
-                value = Math.max(value, archetype.skillBonus[skill]);
-            }
-            this.character.skills[skill] = value;
+        for (const skill of XPCalculator.SKILL_KEYS) {
+            this.character.skills[skill] = baseline.skills[skill];
         }
 
         this.notifyListeners('stats');
@@ -621,17 +607,7 @@ const State = {
 
     // Decrease an attribute
     decreaseAttribute(attr) {
-        const species = DataLoader.getSpecies(this.character.species?.id);
-        const archetype = DataLoader.getArchetype(this.character.archetype?.id);
-
-        // Calculate minimum (species base or archetype bonus, whichever is higher)
-        let min = 1;
-        if (species?.baseAttributes?.[attr]) {
-            min = Math.max(min, species.baseAttributes[attr]);
-        }
-        if (archetype?.attributeBonus?.[attr]) {
-            min = Math.max(min, archetype.attributeBonus[attr]);
-        }
+        const min = XPCalculator.getBaseline(this.character).attributes[attr] ?? 1;
 
         const current = this.character.attributes[attr] || 1;
         if (current > min) {
@@ -660,8 +636,7 @@ const State = {
 
     // Decrease a skill
     decreaseSkill(skill) {
-        const archetype = DataLoader.getArchetype(this.character.archetype?.id);
-        const min = archetype?.skillBonus?.[skill] || 0;
+        const min = XPCalculator.getBaseline(this.character).skills[skill] ?? 0;
         const current = this.character.skills[skill] || 0;
 
         if (current > min) {

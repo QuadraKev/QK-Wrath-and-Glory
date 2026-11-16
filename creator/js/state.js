@@ -23,6 +23,25 @@ const State = {
     _autoSaveTimer: null,
     _AUTO_SAVE_KEY: 'wng-creator-autosave',
 
+    // Old ids that the data renamed, and their new ids. The load maps each old id in place (step X2).
+    // Each pair has its evidence in the commit that removed the old id (bug pass spec §9.2).
+    ID_ALIASES: {
+        talents: {
+            daemonic_summoning_dh: 'daemonic_summons_dh',
+            embrace_the_gods_dh: 'eye_of_the_gods_dh',
+            forge_the_sword_dh: 'forge_of_souls_dh',
+            one_or_more_allied_aeldari_or_drukhari_saga_of_majesty_aoa: 'saga_of_majesty_aoa'
+        },
+        wargear: {
+            forceshield: 'force_shield_aeldari',
+            mist_shield: 'mistshield',
+            mandiblaster: 'mandiblasters'
+        },
+        species: {
+            aeldari_psychosensitive: 'aeldari'
+        }
+    },
+
     // The value that a skill had before a key of archetypeSkillChoices selected it: { key: { skill, value } }.
     // This is in memory only. It is not a field of the character and is never stored.
     _skillChoicePrior: {},
@@ -162,21 +181,48 @@ const State = {
             this.character.species.subOptions = [];
         }
 
-        // Migrate old ascensionPackages array to new ascensions format
-        if (this.character.ascensionPackages && !this.character.ascensions) {
-            const startingTier = this.character.tier || 1;
-            this.character.ascensions = this.character.ascensionPackages.map((packageId, index) => ({
-                targetTier: startingTier + index + 1,
-                type: 'package',
-                packageId: packageId,
-                archetypeId: null
-            }));
+        // The three load steps below are migrations, not type repairs, so they write no warning.
+        // Each step does nothing at a second load of the same character.
+        const c = this.character;
+
+        // X1: delete the phantom skill keys. Only a defect wrote them, and no reader uses them.
+        for (const key of ['choice', 'choice1', 'choice2']) delete c.skills[key];
+
+        // X2: map each old id to its new id in place. The order stays, because talent choices store wargear indices.
+        const aliases = this.ID_ALIASES;
+        const talentId = t => (typeof t === 'string' ? t : t.id);
+        c.talents.forEach((talent, index) => {
+            const newId = aliases.talents[talentId(talent)];
+            // A talent is not mapped onto an id that the list holds: the XP would count it two times (CC5)
+            if (!newId || c.talents.some(t => talentId(t) === newId)) return;
+            if (typeof talent === 'string') c.talents[index] = newId;
+            else talent.id = newId;
+        });
+        // Wargear can hold an item two times, so a wargear id is always mapped
+        c.wargear.forEach(entry => {
+            if (aliases.wargear[entry.id]) entry.id = aliases.wargear[entry.id];
+        });
+        c.customArchetype.wargear.forEach((id, index) => {
+            if (aliases.wargear[id]) c.customArchetype.wargear[index] = aliases.wargear[id];
+        });
+        if (aliases.species[c.species.id]) {
+            // The old species aeldari_psychosensitive had PSYKER. The new species gives it through a sub-option (CC1).
+            if (c.species.id === 'aeldari_psychosensitive' && !c.species.subOptions.some(o => o.type === 'psychosensitive')) {
+                c.species.subOptions.push({ type: 'psychosensitive', optionId: 'psyker' });
+            }
+            c.species.id = aliases.species[c.species.id];
         }
-        if (this.character.ascensionPackages) {
-            delete this.character.ascensionPackages;
-        }
-        if (!this.character.ascensions) {
-            this.character.ascensions = [];
+
+        // X3: fill a missing bonusType of a background entry from the data. Before, a render wrote it.
+        const backgrounds = DataLoader.getBackgrounds();
+        if (CharacterCheck.isPlainObject(backgrounds)) {
+            const lists = { origin: 'origins', accomplishment: 'accomplishments', goal: 'goals' };
+            for (const [key, list] of Object.entries(lists)) {
+                const entry = c.background[key];
+                if (!entry || entry.bonusType) continue;
+                const record = (backgrounds[list] || []).find(b => b.id === entry.id);
+                if (record?.bonusType) entry.bonusType = record.bonusType;
+            }
         }
 
         // Repair the custom wargear entries in place. Never drop an entry: talent choices store indices.

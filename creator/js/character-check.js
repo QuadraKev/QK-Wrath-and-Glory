@@ -109,6 +109,8 @@ const CharacterCheck = {
         this._list(c, 'languages', defaults.languages, 'languages', paths, isString);
         this._list(c, 'freeLanguages', defaults.freeLanguages, 'freeLanguages', paths, isString);
         this._list(c, 'customKeywords', [], 'customKeywords', paths, isString, true);
+        // The old package list of an older app version: optional, and it stays (bug pass spec §8.1)
+        this._list(c, 'ascensionPackages', [], 'ascensionPackages', paths, isString, true);
 
         return paths;
     },

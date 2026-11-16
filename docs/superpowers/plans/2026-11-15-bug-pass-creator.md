@@ -654,6 +654,45 @@ Spec: §13. Suggested dispatch: `implementer` (Sonnet).
 
 ---
 
+### Task 20: Late findings (the sub-option Confirm, the talent name on the sheet, the sub-faction select, the Compendium text, one test)
+
+**Added by the controller on 2026-11-16, after the 19 planned tasks.** The task reviews found older defects that were in `main` before the pass. The owner asked for "an overall pass for any bugs like those" in one go, so the ones that a normal user can meet and that have a small correction are in this task **[Controller ruling TC20-0]**. Each item is independent. No item changes a stored shape, a number or a rule of the game. The other late findings go to the owner in the report.
+
+**Files:**
+- Modify: `creator/tabs/species-tab.js` (item 1), `creator/tabs/character-sheet-tab.js` and, only if a shared function is the smallest change, `creator/tabs/talents-tab.js` (item 2), `creator/tabs/archetype-tab.js` (item 3), `creator/tabs/references-tab.js` (item 4), `scripts/test-load-check.js` (item 5)
+- Test: `scripts/test-creator-late.js` (new)
+- No `?v=` change (`creator/index.html` is at `?v=130` for this branch). Nothing under `bestiary/`, `shared/` or `data/`.
+
+**Item 1: Confirm in the optional sub-option window keeps a stored unknown option [TC20-1; rule G2 of the pass: no silent delete through the UI].**
+- Defect (review of Task 13): in the optional sub-option window of the Species tab, Confirm with nothing picked deletes a stored option of that type whose id the data does not have (`creator/tabs/species-tab.js`, near lines 348 to 352). The user did not ask for that delete, and the autosave then stores the loss.
+- Rule: Confirm writes only the options that the window offers. A stored option of that type with an unknown id stays stored in each case (nothing picked; a known option picked; a known option cleared). It keeps its "Unknown ..." row with its Remove control from Task 13, and that Remove still deletes it.
+- Checks: the three cases above with one stored unknown option: the unknown entry stays, at its place in the list relative to the other stored entries of its type; the known pick is stored as before; with no unknown entry, the stored result of each case is deep-equal to the result of the old code (run the old function body from `git show HEAD:creator/tabs/species-tab.js` in the test, or pin the expected lists).
+
+**Item 2: the sheet shows a talent name as the Talents tab shows it [TC20-2].**
+- Defect (review of Task 7): for a talent whose name has a placeholder, the sheet keeps the placeholder ("Hatred [Any] (ORKS)") and the Talents tab replaces it ("Hatred (ORKS)") (`creator/tabs/talents-tab.js`, near line 351: "Replace [Any], [Skill], [Trait], etc. with the actual choice").
+- Rule: the talent row of the sheet, and the talent line of the sheet's copy text if it prints the name, show the same name text as the selected-talent row of the Talents tab, for each talent and each choice. The rules of Task 7 stay: an index choice with no item shows "(no item selected)"; a text choice shows as before; each value goes through the escape helper of its file.
+- Use the smallest change. If the Talents tab computes the name inline, one function on the Talents tab object that both sites call is acceptable; say in the report what you did.
+- Checks: for a character with (a) a placeholder talent with a text choice, (b) a talent with a wargear index choice, (c) the same with an index that has no item, (d) a talent with no choice, (e) an unknown talent id, (f) a hostile choice text: the name text of the sheet row equals the name text of the Talents tab row (compare the text of the two name elements); (a) holds no `[Any]` on the sheet. For a character whose talents have no placeholder, the sheet HTML is byte-equal to the HTML of the old code.
+
+**Item 3: the sub-faction keyword select keeps the keyboard focus [TC20-3].**
+- Defect (review and re-review 2 of Task 11): the sub-faction keyword select of the Archetype tab (`creator/tabs/archetype-tab.js`, near line 349) loses the focus on each change, and at the first typed letter, because the detail is drawn again. A keyboard user cannot step through the options. Its label is a `div` with no tie to the select.
+- Rule: use the mechanism that Task 11 built for the "any skill" selects in the same file (rulings TC11-1 to TC11-6 in the spec: the select that the user changed has the focus after the change; an open type-ahead is not cut; the select has an `aria-label` with the text of its label). The stored result of a change is the same as before. The look does not change (no new class, no moved element).
+- Checks: read the Task 11 checks (search the test scripts for `skill-choice-select`) and write the same kind for the keyword select: after a change, the element with the focus is the keyword select of the same key; the stored keyword choice is the value that the old code stored; the select has an `aria-label`. Browser proof (headless, in the report, not committed): Tab to the select, ArrowDown two times: the focus stays and the second key press changes the value again; type two letters fast: the option that starts with both letters is selected; a mouse change works as before.
+
+**Item 4: the Compendium prints "Skill of your choice +4" [TC20-4].**
+- Defect: the Compendium entry of an archetype with an "any skill" bonus prints the data key: "Choice1 +4, Choice2 +4" (Inquisitor) and "Choice +2" (`creator/tabs/references-tab.js`, near line 762, the `Skill Bonuses` line).
+- Rule: a skill bonus key that matches `/^choice\d*$/` gives `` `Skill of your choice +${val}` `` (the words of the Archetype tab). Each other key gives the old expression. The bestiary copy of this tab gets exactly this line on its own branch; do not touch it.
+- Checks: the entry of the Inquisitor archetype (read the real id in `data/archetypes.json`) holds "Skill of your choice +4, Skill of your choice +4" and no "Choice1"; an entry with normal skills is byte-equal to the old output.
+
+**Item 5 (test only): the HOSTILE loop checks the path of each warning [TC20-5].**
+- Gap (review of Task 4): the HOSTILE loop of `scripts/test-load-check.js` (near line 420) checks only the warning count, not the path text. A mutant that gives the `archetypeSkillChoices` row of `creator/js/character-check.js` the path `archetypeKeywordChoices` stays green.
+- Rule: each hostile row names the path that its warning must hold, and the loop checks it. Do not change `creator/js/character-check.js`.
+- Check: that mutant fails.
+
+**Proof (report `task-20-report.md`):** for each item: the failing-first run of its checks at the base of the task, then the passing run; one mutation of each corrected line, copy and restore by `cp`, with the FAIL line. All `scripts/test-*.js` pass (32 with the new script); `scripts/test-load-check.js`, `scripts/test-sheet-tabs.js` and `scripts/test-sheet-bounds.js` pass with their old counts or more. `git diff --stat` holds only the files of this task.
+
+**Commit:** one commit, `--author="QuadraKev-bot <261695385+QuadraKev-bot@users.noreply.github.com>"`, no attribution line.
+
 ## Order of the tasks that share a file
 
 | File | Tasks in order |

@@ -5,6 +5,9 @@ const CharacterSheetTab = {
     // Guards against asking DataLoader for the threats more than once.
     _followerThreatLoad: 'idle',
 
+    // The most boxes that a tracker draws. A larger maximum shows the count of the rest as text.
+    BOX_LIMIT: 50,
+
     // The selected sheet tab. It stays for the page session and is never stored.
     activeSheetTab: 'stats',
 
@@ -388,11 +391,11 @@ const CharacterSheetTab = {
             <div class="sheet-strip-trackers">
                 <div class="sheet-strip-group sheet-strip-wounds">
                     <span class="sheet-strip-label tracker-label">Wounds</span>
-                    <div class="tracking-boxes" style="--n: ${this.escapeHtml(String(stats.maxWounds))}">${this.renderTrackingBoxes('wounds', State.getCurrentWounds(), stats.maxWounds)}</div>
+                    <div class="tracking-boxes" style="--n: ${this.escapeHtml(String(Math.min(stats.maxWounds, this.BOX_LIMIT)))}">${this.renderTrackingBoxes('wounds', State.getCurrentWounds(), stats.maxWounds)}</div>
                 </div>
                 <div class="sheet-strip-group sheet-strip-shock">
                     <span class="sheet-strip-label tracker-label">Shock</span>
-                    <div class="tracking-boxes" style="--n: ${this.escapeHtml(String(stats.maxShock))}">${this.renderTrackingBoxes('shock', State.getCurrentShock(), stats.maxShock)}</div>
+                    <div class="tracking-boxes" style="--n: ${this.escapeHtml(String(Math.min(stats.maxShock, this.BOX_LIMIT)))}">${this.renderTrackingBoxes('shock', State.getCurrentShock(), stats.maxShock)}</div>
                 </div>
                 <div class="sheet-strip-counters">${counter('wrath', 'Wrath', State.getCurrentWrath())}${State.getMaxFaith() > 0 ? counter('faith', 'Faith', State.getCurrentFaith()) : ''}
                 </div>
@@ -706,20 +709,24 @@ const CharacterSheetTab = {
 
     renderFollowerBoxes(type, current, max) {
         let boxes = '';
-        for (let i = 0; i < max; i++) {
+        const drawn = Math.min(max, this.BOX_LIMIT);
+        for (let i = 0; i < drawn; i++) {
             const filled = i < current ? 'filled' : '';
             boxes += `<span class="tracking-box follower-box ${filled}" data-track-type="${type}" data-index="${i}"></span>`;
         }
+        if (max > drawn) boxes += `<span class="sheet-empty">+${max - drawn} more</span>`;
         return boxes || '<span class="sheet-empty">-</span>';
     },
 
     // Render clickable tracking boxes for wounds/shock
     renderTrackingBoxes(type, current, max) {
         let boxes = '';
-        for (let i = 0; i < max; i++) {
+        const drawn = Math.min(max, this.BOX_LIMIT);
+        for (let i = 0; i < drawn; i++) {
             const filled = i < current ? 'filled' : '';
             boxes += `<span class="tracking-box ${filled}" data-type="${type}" data-index="${i}" style="--i: ${i}"></span>`;
         }
+        if (max > drawn) boxes += `<span class="sheet-empty">+${max - drawn} more</span>`;
         return boxes;
     },
 

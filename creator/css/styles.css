@@ -6329,6 +6329,12 @@ textarea {
     }
 }
 
+/* The count text of a tracker with more than 50 boxes starts a row of its own in the grid layout, on one line */
+.sheet-strip-trackers .tracking-boxes .sheet-empty {
+    grid-column-start: 1;
+    white-space: nowrap;
+}
+
 /* The top padding that .tab-fullwidth has at these widths, moved into the sheet (refer to the full-mode block above) */
 @media screen and (max-width: 768px) {
     #tab-character-sheet .character-sheet {

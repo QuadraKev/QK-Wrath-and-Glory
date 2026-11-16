@@ -1309,9 +1309,10 @@ const State = {
     // === SESSION TRACKING (Current Wounds, Shock, Wealth) ===
     // Note: Wounds and Shock count UP from 0 (tracking damage taken)
 
-    // Get current wounds (null means 0, tracks damage taken)
+    // Get current wounds (null means 0, tracks damage taken). The value stays inside the current maximum.
+    // The stored value does not change here. Only a setter changes it.
     getCurrentWounds() {
-        return this.character.currentWounds || 0;
+        return Math.min(this.character.currentWounds || 0, DerivedStats.calculateMaxWounds(this.character));
     },
 
     // Set current wounds (capped at max)
@@ -1330,9 +1331,9 @@ const State = {
         this.setCurrentWounds(current + delta);
     },
 
-    // Get current shock (null means 0, tracks shock taken)
+    // Get current shock (null means 0, tracks shock taken). The value stays inside the current maximum.
     getCurrentShock() {
-        return this.character.currentShock || 0;
+        return Math.min(this.character.currentShock || 0, DerivedStats.calculateMaxShock(this.character));
     },
 
     // Set current shock (capped at max)
@@ -1427,13 +1428,13 @@ const State = {
         this.setCurrentWrath(current + delta);
     },
 
-    // Get current Faith (null means equal to max)
+    // Get current Faith (null means equal to max). The value stays inside the current maximum.
     getCurrentFaith() {
         const max = this.getMaxFaith();
         if (this.character.currentFaith === null) {
             return max; // Default to max faith
         }
-        return this.character.currentFaith;
+        return Math.min(this.character.currentFaith, max);
     },
 
     // Set current Faith (capped at max, minimum 0)
